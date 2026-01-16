@@ -14,6 +14,27 @@
 
 - **Reason**: {{Why this signature?}}
 
+### 配置与环境 (Configuration & Environment)
+
+- [ ] **Config File**: {{例如: 增加 `db.timeout` 字段}}
+- [ ] **Env Vars**: {{例如: 需要设置 `API_KEY`}}
+- [ ] **CLI Args**: {{例如: 新增 `--verbose` 参数}}
+
+### 数据变更 (Data Schema Changes)
+
+- **SQL DDL**:
+
+  ```sql
+  -- ALTER TABLE users ADD COLUMN age INT;
+  ```
+
+- **JSON/Pydantic**:
+
+  ```python
+  class User(BaseModel):
+      age: int
+  ```
+
 ### 依赖影响 (Dependency Impact)
 
 ### 验收标准 (Acceptance Criteria)
@@ -86,4 +107,5 @@ flowchart LR
 ## 验证计划 (Verification Plan)
 
 - **自动化测试**: {{需要编写的测试用例描述}}
+  - *Tip: 对于 LLM 组件，优先 Mock 接口，或使用 Evals 验证语义而非精准匹配。*
 - **手动验证**: {{手动验证步骤}}

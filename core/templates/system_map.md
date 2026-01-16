@@ -16,7 +16,8 @@
 
 ```mermaid
 graph TD
-    {{系统组件图}}
+    {{Note: Replace with actual graph}}
+    A["{{ComponentA}}"] --> B["{{ComponentB}}"]
 ```
 
 **说明**:
@@ -33,11 +34,11 @@ graph TD
 ```mermaid
 sequenceDiagram
     participant User
-    participant {{ComponentA}}
-    participant {{ComponentB}}
-    User->>{{ComponentA}}: {{Action}}
-    {{ComponentA}}->>{{ComponentB}}: {{Call}}
-    Note over {{ComponentB}}: {{关键逻辑}} `{{引用代码:行号}}`
+    participant A as "{{ComponentA}}"
+    participant B as "{{ComponentB}}"
+    User->>A: {{Action}}
+    A->>B: {{Call}}
+    Note over B: {{关键逻辑}} `{{引用代码:行号}}`
 ```
 
 **关键代码引用**:
@@ -55,13 +56,13 @@ sequenceDiagram
 
 ```mermaid
 classDiagram
-    class {{ClassA}} {
+    class ClassA["{{ClassA}}"] {
         +{{Field}} : {{Type}}
     }
-    class {{ClassB}} {
+    class ClassB["{{ClassB}}"] {
         ...
     }
-    {{ClassA}} --> {{ClassB}}
+    ClassA --> ClassB
 ```
 
 ### 核心算法/策略 (Core Logic)

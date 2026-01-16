@@ -47,6 +47,13 @@
 | 安全 | {{例如：支持 HTTPS}} |
 | 兼容性 | {{例如：支持 Chrome/Firefox}} |
 
+## 风险与建议 (Risks & Recommendations)
+
+> **Critical Analysis**:
+
+- [ ] **架构风险**: {{例如: 建议改为异步消息队列}}
+- [ ] **项目边界**: {{例如: 该功能与主营业务无关，建议独立建库}}
+
 ## 开放问题 (Open Questions)
 
 - [ ] {{待澄清的问题 1}}

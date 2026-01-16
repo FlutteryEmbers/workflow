@@ -61,9 +61,9 @@ sequenceDiagram
 
 ```mermaid
 graph TD
-    A[{{组件A}}] --> B[{{组件B}}]
-    B --> C[{{组件C}}]
-    B --> D[{{组件D}}]
+    A["{{组件A}}"] --> B["{{组件B}}"]
+    B --> C["{{组件C}}"]
+    B --> D["{{组件D}}"]
 ```
 
 ## 关键设计模式 (Key Design Patterns)
@@ -72,6 +72,19 @@ graph TD
 | :--- | :--- | :--- |
 | {{例如: Factory Method}} | {{例如: 创建不同类型的 OrderHandler}} | {{例如: 解耦创建逻辑，易于扩展新订单类型}} |
 | {{例如: Singleton}} | {{例如: DatabaseConnectionPool}} | {{例如: 全局唯一，节省资源}} |
+
+### 核心抽象 (Core Abstractions)
+
+| 抽象/基类名 | 职责 (Role) | 继承者 (Implementations) | 关键约束 (Must Implement) |
+| :--- | :--- | :--- | :--- |
+| `BaseExchange` | 定义交易所交互标准 | `Binance`, `Okx` | `fetch_ticker`, `place_order` |
+| `Event` | 消息基类 | `TickEvent` | `serialize` |
+
+### 运维与观测 (Operations & Observability)
+
+- [ ] __Config Layering__: 已定义明确的优先级 (CLI > Env > File)。
+- [ ] __Secrets Management__: 已定义敏感信息 (Secrets) 的注入方式。
+- [ ] __Logging Strategy__: 已定义日志输出目标 (Stdout/File) 和格式 (Text/JSON)。
 
 ## 关键设计决策 (Key Design Decisions)
 
@@ -93,8 +106,8 @@ graph TD
 
 ```mermaid
 graph TD
-    D1[决策1] --> D2[决策2]
-    D1 -.-> |影响| C1[组件A]
+    D1["决策1"] --> D2["决策2"]
+    D1 -.-> |影响| C1["组件A"]
 ```
 
 ## 实施拆解 (Implementation Breakdown)

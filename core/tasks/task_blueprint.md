@@ -31,6 +31,12 @@
 2. **模块划分**: 划分核心模块及其职责
 3. **依赖关系**: 描述模块间的依赖方向
 4. **设计模式**: 显式声明核心组件将采用的设计模式（如单例、工厂、策略、观察者等），并解释原因。切勿为了用模式而用模式。
+5. **核心抽象 (Core Abstractions)**: 定义系统的扩展点（如 `BaseHandler`, `IAdapter`）。列出基类名及其必须履行的职责（关键方法名），但不涉及具体签名。
+6. **运维与观测 (Ops Strategy)**: 明确配置分层 (Conf/Env)、机密管理及日志策略 (Stdout/File, JSON/Text)。这决定了应用的可运维性。
+7. **测试策略 (Testing Strategy)**:
+    - 针对系统性质定义 Mock 级别。
+    - **Level 1 (Light)**: CRUD/内部逻辑，优先集成测试，轻 Mock。
+    - **Level 2 (Simulation)**: LLM/外部支付/硬件，必须建立独立的高保真 Simulator 模块。
 
 ### 第 4 步：输出蓝图 (Output Blueprint)
 

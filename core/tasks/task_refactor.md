@@ -59,5 +59,7 @@
 1. **Diagnosis**: 分析代码，识别坏味道 (Code Smells) 和结构问题。
 2. **Strategy**: 选择合适的重构策略 (Conservative/Structural/Aggressive)。
 3. **Target Design**: 描述重构后的理想状态 (类图/时序图)。
-4. **Proposal**: 生成 `refactor_proposal.md`。
+4. **Pattern Recommendation**: 针对识别出的结构问题，提供至少 2 个合适的设计模式选项（例如 "Strategy vs Enum"），分析各自优劣，并给出推荐。
+5. **行为等价性 (Behavioral Equivalence)**: 重构必须保证**不改变外部可观测行为**。如果发现必须修改业务逻辑才能推进，请立即停止并标记为"Change Request"。
+6. **Proposal**: 生成 `refactor_proposal.md`。
    - **注意**: 不要生成详细的代码实施步骤，这属于 Feature Task 的职责。仅仅列出“建议改动点”。
