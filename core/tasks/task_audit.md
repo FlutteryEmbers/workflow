@@ -18,12 +18,13 @@
 ### 第 2 步：攻击与验证 (Attack & Verify)
 
 1. 审查代码中的逻辑漏洞、安全风险和边缘情况。
-2. **Deep Dive (5 Whys)**: 对发现的关键 Bug 进行根因分析，不要只停留在表面报错。
-3. **Security Scan**: 显式检查常见漏洞（SQL 注入、XSS、越权、敏感信息泄露）。
-4. **Resilience Check**: 针对外部依赖（API/DB/Cache），检查是否具备**超时、重试、熔断或降级**机制。
-5. **Business Alignment**: 在标记 Bug 前，判断该行为是否为预期的业务逻辑（如防御性异常）。区分 "Crash" (技术错误) 与 "Guardrail" (业务拦截)。
-6. **Reproduction**: 构造可复现的脚本或操作步骤。只有能复现的 Bug 才是好 Bug。
-7. **Draft Regression Test**: 为关键 bug 编写一个**失败的**测试用例代码草稿，供修复时使用。
+2. **Architecture Compliance**: 如存在 `ARCH_RULES.md`，检查代码是否违反了分层或依赖规则（如循环引用、非法调用）。
+3. **Deep Dive (5 Whys)**: 对发现的关键 Bug 进行根因分析，不要只停留在表面报错。
+4. **Security Scan**: 显式检查常见漏洞（SQL 注入、XSS、越权、敏感信息泄露）。
+5. **Resilience Check**: 针对外部依赖（API/DB/Cache），检查是否具备**超时、重试、熔断或降级**机制。
+6. **Business Alignment**: 在标记 Bug 前，判断该行为是否为预期的业务逻辑（如防御性异常）。区分 "Crash" (技术错误) 与 "Guardrail" (业务拦截)。
+7. **Reproduction**: 构造可复现的脚本或操作步骤。只有能复现的 Bug 才是好 Bug。
+8. **Draft Regression Test**: 为关键 bug 编写一个**失败的**测试用例代码草稿，供修复时使用。
 
 ### 第 3 步：报告 (Report)
 
@@ -34,9 +35,16 @@
 
 ### 输出路径与命名 (Output Config)
 
-请将最终文件保存至: `docs/audit/`
-命名格式: `yy_mm_dd_{{summary}}_audit_report_{{version}}.md`
-(例如: `26_01_15_security_scan_audit_report_v1.md`)
+请将最终文件保存至: `docs/audits/{focus}/`
+命名格式: `{intent}.md` (例如: `security-scan.md`, `performance-report.md`)
+> **Constraint**: `{focus}` 应描述审计的关注点或模块，如 `security`, `performance`, `order-module`。
+>
+> **Backup Policy (归档策略)**:
+> 若目标文件已存在，严禁直接覆盖！
+>
+> 1. 读取旧内容。
+> 2. 将旧文件重命名为 `archive/{filename}.bak_{yyMMdd_HHmm}.md`。
+> 3. 写入新文件到原路径。
 
 ## 用户输入 (User Input)
 

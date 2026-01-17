@@ -46,9 +46,16 @@
 
 ### 输出路径与命名 (Output Config)
 
-请将最终文件保存至: `docs/refactor/`
-命名格式: `yy_mm_dd_{{summary}}_refactor_proposal_{{version}}.md`
-(例如: `26_01_15_order_service_refactor_proposal_v1.md`)
+请将最终文件保存至: `docs/refactors/{target}/`
+命名格式: `{intent}.md` (例如: `auth-module.md`)
+> **Constraint**: `{target}` 应描述重构目标模块，如 `auth`, `order`。
+>
+> **Backup Policy (归档策略)**:
+> 若目标文件已存在，严禁直接覆盖！
+>
+> 1. 读取旧内容。
+> 2. 将旧文件重命名为 `archive/{filename}.bak_{yyMMdd_HHmm}.md`。
+> 3. 写入新文件到原路径。
 
 ## 用户输入 (User Input)
 

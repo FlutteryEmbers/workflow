@@ -29,6 +29,11 @@
     2. **Mock First**: 优先实现 Mock，确保业务管线逻辑通过。
     3. **Evals (for LLM)**: 对于生成内容，放弃精准匹配，使用语义评估。
 
+### 架构规范注入 (Architecture Context)
+>
+> **Rule Injection**: 如项目根目录存在 `ARCH_RULES.md`，请将其作为最高优先级的技术约束。
+> **Constraint**: 任何设计方案均不得违反 `ARCH_RULES.md` 中的条款。
+
 ### 第 1 步：理解与重述 (Understand & Restate)
 
 1. **输入分析**: 仔细阅读用户提供的以下任一输入：
@@ -38,6 +43,10 @@
     - `Audit Report` (问题修复)
 2. **目标重述**: 用自己的话总结要做什么，明确“成功”的定义。
 3. **约束确认**: 确认是否涉及 Public API 变更？是否涉及 Config 变更？
+4. **蓝图合规 (Blueprint Compliance - 若适用)**:
+   - 如果输入源是 `Blueprint`：
+     - **严守边界**: 只能实现 Blueprint 分配的模块，严禁越界修改。
+     - **继承决策**: 必须继承 Blueprint 的技术选型和模式，**跳过**设计决策阶段的“创造”，转为“执行”。
 **请务必先输出这份验收标准列表。**
 
 ### 第 2 步：技术设计与影响分析 (Design & Impact Analysis)
@@ -64,9 +73,16 @@
 
 ### 输出路径与命名 (Output Config)
 
-请将最终文件保存至: `docs/feature/`
-命名格式: `yy_mm_dd_{{summary}}_feature_{{version}}.md`
-(例如: `26_01_15_user_login_feature_v1.md`)
+请将最终文件保存至: `docs/features/{domain}/`
+命名格式: `{intent}.md` (例如: `login.md`, `order-flow.md`)
+> **Constraint**: `{domain}` 必须对应现有的业务模块名（如 `user`, `trade`），不得随意发明。
+>
+> **Backup Policy (归档策略)**:
+> 若目标文件已存在，严禁直接覆盖！
+>
+> 1. 读取旧内容。
+> 2. 将旧文件重命名为 `archive/{filename}.bak_{yyMMdd_HHmm}.md` (如 `docs/features/{domain}/archive/login.bak_260115_1030.md`)。
+> 3. 写入新文件到原路径。
 
 ## 用户输入 (User Input)
 

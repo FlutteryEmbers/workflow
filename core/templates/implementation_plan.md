@@ -1,5 +1,14 @@
 # 实现计划 (Implementation Plan)
 
+## 概述 (Summary)
+
+> **目标**: 一句话描述这个 Feature 解决了什么用户痛点。
+> **范围**:
+>
+> - [x] 核心: 实现 xxx 逻辑
+> - [x] 边界: 处理 xxx 异常
+> - [ ] 排除: 本次暂不涉及 xxx 优化 (留待后续)
+
 ## 需求 (Requirements)
 
 ### 核心接口定义 (Public Interface Design)
