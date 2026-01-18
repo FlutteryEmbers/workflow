@@ -3,60 +3,52 @@
 ## 上下文注入 (Context Injection)
 
 角色定义: {{CONTENT: /roles/explorer.md}}
-输出模版: {{CONTENT: /templates/system_map.md}}
+输出模版:
+
+- Map Mode: {{CONTENT: /templates/system_map.md}}
+- Gap Mode: {{CONTENT: /templates/gap_analysis.md}}
 
 ## 指令 (Instructions)
 
 你现在将扮演 **探险家 (The Explorer)** 的角色。
 **任务目标：** 理解现有代码库，并生成一份包含业务文档、工作流和技术细节的系统地图。
 
-### 第 1 步：确定范围与扫描 (Define Scope & Scan)
+### 第 1 步：确定模式与范围 (Define Mode & Scope)
 
-**首先判断用户的意图是“全景理解”还是“模块深挖”。**
+1. **选择模式 (Select Mode)**:
+   - **Mode A: System Mapping (制图模式 - 默认)**: 仅有代码库，无具体需求。目标是生成 `system_map.md`。
+   - **Mode B: Gap Analysis (差异模式)**: 有明确需求 (`req_*.md`)。目标是生成 `gap_analysis_*.md`。
 
-- **如果是全景理解 (Global Scope)**:
-  1. 遍历根目录，识别核心模块、配置文件和入口点。
-  2. 总结整体技术栈和分层架构。
+2. **扫描与提取 (Scan & Extract Patterns)**:
+   - 扫描目标范围的代码。
+   - **Pattern Extraction (关键)**: 无论哪种模式，必须提取以下隐式规范：
+     - **Directory Structure**: 目录布局逻辑 (e.g. Domain-driven vs Layer-driven)。
+     - **Code Style**: 错误处理、分层职责、命名惯例等软约束。
 
-- **如果是模块深挖 (Module Scope)**:
-  1. 定位目标模块的边界（输入/输出）。
-  2. 识别该模块的直接依赖（Upstream）和被依赖方（Downstream）。
-  3. *跳过不相关的其他目录。*
+### 第 2 步：执行分析 (Execute Analysis)
 
-### 第 2 步：逆向业务流 (Reverse Engineer Workflows)
+#### 👉 如果是 Map Mode
 
-1. 挑选 1-3 个核心业务场景（即用户如何使用系统的关键路径）。
-2. 追踪代码执行路径，绘制 Mermaid 时序图或流程图。
-3. **关键：** 在图表和描述中，必须标注具体的**代码引用 (Code References)**（文件路径+关键行）。
+1. **逆向业务流**: 追踪 1-3 个核心场景的代码路径。
+2. **绘制图表**: 生成 Mermaid 时序图/类图，必须附带**代码引用**。
+3. **输出**: 填写 `templates/system_map.md`。
 
-### 第 3 步：提炼技术细节 (Extract Technical Details)
+#### 👉 如果是 Gap Analysis Mode
 
-1. 识别核心数据结构或领域模型，绘制类图。
-2. 提取关键算法或业务规则的实现逻辑。
+1. **现状 (As-Is)**: 基于代码扫描，描述当前能力。
+2. **目标 (To-Be)**: 基于 Requirements，描述理想状态。
+3. **差距 (The Gap)**: 对比两者，列出 Missing/Conflict/Redundant。
+4. **行动计划 (Action Plan)**:
+   - 必须在此步骤初步拆解 Gap。
+   - 建议一系列具体的 `feature` 或 `refactor` 任务来填补这些 Gap。
+5. **输出 (Persistence)**:
+   - **CRITICAL**: 必须将分析结果写入文件 `docs/blueprints/{scope}/gap_analysis_{intent}.md`。
+   - 严禁只在终端输出摘要，必须落地为文档。
 
-### 第 4 步：输出地图 (Output Map)
+### 输出配置 (Output Config)
 
-填写提供的 `输出模版`。
-
-- **约束：**
-  - 如果是**全景地图**，重点在于“广度”，展示组件间的连接。
-  - 如果是**模块地图**，重点在于“深度”，展示内部类/函数的调用链。
-  - 所有 Mermaid 图必须语法正确。
-  - 核心逻辑描述必须附带代码链接。
-  - 保持客观，描述“现在是什么”，而不是“应该是什么”。
-
-### 输出路径与命名 (Output Config)
-
-请将最终文件保存至: `docs/system_maps/{scope}/`
-命名格式: `{intent}.md` (例如: `system-overview.md`, `order-module.md`)
-> **Constraint**: `{scope}` 应描述地图范围，如 `global`, `module-a`。
->
-> **Backup Policy (归档策略)**:
-> 若目标文件已存在，严禁直接覆盖！
->
-> 1. 读取旧内容。
-> 2. 将旧文件重命名为 `archive/{filename}.bak_{yyMMdd_HHmm}.md`。
-> 3. 写入新文件到原路径。
+- **Map Mode**: `docs/system_maps/{scope}/{intent}.md`
+- **Gap Mode**: `docs/blueprints/{scope}/gap_analysis_{intent}.md` (注意：Gap分析存放在 blueprints 目录下，作为设计的输入)
 
 ## 用户输入 (User Input)
 

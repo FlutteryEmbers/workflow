@@ -42,9 +42,9 @@
 
 ### 输出路径与命名 (Output Config)
 
-请将最终文件保存至: `docs/requirements/{domain}/`
-命名格式: `{intent}.md` (例如: `user-onboarding.md`)
-> **Constraint**: `{domain}` 应对应业务领域。
+Please set the final file path to: `docs/requirements/{domain}/`
+Naming format: `req_{intent}.md` (example: `req_user-onboarding.md`)
+> **Constraint**: `{domain}` should correspond to the business domain.
 >
 > **Backup Policy (归档策略)**:
 > 若目标文件已存在，严禁直接覆盖！

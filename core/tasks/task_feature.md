@@ -34,26 +34,53 @@
 > **Rule Injection**: 如项目根目录存在 `ARCH_RULES.md`，请将其作为最高优先级的技术约束。
 > **Constraint**: 任何设计方案均不得违反 `ARCH_RULES.md` 中的条款。
 
-### 第 1 步：理解与重述 (Understand & Restate)
+### 🛡️ Mermaid 语法红线 (Mermaid Syntax Guard)
 
-1. **输入分析**: 仔细阅读用户提供的以下任一输入：
-    - `Requirements Doc` (新功能)
-    - `Refactor Proposal` (重构提案)
-    - `Feasibility Report` (技术探针)
-    - `Audit Report` (问题修复)
+为了防止渲染错误，编写 Mermaid 时必须遵守：
+
+1. **强制引号**: 所有节点文本必须使用双引号包裹。
+    - ❌ 错误: `A[User (Admin)]`
+    - ✅ 正确: `A["User (Admin)"]`
+2. **ID 规范**: 节点 ID 只能使用英文字母和下划线，严禁空格。
+    - ❌ 错误: `User Login --> System`
+    - ✅ 正确: `user_login["User Login"] --> System`
+3. **避免 HTML**: 尽量不要在 Label 中使用 HTML 标签（如 `<br>`），除非必须。
+
+### 第 1 步：飞行前检查 (Pre-Flight Checks)
+
+> **⚠️ INTERNAL PROCESS ONLY (隐形步骤)**
+> 该步骤仅用于辅助决策，**严禁**将本节的检查过程（如 Intent Classification, Circuit Breaker 等）作为标题写入最终文档！
+> **唯一允许**体现的是：根据检查结果，在文档 `Summary` 中填写 `Task Type` 和 `Coding Mode` 字段。
+
+1. **意图分类 (Intent Classification)**:
+   - **Type A (Value Delivery)**: 旨在交付新功能或业务价值 (Input: Requirements/Audit)。
+   - **Type B (Debt Payback)**: 旨在治理代码债务或重构 (Input: Refactor Proposal)。
+   > **Decision**: 心中确认类型。
+
+2. **重构熔断 (Refactor Circuit Breaker)**:
+   > **仅针对 Type A**。
+   > 若现有代码严重阻碍功能实现，且重构量 > 30% (或 > 200 行)：
+   > - **Exemption (豁免)**: 若无需修改旧代码（只增不改/新模块），则**不计入**。
+   > - **Action**: 若触发，**必须停止**，并建议用户执行 `task_refactor`。
+
+3. **模式定调 (Mode Selection)**:
+   - 根据是否涉及 API/Config/Data 变更，确定后续 Coding Task 的模式 (Safety/Pragmatic/Refactor)。
+
+### 第 2 步：理解与重述 (Understand & Restate)
+
+1. **输入分析**: 仔细阅读用户提供的输入。
 2. **目标重述**: 用自己的话总结要做什么，明确“成功”的定义。
 3. **约束确认**: 确认是否涉及 Public API 变更？是否涉及 Config 变更？
 4. **蓝图合规 (Blueprint Compliance - 若适用)**:
-   - 如果输入源是 `Blueprint`：
-     - **严守边界**: 只能实现 Blueprint 分配的模块，严禁越界修改。
-     - **继承决策**: 必须继承 Blueprint 的技术选型和模式，**跳过**设计决策阶段的“创造”，转为“执行”。
+   - **严守边界**: 只能实现 Blueprint 分配的模块，严禁越界修改。
+   - **继承决策**: 必须继承 Blueprint 的技术选型和模式，**跳过**设计决策阶段的“创造”，转为“执行”。
 **请务必先输出这份验收标准列表。**
 
-### 第 2 步：技术设计与影响分析 (Design & Impact Analysis)
+### 第 3 步：技术设计与影响分析 (Design & Impact Analysis)
 
 1. **方案选择**: 至少提出 2 个方案，并强制包含一个 "Minimalist Strategy"。
-2. **接口定义 (Crucial)**: 明确写出核心类/函数的 Public Interface 签名 (Arguments & Return Types)。对于单体应用，这是你的“内部契约”。
-3. **Config/CLI**: 明确列出任何需要的配置文件修改 (`config.yaml`)、环境变量 (`.env`) 或命令行参数变更。这是DevOps的关键。
+2. **接口定义 (Crucial)**: 明确写出核心类/函数的 Public Interface 签名 (Arguments & Return Types)。
+3. **Config/CLI**: 明确列出任何需要的配置文件修改 (`config.yaml`)、环境变量 (`.env`) 或命令行参数变更。
 4. **数据Schema (Crucial)**: 涉及数据结构变更时，给出具体的 DDL (SQL) 或 Pydantic Model (NoSQL/Object)。
 5. **影响分析**: 评估对现有模块、配置和数据的副作用。多种实现方式，请简要对比它们（例如：“方案 A：简单但难扩展” vs “方案 B：复杂但灵活”），并说明选择当前方案的理由。
 6. **文件变更**: 详细列出需要修改或创建的文件。
@@ -73,9 +100,9 @@
 
 ### 输出路径与命名 (Output Config)
 
-请将最终文件保存至: `docs/features/{domain}/`
-命名格式: `{intent}.md` (例如: `login.md`, `order-flow.md`)
-> **Constraint**: `{domain}` 必须对应现有的业务模块名（如 `user`, `trade`），不得随意发明。
+Please set the final file path to: `docs/features/{domain}/`
+Naming format: `feat_{intent}.md` (example: `feat_login.md`, `feat_order-flow.md`)
+> **Constraint**: `{domain}` must correspond to an existing business module name (e.g., `user`, `trade`), do not invent randomly.
 >
 > **Backup Policy (归档策略)**:
 > 若目标文件已存在，严禁直接覆盖！

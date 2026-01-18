@@ -16,7 +16,8 @@ graph TD
     end
 
     subgraph Design [📐 设计与规划]
-        Requirements -->|Approved| Blueprint(task_blueprint<br/>架构设计)
+        Requirements -->|Approved| Understand_Gap(task_understand<br/>差异分析/Gap)
+        Understand_Gap -->|Gap Report| Blueprint(task_blueprint<br/>架构设计)
         Blueprint --> Feature(task_feature<br/>实施总控)
         
         %% Feature 的多源输入
@@ -53,11 +54,11 @@ graph TD
 
 | 任务文件 | 角色 (Role) | 目标 (Goal) | 输出路径 |
 | :--- | :--- | :--- | :--- |
-| **[task_understand](core/tasks/task_understand.md)** | 探险家 | 生成业务/系统地图。 | `docs/system_maps/{Scope}/` |
+| **[task_understand](core/tasks/task_understand.md)** | 探险家 | **[双模式]** 生成地图 (Map Mode) 或 差异分析 (Gap Mode)。 | `docs/system_maps/` or `blueprints/` |
 | **[task_requirements](core/tasks/task_requirements.md)** | 分析师 | 产出结构化 PRD。 | `docs/requirements/{Domain}/` |
 | **[task_spike](core/tasks/task_spike.md)** | 起草人 | 技术可行性验证。 | `docs/spikes/{Topic}/` |
-| **[task_blueprint](core/tasks/task_blueprint.md)** | 架构师 | 架构蓝图与拆解。 | `docs/blueprints/{Scope}/` |
-| **[task_feature](core/tasks/task_feature.md)** | TDD 专家 | **[总控]** 实施计划与接口设计。 | `docs/features/{Domain}/` |
+| **[task_blueprint](core/tasks/task_blueprint.md)** | 架构师 | 基于 Gap Analysis 设计架构方案。 | `docs/blueprints/{Scope}/` |
+| **[task_feature](core/tasks/task_feature.md)** | TDD 专家 | **[总控]** 实施计划 (含熔断检查与模式选择)。 | `docs/features/{Domain}/` |
 | **[task_coding](core/tasks/task_coding.md)** | 工程师 | **[执行]** 编码 + **自动维护 MODULE.md**。 | *src/{Module}/*, `MODULE.md` |
 
 ### 治理与维护流 (Governance)
@@ -117,6 +118,44 @@ Maintain 和 Update 任务具备“阅读代码理解意图”的能力。
 - 它们不依赖过时的文档，而是直接从 AST（抽象语法树）或源码结构反推当前的设计状态。
 - 这是 **Code-First** 哲学的核心技术支撑。
 
+### 8. 命名规范 (Naming Convention)
+
+为了避免不同类型文档在 IDE 中同名混淆，所有生成的文档必须强制使用以下前缀：
+
+- **PRD**: `req_{intent}.md` (e.g., `req_login.md`)
+- **Blueprints**: `bp_{scope}.md` (e.g., `bp_auth.md`)
+- **Features**: `feat_{intent}.md` (e.g., `feat_login.md`)
+- **Refactors**: `ref_{target}.md` (e.g., `ref_order.md`)
+- **Audits**: `aud_{focus}.md` (e.g., `aud_security.md`)
+- **Spikes**: `sp_{topic}.md` (e.g., `sp_redis.md`)
+
+> **注意**: 严禁生成不带前缀的裸文件名（如 `login.md`）。
+
+### 9. Mermaid 语法红线 (Mermaid Syntax Guard)
+
+为了防止渲染错误，编写 Mermaid 时必须遵守：
+
+1. **强制引号**: 所有节点文本必须使用双引号包裹。
+    - ❌ 错误: `A[User (Admin)]`
+    - ✅ 正确: `A["User (Admin)"]`
+2. **ID 规范**: 节点 ID 只能使用英文字母和下划线，严禁空格。
+    - ❌ 错误: `User Login --> System`
+    - ✅ 正确: `user_login["User Login"] --> System`
+
+### 10. 智能工作流增强 (Workflow Enhancements)
+
+- **Gap Analysis (差异分析)**:
+  - 集成在 `task_understand` 中。
+  - **Gap Mode**: 输入 Code + Requirements，输出差距报告 (`gap_analysis.md`)，作为 Blueprint 的输入。
+
+- **Pattern Extraction (模式提取)**:
+  - 在 `task_understand` 中执行。
+  - 自动提取目录结构和隐含风格，确保后续设计的一致性。
+
+- **Feature Pre-Flight (飞行前检查)**:
+  - `task_feature` 在设计前强制执行：意图分类 (Intent)、重构熔断 (Circuit Breaker) 和模式选择 (Mode Selection)。
+  - **Fail Fast**: 代码太烂或不适合新功能时，立即熔断并建议重构。
+
 ## 🎬 场景指南 (Scenario Guide)
 
 不知道该用哪个 Task？即使有说明书也容易迷路？请参考以下常见剧本：
@@ -124,10 +163,11 @@ Maintain 和 Update 任务具备“阅读代码理解意图”的能力。
 ### 🎭 剧本 A: "我有一个新点子" (New Feature)
 
 1. **执行 `task_requirements`**: 输入你的想法，产出 `docs/requirements/user/signup.md`。
-2. **执行 `task_blueprint`**: 输入 PRD，让 AI 设计架构，产出 `docs/blueprints/user/auth-system.md`。
-3. **执行 `task_feature`**: 输入架构设计的一块（如 API），产出 `docs/features/user/auth-api.md`。
-4. **执行 `task_coding`**: 输入 Feature 文档，让 AI 写代码并自动维护文档。
-5. **执行 `task_understand`**: 最后更新 `system_maps` 以反映新领土。
+2. **执行 `task_understand`**: (Gap Mode) 输入 PRD，分析现状与目标的差距，产出 `docs/blueprints/user/gap_analysis_signup.md`。
+3. **执行 `task_blueprint`**: 输入 Gap 报告，设计填补差距的架构方案，产出 `docs/blueprints/user/auth-system.md`。
+4. **执行 `task_feature`**: 输入架构设计的一块（如 API），产出 `docs/features/user/auth-api.md`。
+5. **执行 `task_coding`**: 输入 Feature 文档，让 AI 写代码并自动维护文档。
+6. **执行 `task_understand`**: (Map Mode) 最后更新 `system_maps` 以反映新领土。
 
 ### 🎭 剧本 B: "这代码跑不通/有Bug" (Bug Fix)
 

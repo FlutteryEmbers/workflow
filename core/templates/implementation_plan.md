@@ -8,6 +8,9 @@
 > - [x] 核心: 实现 xxx 逻辑
 > - [x] 边界: 处理 xxx 异常
 > - [ ] 排除: 本次暂不涉及 xxx 优化 (留待后续)
+>
+> **建议执行模式**: [ Safety (默认) | Pragmatic (涉配置/接口) | Refactor (纯重构) ]
+> **任务类型**: [ Value Delivery (Type A) | Debt Payback (Type B) ]
 
 ## 需求 (Requirements)
 

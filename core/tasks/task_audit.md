@@ -35,9 +35,9 @@
 
 ### 输出路径与命名 (Output Config)
 
-请将最终文件保存至: `docs/audits/{focus}/`
-命名格式: `{intent}.md` (例如: `security-scan.md`, `performance-report.md`)
-> **Constraint**: `{focus}` 应描述审计的关注点或模块，如 `security`, `performance`, `order-module`。
+Please set the final file path to: `docs/audits/{focus}/`
+Naming format: `aud_{intent}.md` (example: `aud_security-scan.md`, `aud_performance-report.md`)
+> **Constraint**: `{focus}` should describe the focus of the audit or module, e.g., `security`, `performance`, `order-module`.
 >
 > **Backup Policy (归档策略)**:
 > 若目标文件已存在，严禁直接覆盖！

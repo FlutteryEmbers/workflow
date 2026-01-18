@@ -13,9 +13,9 @@
 ### 第 1 步：逆向工程 (Reverse Engineering)
 
 1. **Reality Check**: 读取目标模块的源码 (`src/`)，提取**当前真实**的：
-    - Public API 签名
-    - 数据结构 (Schema)
-    - 关键流程控制
+   - Public API 签名
+   - 数据结构 (Schema)
+   - 关键流程控制
 2. **Doc Check**: 读取对应的 `MODULE.md` (Module Status) 和 `docs/features/` 文档。
 3. **Diff Analysis**: 找出“谎言”（文档过时）和“缺失”（代码有但文档无）。
 
@@ -23,7 +23,7 @@
 
 **Special: Bootstrap Mode (引导模式)** -- *如果用户请求初始化文档*
 
-- **动作**: 扫描 src 下所有一级子目录。
+- **动作**: 扫描所有子目录。
 - **创建**: 如果 `MODULE.md` 不存在，使用模板创建。
 - **填充**: 利用逆向工程提取 Context 和 Interface。
 
@@ -40,8 +40,9 @@
 
 - **目标**: `docs/features/`
 - **动作**:
-  - 如果某 Feature 文档描述的逻辑与代码严重不符且无法简单修复，在该文档头部添加 `> [!WARNING] DEPRECATED: Implementation has diverged. See code for source of truth.`。
+  - 如果某 Feature 文档描述的逻辑与代码严重不符且无法简单修复，在该文档头部添加 `> [!WARNING] DEPRECATED: Implementation has diverged. Reason: {简明扼要的差异原因}. See code for source of truth.`。
   - **不要尝试重写整个 Feature 文档**，标记过时即可。
+  - **Cleanup Directive (清理指令)**: 如果该文档已有 `DEPRECATED` 标记，且发现其描述与当前代码**已恢复一致**，请**移除**该标记。
 
 #### Level 3: 架构红线检查 (Arch Alert)
 
@@ -56,7 +57,8 @@
 输出一份行动报告：
 
 - **[FIXED]** `src/order/README.md` - 更新了 API 签名。
-- **[DEPRECATED]** `docs/features/order/legacy-flow.md` - 标记为过时。
+- **[DEPRECATED]** `docs/features/order/legacy-flow.md` - 标记为过时 (Reason: context 参数缺失)。
+- **[RESOLVED]** `docs/features/user/login.md` - 移除了过时标记 (已修复)。
 - **[ALERT]** 发现 `OrderService` 直接调用了 `DB` 层，违反架构规则！
 
 ## 用户输入 (User Input)

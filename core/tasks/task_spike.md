@@ -30,9 +30,9 @@
 
 ### 输出路径与命名 (Output Config)
 
-请将最终文件保存至: `docs/spikes/{topic}/`
-命名格式: `{intent}.md` (例如: `websocket-latency.md`)
-> **Constraint**: `{topic}` 应描述探针主题，如 `network`, `database`。
+Please set the final file path to: `docs/spikes/{topic}/`
+Naming format: `sp_{intent}.md` (example: `sp_websocket-latency.md`)
+> **Constraint**: `{topic}` should describe the spike topic, e.g., `network`, `database`.
 >
 > **Backup Policy (归档策略)**:
 > 若目标文件已存在，严禁直接覆盖！
