@@ -2,8 +2,8 @@
 
 ## 上下文注入 (Context Injection)
 
-角色定义: {{CONTENT: /roles/validator.md}}
-输出模版: {{CONTENT: /templates/audit_report.md}}
+角色定义: {{CONTENT: /workflow_core/roles/validator.md}}
+输出模版: {{CONTENT: /workflow_core/templates/audit_report.md}}
 
 ## 指令 (Instructions)
 
@@ -18,7 +18,7 @@
 ### 第 2 步：攻击与验证 (Attack & Verify)
 
 1. 审查代码中的逻辑漏洞、安全风险和边缘情况。
-2. **Architecture Compliance**: 如存在 `ARCH_RULES.md`，检查代码是否违反了分层或依赖规则（如循环引用、非法调用）。
+2. **Architecture Compliance**: 如 **Workflow Root** 存在 `ARCH_RULES.md`，检查代码是否违反了分层或依赖规则（如循环引用、非法调用）。
 3. **Deep Dive (5 Whys)**: 对发现的关键 Bug 进行根因分析，不要只停留在表面报错。
 4. **Security Scan**: 显式检查常见漏洞（SQL 注入、XSS、越权、敏感信息泄露）。
 5. **Resilience Check**: 针对外部依赖（API/DB/Cache），检查是否具备**超时、重试、熔断或降级**机制。
@@ -35,7 +35,15 @@
 
 ### 输出路径与命名 (Output Config)
 
-Please set the final file path to: `docs/audits/{focus}/`
+**Base Resolution**:
+
+1. Locate the **Workflow Root** directory.
+   - It MUST contain `workflow_core/` (folder) AND `ARCH_RULES.md` (file).
+2. All output paths below are relative to this `{WorkflowRoot}`.
+
+**Target Path**:
+`{WorkflowRoot}/docs/audits/{focus}/{filename}`
+
 Naming format: `aud_{intent}.md` (example: `aud_security-scan.md`, `aud_performance-report.md`)
 > **Constraint**: `{focus}` should describe the focus of the audit or module, e.g., `security`, `performance`, `order-module`.
 >

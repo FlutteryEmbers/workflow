@@ -2,11 +2,11 @@
 
 ## 上下文注入 (Context Injection)
 
-角色定义: {{CONTENT: /roles/explorer.md}}
+角色定义: {{CONTENT: /workflow_core/roles/explorer.md}}
 输出模版:
 
-- Map Mode: {{CONTENT: /templates/system_map.md}}
-- Gap Mode: {{CONTENT: /templates/gap_analysis.md}}
+- Map Mode: {{CONTENT: /workflow_core/templates/system_map.md}}
+- Gap Mode: {{CONTENT: /workflow_core/templates/gap_analysis.md}}
 
 ## 指令 (Instructions)
 
@@ -45,10 +45,16 @@
    - **CRITICAL**: 必须将分析结果写入文件 `docs/blueprints/{scope}/gap_analysis_{intent}.md`。
    - 严禁只在终端输出摘要，必须落地为文档。
 
-### 输出配置 (Output Config)
+### 输出路径与命名 (Output Config)
 
-- **Map Mode**: `docs/system_maps/{scope}/{intent}.md`
-- **Gap Mode**: `docs/blueprints/{scope}/gap_analysis_{intent}.md` (注意：Gap分析存放在 blueprints 目录下，作为设计的输入)
+**Base Resolution**:
+
+1. Locate the **Workflow Root** directory.
+   - It MUST contain `workflow_core/` (folder) AND `ARCH_RULES.md` (file).
+2. All output paths below are relative to this `{WorkflowRoot}`.
+
+- **Map Mode**: `{WorkflowRoot}/docs/system_maps/{scope}/{intent}.md`
+- **Gap Mode**: `{WorkflowRoot}/docs/blueprints/{scope}/gap_analysis_{intent}.md` (注意：Gap分析存放在 blueprints 目录下，作为设计的输入)
 
 ## 用户输入 (User Input)
 

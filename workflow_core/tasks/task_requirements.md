@@ -2,8 +2,8 @@
 
 ## 上下文注入 (Context Injection)
 
-角色定义: {{CONTENT: /roles/analyst.md}}
-输出模版: {{CONTENT: /templates/requirements_doc.md}}
+角色定义: {{CONTENT: /workflow_core/roles/analyst.md}}
+输出模版: {{CONTENT: /workflow_core/templates/requirements_doc.md}}
 
 ## 指令 (Instructions)
 
@@ -42,7 +42,15 @@
 
 ### 输出路径与命名 (Output Config)
 
-Please set the final file path to: `docs/requirements/{domain}/`
+**Base Resolution**:
+
+1. Locate the **Workflow Root** directory.
+   - It MUST contain `workflow_core/` (folder) AND `ARCH_RULES.md` (file).
+2. All output paths below are relative to this `{WorkflowRoot}`.
+
+**Target Path**:
+`{WorkflowRoot}/docs/requirements/{domain}/{filename}`
+
 Naming format: `req_{intent}.md` (example: `req_user-onboarding.md`)
 > **Constraint**: `{domain}` should correspond to the business domain.
 >

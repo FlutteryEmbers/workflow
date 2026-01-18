@@ -46,7 +46,7 @@
 
 #### Level 3: 架构红线检查 (Arch Alert)
 
-- **目标**: `ARCH_RULES.md` & `docs/blueprints/`
+- **目标**: `{WorkflowRoot}/ARCH_RULES.md` & `docs/blueprints/`
 - **动作**:
   - 如果发现代码违反了架构原则（如层级越界、循环依赖），这是**BUG**。
   - **不要修改文档来迁就错误代码**。

@@ -10,7 +10,7 @@
 你现在将扮演 **工程师 (The Engineer)** 的角色。
 **任务目标：** 根据提供的 `Implementation Plan`，将伪代码转化为实际的可运行代码。
 
-> **Architecture Enforcer**: 始终遵守 `ARCH_RULES.md` (若存在)。如果 Plan 要求违反架构规则，请拒绝执行并报错。
+> **Architecture Enforcer**: 始终遵守 `{WorkflowRoot}/ARCH_RULES.md` (若存在)。如果 Plan 要求违反架构规则，请拒绝执行并报错。
 
 ### 执行模式 (Execution Modes) - *用户必选*
 
@@ -47,7 +47,7 @@
 1. **运行测试**: 必须运行新写的测试，并确保全部通过。
 2. **Lint检查**: 检查代码风格是否符合规范。
 3. **依赖检查**: 确保没有引入循环依赖。
-4. **Context Check**: 检查是否破坏了 `ARCH_RULES.md` 中的约束。
+4. **Context Check**: 检查是否破坏了 `{WorkflowRoot}/ARCH_RULES.md` 中的约束。
 
 ### 第 4 步：自动化文档维护 (Auto-Documentation Protocol)
 

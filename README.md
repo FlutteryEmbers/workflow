@@ -48,29 +48,101 @@ graph TD
 
 ## 📂 任务清单 (Task Catalog)
 
-任务定义位于 `core/tasks/`。所有文档均采用 **Domain-Centric** 命名法 (`docs/{Features}/{Domain}/{Intent}.md`)。
+任务定义位于 `workflow_core/tasks/`。所有文档均采用 **Domain-Centric** Naming Law (`docs/{Features}/{Domain}/{Intent}.md`)。
 
 ### 核心生产流 (Production)
 
 | 任务文件 | 角色 (Role) | 目标 (Goal) | 输出路径 |
 | :--- | :--- | :--- | :--- |
-| **[task_understand](core/tasks/task_understand.md)** | 探险家 | **[双模式]** 生成地图 (Map Mode) 或 差异分析 (Gap Mode)。 | `docs/system_maps/` or `blueprints/` |
-| **[task_requirements](core/tasks/task_requirements.md)** | 分析师 | 产出结构化 PRD。 | `docs/requirements/{Domain}/` |
-| **[task_spike](core/tasks/task_spike.md)** | 起草人 | 技术可行性验证。 | `docs/spikes/{Topic}/` |
-| **[task_blueprint](core/tasks/task_blueprint.md)** | 架构师 | 基于 Gap Analysis 设计架构方案。 | `docs/blueprints/{Scope}/` |
-| **[task_feature](core/tasks/task_feature.md)** | TDD 专家 | **[总控]** 实施计划 (含熔断检查与模式选择)。 | `docs/features/{Domain}/` |
-| **[task_coding](core/tasks/task_coding.md)** | 工程师 | **[执行]** 编码 + **自动维护 MODULE.md**。 | *src/{Module}/*, `MODULE.md` |
+| **[task_understand](workflow_core/tasks/task_understand.md)** | 探险家 | **[双模式]** 生成地图 (Map Mode) 或 差异分析 (Gap Mode)。 | `docs/system_maps/` or `blueprints/` |
+| **[task_requirements](workflow_core/tasks/task_requirements.md)** | 分析师 | 产出结构化 PRD。 | `docs/requirements/{Domain}/` |
+| **[task_spike](workflow_core/tasks/task_spike.md)** | 起草人 | 技术可行性验证 (Doc + Sandbox Code)。 | `docs/spikes/{Topic}/` |
+| **[task_blueprint](workflow_core/tasks/task_blueprint.md)** | 架构师 | 基于 Gap Analysis 设计架构方案。 | `docs/blueprints/{Scope}/` |
+| **[task_feature](workflow_core/tasks/task_feature.md)** | TDD 专家 | **[总控]** 实施计划 (含熔断检查与模式选择)。 | `docs/features/{Domain}/` |
+| **[task_coding](workflow_core/tasks/task_coding.md)** | 工程师 | **[执行]** 编码 + **自动维护 MODULE.md**。 | *src/{Module}/*, `MODULE.md` |
 
 ### 治理与维护流 (Governance)
 
 | 任务文件 | 负责角色 | 描述 | 输出/行为 |
 | :--- | :--- | :--- | :--- |
-| **[task_refactor](core/tasks/task_refactor.md)** | 精修师 | 产出重构提案。 | `docs/refactors/{Target}/` |
-| **[task_audit](core/tasks/task_audit.md)** | 找茬员 | 深度审计与 Arch Rule 检查。 | `docs/audits/{Focus}/` |
-| **[task_update](core/tasks/task_update.md)** | 编辑 | **[智能]** 带影响分析与回滚机制的文档修订。 | *原位修改*, *Archive 备份* |
-| **[task_maintain](core/tasks/task_maintain.md)** | 守护者 | **[校准]** Code-First 双向一致性修复与初始化。 | *Sync MODULE.md*, *Deprecate Docs* |
+| **[task_refactor](workflow_core/tasks/task_refactor.md)** | 精修师 | 产出重构提案。 | `docs/refactors/{Target}/` |
+| **[task_audit](workflow_core/tasks/task_audit.md)** | 找茬员 | 深度审计与 Arch Rule 检查。 | `docs/audits/{Focus}/` |
+| **[task_update](workflow_core/tasks/task_update.md)** | 编辑 | **[智能]** 带影响分析与回滚机制的文档修订。 | *原位修改*, *Archive 备份* |
+| **[task_maintain](workflow_core/tasks/task_maintain.md)** | 守护者 | **[校准]** Code-First 双向一致性修复与初始化。 | *Sync MODULE.md*, *Deprecate Docs* |
 
-## 🚀 关键机制 (Key Mechanisms)
+## � 指令详解 (Command Details)
+
+### 1. `task_understand` (理解现状)
+
+- **Role**: 探险家 (Explorer)
+- **何时使用**: 接手新项目、需要全局视野、或准备开发前想评估现状。
+- **核心能力**:
+  - **Map Mode**: 扫描全项目，生成 ASCII 系统地图和高层摘要。
+  - **Gap Mode**: (Input: Requirements) 分析现有代码与新需求的差距，输出 `gap_analysis.md`。
+
+### 2. `task_requirements` (需求分析)
+
+- **Role**: 分析师 (Analyst)
+- **何时使用**: 只有一个模糊的想法，需要澄清为可执行的需求。
+- **核心能力**: 追问澄清，输出包含 User Stories 和 Acceptance Criteria 的 `req_{intent}.md`。
+
+### 3. `task_spike` (技术探针)
+
+- **Role**: 起草人 (Drafter)
+- **何时使用**: 技术方案不确定、需要验证性能、或对比第三方库。
+- **核心能力**:
+  - **Sandbox**: 在 `.sandbox/` 目录运行实验代码，隔离生产环境。
+  - **Report**: 输出 `sp_{topic}.md`，回答“能不能做”并提供原型代码。
+
+### 4. `task_blueprint` (架构设计)
+
+- **Role**: 架构师 (Architect)
+- **何时使用**: 需求已明确，Gap 已识别，需要规划技术实现路径。
+- **核心能力**: 选型、分层设计、定义关键接口，输出 `bp_{scope}.md`。
+
+### 5. `task_feature` (实施规划)
+
+- **Role**: TDD 专家 (TDD Pro)
+- **何时使用**: 准备开始写代码，需要将蓝图拆解为原子化的实施步骤。
+- **核心能力**:
+  - **总控**: 执行意图分类和重构熔断检查。
+  - **Porting**: 负责将 Spike 代码逻辑“移植”进生产设计。
+  - **Plan**: 输出 `feat_{intent}.md`，详细到函数签名。
+
+### 6. `task_coding` (代码实现)
+
+- **Role**: 工程师 (Engineer)
+- **何时使用**: 有了 Implementation Plan，开始从伪代码变真代码。
+- **核心能力**:
+  - **Execution**: 严格遵循 Plan 编码。
+  - **Auto-Doc**: 自动创建/更新 `src/{module}/MODULE.md`。
+  - **Modes**: 支持 Safety (默认), Pragmatic, Refactor 模式。
+
+### 7. `task_refactor` (重构提案)
+
+- **Role**: 精修师 (Refactorer)
+- **何时使用**: 代码有坏味道、结构混乱、需治理技术债务。
+- **核心能力**: 识别 Code Smells，提出不破环业务行为的重构方案 `ref_{target}.md`。
+
+### 8. `task_audit` (问题审查)
+
+- **Role**: 找茬员 (Validator)
+- **何时使用**: 发现 Bug、进行安全扫描、或 Code Review。
+- **核心能力**: 深度分析根因，检查 `ARCH_RULES` 合规性，输出 `aud_{focus}.md`。
+
+### 9. `task_maintain` (一致性守护)
+
+- **Role**: 守护者 (Human Interface Guard)
+- **何时使用**: 文档与代码不一致、项目初始化、或定期巡检。
+- **核心能力**: **Code-First**。强制以代码为真理更新文档，或标记文档为 DEPRECATED。
+
+### 10. `task_update` (智能修订)
+
+- **Role**: 编辑 (Editor)
+- **何时使用**: 需求变更导致需要更新旧文档。
+- **核心能力**: 回滚备份，智能更新文档内容并评估影响。
+
+## �🚀 关键机制 (Key Mechanisms)
 
 ### 1. 模块自文档化 (Module Self-Documentation)
 
@@ -156,6 +228,11 @@ Maintain 和 Update 任务具备“阅读代码理解意图”的能力。
   - `task_feature` 在设计前强制执行：意图分类 (Intent)、重构熔断 (Circuit Breaker) 和模式选择 (Mode Selection)。
   - **Fail Fast**: 代码太烂或不适合新功能时，立即熔断并建议重构。
 
+- **Sandbox Experiments (沙盒实验)**:
+  - `task_spike` 专属能力。
+  - 在 `.sandbox/` 目录下运行真实代码验证假设，拒绝纸上谈兵。
+  - **隔离协议**: 严禁 Spike 任务修改 `src/`。
+
 ## 🎬 场景指南 (Scenario Guide)
 
 不知道该用哪个 Task？即使有说明书也容易迷路？请参考以下常见剧本：
@@ -166,6 +243,7 @@ Maintain 和 Update 任务具备“阅读代码理解意图”的能力。
 2. **执行 `task_understand`**: (Gap Mode) 输入 PRD，分析现状与目标的差距，产出 `docs/blueprints/user/gap_analysis_signup.md`。
 3. **执行 `task_blueprint`**: 输入 Gap 报告，设计填补差距的架构方案，产出 `docs/blueprints/user/auth-system.md`。
 4. **执行 `task_feature`**: 输入架构设计的一块（如 API），产出 `docs/features/user/auth-api.md`。
+   - *(Optional)* 如果技术不确定，先执行 `task_spike` 在 `.sandbox/` 里跑通原型。
 5. **执行 `task_coding`**: 输入 Feature 文档，让 AI 写代码并自动维护文档。
 6. **执行 `task_understand`**: (Map Mode) 最后更新 `system_maps` 以反映新领土。
 
@@ -189,12 +267,23 @@ Maintain 和 Update 任务具备“阅读代码理解意图”的能力。
 2. **执行 `task_understand`**: "生成全局系统地图"。
 3. **执行 `task_audit`**: "扫描现有架构风险"。
 
+### 🎭 剧本 E: "外来代码集成" (Code Integration)
+
+面对外部代码（开源仓库、遗留系统、同事发的 Zip 包）需要整合进 `src` 时：
+
+1. **Ingest (隔离吞吐)**: 将代码放入 `.sandbox/incoming/{name}/`，严禁直接复制进 `src/`。
+2. **Understand (建立认知)**: 执行 `task_understand`，分析沙盒中代码的业务逻辑和算法，忽略其不兼容的框架细节。
+3. **Porting (移植重写)**: 执行 `task_feature` + `task_coding`。
+    - **Prompt**: "参考 `.sandbox/...` 的逻辑，提取核心算法，用符合 `ARCH_RULES` 的新架构在 `src/` 中重写。"
+    - **原则**: **逻辑提取与注入**，而不是文件合并。
+
 ## 📁 目录结构 (Structure)
 
 ```text
 .workflow/
+├── ARCH_RULES.md           # [New] 架构技术约束与红线
 ├── README.md               # 本文件
-├── core/                   # 核心定义
+├── workflow_core/          # 核心定义
 │   ├── roles/              # 角色 (Persona) 定义
 │   ├── tasks/              # 任务 (Prompt) 定义
 │   └── templates/          # 输出模版 (Templates)
@@ -206,6 +295,7 @@ Maintain 和 Update 任务具备“阅读代码理解意图”的能力。
     ├── requirements/
     ├── spikes/
     └── system_maps/
+.sandbox/               # [NEW] 技术探针的实验靶场 (只进不出)
 src/
 └── {module}/
     ├── MODULE.md           # [自动维护] 模块状态与变更日志

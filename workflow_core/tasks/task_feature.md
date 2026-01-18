@@ -2,8 +2,8 @@
 
 ## 上下文注入 (Context Injection)
 
-角色定义: {{CONTENT: /roles/tdd_pro.md}}
-输出模版: {{CONTENT: /templates/implementation_plan.md}}
+角色定义: {{CONTENT: /workflow_core/roles/tdd_pro.md}}
+输出模版: {{CONTENT: /workflow_core/templates/implementation_plan.md}}
 
 ## 指令 (Instructions)
 
@@ -31,7 +31,7 @@
 
 ### 架构规范注入 (Architecture Context)
 >
-> **Rule Injection**: 如项目根目录存在 `ARCH_RULES.md`，请将其作为最高优先级的技术约束。
+> **Rule Injection**: 如 **Workflow Root** (`.workflow/`) 存在 `ARCH_RULES.md`，请将其作为最高优先级的技术约束。
 > **Constraint**: 任何设计方案均不得违反 `ARCH_RULES.md` 中的条款。
 
 ### 🛡️ Mermaid 语法红线 (Mermaid Syntax Guard)
@@ -100,7 +100,15 @@
 
 ### 输出路径与命名 (Output Config)
 
-Please set the final file path to: `docs/features/{domain}/`
+**Base Resolution**:
+
+1. Locate the **Workflow Root** directory.
+   - It MUST contain `workflow_core/` (folder) AND `ARCH_RULES.md` (file).
+2. All output paths below are relative to this `{WorkflowRoot}`.
+
+**Target Path**:
+`{WorkflowRoot}/docs/features/{domain}/{filename}`
+
 Naming format: `feat_{intent}.md` (example: `feat_login.md`, `feat_order-flow.md`)
 > **Constraint**: `{domain}` must correspond to an existing business module name (e.g., `user`, `trade`), do not invent randomly.
 >
