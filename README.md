@@ -59,6 +59,7 @@ graph TD
 | **[task_spike](workflow_core/tasks/task_spike.md)** | 起草人 | 技术可行性验证 (Doc + Sandbox Code)。 | `docs/spikes/{Topic}/` |
 | **[task_blueprint](workflow_core/tasks/task_blueprint.md)** | 架构师 | 基于 Gap Analysis 设计架构方案。 | `docs/blueprints/{Scope}/` |
 | **[task_feature](workflow_core/tasks/task_feature.md)** | TDD 专家 | **[总控]** 实施计划 (含熔断检查与模式选择)。 | `docs/features/{Domain}/` |
+| **[task_spec](workflow_core/tasks/task_spec.md)** | 精算师 | **[立法]** 业务逻辑去模糊化与公式定义。 | `docs/specs/{Domain}/`, `domain_logic.md` |
 | **[task_coding](workflow_core/tasks/task_coding.md)** | 工程师 | **[执行]** 编码 + **自动维护 MODULE.md**。 | *src/{Module}/*, `MODULE.md` |
 
 ### 治理与维护流 (Governance)
@@ -100,7 +101,15 @@ graph TD
 - **何时使用**: 需求已明确，Gap 已识别，需要规划技术实现路径。
 - **核心能力**: 选型、分层设计、定义关键接口，输出 `bp_{scope}.md`。
 
-### 5. `task_feature` (实施规划)
+### 5. `task_spec` (规格定义) -- *New!*
+
+- **Role**: 精算师 (Actuary)
+- **何时使用**: 需求模糊、公式不确定、或需要审计代码逻辑。
+- **核心能力**:
+  - **De-ambiguity**: 将自然语言转化为真值表和公式 `spec_{intent}.md`。
+  - **Librarian**: 维护全局 `docs/system_maps/domain_logic.md`。
+
+### 6. `task_feature` (实施规划)
 
 - **Role**: TDD 专家 (TDD Pro)
 - **何时使用**: 准备开始写代码，需要将蓝图拆解为原子化的实施步骤。
@@ -109,7 +118,9 @@ graph TD
   - **Porting**: 负责将 Spike 代码逻辑“移植”进生产设计。
   - **Plan**: 输出 `feat_{intent}.md`，详细到函数签名。
 
-### 6. `task_coding` (代码实现)
+- **Plan**: 输出 `feat_{intent}.md`，详细到函数签名。
+
+### 7. `task_coding` (代码实现)
 
 - **Role**: 工程师 (Engineer)
 - **何时使用**: 有了 Implementation Plan，开始从伪代码变真代码。
@@ -118,25 +129,28 @@ graph TD
   - **Auto-Doc**: 自动创建/更新 `src/{module}/MODULE.md`。
   - **Modes**: 支持 Safety (默认), Pragmatic, Refactor 模式。
 
-### 7. `task_refactor` (重构提案)
+### 8. `task_refactor` (重构提案)
 
 - **Role**: 精修师 (Refactorer)
 - **何时使用**: 代码有坏味道、结构混乱、需治理技术债务。
 - **核心能力**: 识别 Code Smells，提出不破环业务行为的重构方案 `ref_{target}.md`。
 
-### 8. `task_audit` (问题审查)
+### 9. `task_audit` (问题审查)
 
 - **Role**: 找茬员 (Validator)
 - **何时使用**: 发现 Bug、进行安全扫描、或 Code Review。
 - **核心能力**: 深度分析根因，检查 `ARCH_RULES` 合规性，输出 `aud_{focus}.md`。
 
-### 9. `task_maintain` (一致性守护)
+### 10. `task_maintain` (一致性守护)
 
 - **Role**: 守护者 (Human Interface Guard)
 - **何时使用**: 文档与代码不一致、项目初始化、或定期巡检。
-- **核心能力**: **Code-First**。强制以代码为真理更新文档，或标记文档为 DEPRECATED。
+- **核心能力**:
+  - **Reconcile**: 强制以 Code 为真理更新 Living Docs (`MODULE.md`, Maps)。
+  - **Aggregation**: 自动聚合生成 `api_catalog.md`。
+  - **Drift Report**: 输出架构偏离和 Schema 变更的体检报告。
 
-### 10. `task_update` (智能修订)
+### 11. `task_update` (智能修订)
 
 - **Role**: 编辑 (Editor)
 - **何时使用**: 需求变更导致需要更新旧文档。
@@ -162,7 +176,7 @@ graph TD
 ### 3. 一致性校准 (Code-First Reconciliation)
 
 - **Maintain Task** 拥有最高裁决权：**代码是唯一的真理来源**。
-- 如果文档说 API 是 A，代码里是 B，Maintainer 会更新文档为 B，或标记文档为 `[DEPRECATED]`。
+- **Jurisdiction**: 仅维护存续性文档 (Living Docs)。Feature/Blueprint 等事务性文档 (Transactional Docs) 视为历史档案，只读不改。
 
 ### 4. 最佳实践 (Best Practices)
 
@@ -199,6 +213,7 @@ Maintain 和 Update 任务具备“阅读代码理解意图”的能力。
 - **Features**: `feat_{intent}.md` (e.g., `feat_login.md`)
 - **Refactors**: `ref_{target}.md` (e.g., `ref_order.md`)
 - **Audits**: `aud_{focus}.md` (e.g., `aud_security.md`)
+- **Specs**: `spec_{intent}.md` (e.g., `spec_margin.md`)
 - **Spikes**: `sp_{topic}.md` (e.g., `sp_redis.md`)
 
 > **注意**: 严禁生成不带前缀的裸文件名（如 `login.md`）。
@@ -281,7 +296,7 @@ Maintain 和 Update 任务具备“阅读代码理解意图”的能力。
 
 ```text
 .workflow/
-├── ARCH_RULES.md           # [New] 架构技术约束与红线
+├── ARCH_RULES.md           # [Tech Law] 架构技术约束与红线
 ├── README.md               # 本文件
 ├── workflow_core/          # 核心定义
 │   ├── roles/              # 角色 (Persona) 定义
@@ -293,6 +308,7 @@ Maintain 和 Update 任务具备“阅读代码理解意图”的能力。
     ├── features/
     ├── refactors/
     ├── requirements/
+    ├── specs/              # [New] 逻辑规格说明书
     ├── spikes/
     └── system_maps/
 .sandbox/               # [NEW] 技术探针的实验靶场 (只进不出)

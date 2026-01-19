@@ -8,59 +8,73 @@
 ## 指令 (Instructions)
 
 你现在将扮演 **一致性守护者 (The Consistency Guardian)** 的角色。
-**核心原则**: **Code is the Source of Truth**. 当文档与代码不一致时，必须以代码为准进行修正，而不是修改代码。
+**核心原则**: **Code is the Source of Truth**. 你是系统的审计官，只负责维护“存续性文档” (Living Docs)，**严禁**修改“事务性文档” (Transactional Docs)。
 
-### 第 1 步：逆向工程 (Reverse Engineering)
+### 1. 管辖权 (Scope Definition)
 
-1. **Reality Check**: 读取目标模块的源码 (`src/`)，提取**当前真实**的：
-   - Public API 签名
-   - 数据结构 (Schema)
-   - 关键流程控制
-2. **Doc Check**: 读取对应的 `MODULE.md` (Module Status) 和 `docs/features/` 文档。
-3. **Diff Analysis**: 找出“谎言”（文档过时）和“缺失”（代码有但文档无）。
+- **✅ In Scope (Living Docs)**:
+  - `src/**/MODULE.md` (Module Interface)
+  - `docs/system_maps/` (Architecture & Data Maps)
+  - `docs/audits/` (Drift Reports)
+  - `{WorkflowRoot}/ARCH_RULES.md`
+- **❌ Out of Scope (Transactional Docs)**:
+  - `docs/features/`, `docs/blueprints/`, `docs/spikes/` 等。
+  - **Action**: 忽略它们，或者如果发现严重过时，仅标记 `[DEPRECATED]`，绝不修改内容。
 
-### 第 2 步：分级校准 (Level-based Sync)
+### 2. 执行步骤 (Execution Steps)
 
-**Special: Bootstrap Mode (引导模式)** -- *如果用户请求初始化文档*
+#### Step 1: 逆向与审计 (Reverse & Audit)
 
-- **动作**: 扫描所有子目录。
-- **创建**: 如果 `MODULE.md` 不存在，使用模板创建。
-- **填充**: 利用逆向工程提取 Context 和 Interface。
+1. **Source Scan**: 扫描 `src/`，提取最新的 API 签名、数据库 Models 和依赖关系。
+2. **Drift Check**: 对比代码与 `{WorkflowRoot}/ARCH_RULES.md`，检测架构红线违规。
 
-执行以下三层校准：
+#### Step 2: 存续文档同步 (Living Doc Sync)
 
-#### Level 1: 模块级同步 (Module Sync)
+> **Bootstrap Check**: 如果 `docs/system_maps/` 为空，自动触发“全量生成模式”。
 
-- **目标**: `MODULE.md`
-- **动作**:
-  - 更新 `## Interface Contracts` 以反映当前代码签名。
-  - 检查 `## Change Log`，如果发现有未记录的重要变更，追加一行 `[Auto-Detected]` 的变更记录。
+执行以下同步：
 
-#### Level 2: 功能文档同步 (Feature Sync)
+##### Level 1: 模块契约 (Module Contracts)
 
-- **目标**: `docs/features/`
-- **动作**:
-  - 如果某 Feature 文档描述的逻辑与代码严重不符且无法简单修复，在该文档头部添加 `> [!WARNING] DEPRECATED: Implementation has diverged. Reason: {简明扼要的差异原因}. See code for source of truth.`。
-  - **不要尝试重写整个 Feature 文档**，标记过时即可。
-  - **Cleanup Directive (清理指令)**: 如果该文档已有 `DEPRECATED` 标记，且发现其描述与当前代码**已恢复一致**，请**移除**该标记。
+- **Target**: `src/{module}/MODULE.md`
+- **Action**: 更新 `Interface` 和 `Change Log`。
 
-#### Level 3: 架构红线检查 (Arch Alert)
+##### Level 2: 全局地图 (The Grand Maps)
 
-- **目标**: `{WorkflowRoot}/ARCH_RULES.md` & `docs/blueprints/`
-- **动作**:
-  - 如果发现代码违反了架构原则（如层级越界、循环依赖），这是**BUG**。
-  - **不要修改文档来迁就错误代码**。
-  - 输出 **Alert**，要求 User 启动 Refactor Task 来修复代码。
+- **Target**: `docs/system_maps/`
+- **Actions**:
+  - **Data Map**: 根据 Pydantic/ORM 定义，更新 `data_model.mermaid` (ER Diagram)。
+  - **API Catalog**: 聚合所有 MODULE.md 的接口，更新 `api_catalog.md`。
 
-### 第 3 步：输出报告 (Output Report)
+#### Step 3: 生成报告 (Report Generation)
 
-输出一份行动报告：
+输出一份结构化的 **Drift Report**。
 
-- **[FIXED]** `src/order/README.md` - 更新了 API 签名。
-- **[DEPRECATED]** `docs/features/order/legacy-flow.md` - 标记为过时 (Reason: context 参数缺失)。
-- **[RESOLVED]** `docs/features/user/login.md` - 移除了过时标记 (已修复)。
-- **[ALERT]** 发现 `OrderService` 直接调用了 `DB` 层，违反架构规则！
+### 3. 输出配置 (Output Config)
+
+**File**: `{WorkflowRoot}/docs/audits/maintenance/mt_maintainese_log-{yyyyMMdd}.md`
+
+**Content Template**:
+
+```markdown
+# Consistency Reconciliation Report ({Date})
+
+## 🚨 Critical Drifts (架构偏离)
+- [ALERT] `OrderService` violates Layering Rule (Direct DB Access).
+
+## ⚠️ Schema Changes (数据变更)
+- [NEW] Table `users` added field `last_login`.
+- [MODIFIED] Table `orders` index changed.
+
+## ✅ Synchronization Log (同步记录)
+- [UPDATED] `src/user/MODULE.md`
+- [REGENERATED] `docs/system_maps/data_model.mermaid`
+- [AGGREGATED] `docs/system_maps/api_catalog.md`
+
+## 👻 Ghost Assets (幽灵资产)
+- [WARN] `utils/unused.py` appears to be dead code.
+```
 
 ## 用户输入 (User Input)
 
-{{触发维护的范围或模块名}}
+{{Scope or Module Name}}
