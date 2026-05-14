@@ -1,20 +1,25 @@
-# {{ModuleName}} Module Status
+# Module Status
 
-## 1. 模块职责 (Context)
->
-> {{一句话描述本模块的核心职责与边界}}
+## Purpose
 
-## 2. 接口契约 (Interface Contracts)
->
-> **Public API Snapshot**: 列出本模块对外暴露的核心类/函数签名。
+{{what this module is responsible for}}
 
-```python
-# 例如:
-# def process_order(order: OrderConfig) -> OrderResult: ...
-```
+## Public Surface
 
-## 3. 变更日志 (Change Log)
+{{important functions, classes, APIs, events, or commands}}
 
-| Date | Type | Topic | Relation | Doc Link |
-| :--- | :--- | :--- | :--- | :--- |
-| {{YYYY-MM-DD}} | {{Feat/Fix/Refactor}} | {{简述变更内容}} | {{Triggered by User / Root Cause ...}} | [Doc](../features/...) |
+## Dependencies
+
+{{important inbound and outbound dependencies}}
+
+## Current Behavior
+
+{{runtime behavior confirmed from code}}
+
+## Recent Changes
+
+- {{change summary, date, and source}}
+
+## Verification
+
+{{tests or checks that protect this module}}
