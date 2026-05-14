@@ -1,5 +1,9 @@
 # Current
 
+## Language / Style
+
+{{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
+
 ## Summary
 
 {{durable current fact}}

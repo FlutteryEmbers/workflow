@@ -8,7 +8,10 @@ outputs:
   - .docs/work/reviews/review_{topic}.md
   - .docs/changes/{change_id}/evidence.md
 user_selectable_lenses:
+  - redteam
   - debug
+  - language
+  - domain
   - test
   - architecture
   - knowledge
@@ -37,6 +40,9 @@ Required:
 User-selected lenses:
 
 - Add #workflow_core/lenses/debug.md only if the user selects `debug`.
+- Add #workflow_core/lenses/redteam.md only if the user selects `redteam`.
+- Add #workflow_core/lenses/language.md only if the user selects `language`.
+- Add #workflow_core/lenses/domain.md only if the user selects `domain`.
 - Add #workflow_core/lenses/test.md only if the user selects `test`.
 - Add #workflow_core/lenses/architecture.md only if the user selects `architecture`.
 - Add #workflow_core/lenses/knowledge.md only if the user selects `knowledge`.
@@ -50,6 +56,9 @@ Inspect the target and report findings first. Keep review scope explicit and avo
 ## Lens Suggestions
 
 - Suggest `debug` for bugs or uncertain behavior. Do not apply it unless selected by the user.
+- Suggest `redteam` when the user wants a proposal, model, or recommendation challenged. Do not apply it unless selected by the user.
+- Suggest `language` when reviewing terminology consistency, output language, translation quality, or readability. Do not apply it unless selected by the user.
+- Suggest `domain` when critique should inspect language, story flow, events, boundaries, or rule ownership. Do not apply it unless selected by the user.
 - Suggest `test` for verification gaps. Do not apply it unless selected by the user.
 - Suggest `architecture` for structural risks. Do not apply it unless selected by the user.
 - Suggest `knowledge` for docs or knowledge drift. Do not apply it unless selected by the user.
@@ -58,6 +67,7 @@ Inspect the target and report findings first. Keep review scope explicit and avo
 ## Output Rules
 
 - Default path: `{WorkflowRoot}/.docs/work/reviews/review_{topic}.md`
+- With `redteam` lens, use `workflow_core/templates/critique.md`.
 - With `change` lens: `{WorkflowRoot}/.docs/changes/{change_id}/evidence.md`
 
 ## User Input

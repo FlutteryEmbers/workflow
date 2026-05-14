@@ -1,5 +1,9 @@
 # Sync
 
+## Language / Style
+
+{{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
+
 ## Source
 
 {{code, change, raw material, or doc source}}

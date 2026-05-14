@@ -10,6 +10,7 @@ outputs:
   - .docs/knowledge/wiki/{page}.md
 user_selectable_lenses:
   - architecture
+  - strategy
   - knowledge
   - debug
 done_check:
@@ -36,6 +37,7 @@ Required:
 User-selected lenses:
 
 - Add #workflow_core/lenses/architecture.md only if the user selects `architecture`.
+- Add #workflow_core/lenses/strategy.md only if the user selects `strategy`.
 - Add #workflow_core/lenses/knowledge.md only if the user selects `knowledge`.
 - Add #workflow_core/lenses/debug.md only if the user selects `debug`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
@@ -47,12 +49,14 @@ Use this task to learn before deciding. Inspect the relevant code, docs, example
 ## Lens Suggestions
 
 - Suggest `architecture` when boundaries or dependencies are part of the question. Do not apply it unless selected by the user.
+- Suggest `strategy` when the user wants early technical route exploration. Do not apply it unless selected by the user.
 - Suggest `knowledge` when preserving source material matters. Do not apply it unless selected by the user.
 - Suggest `debug` when exploring a failure or uncertain behavior. Do not apply it unless selected by the user.
 
 ## Output Rules
 
 - Default path: `{WorkflowRoot}/.docs/work/notes/note_{topic}.md`
+- With `strategy` lens, use `workflow_core/templates/options.md` when early route comparison is useful.
 - With `knowledge` lens, preserve raw material under `.docs/knowledge/raw/` and update `.docs/knowledge/wiki/`.
 - Temporary experiments may use `.sandbox/{topic}/`, but do not modify production code during exploration.
 

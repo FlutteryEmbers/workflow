@@ -7,7 +7,12 @@ inputs:
 outputs:
   - task_recommendation
 user_selectable_lenses:
+  - iteration
+  - expand
+  - language
   - domain
+  - strategy
+  - redteam
   - test
   - architecture
   - change
@@ -40,6 +45,10 @@ User-selected lenses:
 
 Recommend the smallest useful next task. Do not create files. Copilot may suggest lenses, but must not apply them unless the user explicitly selects or adds them.
 
+## Usage Guide Mode
+
+Use this mode when the user asks how to use this workflow, which task/lens to choose, what order to follow, or what context to add. Do not execute the workflow and do not create files. Return a concise user-facing guide in the chat.
+
 ## Task Choices
 
 - `clarify`: turn a vague request into scope, goals, and acceptance criteria.
@@ -52,12 +61,29 @@ Recommend the smallest useful next task. Do not create files. Copilot may sugges
 
 ## Lens Hints
 
+- Suggest `iteration` when the user is co-designing across multiple turns and adding background progressively.
+- Suggest `expand` when a short shape or plan needs details, examples, pseudocode, smaller diagrams, or split parts.
+- Suggest `language` when the user asks for full English, translation, terminology consistency, or glossary cleanup.
 - Suggest `domain` when terms, business rules, or ownership are unclear.
+- Suggest `strategy` when technical routes or design options need comparison.
+- Suggest `redteam` when the user wants the current recommendation challenged.
 - Suggest `test` when behavior needs stronger verification.
 - Suggest `architecture` when boundaries, dependencies, or interfaces matter.
 - Suggest `change` when the work is large enough to track as a change.
 - Suggest `knowledge` when raw material should become durable knowledge.
 - Suggest `debug` when root cause or reproduction is unclear.
+
+## Common Scenario Paths
+
+- Small request: `clarify -> plan -> build`
+- Code understanding: `explore -> shape/plan`
+- Target design planning: `shape -> explore -> plan -> review -> plan`
+- Conversation-driven design: `shape --lens iteration --lens strategy -> review --lens redteam -> shape`
+- Expansion: `shape/plan --lens expand -> review --lens redteam -> plan/sync`
+- Bug fix: `review --lens debug -> plan -> build`
+- Knowledge capture: `explore/sync --lens knowledge`
+- Docs or durable facts: `sync`
+- Full English or terminology cleanup: relevant task plus `language`
 
 ## Output Format
 
@@ -67,4 +93,31 @@ Why: <reason>
 Lens: <none | user-selected lens list>
 Suggested lenses: <none | lens list with reason>
 Suggested path: <task -> task -> task>
+```
+
+## Usage Guide Output Format
+
+```md
+## Recommended Workflow
+
+`<task --lens lens -> task -> task>`
+
+## Why This Path
+
+<short explanation>
+
+## Lens Recommendations
+
+- `<lens>`: <why it helps; say user must select it>
+
+## Add Context
+
+- `workflow_core/tasks/<task>.md`
+- `workflow_core/templates/<template>.md` when producing an artifact
+- `workflow_core/lenses/<lens>.md` only when selected by the user
+- <target files, docs, or existing .docs artifacts>
+
+## Next Prompt
+
+<one concrete prompt the user can send next>
 ```

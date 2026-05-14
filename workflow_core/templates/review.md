@@ -1,5 +1,9 @@
 # Review
 
+## Language / Style
+
+{{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
+
 ## Scope
 
 {{what was reviewed}}

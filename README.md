@@ -40,7 +40,7 @@ graph TD
 | `clarify` | `analyst` | `.docs/work/briefs/` | Clarify goals, scope, assumptions, and acceptance. |
 | `explore` | `designer` | `.docs/work/notes/` | Understand code, material, feasibility, or current behavior. |
 | `shape` | `designer` | `.docs/work/shapes/` | Shape a solution, rule, contract, structure, or decision. |
-| `plan` | `designer` | `.docs/work/plans/` | Turn a chosen direction into executable steps. |
+| `plan` | `designer` | `.docs/work/plans/` | Turn a chosen direction or target design into repo-aware executable steps. |
 | `build` | `builder` | code and `src/**/MODULE.md` | Apply an approved plan safely. |
 | `review` | `reviewer` | `.docs/work/reviews/` | Inspect behavior, risks, evidence, or refactor options. |
 | `sync` | `steward` | updated docs | Update living docs, archive durable facts, or organize knowledge. |
@@ -51,7 +51,12 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 
 | Lens | Use When |
 | :--- | :--- |
+| `iteration` | Multi-turn discussion needs session state, background deltas, decisions, and open questions. |
+| `expand` | A short shape or plan needs details, examples, pseudocode, smaller diagrams, or split part files. |
+| `language` | Full English, translation, terminology consistency, or glossary maintenance is needed. |
 | `domain` | Terms, rules, ownership, or boundaries are unclear. |
+| `strategy` | Technical routes or design options need comparison. |
+| `redteam` | The current recommendation needs deliberate critique. |
 | `test` | Behavior needs stronger verification. |
 | `architecture` | Structure, interfaces, dependencies, or durable tradeoffs matter. |
 | `change` | Work should be tracked under `.docs/changes/{change_id}`. |
@@ -109,6 +114,21 @@ Request:
 Create a lightweight implementation plan.
 ```
 
+## Getting Usage Guidance
+
+If you are not sure which task or lens to use, start with `route`. It returns a chat-only guide with the recommended task order, lens suggestions, Add Context list, and next prompt.
+
+Example:
+
+```text
+Task: route
+Lens: none
+Context:
+- #workflow_core/tasks/route.md
+Request:
+根据我的目标，推荐 task 顺序、lens、Add Context 和下一步提示词：我想先讨论目标架构，再根据当前 repo 拆计划。
+```
+
 ## Using With Codex
 
 Codex can continue to read task files directly:
@@ -117,6 +137,16 @@ Codex can continue to read task files directly:
 - Lens files are not injected by default.
 - Read a lens only when the user explicitly names it or the task input says `Lens: <name>`.
 - Keep ordinary outputs in `.docs/work/**`.
+
+## Default Language
+
+Workflow artifacts default to Chinese explanations with English technical terms preserved.
+
+Preserve task/lens/template names, code identifiers, file paths, API names, package names, CLI commands, front matter keys, and schema keys in English. Use full English only when the user explicitly requests it or selects `language` with an English output request.
+
+Use the `language` lens for full English output, translation, terminology normalization, readability review, or syncing stable terms to `.docs/shared/glossary.md`.
+
+Do not create language-specific directories or filename variants by default.
 
 ## `.docs` Structure
 
@@ -152,10 +182,52 @@ Codex can continue to read task files directly:
 - Small request: `clarify -> plan -> build`
 - Need context first: `clarify -> explore -> plan -> build`
 - Need solution shaping: `clarify -> explore -> shape -> plan -> build`
+- Conversation-driven design: `shape --lens iteration --lens strategy -> review --lens redteam -> shape -> sync`
+- Target design planning: `shape -> explore -> plan -> review -> plan`
+- Expansion: `shape/plan --lens expand -> review --lens redteam -> plan/sync`
 - Bug or risk: `review --lens debug -> plan -> build`
 - Larger tracked work: enable `change` lens and use `.docs/changes/{change_id}/`
 - Knowledge capture: enable `knowledge` lens and use `.docs/knowledge/`
 - Durable fact update: use `sync` and write `.docs/current/{topic}.md`
+
+## Conversation-Driven Workflow
+
+Use this path when the design emerges through multi-turn AI discussion rather than a one-shot spec.
+
+1. Start a session with `shape --lens iteration` and capture the current goal, background added, candidate options, recommendation, rejected options, and open questions.
+2. Explore options with `explore --lens strategy` or `shape --lens strategy`; compare 2-4 routes by fit, cost, risk, evidence, and what would change the decision.
+3. Add DDD-lite discussion only when useful with `shape --lens domain`: align language, story flow, events, boundaries, rule ownership, and model changes.
+4. Challenge the direction with `review --lens redteam`, optionally adding `domain` when critique should inspect terms, events, boundaries, or ownership.
+5. Revise with `shape` until the recommendation is stable enough to plan.
+6. Sync only stable conclusions with `sync`, writing durable facts to `.docs/current/**`, reusable knowledge to `.docs/knowledge/wiki/**`, and shared language or boundaries to `.docs/shared/**`.
+
+DDD-lite is a discussion technique here, not a default development mode.
+
+## Target Design To Repo Plan
+
+Use this path when you first form a target architecture or conceptual design, then want to plan how the current repository should move toward it.
+
+1. Use `shape` to define the target design. Add `architecture`, `domain`, `strategy`, or `iteration` only when the user selects them.
+2. Use `explore` to map that target design onto the current repo: relevant modules, reusable parts, conflicts, impact surface, and unknowns.
+3. Use `plan` to produce a repo-aware implementation sequence: target design, current repo fit, impact map, step options, recommended sequence, discussion points, verification, and handoff notes.
+4. Use `review --lens redteam` to challenge the plan's step order, hidden costs, boundary conflicts, risk assumptions, and verification gaps.
+5. Revise with `plan`, then continue to `build` or use `sync` to preserve only stable conclusions.
+
+This is planning support, not a new architecture workflow. Do not add architecture, conceptual, DDD, TDD, or SDD detail unless the user selects the relevant lens.
+
+## Expansion Outputs
+
+Use `expand` when a compact shape, concept, decision, or plan needs more detail or should be split into smaller drafts.
+
+- Do not create expansion-specific directories.
+- Write expansion files next to the source artifact.
+- Small expansion: `{base}.expanded.md`.
+- Split expansion: `{base}.expanded.md` plus `{base}.part_{topic}.md`.
+- The main expanded file must include an `Expansion Index`.
+- Each part must declare `Source`, `Part Of`, `Part Topic`, `Depends On`, and `Status`.
+- If there are more than 8 parts, keep the same naming pattern and maintain the index instead of creating a new directory.
+- Keep expanded content as draft unless `sync` extracts stable conclusions.
+- Do not write expanded drafts directly into `.docs/current/**`.
 
 ## Rules
 

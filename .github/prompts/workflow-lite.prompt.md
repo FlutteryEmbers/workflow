@@ -1,6 +1,6 @@
 ---
 description: Use Workflow Lite with explicit user-selected lenses.
-argument-hint: "Task=<route|clarify|explore|shape|plan|build|review|sync>; Lens=<none|domain|test|architecture|change|knowledge|debug>; Request=<what you want>"
+argument-hint: "Task=<route|clarify|explore|shape|plan|build|review|sync>; Lens=<none|iteration|expand|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>; Request=<what you want>"
 ---
 
 # Workflow Lite Prompt
@@ -20,6 +20,8 @@ Request: ${input:request:describe the work}
 - Use exactly one task as the main workflow context.
 - Use `Lens: none` unless the user explicitly names or adds lens files.
 - Do not infer, auto-apply, or load all lenses.
+- Default artifact language is Chinese explanations with English technical terms preserved.
+- Use full English only when explicitly requested.
 - Copilot may recommend additional lenses for a follow-up turn.
 - Keep ordinary outputs in `.docs/work/**`.
 

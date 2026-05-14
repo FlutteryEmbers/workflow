@@ -6,7 +6,12 @@ If no lens is named, use `Lens: none`.
 
 ## Lenses
 
-- `domain`: clarify terms, business rules, ownership, and boundaries.
+- `iteration`: maintain multi-turn discussion state, background deltas, current recommendation, rejected options, and open questions.
+- `expand`: turn a short shape or plan into a detailed draft, examples, pseudocode, smaller diagrams, or split part files.
+- `language`: control full English output, translation, terminology consistency, and glossary maintenance.
+- `domain`: clarify language, story flow, events, rules, ownership, boundaries, and model iteration.
+- `strategy`: compare technical or design routes with costs, risks, evidence, fit, and reversal conditions.
+- `redteam`: challenge assumptions, boundaries, ownership, failure modes, and long-term risks.
 - `test`: strengthen verification, acceptance behavior, and test strategy.
 - `architecture`: inspect structure, interfaces, dependency direction, and durable tradeoffs.
 - `change`: track larger multi-step work under `.docs/changes/{change_id}`.
