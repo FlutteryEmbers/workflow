@@ -6,7 +6,7 @@ inputs:
   - user_request
 outputs:
   - task_recommendation
-optional_lenses:
+user_selectable_lenses:
   - domain
   - test
   - architecture
@@ -25,9 +25,20 @@ done_check:
 
 Role: {{CONTENT: /workflow_core/roles/analyst.md}}
 
+## Copilot Add Context
+
+Required:
+
+- #workflow_core/tasks/route.md
+
+User-selected lenses:
+
+- Do not load lens files for routing unless the user explicitly asks to inspect a lens.
+- If no lens is named, use `Lens: none`.
+
 ## Instructions
 
-Recommend the smallest useful next task. Do not create files.
+Recommend the smallest useful next task. Do not create files. Copilot may suggest lenses, but must not apply them unless the user explicitly selects or adds them.
 
 ## Task Choices
 
@@ -41,18 +52,19 @@ Recommend the smallest useful next task. Do not create files.
 
 ## Lens Hints
 
-- `domain`: terms, business rules, or ownership are unclear.
-- `test`: behavior needs stronger verification.
-- `architecture`: boundaries, dependencies, or interfaces matter.
-- `change`: the work is large enough to track as a change.
-- `knowledge`: raw material should become durable knowledge.
-- `debug`: root cause or reproduction is unclear.
+- Suggest `domain` when terms, business rules, or ownership are unclear.
+- Suggest `test` when behavior needs stronger verification.
+- Suggest `architecture` when boundaries, dependencies, or interfaces matter.
+- Suggest `change` when the work is large enough to track as a change.
+- Suggest `knowledge` when raw material should become durable knowledge.
+- Suggest `debug` when root cause or reproduction is unclear.
 
 ## Output Format
 
 ```text
 Recommended task: <task>
 Why: <reason>
-Optional lenses: <none | lens list with reason>
+Lens: <none | user-selected lens list>
+Suggested lenses: <none | lens list with reason>
 Suggested path: <task -> task -> task>
 ```

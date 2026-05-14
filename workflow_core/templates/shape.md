@@ -8,6 +8,17 @@
 
 {{relevant facts and constraints}}
 
+## Visual Overview
+
+> Keep this diagram only if it improves readability.
+
+```mermaid
+flowchart TD
+    input_node["Input or trigger"] --> core_shape["Proposed shape"]
+    core_shape --> output_node["Expected output"]
+    core_shape --> impact_node["Key impact"]
+```
+
 ## Options
 
 - Option A: {{simple option and tradeoff}}

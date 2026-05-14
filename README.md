@@ -47,7 +47,7 @@ graph TD
 
 ## Lenses
 
-Lenses are optional. A task should state why a lens is enabled.
+Lenses are user-selected. Copilot may suggest a lens, but must not apply it unless the user explicitly names it or adds its file as context.
 
 | Lens | Use When |
 | :--- | :--- |
@@ -72,13 +72,51 @@ inputs:
   - <input>
 outputs:
   - <output>
-optional_lenses:
+user_selectable_lenses:
   - <lens>
 done_check:
   - <completion check>
 ```
 
-Do not add `stage`, `artifact_type`, `skills`, or `gates`.
+Do not add legacy stage, artifact, skill, gate, or auto-applied lens fields.
+
+## Using With Copilot
+
+Use Copilot as a manual context composer:
+
+- Add one task file from `workflow_core/tasks/` as the main context.
+- Add the matching template only when producing a file artifact.
+- Add lens files only when the user explicitly selects them.
+- If no lens is named, use `Lens: none`.
+- Do not add all task, role, template, or lens files.
+
+Suggested starting points:
+
+- Add #workflow_core/copilot.md as the context menu.
+- Use `.github/copilot-instructions.md` for short repo-wide behavior.
+- Use `.github/prompts/workflow-lite.prompt.md` as a manually invoked VS Code prompt file.
+
+Example:
+
+```text
+Task: plan
+Lens: none
+Context:
+- #workflow_core/tasks/plan.md
+- #workflow_core/templates/plan.md
+- #.docs/work/briefs/brief_example.md
+Request:
+Create a lightweight implementation plan.
+```
+
+## Using With Codex
+
+Codex can continue to read task files directly:
+
+- Task files keep `{{CONTENT: /workflow_core/roles/...}}` and `{{CONTENT: /workflow_core/templates/...}}` for role/template injection.
+- Lens files are not injected by default.
+- Read a lens only when the user explicitly names it or the task input says `Lens: <name>`.
+- Keep ordinary outputs in `.docs/work/**`.
 
 ## `.docs` Structure
 
@@ -122,9 +160,11 @@ Do not add `stage`, `artifact_type`, `skills`, or `gates`.
 ## Rules
 
 - Keep the default path light.
-- Enable lenses only when the user asks or complexity justifies it.
-- Explain why a lens was enabled.
+- Select lenses only when the user explicitly asks or adds them as context.
+- Copilot may suggest lenses, but must not auto-apply them.
+- Explain why a selected lens is being used.
 - Do not create change, current, or knowledge artifacts for ordinary small tasks.
+- Use Mermaid diagrams only when they reduce understanding cost; do not add diagrams as decoration.
 - Keep `src/**/MODULE.md` next to code.
 - Code remains the source of truth for runtime behavior.
 - Workflow Root is the repository root containing `workflow_core/`.

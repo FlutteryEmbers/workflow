@@ -8,6 +8,16 @@
 
 {{current expected behavior or rule}}
 
+## Behavior Map
+
+> Optional. Add a Mermaid diagram only when it makes the durable behavior easier to understand at a glance.
+
+```mermaid
+flowchart TD
+    start_node["Start"] --> behavior_node["Current behavior"]
+    behavior_node --> result_node["Result"]
+```
+
 ## Interfaces
 
 {{public interfaces or none}}
