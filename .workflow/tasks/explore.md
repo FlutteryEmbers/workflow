@@ -25,15 +25,33 @@ done_check:
 ## Context Injection
 
 Role: {{CONTENT: /.workflow/roles/designer.md}}
-Template: {{CONTENT: /.workflow/templates/note.md}}
+
+## Mode Rules
+
+- Start with an inline `Understanding` unless the request is trivial; ask only when ambiguity would affect file writes, execution, or material scope.
+- `Mode: discuss` is default: explain findings in chat, do not load templates, and do not write files.
+- In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in the user's lens order, then summarize findings and next steps.
+- `Mode: persist`: write only the requested `.docs/**` target using one of the persist templates below.
+- In `Mode: persist`, prefer one primary lens and at most one supporting lens; split into multiple artifacts if more views are needed.
+- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+
+## Persist Templates
+
+- Default: `.workflow/templates/note.md`
+- With `distill`: `.workflow/templates/distillation.md`
+- With `strategy`: `.workflow/templates/options.md`
 
 ## Copilot Add Context
 
 Required:
 
 - #.workflow/tasks/explore.md
-- #.workflow/templates/note.md
 - relevant source, docs, notes, or code files
+
+For `Mode: persist`:
+
+- Add #.workflow/templates/note.md, or #.workflow/templates/distillation.md / #.workflow/templates/options.md when the selected lens requires it.
+- Provide a `.docs/**` `Target`.
 
 User-selected lenses:
 
@@ -58,6 +76,7 @@ Use this task to learn before deciding. Inspect the relevant code, docs, example
 
 ## Output Rules
 
+- In `Mode: discuss`, summarize findings, unknowns, and next steps in chat only.
 - Default path: `{WorkflowRoot}/.docs/work/notes/note_{topic}.md`
 - With `distill` lens, use `.workflow/templates/distillation.md` and write `{WorkflowRoot}/.docs/work/notes/note_{source}_distillation.md`.
 - With `strategy` lens, use `.workflow/templates/options.md` when early route comparison is useful.

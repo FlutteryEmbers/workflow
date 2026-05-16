@@ -1,272 +1,228 @@
 # Copilot Context Guide
 
-Use this file as a menu for manual Add Context. Prefer one task plus only the files needed for the request.
+Use this file as a menu for manual Add Context. Prefer one mode, one task, selected lenses, and only the files needed for the current request.
 
-## Principle
-
-- Use exactly one task as the main workflow context.
-- Lenses are user-selected. Do not apply a lens unless the user names it or adds its file.
-- If no lens is named, use `Lens: none`.
-- Do not add all task, template, role, or lens files.
-
-## Prompt Format
+## Mode Format
 
 ```text
+Mode: <discuss|persist|execute>
 Task: <route|clarify|explore|shape|plan|build|review|sync>
-Lens: <none|iteration|expand|distill|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>
+Lens: <none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>
+Target: <required for persist; otherwise none>
+Plan: <required for execute; otherwise none>
 Context:
 - #.workflow/tasks/<task>.md
-- #.workflow/templates/<template>.md
+- #.workflow/lenses/<lens>.md only when selected
+- #.workflow/templates/<template>.md only in Mode: persist
 - #target/file/or/doc
 Request:
 <what you want>
 ```
 
-## Common Context Sets
+## Mode Rules
 
-### Ask For Usage Guidance
+- `Mode: discuss` is the default. Add the task, selected lenses, and relevant context. Do not add templates. Do not create or update files.
+- `Mode: persist` writes a documentation artifact. Add the task, matching template, selected lenses, source context, and `Target`.
+- `Mode: execute` applies an approved plan. Use `Task: build`, add the approved plan, selected lenses, and target files or artifacts.
+- `Lens: change` still means tracked work under `.docs/changes/{change_id}`. It is not an execution mode.
 
-Use this when the user wants a chat-only recommendation for task order, lenses, Add Context, and the next prompt.
+## Lens Selection Rules
 
-Add:
+- Default to `Lens: none`.
+- Multiple lenses are allowed in `Mode: discuss` only when the user explicitly lists them.
+- Copilot may recommend lenses, but must not load or apply them automatically.
+- In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and suggested persist step.
+- In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
+- In `Mode: execute`, prefer execution guardrail lenses such as `test`, `debug`, or `change`; do not reopen strategy, domain, or architecture decisions during execution.
 
-- #.workflow/tasks/route.md
-- #.workflow/copilot.md only when the user wants Copilot-specific Add Context guidance
+## Understanding Check
 
-Do not add all task or lens files. `route` may recommend lenses, but must not apply them automatically.
+- Start with an inline `## Understanding` unless the request is trivial.
+- Keep it short: one sentence for simple work, up to three bullets for complex work.
+- Include mode, task, selected lenses, target or plan, and key constraints when relevant.
+- Do not ask for confirmation by default; continue in the same response.
+- Ask before proceeding only when ambiguity would affect file writes, execution, scope, target, plan, or source of truth.
 
-### Clarify A Request
+For `Mode: execute`, use `## Execution Understanding` and name the approved plan before changing files.
 
-Add:
+## Write Boundaries
 
-- #.workflow/tasks/clarify.md
-- #.workflow/templates/brief.md
+- `discuss`: no writes.
+- `persist`: write `.docs/**`; only `Task: sync` may write `src/**/README.md`.
+- `execute`: may modify broader repository artifacts only when the approved plan says so.
 
-Optional user-selected lenses:
+## Discuss Context
 
-- #.workflow/lenses/domain.md
-- #.workflow/lenses/change.md
-- #.workflow/lenses/knowledge.md
-
-### Explore Code Or Material
-
-Add:
-
-- #.workflow/tasks/explore.md
-- #.workflow/templates/note.md
-- relevant source files, docs, or notes
-
-Optional user-selected lenses:
-
-- #.workflow/lenses/distill.md
-- #.workflow/lenses/architecture.md
-- #.workflow/lenses/strategy.md
-- #.workflow/lenses/knowledge.md
-- #.workflow/lenses/debug.md
-
-### Shape A Solution
+Use this for brainstorming, comparison, critique, route guidance, code explanation, or early planning.
 
 Add:
 
-- #.workflow/tasks/shape.md
-- #.workflow/templates/shape.md
-- relevant brief, note, code, or decision context
+- #.workflow/tasks/<task>.md
+- selected #.workflow/lenses/<lens>.md only when the user names it; multiple explicit lenses are allowed
+- relevant source files, docs, or existing `.docs/**`
 
-Optional user-selected lenses:
+Do not add:
 
-- #.workflow/lenses/iteration.md
-- #.workflow/lenses/expand.md
-- #.workflow/lenses/distill.md
-- #.workflow/lenses/language.md
-- #.workflow/lenses/domain.md
-- #.workflow/lenses/strategy.md
-- #.workflow/lenses/architecture.md
-- #.workflow/lenses/test.md
-- #.workflow/lenses/change.md
+- #.workflow/templates/**
 
-### Make A Plan
+## Persist Context
+
+Use this when the user says save, write, generate, update, land, or persist an artifact.
 
 Add:
 
-- #.workflow/tasks/plan.md
-- #.workflow/templates/plan.md
-- relevant brief, shape, review, or requested work
+- #.workflow/tasks/<task>.md
+- the matching #.workflow/templates/<template>.md
+- selected #.workflow/lenses/<lens>.md only when the user names it
+- `Target: <path>`
+- source context needed to avoid inventing facts
 
-Optional user-selected lenses:
+Allowed targets:
 
-- #.workflow/lenses/iteration.md
-- #.workflow/lenses/expand.md
-- #.workflow/lenses/language.md
-- #.workflow/lenses/strategy.md
-- #.workflow/lenses/test.md
-- #.workflow/lenses/architecture.md
-- #.workflow/lenses/change.md
+- `.docs/**` for `clarify`, `explore`, `shape`, `plan`, `review`, and `sync`
+- `src/**/README.md` only for `Task: sync`
 
-### Expand A Shape Or Plan
+If `Target` is missing, propose a target path in chat instead of writing.
 
-Use this when a short shape, conceptual design, architecture shape, or plan needs more detail, examples, pseudocode, smaller diagrams, or split part files.
+## Execute Context
 
-Add:
-
-- #.workflow/tasks/shape.md or #.workflow/tasks/plan.md as the main task for this turn
-- #.workflow/templates/expanded.md
-- the source shape, decision, concept, or plan to expand
-- any relevant notes, code, or docs needed to avoid inventing facts
-
-Optional user-selected lenses:
-
-- #.workflow/lenses/expand.md
-- #.workflow/lenses/language.md only if full English, translation, or terminology consistency is requested
-- #.workflow/lenses/architecture.md only if architecture detail is requested
-- #.workflow/lenses/domain.md only if language, rules, events, or ownership detail is requested
-- #.workflow/lenses/test.md only if verification detail is requested
-
-Output follows the source artifact directory, using `{base}.expanded.md` and optional `{base}.part_{topic}.md`. Do not create expansion-specific directories.
-
-### Target Design To Repo Plan
-
-Use this when the user has a target architecture or conceptual design and wants a repo-aware implementation plan.
-
-For the planning turn, make #.workflow/tasks/plan.md the main task. Add only the files needed for the current turn.
-
-Add:
-
-- #.workflow/tasks/plan.md
-- #.workflow/templates/plan.md
-- target design artifacts such as #.workflow/templates/shape.md or #.workflow/templates/concept.md
-- repo-mapping notes such as #.workflow/templates/note.md or existing `.docs/work/notes/**`
-- relevant source files, module docs, `.docs/work/**`, or `.docs/current/**`
-
-Optional user-selected lenses:
-
-- #.workflow/lenses/architecture.md
-- #.workflow/lenses/domain.md
-- #.workflow/lenses/iteration.md
-- #.workflow/lenses/strategy.md
-
-If the target design still needs shaping, use #.workflow/tasks/shape.md for that turn first. If repo reality is still unclear, use #.workflow/tasks/explore.md for that turn first.
-
-### Build From A Plan
+Use this when the user asks to apply an approved plan.
 
 Add:
 
 - #.workflow/tasks/build.md
 - approved plan file
-- target source files, docs, prompts, templates, or workflow artifacts
+- target source files, docs, prompts, templates, or workflow artifacts named by the plan
+- selected #.workflow/lenses/test.md, #.workflow/lenses/debug.md, or #.workflow/lenses/change.md only when selected
 
-Optional user-selected lenses:
+If an approved plan is missing, do not modify files. Explain what plan is needed.
 
-- #.workflow/lenses/test.md
-- #.workflow/lenses/debug.md
-- #.workflow/lenses/change.md
+## Task To Template Map
 
-### Review Or Refactor
+- `clarify`: #.workflow/templates/brief.md
+- `explore`: #.workflow/templates/note.md; with `distill` use #.workflow/templates/distillation.md; with `strategy` use #.workflow/templates/options.md
+- `shape`: #.workflow/templates/shape.md; optional #.workflow/templates/session.md, #.workflow/templates/options.md, #.workflow/templates/concept.md, #.workflow/templates/expanded.md, or #.workflow/templates/distillation.md when the selected lens needs it
+- `plan`: #.workflow/templates/plan.md; with `expand` use #.workflow/templates/expanded.md
+- `review`: #.workflow/templates/review.md; with `redteam` use #.workflow/templates/critique.md; with `consistency` use #.workflow/templates/consistency_review.md
+- `sync`: #.workflow/templates/sync.md; for `src/**/README.md` use #.workflow/templates/code_readme.md
 
-Add:
+## Common Scenarios
 
-- #.workflow/tasks/review.md
-- #.workflow/templates/review.md
-- target source files, docs, behavior claim, or evidence
+### Ask For Usage Guidance
 
-Optional user-selected lenses:
+```text
+Mode: discuss
+Task: route
+Lens: none
+```
 
-- #.workflow/lenses/redteam.md
-- #.workflow/lenses/distill.md
-- #.workflow/lenses/language.md
-- #.workflow/lenses/domain.md
-- #.workflow/lenses/debug.md
-- #.workflow/lenses/test.md
-- #.workflow/lenses/architecture.md
-- #.workflow/lenses/knowledge.md
-- #.workflow/lenses/change.md
+Add #.workflow/tasks/route.md. Add #.workflow/copilot.md only when the user wants Copilot-specific Add Context guidance.
 
-### Sync Docs Or Knowledge
+### Discuss A Design
 
-Add:
+```text
+Mode: discuss
+Task: shape
+Lens: strategy
+```
 
-- #.workflow/tasks/sync.md
-- #.workflow/templates/sync.md
-- source doc, change record, code-adjacent doc, or knowledge material
+Add #.workflow/tasks/shape.md, selected lens files, and relevant code or docs. Do not add templates.
 
-Optional user-selected lenses:
+### Multi-Lens Discuss
 
-- #.workflow/lenses/change.md
-- #.workflow/lenses/knowledge.md
-- #.workflow/lenses/distill.md
-- #.workflow/lenses/language.md
-- #.workflow/lenses/domain.md
-- #.workflow/lenses/architecture.md
+```text
+Mode: discuss
+Task: shape
+Lens: strategy, domain, architecture
+```
 
-### Distill A Reference
+Add #.workflow/tasks/shape.md plus the explicitly selected lens files. Do not add templates.
 
-Use this when a strong business document, architecture directory, RFC, ADR, handbook, or knowledge base feels useful, but the reusable structure is not obvious yet.
+Recommended chat structure:
 
-For pure knowledge capture, use `explore --lens distill --lens knowledge -> sync --lens knowledge`.
+- `## Understanding`
+- `## Strategy View`
+- `## Domain View`
+- `## Architecture View`
+- `## Converged Recommendation`
+- `## Suggested Persist Step`
 
-For improving Workflow Lite itself, use `explore --lens distill -> shape --lens distill --lens strategy -> plan -> build -> review`.
+### Persist A Shape Or Decision
 
-Add:
+```text
+Mode: persist
+Task: shape
+Target: .docs/work/shapes/shape_{topic}.md
+```
 
-- #.workflow/tasks/explore.md as the main task for first-pass extraction
-- #.workflow/templates/distillation.md
-- #.workflow/lenses/distill.md
-- the reference document, directory, pasted material, or existing `.docs/**` artifact
-- #.workflow/lenses/knowledge.md only when the result should become durable knowledge
+Add #.workflow/tasks/shape.md, #.workflow/templates/shape.md, selected lens files, and source context.
 
-Optional follow-up context:
+### Persist A Plan
 
-- #.workflow/tasks/shape.md and #.workflow/lenses/strategy.md when deciding what to adopt, adapt, reject, or revisit
-- #.workflow/tasks/plan.md when the chosen improvement should become an approved plan
-- #.workflow/tasks/build.md only after the approved plan explicitly names the repository artifacts to modify
+```text
+Mode: persist
+Task: plan
+Target: .docs/work/plans/plan_{topic}.md
+```
 
-Do not use `sync` to directly edit `.workflow/**`. Template, lens, prompt, or workflow behavior changes must go through `plan -> build`.
+Add #.workflow/tasks/plan.md, #.workflow/templates/plan.md, source shape/review/context, and selected lens files.
 
-### Language Style
+### Consistency Review
 
-Use this when the user asks for full English, translation, terminology normalization, readability review, or glossary cleanup.
+```text
+Mode: persist
+Task: review
+Lens: consistency
+Target: .docs/work/reviews/review_{topic}.md
+```
 
-Add:
+Add #.workflow/tasks/review.md, #.workflow/lenses/consistency.md, #.workflow/templates/consistency_review.md, relevant `.docs/current/**`, `.docs/shared/**`, `src/**/README.md`, source files, and tests.
 
-- one main task for the current turn, usually #.workflow/tasks/shape.md, #.workflow/tasks/plan.md, #.workflow/tasks/review.md, or #.workflow/tasks/sync.md
-- #.workflow/lenses/language.md
-- target docs or artifacts whose language style should be controlled
+Follow-up paths:
 
-Default artifacts use Chinese explanations with English technical terms preserved. Full English is used only when explicitly requested.
+- Document drift: `Mode: persist`, `Task: sync`
+- Code drift: `Mode: persist`, `Task: plan`, then `Mode: execute`, `Task: build`
+- Unclear intent: `Mode: discuss`, `Task: shape`
 
-## Conversation-Driven Design
+### Sync Durable Facts
 
-Use these sets when the user is iterating with AI across multiple turns, adding background, comparing options, challenging gaps, and then syncing only stable conclusions.
+```text
+Mode: persist
+Task: sync
+Target: .docs/current/{topic}.md
+```
 
-### Start Or Maintain A Design Session
+Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, source artifacts, and selected lenses.
 
-Add:
+For code-adjacent README maintenance:
 
-- #.workflow/tasks/shape.md
-- #.workflow/templates/session.md
-- #.workflow/templates/options.md
-- #.workflow/templates/concept.md only when a conceptual model is needed
-- #.workflow/lenses/iteration.md
-- #.workflow/lenses/strategy.md
-- #.workflow/lenses/domain.md only when the user wants DDD-lite language, story, events, boundaries, and rule ownership
-- current brief, notes, code, or discussion summary
+```text
+Mode: persist
+Task: sync
+Target: src/{area}/README.md
+```
 
-### Challenge The Current Direction
+Add #.workflow/templates/code_readme.md instead of the general sync template.
 
-Add:
+### Execute A Plan
 
-- #.workflow/tasks/review.md
-- #.workflow/templates/critique.md
-- #.workflow/lenses/redteam.md
-- #.workflow/lenses/domain.md only when critique should inspect language, story flow, events, boundaries, or rule ownership
-- current session, options, concept, shape, or plan artifact
+```text
+Mode: execute
+Task: build
+Plan: .docs/work/plans/plan_{topic}.md
+```
 
-### Sync Stable Conclusions
+Add #.workflow/tasks/build.md, the approved plan, and target artifacts named by the plan.
 
-Add:
+## Conversation-To-Artifact Example
 
-- #.workflow/tasks/sync.md
-- #.workflow/templates/sync.md
-- #.workflow/lenses/knowledge.md when the result should become reusable knowledge
-- session, options, critique, concept, shape, or decision artifacts
+1. Discuss:
+   `Mode: discuss`, `Task: shape`, `Lens: strategy`, request a route comparison.
+2. Persist shape:
+   `Mode: persist`, `Task: shape`, `Target: .docs/work/shapes/shape_auth.md`.
+3. Persist plan:
+   `Mode: persist`, `Task: plan`, `Target: .docs/work/plans/plan_auth.md`.
+4. Execute:
+   `Mode: execute`, `Task: build`, `Plan: .docs/work/plans/plan_auth.md`.
 
-Only sync stable conclusions. Do not archive full chat transcripts as durable facts.
+In chat, summarize decisions and next steps. Do not paste full artifact contents unless the user asks for a preview.

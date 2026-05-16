@@ -30,16 +30,33 @@ done_check:
 ## Context Injection
 
 Role: {{CONTENT: /.workflow/roles/designer.md}}
-Template: {{CONTENT: /.workflow/templates/plan.md}}
+
+## Mode Rules
+
+- Start with an inline `Understanding` unless the request is trivial; ask only when ambiguity would affect file writes, execution, or material scope.
+- `Mode: discuss` is default: discuss or revise plan direction in chat, do not load templates, and do not write files.
+- In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in the user's lens order, then give a converged planning recommendation.
+- `Mode: persist`: write only the requested `.docs/**` target using one of the persist templates below.
+- In `Mode: persist`, prefer one primary lens and at most one supporting lens; split into multiple artifacts if more views are needed.
+- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+
+## Persist Templates
+
+- Default: `.workflow/templates/plan.md`
+- With `expand`: `.workflow/templates/expanded.md`
 
 ## Copilot Add Context
 
 Required:
 
 - #.workflow/tasks/plan.md
-- #.workflow/templates/plan.md
 - relevant brief, shape, concept, note, review, target design, or requested work
 - relevant source files or docs when the plan must map onto the current repo
+
+For `Mode: persist`:
+
+- Add #.workflow/templates/plan.md, or #.workflow/templates/expanded.md when expanding a plan.
+- Provide a `.docs/**` `Target`.
 
 User-selected lenses:
 
@@ -50,7 +67,6 @@ User-selected lenses:
 - Add #.workflow/lenses/test.md only if the user selects `test`.
 - Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
 - Add #.workflow/lenses/change.md only if the user selects `change`.
-- Add #.workflow/templates/expanded.md only when the user selects `expand`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
@@ -69,6 +85,7 @@ Write the smallest repo-aware plan that another agent or engineer can execute wi
 
 ## Output Rules
 
+- In `Mode: discuss`, discuss the plan, sequence, risks, or tradeoffs in chat only.
 - Default path: `{WorkflowRoot}/.docs/work/plans/plan_{topic}.md`
 - With `change` lens: `{WorkflowRoot}/.docs/changes/{change_id}/plan.md`
 - For target design planning, explicitly connect target design, current repo fit, impact map, step options, and recommended sequence.

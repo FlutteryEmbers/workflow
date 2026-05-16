@@ -53,6 +53,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 | :--- | :--- |
 | `iteration` | Multi-turn discussion needs session state, background deltas, decisions, and open questions. |
 | `expand` | A short shape or plan needs details, examples, pseudocode, smaller diagrams, or split part files. |
+| `consistency` | Docs, code, tests, code-adjacent README files, or design intent may conflict. |
 | `distill` | A strong reference document or knowledge system should be studied for reusable structure and writing principles. |
 | `language` | Full English, translation, terminology consistency, or glossary maintenance is needed. |
 | `domain` | Terms, rules, ownership, or boundaries are unclear. |
@@ -90,8 +91,9 @@ Do not add legacy stage, artifact, skill, gate, or auto-applied lens fields.
 
 Use Copilot as a manual context composer:
 
+- Start with `Mode: discuss` unless you explicitly want to write files or execute an approved plan.
 - Add one task file from `.workflow/tasks/` as the main context.
-- Add the matching template only when producing a file artifact.
+- Add the matching template only in `Mode: persist`.
 - Add lens files only when the user explicitly selects them.
 - If no lens is named, use `Lens: none`.
 - Do not add all task, role, template, or lens files.
@@ -105,14 +107,14 @@ Suggested starting points:
 Example:
 
 ```text
+Mode: discuss
 Task: plan
 Lens: none
 Context:
 - #.workflow/tasks/plan.md
-- #.workflow/templates/plan.md
 - #.docs/work/briefs/brief_example.md
 Request:
-Create a lightweight implementation plan.
+Discuss a lightweight implementation plan. Do not write files.
 ```
 
 ## Getting Usage Guidance
@@ -134,10 +136,74 @@ Request:
 
 Codex can continue to read task files directly:
 
-- Task files keep `{{CONTENT: /.workflow/roles/...}}` and `{{CONTENT: /.workflow/templates/...}}` for role/template injection.
+- Task files keep `{{CONTENT: /.workflow/roles/...}}` for role injection.
+- Template files are persist-only and are not injected by default.
 - Lens files are not injected by default.
 - Read a lens only when the user explicitly names it or the task input says `Lens: <name>`.
-- Keep ordinary outputs in `.docs/work/**`.
+- In `Mode: discuss`, do not write files.
+- In `Mode: persist`, write `.docs/**`, except `sync` may target `src/**/README.md`.
+- In `Mode: execute`, use `build` with an approved plan before modifying broader repository artifacts.
+
+## Conversation-To-Artifact Workflow
+
+Use this workflow when ideas evolve through chat before they become files:
+
+```text
+discuss -> persist -> execute
+```
+
+- `Mode: discuss`: no writes, no templates, chat-only reasoning with task/lens guidance.
+- `Mode: persist`: documentation artifact writes only. Use `.docs/**`, or `Task: sync` for `src/**/README.md`.
+- `Mode: execute`: repository changes through `Task: build` and an approved `Plan`.
+
+Lens behavior:
+
+- Default to `Lens: none`.
+- In `Mode: discuss`, multiple lenses are allowed only when explicitly listed, such as `Lens: strategy, domain, architecture`.
+- Copilot may recommend lenses, but must not load or apply them automatically.
+- In `Mode: persist`, use one primary lens and at most one supporting lens; split into multiple persist steps when more views are needed.
+- In `Mode: execute`, prefer execution guardrails like `test`, `debug`, or `change`.
+
+Understanding check:
+
+- Start each non-trivial response with a short inline `Understanding Check`.
+- Do not ask for confirmation by default; continue in the same response.
+- Ask only when ambiguity would affect file writes, execution, scope, target, plan, or source of truth.
+
+Example:
+
+```text
+Mode: discuss
+Task: shape
+Lens: strategy, domain, architecture
+Request:
+先讨论 auth refresh 的技术路线，不落库。
+```
+
+```text
+Mode: persist
+Task: shape
+Lens: architecture
+Target: .docs/work/shapes/shape_auth_refresh.md
+Request:
+把刚才讨论收敛成目标设计。
+```
+
+```text
+Mode: persist
+Task: plan
+Target: .docs/work/plans/plan_auth_refresh.md
+Request:
+根据 shape 生成 repo-aware implementation plan。
+```
+
+```text
+Mode: execute
+Task: build
+Plan: .docs/work/plans/plan_auth_refresh.md
+Request:
+按计划实现第一阶段。
+```
 
 ## Default Language
 
@@ -189,6 +255,7 @@ Do not create language-specific directories or filename variants by default.
 - Reference distillation for knowledge: `explore --lens distill --lens knowledge -> sync --lens knowledge`
 - Reference distillation for workflow improvement: `explore --lens distill -> shape --lens distill --lens strategy -> plan -> build -> review`
 - Bug or risk: `review --lens debug -> plan -> build`
+- Consistency review: `review --lens consistency -> sync | shape | plan -> build`
 - Larger tracked work: enable `change` lens and use `.docs/changes/{change_id}/`
 - Knowledge capture: enable `knowledge` lens and use `.docs/knowledge/`
 - Durable fact update: use `sync` and write `.docs/current/{topic}.md`
@@ -246,14 +313,45 @@ Default outputs:
 
 Do not let `sync` directly modify `.workflow/**`. If distillation suggests changing `.workflow/templates/**`, `.workflow/lenses/**`, task prompts, or Copilot guidance, first use `shape` to choose the improvement, then `plan` to approve concrete repository changes, then `build` to apply them.
 
+## Code-Adjacent README
+
+Use `src/**/README.md` as an optional local reading entrypoint when a code area has stable responsibilities, important public surface, critical behavior, local decisions, or frequent maintenance cost.
+
+Do not create a code-adjacent README for every directory. Wrapper, barrel, and thin adapter directories usually do not need one.
+
+`sync` is the primary task for maintaining code-adjacent README files after facts are stable. `build` may update them only when an approved plan explicitly requires it.
+
+Use `.workflow/templates/code_readme.md` when maintaining one. The `Scope` field must say exactly which code area the README covers, so it is not confused with a package or project README.
+
+## Consistency Review
+
+Use `review --lens consistency` when docs and code may disagree, or when multiple docs describe the same behavior differently.
+
+Conflict classifications are `doc_stale`, `code_drift`, `docs_conflict`, `ambiguous_intent`, `intentional_exception`, and `low_value`.
+
+Follow-up paths are:
+
+- `sync`: confirmed document drift.
+- `shape`: unclear product, design, or architecture intent.
+- `plan -> build`: code likely diverged from the intended behavior.
+- `none`: accepted exception or low-value difference.
+
+`sync --lens consistency` only updates confirmed document drift. It must not silently rewrite docs to match code when code may be wrong.
+
 ## Rules
 
 - Keep the default path light.
+- Default to `Mode: discuss`.
+- Start non-trivial responses with an inline `Understanding Check`.
+- Templates are persist-only; do not load templates in `Mode: discuss`.
+- `Mode: persist` writes `.docs/**`, except `sync` may write `src/**/README.md`.
+- `Mode: execute` requires `Task: build` and an approved plan.
 - Select lenses only when the user explicitly asks or adds them as context.
+- Multiple lenses are allowed in `Mode: discuss` only when explicitly listed.
 - Copilot may suggest lenses, but must not auto-apply them.
 - Explain why a selected lens is being used.
 - Do not create change, current, or knowledge artifacts for ordinary small tasks.
 - Use Mermaid diagrams only when they reduce understanding cost; do not add diagrams as decoration.
-- Keep `src/**/MODULE.md` next to code.
+- Use `src/**/README.md` only when it reduces local code reading cost.
 - Code remains the source of truth for runtime behavior.
 - Workflow Root is the repository root containing `.workflow/`.

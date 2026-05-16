@@ -22,14 +22,29 @@ done_check:
 ## Context Injection
 
 Role: {{CONTENT: /.workflow/roles/analyst.md}}
-Template: {{CONTENT: /.workflow/templates/brief.md}}
+
+## Mode Rules
+
+- Start with an inline `Understanding` unless the request is trivial; ask only when ambiguity would affect file writes, execution, or material scope.
+- `Mode: discuss` is default: clarify in chat, do not load templates, and do not write files.
+- `Mode: persist`: write only the requested `.docs/**` target using one of the persist templates below.
+- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+
+## Persist Templates
+
+- Default: `.workflow/templates/brief.md`
 
 ## Copilot Add Context
 
 Required:
 
 - #.workflow/tasks/clarify.md
-- #.workflow/templates/brief.md
+- raw request or relevant source context
+
+For `Mode: persist`:
+
+- Add #.workflow/templates/brief.md
+- Provide `Target: .docs/work/briefs/brief_{topic}.md` or a `.docs/changes/{change_id}/brief.md` target when using `change`.
 
 User-selected lenses:
 
@@ -50,9 +65,9 @@ Keep the default output light. Capture what the user wants, why it matters, what
 
 ## Output Rules
 
+- In `Mode: discuss`, answer inline and recommend the next task without forcing a file.
 - Default path: `{WorkflowRoot}/.docs/work/briefs/brief_{topic}.md`
 - With `change` lens: `{WorkflowRoot}/.docs/changes/{change_id}/brief.md`
-- If the request is small and already clear, answer inline and recommend `plan` without forcing a file.
 
 ## User Input
 

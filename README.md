@@ -31,7 +31,7 @@ This repository contains an embeddable Workflow Lite setup for use inside a form
 - `.workflow/` contains the workflow system: tasks, lenses, roles, templates, and usage guidance.
 - `.docs/` contains project artifacts produced by the workflow.
 - `.github/` contains only thin Copilot entrypoints.
-- `src/**/MODULE.md` remains code-adjacent living documentation when a project uses it.
+- `src/**/README.md` is an optional code-adjacent reading entrypoint when a code area needs one.
 
 ## Usage
 
@@ -39,6 +39,7 @@ This repository contains an embeddable Workflow Lite setup for use inside a form
 - Use `.workflow/copilot.md` as the Copilot Add Context menu.
 - Use `.github/prompts/workflow-lite.prompt.md` as the manual VS Code prompt entry.
 - Start with `.workflow/tasks/route.md` when you want chat-only usage guidance.
+- Default to `Mode: discuss`; use `Mode: persist` to write docs and `Mode: execute` to apply an approved plan.
 
 ## Embedding Rule
 

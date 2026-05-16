@@ -9,6 +9,7 @@ outputs:
 user_selectable_lenses:
   - iteration
   - expand
+  - consistency
   - distill
   - language
   - domain
@@ -46,6 +47,10 @@ User-selected lenses:
 
 Recommend the smallest useful next task. Do not create files. Copilot may suggest lenses, but must not apply them unless the user explicitly selects or adds them.
 
+Route is always `Mode: discuss`. It may recommend `Mode: persist` targets or `Mode: execute` plan requirements, but it must not create files or modify repository artifacts.
+
+Start with `Interpreted goal` and keep it short. Recommend lenses, but do not load or apply them unless the user explicitly selected them.
+
 ## Usage Guide Mode
 
 Use this mode when the user asks how to use this workflow, which task/lens to choose, what order to follow, or what context to add. Do not execute the workflow and do not create files. Return a concise user-facing guide in the chat.
@@ -64,6 +69,7 @@ Use this mode when the user asks how to use this workflow, which task/lens to ch
 
 - Suggest `iteration` when the user is co-designing across multiple turns and adding background progressively.
 - Suggest `expand` when a short shape or plan needs details, examples, pseudocode, smaller diagrams, or split parts.
+- Suggest `consistency` when docs, code, tests, code-adjacent README files, or design intent may conflict.
 - Suggest `distill` when a reference document, architecture folder, or handbook should be studied for reusable structure and writing principles.
 - Suggest `language` when the user asks for full English, translation, terminology consistency, or glossary cleanup.
 - Suggest `domain` when terms, business rules, or ownership are unclear.
@@ -83,6 +89,7 @@ Use this mode when the user asks how to use this workflow, which task/lens to ch
 - Conversation-driven design: `shape --lens iteration --lens strategy -> review --lens redteam -> shape`
 - Expansion: `shape/plan --lens expand -> review --lens redteam -> plan/sync`
 - Bug fix: `review --lens debug -> plan -> build`
+- Consistency review: `review --lens consistency -> sync | shape | plan -> build`
 - Knowledge capture: `explore/sync --lens knowledge`
 - Reference distillation: `explore --lens distill -> shape --lens distill --lens strategy -> plan -> build -> review`
 - Docs or durable facts: `sync`
@@ -91,10 +98,14 @@ Use this mode when the user asks how to use this workflow, which task/lens to ch
 ## Output Format
 
 ```text
+Interpreted goal: <one sentence>
+Recommended mode: <discuss | persist | execute>
 Recommended task: <task>
 Why: <reason>
 Lens: <none | user-selected lens list>
 Suggested lenses: <none | lens list with reason>
+Persist target: <none | target path>
+Execute plan: <none | approved plan path needed>
 Suggested path: <task -> task -> task>
 ```
 
@@ -103,7 +114,7 @@ Suggested path: <task -> task -> task>
 ```md
 ## Recommended Workflow
 
-`<task --lens lens -> task -> task>`
+`Mode: <discuss | persist | execute>; <task --lens lens -> task -> task>`
 
 ## Why This Path
 
@@ -116,7 +127,7 @@ Suggested path: <task -> task -> task>
 ## Add Context
 
 - `.workflow/tasks/<task>.md`
-- `.workflow/templates/<template>.md` when producing an artifact
+- `.workflow/templates/<template>.md` only for `Mode: persist`
 - `.workflow/lenses/<lens>.md` only when selected by the user
 - <target files, docs, or existing .docs artifacts>
 

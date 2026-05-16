@@ -8,6 +8,7 @@ If no lens is named, use `Lens: none`.
 
 - `iteration`: maintain multi-turn discussion state, background deltas, current recommendation, rejected options, and open questions.
 - `expand`: turn a short shape or plan into a detailed draft, examples, pseudocode, smaller diagrams, or split part files.
+- `consistency`: review conflicts between docs, code, tests, code-adjacent README files, and design intent.
 - `distill`: extract reusable structure and writing principles from strong reference documents or knowledge systems.
 - `language`: control full English output, translation, terminology consistency, and glossary maintenance.
 - `domain`: clarify language, story flow, events, rules, ownership, boundaries, and model iteration.

@@ -9,6 +9,7 @@ outputs:
   - .docs/changes/{change_id}/evidence.md
 user_selectable_lenses:
   - redteam
+  - consistency
   - debug
   - distill
   - language
@@ -28,20 +29,39 @@ done_check:
 ## Context Injection
 
 Role: {{CONTENT: /.workflow/roles/reviewer.md}}
-Template: {{CONTENT: /.workflow/templates/review.md}}
+
+## Mode Rules
+
+- Start with an inline `Understanding` unless the request is trivial; ask only when ambiguity would affect file writes, execution, or material scope.
+- `Mode: discuss` is default: review in chat, do not load templates, and do not write files.
+- In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in the user's lens order, then give actionable findings or recommended next steps.
+- `Mode: persist`: write only the requested `.docs/**` target using one of the persist templates below.
+- In `Mode: persist`, prefer one primary lens and at most one supporting lens; split into multiple artifacts if more views are needed.
+- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+
+## Persist Templates
+
+- Default: `.workflow/templates/review.md`
+- With `redteam`: `.workflow/templates/critique.md`
+- With `consistency`: `.workflow/templates/consistency_review.md`
 
 ## Copilot Add Context
 
 Required:
 
 - #.workflow/tasks/review.md
-- #.workflow/templates/review.md
 - target source, docs, behavior claim, or evidence
+
+For `Mode: persist`:
+
+- Add #.workflow/templates/review.md, or #.workflow/templates/critique.md / #.workflow/templates/consistency_review.md when the selected lens requires it.
+- Provide a `.docs/**` `Target`.
 
 User-selected lenses:
 
 - Add #.workflow/lenses/debug.md only if the user selects `debug`.
 - Add #.workflow/lenses/redteam.md only if the user selects `redteam`.
+- Add #.workflow/lenses/consistency.md only if the user selects `consistency`.
 - Add #.workflow/lenses/distill.md only if the user selects `distill`.
 - Add #.workflow/lenses/language.md only if the user selects `language`.
 - Add #.workflow/lenses/domain.md only if the user selects `domain`.
@@ -59,6 +79,7 @@ Inspect the target and report findings first. Keep review scope explicit and avo
 
 - Suggest `debug` for bugs or uncertain behavior. Do not apply it unless selected by the user.
 - Suggest `redteam` when the user wants a proposal, model, or recommendation challenged. Do not apply it unless selected by the user.
+- Suggest `consistency` when reviewing conflicts between docs, code, tests, code-adjacent README files, or design intent. Do not apply it unless selected by the user.
 - Suggest `distill` when reviewing gaps between current Workflow Lite outputs and a reference document structure. Do not apply it unless selected by the user.
 - Suggest `language` when reviewing terminology consistency, output language, translation quality, or readability. Do not apply it unless selected by the user.
 - Suggest `domain` when critique should inspect language, story flow, events, boundaries, or rule ownership. Do not apply it unless selected by the user.
@@ -69,8 +90,10 @@ Inspect the target and report findings first. Keep review scope explicit and avo
 
 ## Output Rules
 
+- In `Mode: discuss`, report findings, risks, or critique in chat only.
 - Default path: `{WorkflowRoot}/.docs/work/reviews/review_{topic}.md`
 - With `redteam` lens, use `.workflow/templates/critique.md`.
+- With `consistency` lens, use `.workflow/templates/consistency_review.md` and do not directly modify docs or code.
 - With `change` lens: `{WorkflowRoot}/.docs/changes/{change_id}/evidence.md`
 
 ## User Input

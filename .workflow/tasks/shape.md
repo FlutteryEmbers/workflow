@@ -28,15 +28,36 @@ done_check:
 ## Context Injection
 
 Role: {{CONTENT: /.workflow/roles/designer.md}}
-Template: {{CONTENT: /.workflow/templates/shape.md}}
+
+## Mode Rules
+
+- Start with an inline `Understanding` unless the request is trivial; ask only when ambiguity would affect file writes, execution, or material scope.
+- `Mode: discuss` is default: shape the direction in chat, do not load templates, and do not write files.
+- In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in the user's lens order, then give a converged recommendation and suggested persist step.
+- `Mode: persist`: write only the requested `.docs/**` target using one of the persist templates below.
+- In `Mode: persist`, prefer one primary lens and at most one supporting lens; split into multiple artifacts if more views are needed.
+- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+
+## Persist Templates
+
+- Default: `.workflow/templates/shape.md`
+- With `iteration`: `.workflow/templates/session.md`
+- With `strategy`: `.workflow/templates/options.md`
+- With `domain`: `.workflow/templates/concept.md` when a concept model is needed.
+- With `expand`: `.workflow/templates/expanded.md`
+- With `distill`: `.workflow/templates/distillation.md`
 
 ## Copilot Add Context
 
 Required:
 
 - #.workflow/tasks/shape.md
-- #.workflow/templates/shape.md
 - relevant brief, note, code, or decision context
+
+For `Mode: persist`:
+
+- Add #.workflow/templates/shape.md, or the lens-specific template listed in Persist Templates.
+- Provide a `.docs/**` `Target`.
 
 User-selected lenses:
 
@@ -49,9 +70,6 @@ User-selected lenses:
 - Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
 - Add #.workflow/lenses/test.md only if the user selects `test`.
 - Add #.workflow/lenses/change.md only if the user selects `change`.
-- Add #.workflow/templates/expanded.md only when the user selects `expand`.
-- Add #.workflow/templates/distillation.md only when the user selects `distill`.
-- Add #.workflow/templates/session.md, #.workflow/templates/options.md, or #.workflow/templates/concept.md only when the selected lenses need them.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
@@ -72,6 +90,7 @@ Turn clarified context into a solution shape that is detailed enough for plannin
 
 ## Output Rules
 
+- In `Mode: discuss`, compare or shape the direction in chat only.
 - Default path: `{WorkflowRoot}/.docs/work/shapes/shape_{topic}.md`
 - Important durable decisions may also be recorded at `{WorkflowRoot}/.docs/work/decisions/dec_{topic}.md`
 - With `iteration` lens, maintain discussion state with `.workflow/templates/session.md`.
