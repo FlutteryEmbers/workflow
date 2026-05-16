@@ -7,7 +7,8 @@ This repo uses Workflow Lite.
 - Start with an inline `Understanding Check` unless the request is trivial; do not ask for confirmation unless ambiguity would affect writes, execution, or scope.
 - In `Mode: discuss`, do not load templates and do not create or update files.
 - In `Mode: discuss`, multiple lenses are allowed only when explicitly listed; keep `Lens: none` by default.
-- In `Mode: persist`, templates are allowed and writes are limited to `.docs/**`, except `sync` may target `src/**/README.md`.
+- In `Mode: persist`, templates are allowed and writes are limited to `.docs/**`, except `sync` may target `src/**/README.md` or `docs/**` with `publish`.
+- `docs/**` can be written only by `Mode: persist` with `Task: sync` and `Lens: publish`, or by `Mode: execute` with an approved plan.
 - In `Mode: execute`, require `Task: build` and an approved plan before modifying repository artifacts.
 - Use lenses only when the user explicitly names or adds them.
 - If no lens is named, assume `Lens: none`.
@@ -18,6 +19,8 @@ This repo uses Workflow Lite.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
 - Use `.docs/work/**` for ordinary artifacts.
+- Treat `.docs/**` as workflow workspace, not official project documentation.
+- Treat `docs/**` as official project documentation and publish only sanitized content there.
 - Use `.docs/changes/**` only with the `change` lens.
 - Use `.docs/knowledge/**` only with the `knowledge` lens.
 - Use `src/**/README.md` only when a code area needs a local reading entrypoint.

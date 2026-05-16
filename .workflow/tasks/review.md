@@ -10,6 +10,7 @@ outputs:
 user_selectable_lenses:
   - redteam
   - consistency
+  - publish
   - debug
   - distill
   - language
@@ -44,6 +45,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - Default: `.workflow/templates/review.md`
 - With `redteam`: `.workflow/templates/critique.md`
 - With `consistency`: `.workflow/templates/consistency_review.md`
+- With `publish`: use the regular review template to list publishable facts, do-not-publish content, blockers, and recommended action.
 
 ## Copilot Add Context
 
@@ -62,6 +64,7 @@ User-selected lenses:
 - Add #.workflow/lenses/debug.md only if the user selects `debug`.
 - Add #.workflow/lenses/redteam.md only if the user selects `redteam`.
 - Add #.workflow/lenses/consistency.md only if the user selects `consistency`.
+- Add #.workflow/lenses/publish.md only if the user selects `publish`.
 - Add #.workflow/lenses/distill.md only if the user selects `distill`.
 - Add #.workflow/lenses/language.md only if the user selects `language`.
 - Add #.workflow/lenses/domain.md only if the user selects `domain`.
@@ -80,6 +83,7 @@ Inspect the target and report findings first. Keep review scope explicit and avo
 - Suggest `debug` for bugs or uncertain behavior. Do not apply it unless selected by the user.
 - Suggest `redteam` when the user wants a proposal, model, or recommendation challenged. Do not apply it unless selected by the user.
 - Suggest `consistency` when reviewing conflicts between docs, code, tests, code-adjacent README files, or design intent. Do not apply it unless selected by the user.
+- Suggest `publish` when checking whether internal `.docs/**` content can be safely sanitized for official `docs/**`. Do not apply it unless selected by the user.
 - Suggest `distill` when reviewing gaps between current Workflow Lite outputs and a reference document structure. Do not apply it unless selected by the user.
 - Suggest `language` when reviewing terminology consistency, output language, translation quality, or readability. Do not apply it unless selected by the user.
 - Suggest `domain` when critique should inspect language, story flow, events, boundaries, or rule ownership. Do not apply it unless selected by the user.
@@ -94,6 +98,7 @@ Inspect the target and report findings first. Keep review scope explicit and avo
 - Default path: `{WorkflowRoot}/.docs/work/reviews/review_{topic}.md`
 - With `redteam` lens, use `.workflow/templates/critique.md`.
 - With `consistency` lens, use `.workflow/templates/consistency_review.md` and do not directly modify docs or code.
+- With `publish` lens, do not write `docs/**`; record publish blockers, publishable facts, do-not-publish content, target audience, and recommended action.
 - With `change` lens: `{WorkflowRoot}/.docs/changes/{change_id}/evidence.md`
 
 ## User Input

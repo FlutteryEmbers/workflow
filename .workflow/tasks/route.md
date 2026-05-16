@@ -10,6 +10,7 @@ user_selectable_lenses:
   - iteration
   - expand
   - consistency
+  - publish
   - distill
   - language
   - domain
@@ -70,6 +71,7 @@ Use this mode when the user asks how to use this workflow, which task/lens to ch
 - Suggest `iteration` when the user is co-designing across multiple turns and adding background progressively.
 - Suggest `expand` when a short shape or plan needs details, examples, pseudocode, smaller diagrams, or split parts.
 - Suggest `consistency` when docs, code, tests, code-adjacent README files, or design intent may conflict.
+- Suggest `publish` when stable `.docs/**` content should become sanitized official project documentation under `docs/**`.
 - Suggest `distill` when a reference document, architecture folder, or handbook should be studied for reusable structure and writing principles.
 - Suggest `language` when the user asks for full English, translation, terminology consistency, or glossary cleanup.
 - Suggest `domain` when terms, business rules, or ownership are unclear.
@@ -90,6 +92,7 @@ Use this mode when the user asks how to use this workflow, which task/lens to ch
 - Expansion: `shape/plan --lens expand -> review --lens redteam -> plan/sync`
 - Bug fix: `review --lens debug -> plan -> build`
 - Consistency review: `review --lens consistency -> sync | shape | plan -> build`
+- Official docs publish: `review --lens publish -> sync --lens publish`
 - Knowledge capture: `explore/sync --lens knowledge`
 - Reference distillation: `explore --lens distill -> shape --lens distill --lens strategy -> plan -> build -> review`
 - Docs or durable facts: `sync`

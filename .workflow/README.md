@@ -26,11 +26,13 @@ graph TD
 - `task`: a lightweight action prompt in `.workflow/tasks/`.
 - `role`: a small perspective file in `.workflow/roles/`.
 - `lens`: an optional escalation method in `.workflow/lenses/`.
-- `.docs/work`: default place for everyday workflow artifacts.
+- `.docs`: workflow workspace, not official project documentation.
+- `.docs/work`: default place for everyday workflow artifacts, drafts, and reviews.
 - `.docs/changes`: optional tracked workspace for larger changes.
-- `.docs/current`: durable facts synced from code, changes, or knowledge.
+- `.docs/current`: workflow-maintained current facts, not published project docs.
 - `.docs/knowledge`: raw material and reusable wiki-style explanations.
-- `.docs/shared`: project-wide terms, rules, and boundaries.
+- `.docs/shared`: project-wide terms, rules, and boundaries used by the workflow.
+- `docs`: official project documentation, written only as a sanitized published view.
 
 ## Tasks
 
@@ -54,6 +56,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 | `iteration` | Multi-turn discussion needs session state, background deltas, decisions, and open questions. |
 | `expand` | A short shape or plan needs details, examples, pseudocode, smaller diagrams, or split part files. |
 | `consistency` | Docs, code, tests, code-adjacent README files, or design intent may conflict. |
+| `publish` | Internal `.docs/**` content should become sanitized official project documentation under `docs/**`. |
 | `distill` | A strong reference document or knowledge system should be studied for reusable structure and writing principles. |
 | `language` | Full English, translation, terminology consistency, or glossary maintenance is needed. |
 | `domain` | Terms, rules, ownership, or boundaries are unclear. |
@@ -141,7 +144,7 @@ Codex can continue to read task files directly:
 - Lens files are not injected by default.
 - Read a lens only when the user explicitly names it or the task input says `Lens: <name>`.
 - In `Mode: discuss`, do not write files.
-- In `Mode: persist`, write `.docs/**`, except `sync` may target `src/**/README.md`.
+- In `Mode: persist`, write `.docs/**`, except `sync` may target `src/**/README.md` or `docs/**` with `publish`.
 - In `Mode: execute`, use `build` with an approved plan before modifying broader repository artifacts.
 
 ## Conversation-To-Artifact Workflow
@@ -153,7 +156,7 @@ discuss -> persist -> execute
 ```
 
 - `Mode: discuss`: no writes, no templates, chat-only reasoning with task/lens guidance.
-- `Mode: persist`: documentation artifact writes only. Use `.docs/**`, or `Task: sync` for `src/**/README.md`.
+- `Mode: persist`: documentation artifact writes only. Use `.docs/**`, `Task: sync` for `src/**/README.md`, or the `sync + publish` fast path for `docs/**`.
 - `Mode: execute`: repository changes through `Task: build` and an approved `Plan`.
 
 Lens behavior:
@@ -217,6 +220,10 @@ Do not create language-specific directories or filename variants by default.
 
 ## `.docs` Structure
 
+`.docs/**` is the Workflow Workspace. It may contain drafts, reasoning, option comparisons, redteam findings, internal risks, and implementation details. It is not official project documentation.
+
+`docs/**` is official project documentation. It must be a sanitized published view for the intended audience.
+
 ```text
 .docs/
   work/
@@ -256,6 +263,7 @@ Do not create language-specific directories or filename variants by default.
 - Reference distillation for workflow improvement: `explore --lens distill -> shape --lens distill --lens strategy -> plan -> build -> review`
 - Bug or risk: `review --lens debug -> plan -> build`
 - Consistency review: `review --lens consistency -> sync | shape | plan -> build`
+- Official docs publish: `review --lens publish -> sync --lens publish`
 - Larger tracked work: enable `change` lens and use `.docs/changes/{change_id}/`
 - Knowledge capture: enable `knowledge` lens and use `.docs/knowledge/`
 - Durable fact update: use `sync` and write `.docs/current/{topic}.md`
@@ -338,14 +346,40 @@ Follow-up paths are:
 
 `sync --lens consistency` only updates confirmed document drift. It must not silently rewrite docs to match code when code may be wrong.
 
+## Official Docs Publishing
+
+Use `publish` when stable internal workflow content should become sanitized official project documentation.
+
+Fast path:
+
+```text
+Mode: persist
+Task: sync
+Lens: publish
+Target: docs/{area}/{topic}.md
+Source:
+- .docs/current/{topic}.md
+```
+
+This is the only `persist` exception that may write `docs/**`. Ordinary `persist` still writes `.docs/**`, except `sync` may maintain `src/**/README.md`.
+
+Publish rules:
+
+- Preserve stable, confirmed facts useful to the target audience.
+- Preserve existing target doc structure and tone when the file already exists.
+- Do not copy `.docs/**` directly into `docs/**`.
+- Remove AI discussion residue, unresolved tradeoffs, rejected options, redteam-only risks, internal migration steps, code-path detail, temporary workarounds, sensitive implementation detail, security-sensitive detail, and unannounced plans.
+- If source, target audience, source of truth, or publication safety is unclear, output `Publish blocked` and do not write `docs/**`.
+
 ## Rules
 
 - Keep the default path light.
 - Default to `Mode: discuss`.
 - Start non-trivial responses with an inline `Understanding Check`.
 - Templates are persist-only; do not load templates in `Mode: discuss`.
-- `Mode: persist` writes `.docs/**`, except `sync` may write `src/**/README.md`.
+- `Mode: persist` writes `.docs/**`, except `sync` may write `src/**/README.md` or `docs/**` with `publish`.
 - `Mode: execute` requires `Task: build` and an approved plan.
+- Treat `.docs/**` as workflow workspace and `docs/**` as official project documentation.
 - Select lenses only when the user explicitly asks or adds them as context.
 - Multiple lenses are allowed in `Mode: discuss` only when explicitly listed.
 - Copilot may suggest lenses, but must not auto-apply them.

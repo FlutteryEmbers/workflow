@@ -1,6 +1,6 @@
 ---
 description: Use Workflow Lite with explicit user-selected lenses.
-argument-hint: "Mode=<discuss|persist|execute>; Task=<route|clarify|explore|shape|plan|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>; Target=<required for persist>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Task=<route|clarify|explore|shape|plan|build|review|sync>; Lens=<none|iteration|expand|consistency|publish|distill|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>; Target=<required for persist>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Prompt
@@ -31,6 +31,8 @@ Request: ${input:request:describe the work}
 - In `Mode: persist`, load the matching template and write only the requested target.
 - In `Mode: execute`, require `Task: build` and an approved plan.
 - Block instead of writing when `Mode: persist` lacks `Target`, `Mode: execute` lacks `Plan`, the target is outside the mode boundary, or instructions conflict.
+- `docs/**` can be written only by `Mode: persist` with `Task: sync` and `Lens: publish`, or by `Mode: execute` with an approved plan.
+- Never copy `.docs/**` directly into `docs/**`; publish only sanitized official project documentation.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
 - Copilot may recommend additional lenses for a follow-up turn.

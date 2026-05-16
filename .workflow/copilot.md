@@ -7,7 +7,7 @@ Use this file as a menu for manual Add Context. Prefer one mode, one task, selec
 ```text
 Mode: <discuss|persist|execute>
 Task: <route|clarify|explore|shape|plan|build|review|sync>
-Lens: <none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>
+Lens: <none|iteration|expand|consistency|publish|distill|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>
 Target: <required for persist; otherwise none>
 Plan: <required for execute; otherwise none>
 Context:
@@ -25,6 +25,7 @@ Request:
 - `Mode: persist` writes a documentation artifact. Add the task, matching template, selected lenses, source context, and `Target`.
 - `Mode: execute` applies an approved plan. Use `Task: build`, add the approved plan, selected lenses, and target files or artifacts.
 - `Lens: change` still means tracked work under `.docs/changes/{change_id}`. It is not an execution mode.
+- `Lens: publish` is the only persist fast path for writing sanitized official docs under `docs/**`.
 
 ## Lens Selection Rules
 
@@ -48,8 +49,9 @@ For `Mode: execute`, use `## Execution Understanding` and name the approved plan
 ## Write Boundaries
 
 - `discuss`: no writes.
-- `persist`: write `.docs/**`; only `Task: sync` may write `src/**/README.md`.
+- `persist`: write `.docs/**`; only `Task: sync` may write `src/**/README.md`, or `docs/**` when `Lens: publish` is selected.
 - `execute`: may modify broader repository artifacts only when the approved plan says so.
+- `.docs/**` is workflow workspace. `docs/**` is official project documentation and must be sanitized.
 
 ## Discuss Context
 
@@ -81,6 +83,7 @@ Allowed targets:
 
 - `.docs/**` for `clarify`, `explore`, `shape`, `plan`, `review`, and `sync`
 - `src/**/README.md` only for `Task: sync`
+- `docs/**` only for `Task: sync` with `Lens: publish`
 
 If `Target` is missing, propose a target path in chat instead of writing.
 
@@ -104,7 +107,7 @@ If an approved plan is missing, do not modify files. Explain what plan is needed
 - `shape`: #.workflow/templates/shape.md; optional #.workflow/templates/session.md, #.workflow/templates/options.md, #.workflow/templates/concept.md, #.workflow/templates/expanded.md, or #.workflow/templates/distillation.md when the selected lens needs it
 - `plan`: #.workflow/templates/plan.md; with `expand` use #.workflow/templates/expanded.md
 - `review`: #.workflow/templates/review.md; with `redteam` use #.workflow/templates/critique.md; with `consistency` use #.workflow/templates/consistency_review.md
-- `sync`: #.workflow/templates/sync.md; for `src/**/README.md` use #.workflow/templates/code_readme.md
+- `sync`: #.workflow/templates/sync.md; for `src/**/README.md` use #.workflow/templates/code_readme.md; for new `docs/**` publish targets use #.workflow/templates/publish_note.md as a light starting point
 
 ## Common Scenarios
 
@@ -203,6 +206,34 @@ Target: src/{area}/README.md
 ```
 
 Add #.workflow/templates/code_readme.md instead of the general sync template.
+
+### Publish Official Docs
+
+Use this fast path only when stable workflow workspace content should become sanitized official project documentation.
+
+```text
+Mode: persist
+Task: sync
+Lens: publish
+Target: docs/{area}/{topic}.md
+Source:
+- .docs/current/{topic}.md
+```
+
+Add:
+
+- #.workflow/tasks/sync.md
+- #.workflow/lenses/publish.md
+- source `.docs/**` artifacts
+- existing target `docs/**` file if it exists
+- #.workflow/templates/publish_note.md only when creating a new target
+
+Requirements:
+
+- Source, target audience, and source of truth must be clear.
+- Do not copy `.docs/**` directly into `docs/**`.
+- Remove AI discussion residue, unresolved tradeoffs, internal migration notes, temporary workarounds, sensitive implementation detail, security-sensitive detail, and unannounced plans.
+- If unsafe, output `Publish blocked` and do not write `docs/**`.
 
 ### Execute A Plan
 
