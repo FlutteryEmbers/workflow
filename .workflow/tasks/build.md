@@ -1,12 +1,12 @@
 ---
 id: build
 role: builder
-purpose: Apply an approved plan to code and adjacent module documentation.
+purpose: Apply an approved plan to repository artifacts.
 inputs:
   - plan
 outputs:
-  - code_changes
-  - src/{module}/MODULE.md
+  - repository_changes
+  - code_or_documentation_updates
 user_selectable_lenses:
   - test
   - debug
@@ -14,7 +14,7 @@ user_selectable_lenses:
 done_check:
   - plan_was_followed
   - verification_evidence_recorded
-  - module_docs_updated_when_needed
+  - artifact_boundaries_preserved
 ---
 
 # Build Task
@@ -30,7 +30,7 @@ Required:
 
 - #.workflow/tasks/build.md
 - approved plan file
-- target source files
+- target source files, docs, prompts, templates, or workflow artifacts
 
 User-selected lenses:
 
@@ -41,7 +41,9 @@ User-selected lenses:
 
 ## Instructions
 
-Implement the approved plan. Read relevant code first, keep edits inside the plan's scope, and stop if the plan requires unapproved interface, config, data, or architecture changes.
+Implement the approved plan. Read relevant artifacts first, keep edits inside the plan's scope, and stop if the plan requires unapproved interface, config, data, architecture, or workflow behavior changes.
+
+Build may update code, docs, prompts, templates, or workflow artifacts only when the approved plan explicitly names them. Do not modify `.workflow/**` unless the approved plan targets workflow behavior.
 
 ## Lens Suggestions
 
@@ -51,7 +53,8 @@ Implement the approved plan. Read relevant code first, keep edits inside the pla
 
 ## Output Rules
 
-- Code changes live in the project codebase.
+- Repository changes live in the project codebase.
+- Workflow system changes live in `.workflow/**` and require an explicit approved plan.
 - Adjacent living docs stay in `src/**/MODULE.md`.
 - With `change` lens, record evidence in `{WorkflowRoot}/.docs/changes/{change_id}/evidence.md`.
 

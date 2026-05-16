@@ -9,11 +9,11 @@ Use this file as a menu for manual Add Context. Prefer one task plus only the fi
 - If no lens is named, use `Lens: none`.
 - Do not add all task, template, role, or lens files.
 
-## Prompt Pattern
+## Prompt Format
 
 ```text
 Task: <route|clarify|explore|shape|plan|build|review|sync>
-Lens: <none|iteration|expand|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>
+Lens: <none|iteration|expand|distill|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>
 Context:
 - #.workflow/tasks/<task>.md
 - #.workflow/templates/<template>.md
@@ -58,6 +58,7 @@ Add:
 
 Optional user-selected lenses:
 
+- #.workflow/lenses/distill.md
 - #.workflow/lenses/architecture.md
 - #.workflow/lenses/strategy.md
 - #.workflow/lenses/knowledge.md
@@ -75,6 +76,7 @@ Optional user-selected lenses:
 
 - #.workflow/lenses/iteration.md
 - #.workflow/lenses/expand.md
+- #.workflow/lenses/distill.md
 - #.workflow/lenses/language.md
 - #.workflow/lenses/domain.md
 - #.workflow/lenses/strategy.md
@@ -150,7 +152,7 @@ Add:
 
 - #.workflow/tasks/build.md
 - approved plan file
-- target source files
+- target source files, docs, prompts, templates, or workflow artifacts
 
 Optional user-selected lenses:
 
@@ -169,6 +171,7 @@ Add:
 Optional user-selected lenses:
 
 - #.workflow/lenses/redteam.md
+- #.workflow/lenses/distill.md
 - #.workflow/lenses/language.md
 - #.workflow/lenses/domain.md
 - #.workflow/lenses/debug.md
@@ -189,9 +192,34 @@ Optional user-selected lenses:
 
 - #.workflow/lenses/change.md
 - #.workflow/lenses/knowledge.md
+- #.workflow/lenses/distill.md
 - #.workflow/lenses/language.md
 - #.workflow/lenses/domain.md
 - #.workflow/lenses/architecture.md
+
+### Distill A Reference
+
+Use this when a strong business document, architecture directory, RFC, ADR, handbook, or knowledge base feels useful, but the reusable structure is not obvious yet.
+
+For pure knowledge capture, use `explore --lens distill --lens knowledge -> sync --lens knowledge`.
+
+For improving Workflow Lite itself, use `explore --lens distill -> shape --lens distill --lens strategy -> plan -> build -> review`.
+
+Add:
+
+- #.workflow/tasks/explore.md as the main task for first-pass extraction
+- #.workflow/templates/distillation.md
+- #.workflow/lenses/distill.md
+- the reference document, directory, pasted material, or existing `.docs/**` artifact
+- #.workflow/lenses/knowledge.md only when the result should become durable knowledge
+
+Optional follow-up context:
+
+- #.workflow/tasks/shape.md and #.workflow/lenses/strategy.md when deciding what to adopt, adapt, reject, or revisit
+- #.workflow/tasks/plan.md when the chosen improvement should become an approved plan
+- #.workflow/tasks/build.md only after the approved plan explicitly names the repository artifacts to modify
+
+Do not use `sync` to directly edit `.workflow/**`. Template, lens, prompt, or workflow behavior changes must go through `plan -> build`.
 
 ### Language Style
 

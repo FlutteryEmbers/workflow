@@ -9,6 +9,7 @@ outputs:
 user_selectable_lenses:
   - iteration
   - expand
+  - distill
   - language
   - domain
   - strategy
@@ -55,7 +56,7 @@ Use this mode when the user asks how to use this workflow, which task/lens to ch
 - `explore`: understand code, materials, feasibility, or current behavior.
 - `shape`: turn context into a solution shape, interface, rule, or decision.
 - `plan`: turn a chosen direction into executable steps.
-- `build`: apply an approved plan to code and adjacent module docs.
+- `build`: apply an approved plan to repository artifacts.
 - `review`: inspect behavior, risks, defects, evidence, or refactor options.
 - `sync`: update living docs, archive facts, or organize knowledge.
 
@@ -63,6 +64,7 @@ Use this mode when the user asks how to use this workflow, which task/lens to ch
 
 - Suggest `iteration` when the user is co-designing across multiple turns and adding background progressively.
 - Suggest `expand` when a short shape or plan needs details, examples, pseudocode, smaller diagrams, or split parts.
+- Suggest `distill` when a reference document, architecture folder, or handbook should be studied for reusable structure and writing principles.
 - Suggest `language` when the user asks for full English, translation, terminology consistency, or glossary cleanup.
 - Suggest `domain` when terms, business rules, or ownership are unclear.
 - Suggest `strategy` when technical routes or design options need comparison.
@@ -82,6 +84,7 @@ Use this mode when the user asks how to use this workflow, which task/lens to ch
 - Expansion: `shape/plan --lens expand -> review --lens redteam -> plan/sync`
 - Bug fix: `review --lens debug -> plan -> build`
 - Knowledge capture: `explore/sync --lens knowledge`
+- Reference distillation: `explore --lens distill -> shape --lens distill --lens strategy -> plan -> build -> review`
 - Docs or durable facts: `sync`
 - Full English or terminology cleanup: relevant task plus `language`
 

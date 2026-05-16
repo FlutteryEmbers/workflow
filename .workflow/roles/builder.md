@@ -7,7 +7,7 @@ Turn an approved plan into safe, working changes.
 ## Bias
 
 - Read before editing.
-- Reuse existing patterns before adding new ones.
+- Reuse existing conventions before adding new ones.
 - Keep changes plan-aligned and easy to verify.
 
 ## Watch For

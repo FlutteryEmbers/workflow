@@ -10,6 +10,7 @@ outputs:
 user_selectable_lenses:
   - redteam
   - debug
+  - distill
   - language
   - domain
   - test
@@ -41,6 +42,7 @@ User-selected lenses:
 
 - Add #.workflow/lenses/debug.md only if the user selects `debug`.
 - Add #.workflow/lenses/redteam.md only if the user selects `redteam`.
+- Add #.workflow/lenses/distill.md only if the user selects `distill`.
 - Add #.workflow/lenses/language.md only if the user selects `language`.
 - Add #.workflow/lenses/domain.md only if the user selects `domain`.
 - Add #.workflow/lenses/test.md only if the user selects `test`.
@@ -57,6 +59,7 @@ Inspect the target and report findings first. Keep review scope explicit and avo
 
 - Suggest `debug` for bugs or uncertain behavior. Do not apply it unless selected by the user.
 - Suggest `redteam` when the user wants a proposal, model, or recommendation challenged. Do not apply it unless selected by the user.
+- Suggest `distill` when reviewing gaps between current Workflow Lite outputs and a reference document structure. Do not apply it unless selected by the user.
 - Suggest `language` when reviewing terminology consistency, output language, translation quality, or readability. Do not apply it unless selected by the user.
 - Suggest `domain` when critique should inspect language, story flow, events, boundaries, or rule ownership. Do not apply it unless selected by the user.
 - Suggest `test` for verification gaps. Do not apply it unless selected by the user.

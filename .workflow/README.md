@@ -41,7 +41,7 @@ graph TD
 | `explore` | `designer` | `.docs/work/notes/` | Understand code, material, feasibility, or current behavior. |
 | `shape` | `designer` | `.docs/work/shapes/` | Shape a solution, rule, contract, structure, or decision. |
 | `plan` | `designer` | `.docs/work/plans/` | Turn a chosen direction or target design into repo-aware executable steps. |
-| `build` | `builder` | code and `src/**/MODULE.md` | Apply an approved plan safely. |
+| `build` | `builder` | repository changes | Apply an approved plan to code, docs, prompts, templates, or workflow artifacts. |
 | `review` | `reviewer` | `.docs/work/reviews/` | Inspect behavior, risks, evidence, or refactor options. |
 | `sync` | `steward` | updated docs | Update living docs, archive durable facts, or organize knowledge. |
 
@@ -53,6 +53,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 | :--- | :--- |
 | `iteration` | Multi-turn discussion needs session state, background deltas, decisions, and open questions. |
 | `expand` | A short shape or plan needs details, examples, pseudocode, smaller diagrams, or split part files. |
+| `distill` | A strong reference document or knowledge system should be studied for reusable structure and writing principles. |
 | `language` | Full English, translation, terminology consistency, or glossary maintenance is needed. |
 | `domain` | Terms, rules, ownership, or boundaries are unclear. |
 | `strategy` | Technical routes or design options need comparison. |
@@ -185,6 +186,8 @@ Do not create language-specific directories or filename variants by default.
 - Conversation-driven design: `shape --lens iteration --lens strategy -> review --lens redteam -> shape -> sync`
 - Target design planning: `shape -> explore -> plan -> review -> plan`
 - Expansion: `shape/plan --lens expand -> review --lens redteam -> plan/sync`
+- Reference distillation for knowledge: `explore --lens distill --lens knowledge -> sync --lens knowledge`
+- Reference distillation for workflow improvement: `explore --lens distill -> shape --lens distill --lens strategy -> plan -> build -> review`
 - Bug or risk: `review --lens debug -> plan -> build`
 - Larger tracked work: enable `change` lens and use `.docs/changes/{change_id}/`
 - Knowledge capture: enable `knowledge` lens and use `.docs/knowledge/`
@@ -225,9 +228,23 @@ Use `expand` when a compact shape, concept, decision, or plan needs more detail 
 - Split expansion: `{base}.expanded.md` plus `{base}.part_{topic}.md`.
 - The main expanded file must include an `Expansion Index`.
 - Each part must declare `Source`, `Part Of`, `Part Topic`, `Depends On`, and `Status`.
-- If there are more than 8 parts, keep the same naming pattern and maintain the index instead of creating a new directory.
+- If there are more than 8 parts, keep the same naming scheme and maintain the index instead of creating a new directory.
 - Keep expanded content as draft unless `sync` extracts stable conclusions.
 - Do not write expanded drafts directly into `.docs/current/**`.
+
+## Distillation
+
+Use `distill` when you find an excellent business document, architecture directory, RFC, ADR, handbook, or knowledge base and want to understand why it works.
+
+Distillation is not ordinary summarization. It should extract observed structure, reader journey, information types, why the document works, transferable structures, non-transferable context, and an adoption recommendation: `adopt`, `adapt`, `reject`, or `revisit`.
+
+Default outputs:
+
+- `explore --lens distill`: `.docs/work/notes/note_{source}_distillation.md`
+- `shape --lens distill`: `.docs/work/shapes/shape_distill_{topic}.md`
+- `sync --lens distill --lens knowledge`: `.docs/knowledge/wiki/**` or `.docs/shared/**`
+
+Do not let `sync` directly modify `.workflow/**`. If distillation suggests changing `.workflow/templates/**`, `.workflow/lenses/**`, task prompts, or Copilot guidance, first use `shape` to choose the improvement, then `plan` to approve concrete repository changes, then `build` to apply them.
 
 ## Rules
 

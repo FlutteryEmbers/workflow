@@ -2,7 +2,7 @@
 
 Use this lens when business language, story flow, events, rules, ownership, or boundaries are unclear.
 
-This is a DDD-lite discussion lens. It borrows language, story, event, boundary, and rule-ownership techniques, but does not force tactical DDD patterns.
+This is a DDD-lite discussion lens. It borrows language, story, event, boundary, and rule-ownership techniques, but does not force tactical DDD practices.
 
 ## Add Only When Needed
 
@@ -23,5 +23,5 @@ This is a DDD-lite discussion lens. It borrows language, story, event, boundary,
 
 ## Not Required
 
-- Do not force entity, aggregate, repository, factory, or tactical pattern labels.
+- Do not force entity, aggregate, repository, factory, or tactical labels.
 - Do not turn conceptual discussion into implementation modeling too early.

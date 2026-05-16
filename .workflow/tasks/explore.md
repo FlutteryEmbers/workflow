@@ -9,6 +9,7 @@ outputs:
   - .docs/knowledge/raw/{source_name}
   - .docs/knowledge/wiki/{page}.md
 user_selectable_lenses:
+  - distill
   - architecture
   - strategy
   - knowledge
@@ -36,6 +37,7 @@ Required:
 
 User-selected lenses:
 
+- Add #.workflow/lenses/distill.md only if the user selects `distill`.
 - Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
 - Add #.workflow/lenses/strategy.md only if the user selects `strategy`.
 - Add #.workflow/lenses/knowledge.md only if the user selects `knowledge`.
@@ -48,6 +50,7 @@ Use this task to learn before deciding. Inspect the relevant code, docs, example
 
 ## Lens Suggestions
 
+- Suggest `distill` when studying a strong reference document, architecture folder, RFC, ADR, handbook, or knowledge base for reusable structure. Do not apply it unless selected by the user.
 - Suggest `architecture` when boundaries or dependencies are part of the question. Do not apply it unless selected by the user.
 - Suggest `strategy` when the user wants early technical route exploration. Do not apply it unless selected by the user.
 - Suggest `knowledge` when preserving source material matters. Do not apply it unless selected by the user.
@@ -56,6 +59,7 @@ Use this task to learn before deciding. Inspect the relevant code, docs, example
 ## Output Rules
 
 - Default path: `{WorkflowRoot}/.docs/work/notes/note_{topic}.md`
+- With `distill` lens, use `.workflow/templates/distillation.md` and write `{WorkflowRoot}/.docs/work/notes/note_{source}_distillation.md`.
 - With `strategy` lens, use `.workflow/templates/options.md` when early route comparison is useful.
 - With `knowledge` lens, preserve raw material under `.docs/knowledge/raw/` and update `.docs/knowledge/wiki/`.
 - Temporary experiments may use `.sandbox/{topic}/`, but do not modify production code during exploration.

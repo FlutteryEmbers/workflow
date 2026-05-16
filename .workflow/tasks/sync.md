@@ -12,6 +12,7 @@ outputs:
 user_selectable_lenses:
   - change
   - knowledge
+  - distill
   - language
   - domain
   - architecture
@@ -40,6 +41,7 @@ User-selected lenses:
 
 - Add #.workflow/lenses/change.md only if the user selects `change`.
 - Add #.workflow/lenses/knowledge.md only if the user selects `knowledge`.
+- Add #.workflow/lenses/distill.md only if the user selects `distill`.
 - Add #.workflow/lenses/language.md only if the user selects `language`.
 - Add #.workflow/lenses/domain.md only if the user selects `domain`.
 - Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
@@ -53,6 +55,7 @@ Use this task to reduce knowledge drift. Update only the living docs needed for 
 
 - Suggest `change` when archiving a tracked change. Do not apply it unless selected by the user.
 - Suggest `knowledge` when organizing raw material or wiki pages. Do not apply it unless selected by the user.
+- Suggest `distill` when stable reference-derived structures or writing principles should be preserved as knowledge or shared guidance. Do not apply it unless selected by the user.
 - Suggest `language` when stable terminology should be normalized or synced to `.docs/shared/glossary.md`. Do not apply it unless selected by the user.
 - Suggest `domain` when shared terms or rules need cleanup. Do not apply it unless selected by the user.
 - Suggest `architecture` when confirmed architecture constraints should be recorded. Do not apply it unless selected by the user.
@@ -64,6 +67,7 @@ Use this task to reduce knowledge drift. Update only the living docs needed for 
 - Durable facts go to `{WorkflowRoot}/.docs/current/{topic}.md`.
 - Knowledge pages go to `{WorkflowRoot}/.docs/knowledge/wiki/`.
 - Shared project conventions go to `{WorkflowRoot}/.docs/shared/`.
+- With `distill` lens, preserve stable distillation results only in `.docs/knowledge/wiki/**` or `.docs/shared/**`; do not modify `.workflow/**`.
 - With `language` lens, stable terminology goes to `{WorkflowRoot}/.docs/shared/glossary.md`.
 - With `architecture` lens, confirmed boundaries and constraints go to `{WorkflowRoot}/.docs/shared/boundaries.md`.
 - With `change` lens, write archive notes to `{WorkflowRoot}/.docs/changes/{change_id}/archive.md`.

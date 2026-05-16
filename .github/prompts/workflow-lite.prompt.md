@@ -1,6 +1,6 @@
 ---
 description: Use Workflow Lite with explicit user-selected lenses.
-argument-hint: "Task=<route|clarify|explore|shape|plan|build|review|sync>; Lens=<none|iteration|expand|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>; Request=<what you want>"
+argument-hint: "Task=<route|clarify|explore|shape|plan|build|review|sync>; Lens=<none|iteration|expand|distill|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>; Request=<what you want>"
 ---
 
 # Workflow Lite Prompt
@@ -25,7 +25,7 @@ Request: ${input:request:describe the work}
 - Copilot may recommend additional lenses for a follow-up turn.
 - Keep ordinary outputs in `.docs/work/**`.
 
-## Context Pattern
+## Context Format
 
 Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only when producing a file artifact.
