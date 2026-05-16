@@ -23,23 +23,23 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /workflow_core/roles/designer.md}}
-Template: {{CONTENT: /workflow_core/templates/note.md}}
+Role: {{CONTENT: /.workflow/roles/designer.md}}
+Template: {{CONTENT: /.workflow/templates/note.md}}
 
 ## Copilot Add Context
 
 Required:
 
-- #workflow_core/tasks/explore.md
-- #workflow_core/templates/note.md
+- #.workflow/tasks/explore.md
+- #.workflow/templates/note.md
 - relevant source, docs, notes, or code files
 
 User-selected lenses:
 
-- Add #workflow_core/lenses/architecture.md only if the user selects `architecture`.
-- Add #workflow_core/lenses/strategy.md only if the user selects `strategy`.
-- Add #workflow_core/lenses/knowledge.md only if the user selects `knowledge`.
-- Add #workflow_core/lenses/debug.md only if the user selects `debug`.
+- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
+- Add #.workflow/lenses/strategy.md only if the user selects `strategy`.
+- Add #.workflow/lenses/knowledge.md only if the user selects `knowledge`.
+- Add #.workflow/lenses/debug.md only if the user selects `debug`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
@@ -56,7 +56,7 @@ Use this task to learn before deciding. Inspect the relevant code, docs, example
 ## Output Rules
 
 - Default path: `{WorkflowRoot}/.docs/work/notes/note_{topic}.md`
-- With `strategy` lens, use `workflow_core/templates/options.md` when early route comparison is useful.
+- With `strategy` lens, use `.workflow/templates/options.md` when early route comparison is useful.
 - With `knowledge` lens, preserve raw material under `.docs/knowledge/raw/` and update `.docs/knowledge/wiki/`.
 - Temporary experiments may use `.sandbox/{topic}/`, but do not modify production code during exploration.
 

@@ -26,29 +26,29 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /workflow_core/roles/designer.md}}
-Template: {{CONTENT: /workflow_core/templates/shape.md}}
+Role: {{CONTENT: /.workflow/roles/designer.md}}
+Template: {{CONTENT: /.workflow/templates/shape.md}}
 
 ## Copilot Add Context
 
 Required:
 
-- #workflow_core/tasks/shape.md
-- #workflow_core/templates/shape.md
+- #.workflow/tasks/shape.md
+- #.workflow/templates/shape.md
 - relevant brief, note, code, or decision context
 
 User-selected lenses:
 
-- Add #workflow_core/lenses/domain.md only if the user selects `domain`.
-- Add #workflow_core/lenses/iteration.md only if the user selects `iteration`.
-- Add #workflow_core/lenses/expand.md only if the user selects `expand`.
-- Add #workflow_core/lenses/language.md only if the user selects `language`.
-- Add #workflow_core/lenses/strategy.md only if the user selects `strategy`.
-- Add #workflow_core/lenses/architecture.md only if the user selects `architecture`.
-- Add #workflow_core/lenses/test.md only if the user selects `test`.
-- Add #workflow_core/lenses/change.md only if the user selects `change`.
-- Add #workflow_core/templates/expanded.md only when the user selects `expand`.
-- Add #workflow_core/templates/session.md, #workflow_core/templates/options.md, or #workflow_core/templates/concept.md only when the selected lenses need them.
+- Add #.workflow/lenses/domain.md only if the user selects `domain`.
+- Add #.workflow/lenses/iteration.md only if the user selects `iteration`.
+- Add #.workflow/lenses/expand.md only if the user selects `expand`.
+- Add #.workflow/lenses/language.md only if the user selects `language`.
+- Add #.workflow/lenses/strategy.md only if the user selects `strategy`.
+- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
+- Add #.workflow/lenses/test.md only if the user selects `test`.
+- Add #.workflow/lenses/change.md only if the user selects `change`.
+- Add #.workflow/templates/expanded.md only when the user selects `expand`.
+- Add #.workflow/templates/session.md, #.workflow/templates/options.md, or #.workflow/templates/concept.md only when the selected lenses need them.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
@@ -70,10 +70,10 @@ Turn clarified context into a solution shape that is detailed enough for plannin
 
 - Default path: `{WorkflowRoot}/.docs/work/shapes/shape_{topic}.md`
 - Important durable decisions may also be recorded at `{WorkflowRoot}/.docs/work/decisions/dec_{topic}.md`
-- With `iteration` lens, maintain discussion state with `workflow_core/templates/session.md`.
-- With `expand` lens, use `workflow_core/templates/expanded.md` and write `{base}.expanded.md` plus optional `{base}.part_{topic}.md` in the same directory as the source shape or decision.
-- With `strategy` lens, compare routes with `workflow_core/templates/options.md`.
-- With `domain` lens for conceptual design, use `workflow_core/templates/concept.md` when a concept model is needed.
+- With `iteration` lens, maintain discussion state with `.workflow/templates/session.md`.
+- With `expand` lens, use `.workflow/templates/expanded.md` and write `{base}.expanded.md` plus optional `{base}.part_{topic}.md` in the same directory as the source shape or decision.
+- With `strategy` lens, compare routes with `.workflow/templates/options.md`.
+- With `domain` lens for conceptual design, use `.workflow/templates/concept.md` when a concept model is needed.
 - Do not force contract, domain, or architecture detail unless a lens is enabled.
 
 ## User Input

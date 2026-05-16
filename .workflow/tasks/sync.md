@@ -25,24 +25,24 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /workflow_core/roles/steward.md}}
-Template: {{CONTENT: /workflow_core/templates/sync.md}}
+Role: {{CONTENT: /.workflow/roles/steward.md}}
+Template: {{CONTENT: /.workflow/templates/sync.md}}
 
 ## Copilot Add Context
 
 Required:
 
-- #workflow_core/tasks/sync.md
-- #workflow_core/templates/sync.md
+- #.workflow/tasks/sync.md
+- #.workflow/templates/sync.md
 - source doc, change record, code-adjacent doc, or knowledge material
 
 User-selected lenses:
 
-- Add #workflow_core/lenses/change.md only if the user selects `change`.
-- Add #workflow_core/lenses/knowledge.md only if the user selects `knowledge`.
-- Add #workflow_core/lenses/language.md only if the user selects `language`.
-- Add #workflow_core/lenses/domain.md only if the user selects `domain`.
-- Add #workflow_core/lenses/architecture.md only if the user selects `architecture`.
+- Add #.workflow/lenses/change.md only if the user selects `change`.
+- Add #.workflow/lenses/knowledge.md only if the user selects `knowledge`.
+- Add #.workflow/lenses/language.md only if the user selects `language`.
+- Add #.workflow/lenses/domain.md only if the user selects `domain`.
+- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions

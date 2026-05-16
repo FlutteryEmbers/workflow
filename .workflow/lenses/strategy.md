@@ -19,5 +19,5 @@ Use this lens when the user wants AI to propose and compare technical routes or 
 
 ## Output Hints
 
-- Use `workflow_core/templates/options.md` for option comparison.
-- Use `workflow_core/templates/shape.md` only when the direction is stable enough to shape.
+- Use `.workflow/templates/options.md` for option comparison.
+- Use `.workflow/templates/shape.md` only when the direction is stable enough to shape.

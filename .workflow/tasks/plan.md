@@ -29,28 +29,28 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /workflow_core/roles/designer.md}}
-Template: {{CONTENT: /workflow_core/templates/plan.md}}
+Role: {{CONTENT: /.workflow/roles/designer.md}}
+Template: {{CONTENT: /.workflow/templates/plan.md}}
 
 ## Copilot Add Context
 
 Required:
 
-- #workflow_core/tasks/plan.md
-- #workflow_core/templates/plan.md
+- #.workflow/tasks/plan.md
+- #.workflow/templates/plan.md
 - relevant brief, shape, concept, note, review, target design, or requested work
 - relevant source files or docs when the plan must map onto the current repo
 
 User-selected lenses:
 
-- Add #workflow_core/lenses/iteration.md only if the user selects `iteration`.
-- Add #workflow_core/lenses/expand.md only if the user selects `expand`.
-- Add #workflow_core/lenses/language.md only if the user selects `language`.
-- Add #workflow_core/lenses/strategy.md only if the user selects `strategy`.
-- Add #workflow_core/lenses/test.md only if the user selects `test`.
-- Add #workflow_core/lenses/architecture.md only if the user selects `architecture`.
-- Add #workflow_core/lenses/change.md only if the user selects `change`.
-- Add #workflow_core/templates/expanded.md only when the user selects `expand`.
+- Add #.workflow/lenses/iteration.md only if the user selects `iteration`.
+- Add #.workflow/lenses/expand.md only if the user selects `expand`.
+- Add #.workflow/lenses/language.md only if the user selects `language`.
+- Add #.workflow/lenses/strategy.md only if the user selects `strategy`.
+- Add #.workflow/lenses/test.md only if the user selects `test`.
+- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
+- Add #.workflow/lenses/change.md only if the user selects `change`.
+- Add #.workflow/templates/expanded.md only when the user selects `expand`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
@@ -72,7 +72,7 @@ Write the smallest repo-aware plan that another agent or engineer can execute wi
 - Default path: `{WorkflowRoot}/.docs/work/plans/plan_{topic}.md`
 - With `change` lens: `{WorkflowRoot}/.docs/changes/{change_id}/plan.md`
 - For target design planning, explicitly connect target design, current repo fit, impact map, step options, and recommended sequence.
-- With `expand` lens, use `workflow_core/templates/expanded.md` and write `{base}.expanded.md` plus optional `{base}.part_{topic}.md` in the same directory as the source plan.
+- With `expand` lens, use `.workflow/templates/expanded.md` and write `{base}.expanded.md` plus optional `{base}.part_{topic}.md` in the same directory as the source plan.
 - Prefer a short executable plan over a comprehensive document.
 
 ## User Input

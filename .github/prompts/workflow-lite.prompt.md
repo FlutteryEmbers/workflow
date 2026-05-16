@@ -27,7 +27,7 @@ Request: ${input:request:describe the work}
 
 ## Context Pattern
 
-Add the selected task file from `workflow_core/tasks/`.
-Add the matching template from `workflow_core/templates/` only when producing a file artifact.
-Add selected lens files from `workflow_core/lenses/` only when `Lens` is not `none`.
+Add the selected task file from `.workflow/tasks/`.
+Add the matching template from `.workflow/templates/` only when producing a file artifact.
+Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
 Add target source files or existing `.docs/**` files relevant to the request.

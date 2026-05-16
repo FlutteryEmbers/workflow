@@ -28,13 +28,13 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /workflow_core/roles/analyst.md}}
+Role: {{CONTENT: /.workflow/roles/analyst.md}}
 
 ## Copilot Add Context
 
 Required:
 
-- #workflow_core/tasks/route.md
+- #.workflow/tasks/route.md
 
 User-selected lenses:
 
@@ -112,9 +112,9 @@ Suggested path: <task -> task -> task>
 
 ## Add Context
 
-- `workflow_core/tasks/<task>.md`
-- `workflow_core/templates/<template>.md` when producing an artifact
-- `workflow_core/lenses/<lens>.md` only when selected by the user
+- `.workflow/tasks/<task>.md`
+- `.workflow/templates/<template>.md` when producing an artifact
+- `.workflow/lenses/<lens>.md` only when selected by the user
 - <target files, docs, or existing .docs artifacts>
 
 ## Next Prompt

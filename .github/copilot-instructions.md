@@ -7,6 +7,7 @@ This repo uses Workflow Lite.
 - If no lens is named, assume `Lens: none`.
 - Copilot may suggest lenses, but must not apply them automatically.
 - Do not load all workflow files or all lenses by default.
+- Use `.workflow/copilot.md` as the context menu when guidance is needed.
 - For multi-turn design discussions, maintain a session and avoid finalizing too early.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.

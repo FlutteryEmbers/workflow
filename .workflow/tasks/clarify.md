@@ -21,21 +21,21 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /workflow_core/roles/analyst.md}}
-Template: {{CONTENT: /workflow_core/templates/brief.md}}
+Role: {{CONTENT: /.workflow/roles/analyst.md}}
+Template: {{CONTENT: /.workflow/templates/brief.md}}
 
 ## Copilot Add Context
 
 Required:
 
-- #workflow_core/tasks/clarify.md
-- #workflow_core/templates/brief.md
+- #.workflow/tasks/clarify.md
+- #.workflow/templates/brief.md
 
 User-selected lenses:
 
-- Add #workflow_core/lenses/domain.md only if the user selects `domain`.
-- Add #workflow_core/lenses/change.md only if the user selects `change`.
-- Add #workflow_core/lenses/knowledge.md only if the user selects `knowledge`.
+- Add #.workflow/lenses/domain.md only if the user selects `domain`.
+- Add #.workflow/lenses/change.md only if the user selects `change`.
+- Add #.workflow/lenses/knowledge.md only if the user selects `knowledge`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions

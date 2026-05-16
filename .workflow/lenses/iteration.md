@@ -18,5 +18,5 @@ Use this lens when the user wants to co-design through multiple turns before wri
 
 ## Output Hints
 
-- Use `workflow_core/templates/session.md` for the working state.
-- Use `workflow_core/templates/options.md` when technical routes are being compared.
+- Use `.workflow/templates/session.md` for the working state.
+- Use `.workflow/templates/options.md` when technical routes are being compared.

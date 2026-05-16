@@ -18,4 +18,4 @@ Use this lens when the user wants to challenge a current option, model, plan, or
 
 ## Output Hints
 
-- Use `workflow_core/templates/critique.md`.
+- Use `.workflow/templates/critique.md`.

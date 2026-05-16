@@ -26,27 +26,27 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /workflow_core/roles/reviewer.md}}
-Template: {{CONTENT: /workflow_core/templates/review.md}}
+Role: {{CONTENT: /.workflow/roles/reviewer.md}}
+Template: {{CONTENT: /.workflow/templates/review.md}}
 
 ## Copilot Add Context
 
 Required:
 
-- #workflow_core/tasks/review.md
-- #workflow_core/templates/review.md
+- #.workflow/tasks/review.md
+- #.workflow/templates/review.md
 - target source, docs, behavior claim, or evidence
 
 User-selected lenses:
 
-- Add #workflow_core/lenses/debug.md only if the user selects `debug`.
-- Add #workflow_core/lenses/redteam.md only if the user selects `redteam`.
-- Add #workflow_core/lenses/language.md only if the user selects `language`.
-- Add #workflow_core/lenses/domain.md only if the user selects `domain`.
-- Add #workflow_core/lenses/test.md only if the user selects `test`.
-- Add #workflow_core/lenses/architecture.md only if the user selects `architecture`.
-- Add #workflow_core/lenses/knowledge.md only if the user selects `knowledge`.
-- Add #workflow_core/lenses/change.md only if the user selects `change`.
+- Add #.workflow/lenses/debug.md only if the user selects `debug`.
+- Add #.workflow/lenses/redteam.md only if the user selects `redteam`.
+- Add #.workflow/lenses/language.md only if the user selects `language`.
+- Add #.workflow/lenses/domain.md only if the user selects `domain`.
+- Add #.workflow/lenses/test.md only if the user selects `test`.
+- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
+- Add #.workflow/lenses/knowledge.md only if the user selects `knowledge`.
+- Add #.workflow/lenses/change.md only if the user selects `change`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
@@ -67,7 +67,7 @@ Inspect the target and report findings first. Keep review scope explicit and avo
 ## Output Rules
 
 - Default path: `{WorkflowRoot}/.docs/work/reviews/review_{topic}.md`
-- With `redteam` lens, use `workflow_core/templates/critique.md`.
+- With `redteam` lens, use `.workflow/templates/critique.md`.
 - With `change` lens: `{WorkflowRoot}/.docs/changes/{change_id}/evidence.md`
 
 ## User Input

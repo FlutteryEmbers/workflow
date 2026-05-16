@@ -21,22 +21,22 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /workflow_core/roles/builder.md}}
-Module Template: {{CONTENT: /workflow_core/templates/module_status.md}}
+Role: {{CONTENT: /.workflow/roles/builder.md}}
+Module Template: {{CONTENT: /.workflow/templates/module_status.md}}
 
 ## Copilot Add Context
 
 Required:
 
-- #workflow_core/tasks/build.md
+- #.workflow/tasks/build.md
 - approved plan file
 - target source files
 
 User-selected lenses:
 
-- Add #workflow_core/lenses/test.md only if the user selects `test`.
-- Add #workflow_core/lenses/debug.md only if the user selects `debug`.
-- Add #workflow_core/lenses/change.md only if the user selects `change`.
+- Add #.workflow/lenses/test.md only if the user selects `test`.
+- Add #.workflow/lenses/debug.md only if the user selects `debug`.
+- Add #.workflow/lenses/change.md only if the user selects `change`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions

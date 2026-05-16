@@ -28,7 +28,7 @@ Use this lens when a short shape, conceptual design, or plan needs to become a d
 
 ## Output Hints
 
-- Use `workflow_core/templates/expanded.md`.
+- Use `.workflow/templates/expanded.md`.
 - Small expansion: `{base}.expanded.md`.
 - Split expansion: `{base}.expanded.md` plus `{base}.part_{topic}.md`.
 - The main expanded file should include an `Expansion Index`.
