@@ -37,5 +37,6 @@ Output `Publish blocked` and do not write official docs when:
 ## Output Hints
 
 - `review --lens publish`: identify publishable facts, do-not-publish content, blockers, and recommended action.
-- `sync --lens publish`: publish a sanitized official doc only through the fast path `Mode: persist`, `Task: sync`, `Lens: publish`, `Target: docs/**`.
+- `sync --lens publish`: workflow-managed fast path for publishing a sanitized official doc with `Mode: persist`, `Task: sync`, `Lens: publish`, `Target: docs/**`.
+- External-agent publish: native Plan/Implement may publish `docs/**` only after the publish plan is audited and the resulting diff is reviewed against these rules.
 - If the target does not exist, `.workflow/templates/publish_note.md` may be used as a light starting point.

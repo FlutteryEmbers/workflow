@@ -30,8 +30,11 @@ Request: ${input:request:describe the work}
 - In `Mode: discuss`, do not load templates and do not create or update files.
 - In `Mode: persist`, load the matching template and write only the requested target.
 - In `Mode: execute`, require `Task: build` and an approved plan.
+- If using Codex/Copilot native Plan -> Implement, label it as the `External-agent path`; do not model it as `Mode: execute`.
+- For the External-agent path, audit the native plan before implementation and review the diff after implementation.
 - Block instead of writing when `Mode: persist` lacks `Target`, `Mode: execute` lacks `Plan`, the target is outside the mode boundary, or instructions conflict.
-- `docs/**` can be written only by `Mode: persist` with `Task: sync` and `Lens: publish`, or by `Mode: execute` with an approved plan.
+- `docs/**` can be written by `Mode: persist` with `Task: sync` and `Lens: publish`, by workflow-managed `Mode: execute` with an approved plan, or by audited external-agent publishing.
+- Native Plan/Implement may publish `docs/**` only when the external publish plan follows `publish` lens rules, is audited before implementation, and the diff is reviewed afterward.
 - Never copy `.docs/**` directly into `docs/**`; publish only sanitized official project documentation.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
@@ -44,3 +47,25 @@ Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only in `Mode: persist`.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
 Add target source files or existing `.docs/**` files relevant to the request.
+
+## External-Agent Review Formats
+
+Plan audit:
+
+```text
+Mode: discuss
+Task: review
+Lens: redteam, test, architecture
+Request:
+Audit this external plan before native implementation. Return approved, needs changes, or blocked.
+```
+
+Diff review:
+
+```text
+Mode: discuss
+Task: review
+Lens: consistency, test
+Request:
+Review the diff against the approved external plan. Identify scope drift, missing verification, and follow-up.
+```

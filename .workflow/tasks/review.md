@@ -78,6 +78,32 @@ User-selected lenses:
 
 Inspect the target and report findings first. Keep review scope explicit and avoid rewriting the solution unless the user asks for a fix plan.
 
+## External Plan Audit
+
+Use this in `Mode: discuss` to audit a Codex/Copilot native Plan before native implementation.
+
+Output a clear decision:
+
+- `approved`: the plan is safe to implement as written.
+- `needs changes`: the plan is directionally valid but needs edits before implementation.
+- `blocked`: the plan is missing critical scope, safety, verification, or source-of-truth information.
+- `publish blocked`: the plan is an official docs publish plan and publish safety is unclear.
+
+Check scope, target files, do-not-touch areas, dependency or interface changes, verification, rollback, open questions, and whether the plan exceeds the user's stated intent.
+
+With `publish` lens, also check source, target, audience, source of truth, publishable facts, do-not-publish content, sanitization steps, blockers, and whether `.docs/**` content could leak into `docs/**`.
+
+## External Diff Review
+
+Use this in `Mode: discuss` after Codex/Copilot native implementation.
+
+Compare the diff against the approved external plan:
+
+- Identify scope drift, unrelated edits, missing edits, missing verification, and changed files outside the approved target list.
+- Check whether `.docs/**`, `.workflow/**`, `docs/**`, or source files were modified without explicit approval.
+- With `publish` lens, verify that official `docs/**` content is sanitized, audience-appropriate, source-of-truth aligned, and free of internal workflow details.
+- Recommend one of: accept, revise diff, add verification, revert unrelated edits, or create a follow-up plan.
+
 ## Lens Suggestions
 
 - Suggest `debug` for bugs or uncertain behavior. Do not apply it unless selected by the user.
@@ -95,6 +121,8 @@ Inspect the target and report findings first. Keep review scope explicit and avo
 ## Output Rules
 
 - In `Mode: discuss`, report findings, risks, or critique in chat only.
+- For external plan audit, output `Decision: approved | needs changes | blocked | publish blocked` before detailed findings.
+- For external diff review, compare the diff against the approved external plan before making broader recommendations.
 - Default path: `{WorkflowRoot}/.docs/work/reviews/review_{topic}.md`
 - With `redteam` lens, use `.workflow/templates/critique.md`.
 - With `consistency` lens, use `.workflow/templates/consistency_review.md` and do not directly modify docs or code.

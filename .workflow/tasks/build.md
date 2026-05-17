@@ -19,6 +19,8 @@ done_check:
 
 # Build Task
 
+`build` is the workflow-managed execution task. Codex/Copilot native Plan -> Implement is the external-agent write path; it does not use `build`, but its plan should be audited before implementation and its diff should be reviewed afterward.
+
 ## Context Injection
 
 Role: {{CONTENT: /.workflow/roles/builder.md}}
@@ -30,6 +32,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 - `Mode: discuss` is default: explain the build approach or missing prerequisites in chat, do not write files.
 - `Mode: persist`: not valid for this task; use the relevant documentation task instead.
 - `Mode: execute`: required for repository changes and must include an approved `Plan`.
+- For native Codex/Copilot Implement, use the external-agent path instead of this task, then run `review` on the resulting diff.
 
 ## Copilot Add Context
 
@@ -51,6 +54,8 @@ User-selected lenses:
 In `Mode: execute`, implement the approved plan. Read relevant artifacts first, keep edits inside the plan's scope, and stop if the plan requires unapproved interface, config, data, architecture, or workflow behavior changes.
 
 If `Mode: execute` or an approved `Plan` is missing, do not modify files; explain what is needed to proceed.
+
+Do not treat native Plan/Implement output as workflow-managed execution unless the user explicitly provides it as the approved `Plan` for `Mode: execute`.
 
 Build may update code, docs, prompts, templates, or workflow artifacts only when the approved plan explicitly names them. Do not modify `.workflow/**` unless the approved plan targets workflow behavior.
 

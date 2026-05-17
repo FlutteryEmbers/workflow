@@ -26,6 +26,7 @@ Request:
 - `Mode: execute` applies an approved plan. Use `Task: build`, add the approved plan, selected lenses, and target files or artifacts.
 - `Lens: change` still means tracked work under `.docs/changes/{change_id}`. It is not an execution mode.
 - `Lens: publish` is the only persist fast path for writing sanitized official docs under `docs/**`.
+- Codex/Copilot native Plan -> Implement is the `external-agent` write path. It is not a Workflow Mode and does not use `Task: build`.
 
 ## Lens Selection Rules
 
@@ -51,6 +52,7 @@ For `Mode: execute`, use `## Execution Understanding` and name the approved plan
 - `discuss`: no writes.
 - `persist`: write `.docs/**`; only `Task: sync` may write `src/**/README.md`, or `docs/**` when `Lens: publish` is selected.
 - `execute`: may modify broader repository artifacts only when the approved plan says so.
+- `external-agent`: native Plan/Implement may write files directly, but the native plan must be audited before implementation and the diff must be reviewed afterward.
 - `.docs/**` is workflow workspace. `docs/**` is official project documentation and must be sanitized.
 
 ## Discuss Context
@@ -99,6 +101,106 @@ Add:
 - selected #.workflow/lenses/test.md, #.workflow/lenses/debug.md, or #.workflow/lenses/change.md only when selected
 
 If an approved plan is missing, do not modify files. Explain what plan is needed.
+
+## External Agent Write Path
+
+Use this when Codex/Copilot native Plan -> Implement should edit files directly. Workflow Lite is used as context, constraints, audit checklist, and diff review.
+
+### 1. Discuss
+
+```text
+Mode: discuss
+Task: shape
+Lens: none or selected lenses
+Request:
+Discuss the target direction. Do not write files.
+```
+
+Add #.workflow/tasks/shape.md or #.workflow/tasks/plan.md plus selected lenses and relevant source context. Do not add templates.
+
+### 2. Native Plan
+
+Use the editor's native Plan phase:
+
+```text
+Use native Plan phase. Create an implementation plan only; do not edit files.
+Include goal, target files, proposed changes, do-not-touch areas, risks, verification, rollback, and open questions.
+```
+
+Add relevant source files, prior chat summary, and selected `.workflow` task/lens files as context.
+
+### 3. Audit Plan
+
+```text
+Mode: discuss
+Task: review
+Lens: redteam, test, architecture
+Request:
+Audit this external plan before implementation. Return approved, needs changes, or blocked.
+```
+
+Add #.workflow/tasks/review.md, selected lenses, and the external plan text.
+
+### 4. Native Implement
+
+After the plan is approved, use native Implement:
+
+```text
+Implement only the approved external plan. Do not broaden scope. Do not modify .docs/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved plan.
+```
+
+### 5. Review Diff
+
+```text
+Mode: discuss
+Task: review
+Lens: consistency, test
+Request:
+Review the diff against the approved external plan. Identify scope drift, missing verification, and required follow-up.
+```
+
+## External Agent Publish
+
+Use this when native Plan/Implement should prepare official project documentation under `docs/**`, especially for multi-file publishing or when existing docs style must be preserved.
+
+Native Plan prompt:
+
+```text
+Use native Plan phase for official docs publishing. Do not edit files.
+Source: .docs/current/{topic}.md
+Target: docs/{area}/{topic}.md
+Audience: <reader>
+Rules: do not copy .docs/** directly; publish only sanitized official content.
+Include source of truth, publishable facts, do-not-publish content, sanitization steps, blockers, and verification.
+```
+
+Audit before implementation:
+
+```text
+Mode: discuss
+Task: review
+Lens: publish, consistency, language
+Request:
+Audit this external publish plan. Return approved, needs changes, or Publish blocked.
+```
+
+Implement only approved targets:
+
+```text
+Implement only the approved publish plan. Write only the approved docs/** targets. Do not modify .docs/**, .workflow/**, source code, or unrelated docs.
+```
+
+Review after implementation:
+
+```text
+Mode: discuss
+Task: review
+Lens: publish, consistency, language
+Request:
+Review the diff against the approved publish plan. Check sanitization, audience fit, source of truth, docs style, and internal detail leakage.
+```
+
+If source, target audience, source of truth, or publication safety is unclear, return `Publish blocked`.
 
 ## Task To Template Map
 

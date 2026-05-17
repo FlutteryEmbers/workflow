@@ -8,8 +8,11 @@ This repo uses Workflow Lite.
 - In `Mode: discuss`, do not load templates and do not create or update files.
 - In `Mode: discuss`, multiple lenses are allowed only when explicitly listed; keep `Lens: none` by default.
 - In `Mode: persist`, templates are allowed and writes are limited to `.docs/**`, except `sync` may target `src/**/README.md` or `docs/**` with `publish`.
-- `docs/**` can be written only by `Mode: persist` with `Task: sync` and `Lens: publish`, or by `Mode: execute` with an approved plan.
+- `docs/**` can be written by `Mode: persist` with `Task: sync` and `Lens: publish`, by workflow-managed `Mode: execute` with an approved plan, or by audited external-agent publishing.
 - In `Mode: execute`, require `Task: build` and an approved plan before modifying repository artifacts.
+- Native Plan/Implement may be used as an `external-agent` write path; do not treat it as workflow-managed execution.
+- Audit external plans before native implementation, and review external diffs afterward.
+- External-agent publishing must still follow `publish` lens rules and must not copy `.docs/**` directly into `docs/**`.
 - Use lenses only when the user explicitly names or adds them.
 - If no lens is named, assume `Lens: none`.
 - Copilot may suggest lenses, but must not apply them automatically.

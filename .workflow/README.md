@@ -146,6 +146,7 @@ Codex can continue to read task files directly:
 - In `Mode: discuss`, do not write files.
 - In `Mode: persist`, write `.docs/**`, except `sync` may target `src/**/README.md` or `docs/**` with `publish`.
 - In `Mode: execute`, use `build` with an approved plan before modifying broader repository artifacts.
+- Native Codex/Copilot Plan -> Implement is the external-agent write path. It is not `Mode: execute`; use `.workflow` as context, plan constraints, audit checklist, and diff review.
 
 ## Conversation-To-Artifact Workflow
 
@@ -158,6 +159,34 @@ discuss -> persist -> execute
 - `Mode: discuss`: no writes, no templates, chat-only reasoning with task/lens guidance.
 - `Mode: persist`: documentation artifact writes only. Use `.docs/**`, `Task: sync` for `src/**/README.md`, or the `sync + publish` fast path for `docs/**`.
 - `Mode: execute`: repository changes through `Task: build` and an approved `Plan`.
+
+## Write Paths
+
+Workflow Lite supports two write paths:
+
+- `workflow-managed`: use `Mode: persist` or `Mode: execute`. Workflow rules control the write boundary.
+- `external-agent`: use Codex/Copilot native Plan -> Implement. Workflow files provide context, constraints, audit checklist, and diff review, but they are not the executor.
+
+Use `workflow-managed` when you want controlled persistence, durable `.docs/**` artifacts, or `build` execution from an approved plan. Use `external-agent` when you want Codex/Copilot native Plan/Implement to edit files directly.
+
+External-agent path:
+
+1. Discuss the goal with Workflow Lite, usually with `shape`, `plan`, or `review`.
+2. Use native Plan to create an implementation plan only; do not edit files in that phase.
+3. Audit the external plan with `review` before implementation.
+4. Use native Implement to edit only what the approved external plan lists.
+5. Review the resulting diff against the approved plan.
+
+`Mode: execute` is only the workflow-managed execution path through `build`. It is not the only way files may be written.
+
+External-agent publishing:
+
+- For small controlled official docs publishing, prefer `Mode: persist`, `Task: sync`, `Lens: publish`, `Target: docs/**`.
+- For multi-file `docs/**` publishing or edits that must preserve existing docs style, native Plan/Implement may be used.
+- External publish plans must name `Source`, `Target`, `Audience`, `Source of truth`, publishable facts, do-not-publish content, sanitization steps, blockers, and verification.
+- External publish implementation may write only the approved `docs/**` targets.
+- After external publish implementation, review the diff with `review --lens publish --lens consistency --lens language`.
+- If source, audience, source of truth, or publication safety is unclear, return `Publish blocked`.
 
 Lens behavior:
 
@@ -264,6 +293,8 @@ Do not create language-specific directories or filename variants by default.
 - Bug or risk: `review --lens debug -> plan -> build`
 - Consistency review: `review --lens consistency -> sync | shape | plan -> build`
 - Official docs publish: `review --lens publish -> sync --lens publish`
+- External-agent write: native Plan -> `review` audit -> native Implement -> `review` diff
+- External-agent publish: native publish Plan -> `review --lens publish` -> native Implement -> publish diff review
 - Larger tracked work: enable `change` lens and use `.docs/changes/{change_id}/`
 - Knowledge capture: enable `knowledge` lens and use `.docs/knowledge/`
 - Durable fact update: use `sync` and write `.docs/current/{topic}.md`
@@ -371,6 +402,8 @@ Publish rules:
 - Remove AI discussion residue, unresolved tradeoffs, rejected options, redteam-only risks, internal migration steps, code-path detail, temporary workarounds, sensitive implementation detail, security-sensitive detail, and unannounced plans.
 - If source, target audience, source of truth, or publication safety is unclear, output `Publish blocked` and do not write `docs/**`.
 
+External-agent publishing is also allowed when native Codex/Copilot Plan/Implement is the chosen write path. It must still follow the same publish rules, audit the native plan before implementation, and review the diff after implementation.
+
 ## Rules
 
 - Keep the default path light.
@@ -379,6 +412,8 @@ Publish rules:
 - Templates are persist-only; do not load templates in `Mode: discuss`.
 - `Mode: persist` writes `.docs/**`, except `sync` may write `src/**/README.md` or `docs/**` with `publish`.
 - `Mode: execute` requires `Task: build` and an approved plan.
+- Native Plan/Implement is the external-agent write path, not a Workflow Mode.
+- Audit external plans before native implementation and review external diffs afterward.
 - Treat `.docs/**` as workflow workspace and `docs/**` as official project documentation.
 - Select lenses only when the user explicitly asks or adds them as context.
 - Multiple lenses are allowed in `Mode: discuss` only when explicitly listed.

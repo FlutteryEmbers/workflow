@@ -43,7 +43,7 @@ docs/    # Optional official project documentation in embedded repos
 - Use `.github/prompts/workflow-lite.prompt.md` as the manual VS Code prompt entry.
 - Start with `.workflow/tasks/route.md` when you want chat-only usage guidance.
 - Default to `Mode: discuss`; use `Mode: persist` to write workflow artifacts, and `Mode: execute` to apply an approved plan.
-- Publish to `docs/**` only through `sync --lens publish` or an approved execute plan.
+- Publish to `docs/**` through `sync --lens publish`, an approved workflow-managed execute plan, or an audited external-agent publish path.
 
 ## Embedding Rule
 
