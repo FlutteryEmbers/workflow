@@ -65,7 +65,9 @@ Before shaping, classify the request:
 - `composite`: user asks to evaluate reasonableness and then design a replacement; recommend `review -> shape`.
 - `missing_prerequisite`: `Mode: persist` lacks a `.session/drafts/**`, `.session/accepted/**`, or `.session/goal/**` target.
 
-Default implicit preflight runs only in `Mode: discuss`. Output `Evidence`, `Unknowns`, and `Boundary` before the shape. If evidence is insufficient, source of truth is unclear, or the request should be decomposed, stop and output Recommended Segments. In `Mode: persist`, do not preflight; block when the target or required source context is missing.
+Default implicit preflight runs only in `Mode: discuss`. Output `Evidence`, `Unknowns`, `Boundary`, and a lightweight `Risk Check` before the shape. If evidence is insufficient, source of truth is unclear, or the request should be decomposed, stop and output Recommended Segments. In `Mode: persist`, do not preflight; block when the target or required source context is missing.
+
+`Risk Check` is built-in safety, not the `redteam` lens. Use it to name risky assumptions, likely failure modes, and whether a follow-up `review --lens redteam` is recommended. Do not load `.workflow/lenses/redteam.md` unless the user explicitly selected it.
 
 ## Persist Templates
 
@@ -99,6 +101,8 @@ User-selected lenses:
 Convert notes, goals, and discussion into a clear session decision or goal update. Decisions may represent direction, scope, plan, constraint, handoff, or review stance. Keep session decisions lighter than formal docs.
 
 For vague or broad goals, first reframe the request. Name the smallest useful wedge that can validate the goal, the success criteria that would make it worth continuing, and the larger scope that is intentionally rejected for now.
+
+When a shape is likely to become `.session/accepted/**`, involves costly reversal, or depends on unverified assumptions, include `Suggested Lens: redteam` as a recommendation rather than applying it automatically.
 
 ## Output Rules
 

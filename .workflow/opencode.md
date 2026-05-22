@@ -4,6 +4,8 @@ OpenCode support is a thin adapter. It does not replace `.workflow/tasks/**`, `.
 
 Use OpenCode when it helps with context reading, draft planning, or bounded implementation. Keep `.workflow/**` as the source of truth for task semantics, lenses, write boundaries, and Formal Docs Rules.
 
+OpenCode may suggest `redteam` when risk triggers match, but must not auto-load or apply it. Use full `redteam` only when the user explicitly selected that lens or the prompt explicitly includes it.
+
 ## Usage Levels
 
 ### Level 1: Context Helper

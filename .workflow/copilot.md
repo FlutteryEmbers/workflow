@@ -32,6 +32,7 @@ Request:
 - Default to `Lens: none`.
 - Multiple lenses are allowed in `Mode: discuss` only when the user explicitly lists them.
 - Copilot may recommend lenses, but must not load or apply them automatically.
+- Copilot may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and suggested persist step.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 

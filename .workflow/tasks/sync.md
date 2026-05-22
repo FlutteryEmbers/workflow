@@ -101,6 +101,8 @@ Any write to `docs/**` must:
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, internal redteam-only risks, temporary workarounds, sensitive implementation detail, and not-yet-announced plans.
 - Output `docs blocked` and do not write `docs/**` when source, audience, source of truth, reader-facing success criteria, or safety is unclear.
 
+These Formal Docs Rules are built-in safety, not the `redteam` lens. Do not run full critique during `sync`; recommend `review --lens redteam` only when formal docs content exposes unresolved risk, sensitive assumptions, or high-cost commitments.
+
 ## Instructions
 
 Use `sync` only for formal docs and code-adjacent README alignment. Inputs may come from `.session/**`, source code, diffs, tests, or existing docs, but outputs are limited to `docs/**` and `src/**/README.md`.

@@ -96,6 +96,8 @@ User-selected lenses:
 
 Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session decision is accepted, needs revision, blocked, or should be synced to formal docs.
 
+Default review is normal review. Only use `.workflow/lenses/redteam.md` and `.workflow/templates/critique.md` when the user explicitly selects `redteam`. Otherwise, you may output `Suggested Lens: redteam` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
+
 For non-trivial reviews, include a readiness dashboard:
 
 - `Decision`: `approved | needs changes | blocked | docs blocked | accepted | revise`
@@ -104,6 +106,7 @@ For non-trivial reviews, include a readiness dashboard:
 - `Blocking Gaps`: issues that must be resolved before the next write or implementation step.
 - `Non-blocking Gaps`: issues that can be tracked without blocking.
 - `Recommended Action`: `none | sync | shape | plan | build | external-agent`.
+- `Suggested Lens`: `redteam` or `none`.
 
 ## External Plan Audit
 

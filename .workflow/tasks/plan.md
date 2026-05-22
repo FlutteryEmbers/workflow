@@ -92,7 +92,9 @@ User-selected lenses:
 
 Write the smallest repo-aware plan or handoff another engineer, Codex, Copilot, OpenCode, or similar agent can execute without making product decisions. Include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected.
 
-Every major step must include a verification method. If the verification method is unclear, mark the plan as not ready and recommend `review` or `shape` instead of treating it as approved.
+Every major step must use `Step / Change / Verify / Risk / Stop Condition`. If the verification method is unclear, mark the plan as not ready and recommend `review` or `shape` instead of treating it as approved.
+
+If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend plan audit with `review --lens redteam,test`. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
 
 ## Output Rules
 

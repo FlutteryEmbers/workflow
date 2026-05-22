@@ -87,7 +87,8 @@ Recommend the smallest path:
 - Suggest `architecture` for boundaries, dependency direction, public surfaces, or constraints.
 - Suggest `domain` for terminology, rules, ownership, and conceptual model questions.
 - Suggest `iteration` for multi-turn work with changing background.
-- Suggest `redteam` for deliberate critique.
+- Suggest `redteam` when a draft will become `.session/accepted/**`, a plan will enter `build` or external-agent Implement, the work touches architecture boundaries, permissions, security, data migration, irreversible changes, formal docs, high-cost tradeoffs, or the user asks to find problems, critique, identify pitfalls, or judge reasonableness.
+- Do not enable `redteam` automatically; output it only as a suggested lens unless the user explicitly selected it.
 - Suggest `test` for verification planning.
 - Suggest `debug` for defects or uncertain runtime behavior.
 - Suggest `consistency` for code/docs/design drift.

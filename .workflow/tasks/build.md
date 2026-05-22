@@ -84,6 +84,8 @@ In `Mode: execute`, implement the approved plan. Read relevant artifacts first, 
 
 Use minimal diff discipline: do not perform drive-by refactors, formatting churn, unrelated cleanup, or opportunistic rewrites. After each major plan step, record the verification evidence requested by the plan. If implementation reveals that scope must expand, stop and return to `plan` or `review` instead of editing beyond the approved scope.
 
+This stop-on-scope-expansion behavior is built-in safety, not the `redteam` lens. Do not perform redteam critique during `build`; route back to `review --lens redteam` when the approved plan appears unsafe or under-specified.
+
 If `Mode: execute` or an approved `Plan` is missing, do not modify files; explain what is needed to proceed.
 
 Do not treat native Plan/Implement output as workflow-managed execution unless the user explicitly provides it as the approved `Plan` for `Mode: execute`.

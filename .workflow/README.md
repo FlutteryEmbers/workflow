@@ -128,6 +128,18 @@ Implicit preflight is a same-response, read-only check that can run automaticall
 
 Implicit preflight must not load templates, write files, run implementation, run tests, perform sync, apply unselected lenses, or do a full repository scan. In `Mode: persist` and `Mode: execute`, do not run implicit preflight; block when prerequisites are missing.
 
+## Built-in Safety Checks
+
+Built-in safety checks are core protocol, not a lens. They do not load `.workflow/lenses/redteam.md` and do not use the full `critique.md` template.
+
+- `shape`: name key unknowns, risky assumptions, and whether a separate `review --lens redteam` is recommended.
+- `plan`: include `Step / Change / Verify / Risk / Stop Condition` for major steps.
+- `build`: stop on unapproved scope expansion instead of editing beyond the approved plan.
+- `sync`: use Formal Docs Rules and output `docs blocked` when formal-doc safety is unclear.
+- `review`: recommend `redteam` when the target is costly, ambiguous, or about to enter execution.
+
+Safety checks should stay lightweight and should not block ordinary PoC discussion unless a write, execution, formal docs update, source-of-truth decision, or irreversible change is at risk.
+
 ## Prompt Discipline
 
 These rules are core protocol, not optional lenses:

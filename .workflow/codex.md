@@ -11,6 +11,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
+- Codex may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
 - Load templates only in `Mode: persist`.
 - Treat `.session/**` as working memory, not formal source of truth.
 - Treat `.session/drafts/**` as unapproved working artifacts.
