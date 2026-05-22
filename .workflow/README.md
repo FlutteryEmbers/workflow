@@ -183,11 +183,12 @@ Any write to `docs/**` must:
 
 ## Using With Codex
 
-- Task files keep `{{CONTENT: /.workflow/roles/...}}` for role injection.
-- Template files are persist-only and are not injected by default.
-- Lens files are not injected by default.
-- Read a lens only when the user explicitly names it.
-- Keep `.session/**` as working memory; use `sync` for formal docs.
+- Codex support is manual. This project does not add `AGENTS.md` by default.
+- Add or read `.workflow/codex.md` when you want Codex to follow Workflow Lite.
+- Do not load all `.workflow/**`; use one task, explicitly selected lenses, and relevant context.
+- Template files are persist-only and should be loaded only in `Mode: persist`.
+- Codex native Plan -> Implement is `Write Path: external-agent`, not `Mode: execute`.
+- If a future project needs automatic agent instructions, add a shared `AGENTS.md` separately; this repository does not require it.
 
 ## Default Language
 

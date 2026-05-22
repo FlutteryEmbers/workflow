@@ -12,6 +12,7 @@ docs/        # formal project documentation, when the host project uses it
 The workflow system belongs in `.workflow/`. Session artifacts belong in `.session/`. Formal long-term project documentation belongs in `docs/**`. Code-adjacent reading notes may live in `src/**/README.md` when useful.
 
 Read [.workflow/README.md](.workflow/README.md) for the full workflow guide.
+Read [.workflow/codex.md](.workflow/codex.md) when using Codex manually.
 Read [.workflow/opencode.md](.workflow/opencode.md) when using OpenCode.
 
 ## Embedding Rule
