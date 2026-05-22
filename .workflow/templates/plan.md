@@ -1,74 +1,56 @@
-# Plan
+# Plan: {{topic}}
 
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
 
-## Goal
+## Decision Link
 
-{{what will be delivered}}
+{{.session/decisions/dec_{topic}_plan.md}}
 
-## Target Design
+## Target Direction
 
-- Source: {{shape, concept, architecture note, user proposal, or direct request}}
-- Intent: {{target behavior, structure, or conceptual direction}}
-- Non-Negotiables: {{boundaries, constraints, or decisions that must be preserved}}
+{{source decision, goal, or target design}}
 
 ## Current Repo Fit
 
-- Relevant Modules: {{current files, packages, modules, or docs}}
-- Reusable Parts: {{existing code or docs that can stay}}
-- Conflicts: {{where current repo shape conflicts with target design}}
-- Unknowns: {{repo facts that still need exploration}}
+- Relevant Files: {{files, packages, docs, or none}}
+- Reusable Parts: {{what can be reused}}
+- Conflicts: {{where current repo shape conflicts with target direction}}
 
 ## Impact Map
 
-| Target Area | Current Repo Surface | Change Needed | Risk |
+| Target | Files / Docs | Change | Risk |
 | :--- | :--- | :--- | :--- |
-| {{target concept or component}} | {{files, modules, docs, or boundary}} | {{add/change/remove}} | {{risk or none}} |
-
-## Scope
-
-- In: {{included work}}
-- Out: {{excluded work}}
+| {{target}} | {{paths}} | {{add/change/remove}} | {{risk}} |
 
 ## Execution Flow
 
-> Keep this diagram only if it improves readability. Use it to show the recommended sequence, not every detail.
+> Only keep this diagram if it improves readability.
 
 ```mermaid
 flowchart TD
-    target_design["Target Design"] --> repo_fit["Repo Fit"]
-    repo_fit --> step_options["Step Options"]
-    step_options --> sequence_node["Recommended Sequence"]
-    sequence_node --> verify_node["Verify"]
+    step_one["Step 1"] --> step_two["Step 2"]
+    step_two --> verify_node["Verify"]
     verify_node --> handoff_node["Handoff"]
 ```
 
-## Step Options
-
-| Option | When It Fits | Cost | Risk | Decision |
-| :--- | :--- | :--- | :--- | :--- |
-| {{option}} | {{fit condition}} | {{cost}} | {{risk}} | {{current/rejected/parked}} |
-
 ## Recommended Sequence
 
-1. {{step one}}
-2. {{step two}}
-3. {{step three}}
+1. {{step}}
 
-## Discussion Points
+## Do Not Touch
 
-- {{step ordering question, scope question, or unresolved tradeoff}}
+- {{path or behavior}}
 
 ## Verification
 
-- {{test, check, or manual validation}}
+- {{test, check, or manual verification}}
 
-## Risks
+## External-Agent Handoff
 
-- {{risk or none}}
+{{prompt or constraints for native Plan/Implement, if relevant}}
 
-## Handoff Notes
+## Target Docs
 
-{{anything build or review needs to know}}
+- {{docs path or none}}

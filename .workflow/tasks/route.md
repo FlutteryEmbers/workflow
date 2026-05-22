@@ -1,16 +1,15 @@
 ---
 id: route
 role: analyst
-purpose: Recommend the smallest useful workflow path and optional lenses for a user request.
+purpose: Recommend the smallest useful next path.
 inputs:
-  - user_request
+  - user_goal
 outputs:
-  - task_recommendation
+  - chat_route
 user_selectable_lenses:
   - iteration
   - expand
   - consistency
-  - publish
   - distill
   - language
   - domain
@@ -18,13 +17,11 @@ user_selectable_lenses:
   - redteam
   - test
   - architecture
-  - change
-  - knowledge
   - debug
 done_check:
-  - recommend_one_next_task
-  - explain_when_to_add_lenses
-  - keep_small_requests_light
+  - next_task_is_named
+  - write_path_is_clear
+  - required_context_is_listed
 ---
 
 # Route Task
@@ -33,108 +30,88 @@ done_check:
 
 Role: {{CONTENT: /.workflow/roles/analyst.md}}
 
-## Copilot Add Context
+## Mode Rules
 
-Required:
+- `route` is always chat-only.
+- Start with `Interpreted goal`, then recommend the next task sequence, selected lenses, write path, and Add Context files.
+- Do not load templates, create files, or apply lenses automatically.
+- If no lens is named by the user, use `Lens: none`.
 
-- #.workflow/tasks/route.md
+## Task Boundary Check
 
-User-selected lenses:
+`route` handles both active guidance and correction routing.
 
-- Do not load lens files for routing unless the user explicitly asks to inspect a lens.
-- If no lens is named, use `Lens: none`.
+- Use `Boundary Assessment` when the user has selected a task but the request appears composite, wrong-task, or missing prerequisites.
+- Output `Recommended Segments` for composite requests.
+- Do not silently switch tasks or execute later segments.
 
-## Instructions
+Boundary classes:
 
-Recommend the smallest useful next task. Do not create files. Copilot may suggest lenses, but must not apply them unless the user explicitly selects or adds them.
+- `fits`: the selected task can handle the request.
+- `fits_with_preflight`: the selected task can handle it after read-only preflight in `Mode: discuss`.
+- `composite`: multiple tasks are needed.
+- `wrong_task`: another task is the proper entrypoint.
+- `missing_prerequisite`: target, approved plan, source of truth, or Formal Docs Rules safety is missing.
 
-Route is always `Mode: discuss`. It may recommend `Mode: persist` targets or `Mode: execute` plan requirements, but it must not create files or modify repository artifacts.
+## Routing Model
 
-Start with `Interpreted goal` and keep it short. Recommend lenses, but do not load or apply them unless the user explicitly selected them.
+Recommend the smallest path:
 
-## Usage Guide Mode
+- New background or staged requirements: `clarify` or `explore` -> `.session/notes/**`.
+- Target direction, option, architecture, or concept: `shape` -> `.session/decisions/**` or `.session/goal/**`.
+- Repo-aware implementation sequence or handoff: `plan` -> `.session/decisions/**`.
+- Native Codex/Copilot implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
+- Formal documentation alignment: `sync` -> `docs/**` or `src/**/README.md`.
+- Code or repository change through workflow: `build` with `Mode: execute` and an approved plan.
 
-Use this mode when the user asks how to use this workflow, which task/lens to choose, what order to follow, or what context to add. Do not execute the workflow and do not create files. Return a concise user-facing guide in the chat.
+## Lens Suggestions
 
-## Task Choices
-
-- `clarify`: turn a vague request into scope, goals, and acceptance criteria.
-- `explore`: understand code, materials, feasibility, or current behavior.
-- `shape`: turn context into a solution shape, interface, rule, or decision.
-- `plan`: turn a chosen direction into executable steps.
-- `build`: apply an approved plan to repository artifacts.
-- `review`: inspect behavior, risks, defects, evidence, or refactor options.
-- `sync`: update living docs, archive facts, or organize knowledge.
-
-## Lens Hints
-
-- Suggest `iteration` when the user is co-designing across multiple turns and adding background progressively.
-- Suggest `expand` when a short shape or plan needs details, examples, pseudocode, smaller diagrams, or split parts.
-- Suggest `consistency` when docs, code, tests, code-adjacent README files, or design intent may conflict.
-- Suggest `publish` when stable `.docs/**` content should become sanitized official project documentation under `docs/**`.
-- Suggest `distill` when a reference document, architecture folder, or handbook should be studied for reusable structure and writing principles.
-- Suggest `language` when the user asks for full English, translation, terminology consistency, or glossary cleanup.
-- Suggest `domain` when terms, business rules, or ownership are unclear.
-- Suggest `strategy` when technical routes or design options need comparison.
-- Suggest `redteam` when the user wants the current recommendation challenged.
-- Suggest `test` when behavior needs stronger verification.
-- Suggest `architecture` when boundaries, dependencies, or interfaces matter.
-- Suggest `change` when the work is large enough to track as a change.
-- Suggest `knowledge` when raw material should become durable knowledge.
-- Suggest `debug` when root cause or reproduction is unclear.
-
-## Common Scenario Paths
-
-- Small request: `clarify -> plan -> build`
-- Code understanding: `explore -> shape/plan`
-- Target design planning: `shape -> explore -> plan -> review -> plan`
-- Conversation-driven design: `shape --lens iteration --lens strategy -> review --lens redteam -> shape`
-- Expansion: `shape/plan --lens expand -> review --lens redteam -> plan/sync`
-- Bug fix: `review --lens debug -> plan -> build`
-- Consistency review: `review --lens consistency -> sync | shape | plan -> build`
-- Official docs publish: `review --lens publish -> sync --lens publish`
-- Knowledge capture: `explore/sync --lens knowledge`
-- Reference distillation: `explore --lens distill -> shape --lens distill --lens strategy -> plan -> build -> review`
-- Docs or durable facts: `sync`
-- Full English or terminology cleanup: relevant task plus `language`
+- Suggest `strategy` for route comparison or technical direction.
+- Suggest `architecture` for boundaries, dependency direction, public surfaces, or constraints.
+- Suggest `domain` for terminology, rules, ownership, and conceptual model questions.
+- Suggest `iteration` for multi-turn work with changing background.
+- Suggest `redteam` for deliberate critique.
+- Suggest `test` for verification planning.
+- Suggest `debug` for defects or uncertain runtime behavior.
+- Suggest `consistency` for code/docs/design drift.
+- Suggest `language` for terminology or output language.
+- Suggest `distill` for learning structure from strong reference material.
+- Suggest `expand` when a compact decision or plan needs examples, pseudocode, or split parts.
 
 ## Output Format
 
 ```text
 Interpreted goal: <one sentence>
-Recommended mode: <discuss | persist | execute>
-Recommended task: <task>
-Why: <reason>
-Lens: <none | user-selected lens list>
-Suggested lenses: <none | lens list with reason>
-Persist target: <none | target path>
-Execute plan: <none | approved plan path needed>
-Suggested path: <task -> task -> task>
+Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
+Recommended path: <task -> task>
+Mode: <discuss|persist|execute or external-agent path>
+Lens: <none or explicit lenses>
+Target: <only when writing>
+Add Context:
+- .workflow/tasks/<task>.md
+- .workflow/lenses/<lens>.md only when selected
+- .workflow/templates/<template>.md only in Mode: persist
+- .session/goal/*, relevant .session/notes/**, relevant .session/decisions/**, docs/**, or source files as needed
+Next prompt: <copyable prompt>
 ```
 
-## Usage Guide Output Format
+For composite requests:
 
-```md
-## Recommended Workflow
-
-`Mode: <discuss | persist | execute>; <task --lens lens -> task -> task>`
-
-## Why This Path
-
-<short explanation>
-
-## Lens Recommendations
-
-- `<lens>`: <why it helps; say user must select it>
-
-## Add Context
-
-- `.workflow/tasks/<task>.md`
-- `.workflow/templates/<template>.md` only for `Mode: persist`
-- `.workflow/lenses/<lens>.md` only when selected by the user
-- <target files, docs, or existing .docs artifacts>
-
-## Next Prompt
-
-<one concrete prompt the user can send next>
+```text
+Recommended Segments:
+1. <segment name>
+   Mode:
+   Task:
+   Lens:
+   Target/Plan:
+   Context:
+   Request:
+   Expected Output:
+   Continue Condition:
+Stop Points:
+- <approval, audit, source-of-truth, Formal Docs Rules, or diff review point>
 ```
+
+## User Input
+
+{{goal, situation, or request for workflow guidance}}

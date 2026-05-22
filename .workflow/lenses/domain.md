@@ -1,27 +1,21 @@
 # Lens: Domain
 
-Use this lens when business language, story flow, events, rules, ownership, or boundaries are unclear.
+Use this lens for DDD-lite discussion: language, story flow, events, boundaries, rules ownership, and model iteration.
 
-This is a DDD-lite discussion lens. It borrows language, story, event, boundary, and rule-ownership techniques, but does not force tactical DDD practices.
-
-## Add Only When Needed
-
-- Shared terms are ambiguous.
-- A rule affects multiple parts of the system.
-- A workflow needs business-level states or decisions.
-- A model changed during discussion and the old model no longer explains the cases.
+Do not force tactical DDD patterns such as entities, aggregates, repositories, or value objects unless the user asks.
 
 ## Checks
 
-- Capture language notes: term, meaning, source, status.
-- Tell the story flow: actor, action, event, outcome.
-- Identify important events and state changes.
-- Assign rules to an owner or boundary.
-- Name the source of truth for key facts.
-- Record boundary questions and model iteration notes.
-- Record assumptions and open questions.
+- Language notes: what terms need stable meaning?
+- Story flow: what is the user/system flow?
+- Events: what changes state or matters to the business?
+- Rules ownership: who owns each rule?
+- Source of truth: code, formal docs, user decision, or unknown?
+- Boundary questions: where does responsibility change?
+- Model iteration notes: what changed during discussion?
 
-## Not Required
+## Output Hints
 
-- Do not force entity, aggregate, repository, factory, or tactical labels.
-- Do not turn conceptual discussion into implementation modeling too early.
+- Draft language and model notes go to `.session/notes/**`.
+- Accepted domain decisions go to `.session/decisions/**`.
+- Formal terminology, business rules, and boundaries go to `docs/**` through `sync`.

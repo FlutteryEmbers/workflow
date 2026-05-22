@@ -1,31 +1,31 @@
-# Note
+# Note: {{topic}}
 
-## Question
+## Purpose
 
-{{what was explored}}
+{{why this note exists}}
 
-## Sources
+## Source
 
-- {{code path, doc path, raw source, command, or observation}}
+- {{user input, code path, reference doc, formal docs, or discussion}}
 
-## Exploration Map
+## Observations
 
-> Optional. Add a Mermaid diagram only when the explored path is easier to understand visually.
+- {{observed fact or staged requirement}}
 
-```mermaid
-flowchart TD
-    source_node["Source"] --> observation_node["Observation"]
-    observation_node --> finding_node["Finding"]
-```
+## Assumptions
 
-## Findings
+- {{assumption or none}}
 
-- {{finding}}
+## Open Questions
 
-## Unknowns
+- {{question}}
 
-- {{unknown or none}}
+## Possible Decisions
 
-## Next Step
+- {{decision candidate or none}}
 
-{{recommended next task}}
+## Target Docs
+
+- {{docs path or none}}
+
+> Session notes are working memory under `.session/notes/**`. They are not formal source of truth.

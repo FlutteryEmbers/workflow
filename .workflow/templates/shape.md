@@ -1,44 +1,45 @@
-# Shape
+# Shape: {{topic}}
 
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
 
-## Objective
+## Decision Link
 
-{{what this shape enables}}
-
-## Current Context
-
-{{relevant facts and constraints}}
+{{.session/decisions/dec_{topic}.md or .session/goal/{file}.md}}
 
 ## Visual Overview
 
-> Keep this diagram only if it improves readability.
+> Only keep this diagram if it improves readability.
 
 ```mermaid
 flowchart TD
-    input_node["Input or trigger"] --> core_shape["Proposed shape"]
-    core_shape --> output_node["Expected output"]
-    core_shape --> impact_node["Key impact"]
+    input_node["Input"] --> shape_node["Shape"]
+    shape_node --> decision_node["Session decision"]
+    decision_node --> docs_node["Target docs"]
 ```
 
-## Options
+## Problem
 
-- Option A: {{simple option and tradeoff}}
-- Option B: {{alternative option and tradeoff}}
+{{problem or opportunity}}
 
-## Decision
+## Proposed Shape
 
-{{chosen direction and reason}}
+{{solution shape, concept, architecture, or decision}}
 
-## Implications
+## Boundaries
 
-- Interfaces: {{none or changes}}
-- Data: {{none or changes}}
-- Operations: {{none or changes}}
-- Risks: {{risks}}
+- In: {{included}}
+- Out: {{excluded}}
 
-## Plan Inputs
+## Tradeoffs
 
-- {{what the plan task needs}}
+- {{tradeoff}}
+
+## Target Docs
+
+- {{docs path or none}}
+
+## Open Questions
+
+- {{question}}

@@ -1,51 +1,47 @@
-# Distillation
+# Distillation: {{source}}
 
 ## Source
 
-- Source: {{document, repo, folder, handbook, RFC, ADR, or knowledge base}}
-- Access Path: {{path, URL, pasted material, or local reference}}
-- Source Context: {{team, domain, product, or organization context if known}}
+{{document, repo, folder, handbook, RFC, ADR, formal docs, or knowledge base}}
 
 ## What This Is
 
-{{business document, architecture folder, design doc, RFC, ADR, handbook, knowledge base, or other}}
+{{brief description of the reference}}
 
 ## Observed Structure
 
-{{section tree, directory tree, or document shape without evaluating it yet}}
+- {{structure element}}
 
 ## Reader Journey
 
-{{how a reader moves from question to answer}}
+{{how the reader moves through the material}}
 
 ## Information Types
 
-| Type | Where It Appears | Purpose |
-| :--- | :--- | :--- |
-| {{context / decision / evidence / owner / risk / example}} | {{section or file}} | {{why it exists}} |
+- {{concept, decision, example, rule, reference, how-to, etc.}}
 
 ## Why It Works
 
-- {{structural or writing principle and why it helps}}
+{{structural reason, not just content summary}}
 
-## Transferable Patterns
+## Transferable Structures
 
-- {{idea that could improve Workflow Lite outputs, with where it may apply}}
+- {{what can transfer into session decisions or formal docs}}
 
 ## Non-Transferable Context
 
-- {{what depends on that organization, team, domain, or process}}
+- {{what should not be copied}}
 
 ## Apply To Workflow Lite
 
-- Templates: {{suggested template changes or none}}
-- Lenses: {{suggested lens changes or none}}
-- README / Copilot: {{suggested usage guidance changes or none}}
-- `.docs` Structure: {{suggested artifact structure changes or none}}
+- Session notes: {{suggested use or none}}
+- Session decisions: {{suggested use or none}}
+- Formal docs: {{suggested use or none}}
+- Workflow prompts: {{suggested change or none}}
 
 ## Adoption Recommendation
 
-{{adopt | adapt | reject | revisit}}: {{reason, cost, and risk of making Workflow Lite heavier}}
+{{adopt | adapt | reject | revisit}}
 
 ## Open Questions
 

@@ -1,22 +1,26 @@
 # Lens: Iteration
 
-Use this lens when the user wants to co-design through multiple turns before writing final docs.
+Use this lens when work evolves through multi-turn conversation and changing background.
 
 ## Add Only When Needed
 
-- The user is gradually adding background or constraints.
-- The recommendation is still changing.
-- Options, critiques, and decisions need to stay visible across turns.
+- The user is progressively adding context, constraints, options, critiques, or decisions.
+- The current recommendation may change.
+- Session state needs to stay visible across turns.
 
-## Checks
+## Classify New Input
 
-- Classify new input as background, constraint, option, critique, decision, or open question.
-- Keep the current goal and current recommendation visible.
-- Track rejected options and why they were rejected.
-- Do not converge too early.
-- End each major turn with the next move.
+- Background
+- Constraint
+- Option
+- Critique
+- Decision
+- Open question
+- Target docs impact
 
 ## Output Hints
 
-- Use `.workflow/templates/session.md` for the working state.
-- Use `.workflow/templates/options.md` when technical routes are being compared.
+- Keep current goal visible from `.session/goal/**`.
+- Put staged context in `.session/notes/**`.
+- Put accepted session judgments in `.session/decisions/**`.
+- Do not sync every iteration; sync formal docs only after a decision is stable enough for `docs/**`.

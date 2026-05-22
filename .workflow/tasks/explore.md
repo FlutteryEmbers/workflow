@@ -1,23 +1,22 @@
 ---
 id: explore
 role: designer
-purpose: Understand code, materials, current behavior, or feasibility before shaping a solution.
+purpose: Understand code, materials, current behavior, feasibility, or reference structure.
 inputs:
-  - question_or_scope
+  - question_or_source
 outputs:
-  - .docs/work/notes/note_{topic}.md
-  - .docs/knowledge/raw/{source_name}
-  - .docs/knowledge/wiki/{page}.md
+  - .session/notes/note_{topic}.md
 user_selectable_lenses:
   - distill
-  - architecture
   - strategy
-  - knowledge
+  - architecture
   - debug
+  - language
+  - domain
 done_check:
-  - evidence_is_cited
-  - unknowns_are_named
-  - next_step_is_clear
+  - evidence_is_named
+  - unknowns_are_listed
+  - next_decision_is_clear
 ---
 
 # Explore Task
@@ -28,12 +27,23 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial; ask only when ambiguity would affect file writes, execution, or material scope.
+- Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: explain findings in chat, do not load templates, and do not write files.
-- In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in the user's lens order, then summarize findings and next steps.
-- `Mode: persist`: write only the requested `.docs/**` target using one of the persist templates below.
-- In `Mode: persist`, prefer one primary lens and at most one supporting lens; split into multiple artifacts if more views are needed.
-- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+- `Mode: persist`: write only the requested `.session/notes/**` target.
+- `Mode: execute`: not valid for this task.
+
+## Task Boundary Check
+
+Before exploring, classify obvious boundary problems:
+
+- `fits`: user asks to understand code, docs, behavior, feasibility, or reference material.
+- `wrong_task`: user asks to choose a direction; recommend `shape`.
+- `wrong_task`: user asks to produce implementation steps; recommend `plan`.
+- `wrong_task`: user asks to judge a target or diff; recommend `review`.
+- `wrong_task`: user asks to update formal docs; recommend `sync`.
+- `missing_prerequisite`: `Mode: persist` lacks a `.session/notes/**` target.
+
+If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
 
 ## Persist Templates
 
@@ -46,43 +56,33 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 Required:
 
 - #.workflow/tasks/explore.md
-- relevant source, docs, notes, or code files
+- relevant source files, docs, references, or `.session/**` context
 
 For `Mode: persist`:
 
-- Add #.workflow/templates/note.md, or #.workflow/templates/distillation.md / #.workflow/templates/options.md when the selected lens requires it.
-- Provide a `.docs/**` `Target`.
+- Add #.workflow/templates/note.md, or #.workflow/templates/distillation.md / #.workflow/templates/options.md when selected.
+- Provide `Target: .session/notes/note_{topic}.md`.
 
 User-selected lenses:
 
 - Add #.workflow/lenses/distill.md only if the user selects `distill`.
-- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
 - Add #.workflow/lenses/strategy.md only if the user selects `strategy`.
-- Add #.workflow/lenses/knowledge.md only if the user selects `knowledge`.
+- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
 - Add #.workflow/lenses/debug.md only if the user selects `debug`.
+- Add #.workflow/lenses/language.md only if the user selects `language`.
+- Add #.workflow/lenses/domain.md only if the user selects `domain`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
 
-Use this task to learn before deciding. Inspect the relevant code, docs, examples, raw material, or small experiments, then summarize only what helps the next task.
-
-## Lens Suggestions
-
-- Suggest `distill` when studying a strong reference document, architecture folder, RFC, ADR, handbook, or knowledge base for reusable structure. Do not apply it unless selected by the user.
-- Suggest `architecture` when boundaries or dependencies are part of the question. Do not apply it unless selected by the user.
-- Suggest `strategy` when the user wants early technical route exploration. Do not apply it unless selected by the user.
-- Suggest `knowledge` when preserving source material matters. Do not apply it unless selected by the user.
-- Suggest `debug` when exploring a failure or uncertain behavior. Do not apply it unless selected by the user.
+Explore enough to reduce uncertainty for the next decision. Separate observed facts from assumptions. Preserve reference-derived structure as session notes first; stable formal documentation should later be handled by `sync`.
 
 ## Output Rules
 
-- In `Mode: discuss`, summarize findings, unknowns, and next steps in chat only.
-- Default path: `{WorkflowRoot}/.docs/work/notes/note_{topic}.md`
-- With `distill` lens, use `.workflow/templates/distillation.md` and write `{WorkflowRoot}/.docs/work/notes/note_{source}_distillation.md`.
-- With `strategy` lens, use `.workflow/templates/options.md` when early route comparison is useful.
-- With `knowledge` lens, preserve raw material under `.docs/knowledge/raw/` and update `.docs/knowledge/wiki/`.
-- Temporary experiments may use `.sandbox/{topic}/`, but do not modify production code during exploration.
+- Default persisted path: `{WorkflowRoot}/.session/notes/note_{topic}.md`.
+- With `distill`, write distillation notes to `.session/notes/**` unless the user requests a session decision.
+- Do not write `docs/**`; use `sync` after a decision is stable.
 
 ## User Input
 
-{{question, material, code scope, or feasibility concern}}
+{{question, source material, code area, or reference to explore}}

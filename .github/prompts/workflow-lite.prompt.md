@@ -1,6 +1,6 @@
 ---
 description: Use Workflow Lite with explicit user-selected lenses.
-argument-hint: "Mode=<discuss|persist|execute>; Task=<route|clarify|explore|shape|plan|build|review|sync>; Lens=<none|iteration|expand|consistency|publish|distill|language|domain|strategy|redteam|test|architecture|change|knowledge|debug>; Target=<required for persist>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Task=<route|clarify|explore|shape|plan|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>; Target=<required for persist>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Prompt
@@ -23,30 +23,63 @@ Request: ${input:request:describe the work}
 - Use exactly one task as the main workflow context.
 - Default to `Mode: discuss`.
 - Start with an inline `Understanding Check` unless the request is trivial.
-- Ask for confirmation only when ambiguity would affect file writes, execution, or material scope.
+- Run a lightweight Task Boundary Check before acting.
+- Classify boundary as `fits`, `fits_with_preflight`, `composite`, `wrong_task`, or `missing_prerequisite` when the request is not straightforward.
+- If composite, output segmented prompts with stop points instead of forcing the request into one task.
+- Read-only preflight is allowed only in `Mode: discuss`; do not load templates, write files, run implementation, or apply unselected deep lenses during preflight.
+- Ask for confirmation only when ambiguity would affect file writes, execution, source of truth, or material scope.
 - Use `Lens: none` unless the user explicitly names or adds lens files.
 - Multiple lenses are allowed in `Mode: discuss` only when explicitly listed; follow the user's lens order.
 - Do not infer, auto-apply, or load all lenses.
 - In `Mode: discuss`, do not load templates and do not create or update files.
-- In `Mode: persist`, load the matching template and write only the requested target.
+- In ordinary `Mode: persist`, load the matching template and write only the requested `.session/**` target.
+- `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
 - In `Mode: execute`, require `Task: build` and an approved plan.
 - If using Codex/Copilot native Plan -> Implement, label it as the `External-agent path`; do not model it as `Mode: execute`.
 - For the External-agent path, audit the native plan before implementation and review the diff after implementation.
 - Block instead of writing when `Mode: persist` lacks `Target`, `Mode: execute` lacks `Plan`, the target is outside the mode boundary, or instructions conflict.
-- `docs/**` can be written by `Mode: persist` with `Task: sync` and `Lens: publish`, by workflow-managed `Mode: execute` with an approved plan, or by audited external-agent publishing.
-- Native Plan/Implement may publish `docs/**` only when the external publish plan follows `publish` lens rules, is audited before implementation, and the diff is reviewed afterward.
-- Never copy `.docs/**` directly into `docs/**`; publish only sanitized official project documentation.
+- `docs/**` writes must follow Formal Docs Rules.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
-- Copilot may recommend additional lenses for a follow-up turn.
-- Keep ordinary outputs in `.docs/work/**`.
+
+## Formal Docs Rules
+
+- Source, target audience, and source of truth must be clear.
+- Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, internal redteam-only risks, temporary workarounds, sensitive implementation detail, and not-yet-announced plans.
+- If formal doc safety is unclear, output `docs blocked` and do not write `docs/**`.
 
 ## Context Format
 
 Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only in `Mode: persist`.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
-Add target source files or existing `.docs/**` files relevant to the request.
+Add relevant `.session/goal/*`, `.session/notes/**`, `.session/decisions/**`, `docs/**`, and source files.
+
+## Boundary Output
+
+```text
+Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
+Reason: <one sentence>
+Recommended Path: <task -> task>
+Next Prompt: <copyable prompt>
+```
+
+For composite requests, provide:
+
+```text
+Recommended Segments:
+1. <segment name>
+   Mode:
+   Task:
+   Lens:
+   Target/Plan:
+   Context:
+   Request:
+   Expected Output:
+   Continue Condition:
+Stop Points:
+- <where approval, audit, or source-of-truth confirmation is required>
+```
 
 ## External-Agent Review Formats
 
@@ -57,7 +90,7 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this external plan before native implementation. Return approved, needs changes, or blocked.
+Audit this external plan before native implementation. Return approved, needs changes, blocked, or docs blocked.
 ```
 
 Diff review:

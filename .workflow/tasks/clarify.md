@@ -1,20 +1,19 @@
 ---
 id: clarify
 role: analyst
-purpose: Clarify goals, scope, assumptions, and acceptance criteria.
+purpose: Capture staged requirements, background, scope, and acceptance notes.
 inputs:
-  - raw_request
+  - user_goal_or_context
 outputs:
-  - .docs/work/briefs/brief_{topic}.md
-  - .docs/changes/{change_id}/brief.md
+  - .session/notes/note_{topic}.md
 user_selectable_lenses:
+  - iteration
+  - language
   - domain
-  - change
-  - knowledge
 done_check:
   - goal_is_clear
-  - scope_is_bounded
-  - acceptance_is_checkable
+  - scope_is_named
+  - open_questions_are_listed
 ---
 
 # Clarify Task
@@ -25,50 +24,57 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial; ask only when ambiguity would affect file writes, execution, or material scope.
+- Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: clarify in chat, do not load templates, and do not write files.
-- `Mode: persist`: write only the requested `.docs/**` target using one of the persist templates below.
-- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+- `Mode: persist`: write only the requested `.session/notes/**` target.
+- `Mode: execute`: not valid for this task.
+
+## Task Boundary Check
+
+Before clarifying, classify obvious boundary problems:
+
+- `fits`: user is providing goals, staged requirements, scope, assumptions, or acceptance notes.
+- `wrong_task`: user asks to judge code/docs reasonableness; recommend `review`.
+- `wrong_task`: user asks to form a direction or decision; recommend `shape`.
+- `wrong_task`: user asks to produce implementation steps; recommend `plan`.
+- `wrong_task`: user asks to update formal docs; recommend `sync`.
+- `missing_prerequisite`: `Mode: persist` lacks a `.session/notes/**` target.
+
+If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
 
 ## Persist Templates
 
-- Default: `.workflow/templates/brief.md`
+- Default: `.workflow/templates/note.md`
 
 ## Copilot Add Context
 
 Required:
 
 - #.workflow/tasks/clarify.md
-- raw request or relevant source context
+- user request, existing `.session/goal/*`, or relevant background
 
 For `Mode: persist`:
 
-- Add #.workflow/templates/brief.md
-- Provide `Target: .docs/work/briefs/brief_{topic}.md` or a `.docs/changes/{change_id}/brief.md` target when using `change`.
+- Add #.workflow/templates/note.md.
+- Provide `Target: .session/notes/note_{topic}.md`.
 
 User-selected lenses:
 
+- Add #.workflow/lenses/iteration.md only if the user selects `iteration`.
+- Add #.workflow/lenses/language.md only if the user selects `language`.
 - Add #.workflow/lenses/domain.md only if the user selects `domain`.
-- Add #.workflow/lenses/change.md only if the user selects `change`.
-- Add #.workflow/lenses/knowledge.md only if the user selects `knowledge`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
 
-Keep the default output light. Capture what the user wants, why it matters, what is in and out of scope, and how completion will be recognized.
-
-## Lens Suggestions
-
-- Suggest `domain` when terms or rules are ambiguous. Do not apply it unless selected by the user.
-- Suggest `change` when the request should become a tracked change. Do not apply it unless selected by the user.
-- Suggest `knowledge` when source material should be preserved. Do not apply it unless selected by the user.
+Capture the user's goal, staged requirements, background, constraints, non-goals, acceptance signals, and open questions. Keep this as session input, not as formal project documentation.
 
 ## Output Rules
 
-- In `Mode: discuss`, answer inline and recommend the next task without forcing a file.
-- Default path: `{WorkflowRoot}/.docs/work/briefs/brief_{topic}.md`
-- With `change` lens: `{WorkflowRoot}/.docs/changes/{change_id}/brief.md`
+- Default persisted path: `{WorkflowRoot}/.session/notes/note_{topic}.md`.
+- Do not write `docs/**`; use `sync` when a stable formal doc must be updated.
+- Do not treat `.session/**` as source of truth.
 
 ## User Input
 
-{{raw request}}
+{{goal, context, staged requirements, or scope question}}

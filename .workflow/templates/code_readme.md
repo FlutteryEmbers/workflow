@@ -1,4 +1,4 @@
-# Code-Adjacent README
+# {{Code Area}} README
 
 ## Note Type
 
@@ -6,53 +6,41 @@
 
 ## Scope
 
-{{directory or code area covered, for example `src/auth/**`}}
+{{exact files, package, or directory this README covers}}
 
 ## When To Read
 
-- {{situation where this README helps}}
+{{when this local README helps more than reading code directly}}
 
 ## Responsibilities
 
-{{stable responsibilities of this code area, if useful}}
+- {{responsibility}}
 
 ## Public Surface
 
-{{important functions, classes, APIs, events, schemas, or commands}}
+- {{API, component, CLI, config, or none}}
 
 ## Behavior Notes
 
-{{runtime behavior confirmed from code or tests}}
+- {{local behavior worth knowing}}
 
 ## Local Decisions
 
-- {{local decision, reason, and source}}
+- {{local implementation decision}}
 
 ## Dependencies
 
-{{important inbound and outbound dependencies}}
-
-## Code Map
-
-> Keep this diagram only if it improves readability.
-
-```mermaid
-flowchart LR
-    caller_node["Caller"] --> module_node["This module"]
-    module_node --> dependency_node["Dependency"]
-    module_node --> output_node["Output"]
-```
+- {{important dependency or none}}
 
 ## Verification
 
-{{tests or checks that protect this code area}}
+- {{tests, checks, or manual verification}}
 
 ## Source Of Truth
 
-- Runtime behavior: {{code or tests}}
-- Product or system facts: {{.docs/current/** or none}}
-- Shared boundaries: {{.docs/shared/boundaries.md or none}}
+- Formal docs: {{docs/** path or none}}
+- Code: {{source path}}
 
 ## Last Reviewed
 
-{{yyyy-mm-dd and source}}
+{{date}}

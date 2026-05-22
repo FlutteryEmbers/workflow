@@ -1,28 +1,24 @@
 ---
 id: review
 role: reviewer
-purpose: Review behavior, evidence, risks, defects, or refactor opportunities.
+purpose: Review behavior, evidence, decisions, plans, diffs, or formal docs alignment.
 inputs:
   - target_or_claim
 outputs:
-  - .docs/work/reviews/review_{topic}.md
-  - .docs/changes/{change_id}/evidence.md
+  - .session/decisions/dec_{topic}_review.md
 user_selectable_lenses:
   - redteam
   - consistency
-  - publish
   - debug
   - distill
   - language
   - domain
   - test
   - architecture
-  - knowledge
-  - change
 done_check:
   - findings_are_actionable
-  - severity_or_confidence_is_clear
-  - evidence_is_recorded
+  - decision_is_clear
+  - evidence_is_named
 ---
 
 # Review Task
@@ -33,102 +29,80 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial; ask only when ambiguity would affect file writes, execution, or material scope.
+- Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: review in chat, do not load templates, and do not write files.
-- In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in the user's lens order, then give actionable findings or recommended next steps.
-- `Mode: persist`: write only the requested `.docs/**` target using one of the persist templates below.
-- In `Mode: persist`, prefer one primary lens and at most one supporting lens; split into multiple artifacts if more views are needed.
-- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+- In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in user-provided order, then give actionable findings.
+- `Mode: persist`: write only the requested `.session/decisions/**` target.
+- `Mode: execute`: not valid for this task.
+
+## Task Boundary Check
+
+Before reviewing, classify the request:
+
+- `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, or reasonableness.
+- `fits_with_preflight`: review requires reading code/docs/session context before verdict. In `Mode: discuss`, perform read-only evidence preflight first.
+- `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
+- `wrong_task`: user asks to implement steps from an approved direction; recommend `plan` or `build`.
+- `wrong_task`: user asks to update formal docs; recommend `sync`.
+- `missing_prerequisite`: `Mode: persist` lacks a `.session/decisions/**` target.
+
+Review acts as a gateway. Verdicts should recommend next task: `none`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 
 ## Persist Templates
 
-- Default: `.workflow/templates/review.md`
+- Default: `.workflow/templates/decision.md`
+- Review detail: `.workflow/templates/review.md`
 - With `redteam`: `.workflow/templates/critique.md`
 - With `consistency`: `.workflow/templates/consistency_review.md`
-- With `publish`: use the regular review template to list publishable facts, do-not-publish content, blockers, and recommended action.
 
 ## Copilot Add Context
 
 Required:
 
 - #.workflow/tasks/review.md
-- target source, docs, behavior claim, or evidence
+- target source, docs, session decision, external plan, diff, behavior claim, or evidence
 
 For `Mode: persist`:
 
-- Add #.workflow/templates/review.md, or #.workflow/templates/critique.md / #.workflow/templates/consistency_review.md when the selected lens requires it.
-- Provide a `.docs/**` `Target`.
+- Add #.workflow/templates/decision.md or the selected review template.
+- Provide `Target: .session/decisions/dec_{topic}_review.md`.
 
 User-selected lenses:
 
-- Add #.workflow/lenses/debug.md only if the user selects `debug`.
-- Add #.workflow/lenses/redteam.md only if the user selects `redteam`.
-- Add #.workflow/lenses/consistency.md only if the user selects `consistency`.
-- Add #.workflow/lenses/publish.md only if the user selects `publish`.
-- Add #.workflow/lenses/distill.md only if the user selects `distill`.
-- Add #.workflow/lenses/language.md only if the user selects `language`.
-- Add #.workflow/lenses/domain.md only if the user selects `domain`.
-- Add #.workflow/lenses/test.md only if the user selects `test`.
-- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
-- Add #.workflow/lenses/knowledge.md only if the user selects `knowledge`.
-- Add #.workflow/lenses/change.md only if the user selects `change`.
+- Add selected lens files only when the user names them.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
 
-Inspect the target and report findings first. Keep review scope explicit and avoid rewriting the solution unless the user asks for a fix plan.
+Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session decision is accepted, needs revision, blocked, or should be synced to formal docs.
 
 ## External Plan Audit
 
 Use this in `Mode: discuss` to audit a Codex/Copilot native Plan before native implementation.
 
-Output a clear decision:
+Decision values:
 
-- `approved`: the plan is safe to implement as written.
-- `needs changes`: the plan is directionally valid but needs edits before implementation.
-- `blocked`: the plan is missing critical scope, safety, verification, or source-of-truth information.
-- `publish blocked`: the plan is an official docs publish plan and publish safety is unclear.
+- `approved`: safe to implement as written.
+- `needs changes`: direction is valid but the plan needs edits.
+- `blocked`: critical scope, safety, verification, or source-of-truth information is missing.
+- `docs blocked`: the plan touches formal docs and source, audience, source of truth, or Formal Docs Rules are unclear.
 
-Check scope, target files, do-not-touch areas, dependency or interface changes, verification, rollback, open questions, and whether the plan exceeds the user's stated intent.
-
-With `publish` lens, also check source, target, audience, source of truth, publishable facts, do-not-publish content, sanitization steps, blockers, and whether `.docs/**` content could leak into `docs/**`.
+Check scope, target files, do-not-touch areas, interface or data changes, verification, rollback, open questions, and whether the plan exceeds the user's stated intent.
 
 ## External Diff Review
 
-Use this in `Mode: discuss` after Codex/Copilot native implementation.
+Use this in `Mode: discuss` after Codex/Copilot native implementation. Compare the diff against the approved external plan and Formal Docs Rules.
 
-Compare the diff against the approved external plan:
-
-- Identify scope drift, unrelated edits, missing edits, missing verification, and changed files outside the approved target list.
-- Check whether `.docs/**`, `.workflow/**`, `docs/**`, or source files were modified without explicit approval.
-- With `publish` lens, verify that official `docs/**` content is sanitized, audience-appropriate, source-of-truth aligned, and free of internal workflow details.
-- Recommend one of: accept, revise diff, add verification, revert unrelated edits, or create a follow-up plan.
-
-## Lens Suggestions
-
-- Suggest `debug` for bugs or uncertain behavior. Do not apply it unless selected by the user.
-- Suggest `redteam` when the user wants a proposal, model, or recommendation challenged. Do not apply it unless selected by the user.
-- Suggest `consistency` when reviewing conflicts between docs, code, tests, code-adjacent README files, or design intent. Do not apply it unless selected by the user.
-- Suggest `publish` when checking whether internal `.docs/**` content can be safely sanitized for official `docs/**`. Do not apply it unless selected by the user.
-- Suggest `distill` when reviewing gaps between current Workflow Lite outputs and a reference document structure. Do not apply it unless selected by the user.
-- Suggest `language` when reviewing terminology consistency, output language, translation quality, or readability. Do not apply it unless selected by the user.
-- Suggest `domain` when critique should inspect language, story flow, events, boundaries, or rule ownership. Do not apply it unless selected by the user.
-- Suggest `test` for verification gaps. Do not apply it unless selected by the user.
-- Suggest `architecture` for structural risks. Do not apply it unless selected by the user.
-- Suggest `knowledge` for docs or knowledge drift. Do not apply it unless selected by the user.
-- Suggest `change` when evidence belongs to a tracked change. Do not apply it unless selected by the user.
+Check for scope drift, unrelated edits, missing edits, missing verification, changed files outside the approved target list, and unsafe formal docs content.
 
 ## Output Rules
 
-- In `Mode: discuss`, report findings, risks, or critique in chat only.
-- For external plan audit, output `Decision: approved | needs changes | blocked | publish blocked` before detailed findings.
-- For external diff review, compare the diff against the approved external plan before making broader recommendations.
-- Default path: `{WorkflowRoot}/.docs/work/reviews/review_{topic}.md`
-- With `redteam` lens, use `.workflow/templates/critique.md`.
-- With `consistency` lens, use `.workflow/templates/consistency_review.md` and do not directly modify docs or code.
-- With `publish` lens, do not write `docs/**`; record publish blockers, publishable facts, do-not-publish content, target audience, and recommended action.
-- With `change` lens: `{WorkflowRoot}/.docs/changes/{change_id}/evidence.md`
+- In `Mode: discuss`, report findings in chat only.
+- For external plan audit, output `Decision: approved | needs changes | blocked | docs blocked` before detailed findings.
+- For external diff review, compare the diff against the approved plan before broader recommendations.
+- Default persisted path: `{WorkflowRoot}/.session/decisions/dec_{topic}_review.md`.
+- Formal docs fixes go through `sync`.
 
 ## User Input
 
-{{code, docs, behavior, claim, or risk to review}}
+{{code, docs, session decision, external plan, diff, behavior, claim, or risk to review}}

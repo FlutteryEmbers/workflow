@@ -1,23 +1,25 @@
 # Lens: Architecture
 
-Use this lens when structure, dependency direction, interfaces, or long-term constraints matter.
-
-This lens is a review method, not a rule repository. Use it to reason about architecture during `explore`, `shape`, `plan`, or `review`.
+Use this lens when structure, boundaries, dependencies, interfaces, or durable technical constraints matter.
 
 ## Add Only When Needed
 
-- Multiple modules or boundaries are affected.
-- A public interface or data contract may change.
-- A decision would be expensive to reverse.
+- A decision affects module boundaries, dependency direction, public surfaces, data ownership, or deployment shape.
+- A plan may cross architectural boundaries.
+- A review should check structural risk or constraint drift.
 
 ## Checks
 
-- Identify affected boundaries.
-- Compare at least one simpler alternative.
-- Record the chosen tradeoff.
+- Boundary: what owns the responsibility?
+- Direction: which dependencies are allowed or forbidden?
+- Surface: what public API, contract, CLI, UI, or doc surface changes?
+- Data: who owns reads, writes, lifecycle, and migration?
+- Constraint: which formal constraints must be preserved?
+- Exception: is this a prototype exception or a durable constraint?
 
-## Durable Constraints
+## Output Hints
 
-- Do not write long-term constraints from this lens directly.
-- Use `sync --lens architecture` to record confirmed constraints in `.docs/shared/boundaries.md`.
-- Keep speculative architecture notes in `.docs/work/shapes/` or `.docs/work/decisions/`.
+- Session architecture decisions belong in `.session/decisions/**`.
+- Goal-level architecture direction may update `.session/goal/vision.md` or `.session/goal/roadmap.md`.
+- Accepted formal constraints belong in `docs/architecture/boundaries.md` or another user-specified `docs/**` target through `sync`.
+- Do not turn prototype exceptions into formal constraints unless explicitly accepted.

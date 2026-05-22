@@ -1,29 +1,22 @@
 ---
 id: sync
 role: steward
-purpose: Update living docs, archive durable facts, or organize long-term knowledge.
+purpose: Align formal docs and code-adjacent README files with confirmed decisions, code, or diffs.
 inputs:
-  - source_or_change
+  - source_or_diff
 outputs:
-  - updated_docs
-  - src/**/README.md
   - docs/{area}/{topic}.md
-  - .docs/current/{topic}.md
-  - .docs/knowledge/wiki/{page}.md
-  - .docs/changes/{change_id}/archive.md
+  - src/**/README.md
 user_selectable_lenses:
-  - change
-  - knowledge
   - consistency
-  - publish
   - distill
   - language
   - domain
   - architecture
 done_check:
   - source_of_truth_is_named
+  - formal_docs_rules_are_satisfied
   - stale_information_is_removed
-  - durable_facts_are_traceable
 ---
 
 # Sync Task
@@ -34,77 +27,73 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial; ask only when ambiguity would affect file writes, execution, target, or source of truth.
+- Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: recommend sync targets in chat, do not load templates, and do not write files.
-- `Mode: persist`: write only `.docs/**`, explicit `src/**/README.md` code-adjacent README targets, or `docs/**` when `Lens: publish` is selected.
-- In `Mode: persist`, confirm the target is `.docs/**`, explicit `src/**/README.md`, or `docs/**` only when `Lens: publish` is selected.
-- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+- `Mode: persist`: write only `docs/**` or explicit `src/**/README.md` targets.
+- Reject `.session/**` targets; session files are maintained by the task that produced them.
+- `Mode: execute`: not valid for this task.
+
+## Task Boundary Check
+
+Before syncing, classify the request:
+
+- `fits`: user asks to align formal docs or code-adjacent README with confirmed source.
+- `fits_with_preflight`: sync depends on checking source, existing docs, code, diff, consistency, or Formal Docs Rules. In `Mode: discuss`, perform read-only preflight first.
+- `wrong_task`: user asks to save a session note; recommend `clarify` or `explore`.
+- `wrong_task`: user asks to save a session decision, plan, or review; recommend `shape`, `plan`, or `review`.
+- `wrong_task`: user asks to change code; recommend `plan -> build` or external-agent.
+- `missing_prerequisite`: `Mode: persist` target is missing or is not `docs/**` or `src/**/README.md`.
+- `missing_prerequisite`: source, target audience, source of truth, or Formal Docs Rules safety is unclear for `docs/**`.
+
+If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
 
 ## Persist Templates
 
-- Default: `.workflow/templates/sync.md`
-- For code-adjacent README targets: `.workflow/templates/code_readme.md`
-- For new official docs publish targets: `.workflow/templates/publish_note.md` may be used as a light starting point.
+- Formal docs sync: `.workflow/templates/sync.md`
+- Code-adjacent README targets: `.workflow/templates/code_readme.md`
 
 ## Copilot Add Context
 
 Required:
 
 - #.workflow/tasks/sync.md
-- source doc, change record, code-adjacent doc, or knowledge material
+- source `.session/**` decision or note, existing `docs/**`, code, diff, or code-adjacent README
 
 For `Mode: persist`:
 
-- Add #.workflow/templates/sync.md, or #.workflow/templates/code_readme.md when maintaining `src/**/README.md`.
-- Add #.workflow/templates/publish_note.md only when publishing a new `docs/**` target with `publish`.
-- Provide a `.docs/**` `Target`, `Target: src/**/README.md` for code-adjacent README maintenance, or `Target: docs/**` only with `publish`.
+- Add #.workflow/templates/sync.md for `docs/**`.
+- Add #.workflow/templates/code_readme.md for `src/**/README.md`.
+- Provide `Target: docs/{area}/{topic}.md` or `Target: src/{area}/README.md`.
 
 User-selected lenses:
 
-- Add #.workflow/lenses/change.md only if the user selects `change`.
-- Add #.workflow/lenses/knowledge.md only if the user selects `knowledge`.
-- Add #.workflow/lenses/consistency.md only if the user selects `consistency`.
-- Add #.workflow/lenses/publish.md only if the user selects `publish`.
-- Add #.workflow/lenses/distill.md only if the user selects `distill`.
-- Add #.workflow/lenses/language.md only if the user selects `language`.
-- Add #.workflow/lenses/domain.md only if the user selects `domain`.
-- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
+- Add selected lens files only when the user names them.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
+
+## Formal Docs Rules
+
+Any write to `docs/**` must:
+
+- Name source, target audience, and source of truth.
+- Preserve stable, confirmed facts useful to the formal reader.
+- Preserve existing docs structure and tone when updating an existing file.
+- Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, internal redteam-only risks, temporary workarounds, sensitive implementation detail, and not-yet-announced plans.
+- Output `docs blocked` and do not write `docs/**` when source, audience, source of truth, or safety is unclear.
 
 ## Instructions
 
-Use this task to reduce knowledge drift. Update only the living docs needed for the requested sync.
-
-## Lens Suggestions
-
-- Suggest `change` when archiving a tracked change. Do not apply it unless selected by the user.
-- Suggest `knowledge` when organizing raw material or wiki pages. Do not apply it unless selected by the user.
-- Suggest `consistency` when a review has already confirmed document drift that should be synchronized. Do not apply it unless selected by the user.
-- Suggest `publish` when stable `.docs/**` content should become sanitized official project documentation under `docs/**`. Do not apply it unless selected by the user.
-- Suggest `distill` when stable reference-derived structures or writing principles should be preserved as knowledge or shared guidance. Do not apply it unless selected by the user.
-- Suggest `language` when stable terminology should be normalized or synced to `.docs/shared/glossary.md`. Do not apply it unless selected by the user.
-- Suggest `domain` when shared terms or rules need cleanup. Do not apply it unless selected by the user.
-- Suggest `architecture` when confirmed architecture constraints should be recorded. Do not apply it unless selected by the user.
+Use `sync` only for formal docs and code-adjacent README alignment. Inputs may come from `.session/**`, source code, diffs, tests, or existing docs, but outputs are limited to `docs/**` and `src/**/README.md`.
 
 ## Output Rules
 
-- In `Mode: discuss`, recommend what should be synced and where, without writing files.
-- In `Mode: persist`, do not write outside `.docs/**` except for explicit `src/**/README.md` code-adjacent README targets or `docs/**` publish targets with `publish`.
-- With `publish` lens, `docs/**` is allowed only when source, target audience, and source of truth are clear. If any are missing, or if sensitive or unresolved content cannot be safely separated, output `Publish blocked` and do not write `docs/**`.
-- Do not copy `.docs/**` directly into `docs/**`; publish a sanitized view for the official project documentation audience.
-- Code-adjacent README files are optional local reading entrypoints at `src/**/README.md`.
-- For conversation-driven work, extract stable conclusions from session, options, critique, concept, and shape artifacts; do not preserve full chat transcripts as durable facts.
-- Durable facts go to `{WorkflowRoot}/.docs/current/{topic}.md`.
-- Knowledge pages go to `{WorkflowRoot}/.docs/knowledge/wiki/`.
-- Shared project conventions go to `{WorkflowRoot}/.docs/shared/`.
-- Use `src/**/README.md` only for local code reading help; use `.docs/current/**` for current system facts, `.docs/shared/boundaries.md` for cross-module constraints, `.docs/shared/glossary.md` for stable terms, and `.docs/knowledge/wiki/**` for reusable knowledge.
-- With `consistency` lens, sync only confirmed document drift. If code may be wrong, route to `plan -> build`; if intent is unclear, route to `shape`.
-- With `publish` lens, remove AI discussion residue, unresolved tradeoffs, rejected options, internal migration notes, temporary workarounds, sensitive implementation detail, security-sensitive detail, and unannounced plans.
-- With `distill` lens, preserve stable distillation results only in `.docs/knowledge/wiki/**` or `.docs/shared/**`; do not modify `.workflow/**`.
-- With `language` lens, stable terminology goes to `{WorkflowRoot}/.docs/shared/glossary.md`.
-- With `architecture` lens, confirmed boundaries and constraints go to `{WorkflowRoot}/.docs/shared/boundaries.md`.
-- With `change` lens, write archive notes to `{WorkflowRoot}/.docs/changes/{change_id}/archive.md`.
+- Formal docs go to `{WorkflowRoot}/docs/**`.
+- Code-adjacent README files go to `src/**/README.md`.
+- Do not write `.session/**`.
+- With `consistency`, sync only confirmed drift. If code may be wrong, route to `plan -> build` or external-agent implementation; if intent is unclear, route to `shape`.
+- With `architecture`, formal constraints go to `docs/architecture/boundaries.md` or a user-specified docs target.
+- With `language`, stable terminology goes to `docs/glossary.md` or a user-specified docs target.
+- With `distill`, stable reference-derived structures go to formal docs only after they are accepted as project knowledge.
 
 ## User Input
 
-{{doc update, change archive request, knowledge source, or drift concern}}
+{{formal doc update, code-adjacent README request, diff, session decision, or docs/code drift concern}}

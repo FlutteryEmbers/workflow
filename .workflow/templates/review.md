@@ -1,35 +1,46 @@
-# Review
+# Review: {{topic}}
 
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
 
-## Scope
+## Review Target
 
-{{what was reviewed}}
-
-## Failure or Risk Path
-
-> Optional. Add a Mermaid diagram only when it makes the finding easier to reproduce or understand.
-
-```mermaid
-flowchart TD
-    trigger_node["Trigger"] --> failure_node["Failure or risk"]
-    failure_node --> impact_node["Impact"]
-    failure_node -. "uncertain" .-> unknown_node["Open question"]
-```
-
-## Findings
-
-- Severity: {{blocker | warning | note}}
-- Finding: {{issue or observation}}
-- Evidence: {{path, command, reproduction, or source}}
-- Recommendation: {{next action}}
-
-## Verification Gaps
-
-- {{gap or none}}
+{{code, docs, session decision, external plan, diff, or behavior claim}}
 
 ## Decision
 
-{{pass, pass with risk, or blocked}}
+{{approved | needs changes | blocked | docs blocked | accepted | revise}}
+
+## Findings
+
+| Severity | Finding | Evidence | Recommended Action |
+| :--- | :--- | :--- | :--- |
+| {{severity}} | {{finding}} | {{evidence}} | {{action}} |
+
+## Failure Or Risk Path
+
+> Optional. Keep this diagram only if it makes the finding easier to understand.
+
+```mermaid
+flowchart TD
+    trigger_node["Trigger"] --> risk_node["Risk"]
+    risk_node --> impact_node["Impact"]
+```
+
+## Formal Docs Rules Check
+
+{{only when docs/** is involved}}
+
+- Source clear: {{yes/no}}
+- Audience clear: {{yes/no}}
+- Source of truth clear: {{yes/no}}
+- Session-only material excluded: {{yes/no}}
+
+## Verification
+
+- {{verification performed or needed}}
+
+## Follow-up
+
+- {{sync, shape, plan, build, external-agent, or none}}

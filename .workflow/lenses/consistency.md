@@ -1,25 +1,27 @@
 # Lens: Consistency
 
-Use this lens when code, docs, code-adjacent README files, tests, or design intent may disagree.
+Use this lens when session decisions, formal docs, code, tests, or code-adjacent README files may disagree.
 
-## Add Only When Needed
+## Conflict Types
 
-- The user asks for document-to-document or document-to-code review.
-- `.docs/current/**`, `.docs/shared/**`, `src/**/README.md`, README files, tests, or source code may describe different behavior.
-- The work needs a source-of-truth judgment before deciding whether to update docs, change code, clarify design, or ignore a low-value difference.
+- `doc_stale`: formal docs or README are outdated.
+- `code_drift`: code diverged from accepted intent.
+- `docs_conflict`: formal docs disagree with each other.
+- `session_conflict`: session decisions disagree or supersede each other.
+- `ambiguous_intent`: source of truth is unclear.
+- `intentional_exception`: difference is deliberate and should be noted.
+- `low_value`: difference is not worth changing.
 
-## Checks
+## Recommended Actions
 
-- Compare claims across docs, code, tests, and design artifacts.
-- Cite the exact sources used for each conflict.
-- Decide the likely source of truth, or mark intent as ambiguous.
-- Classify each conflict as `doc_stale`, `code_drift`, `docs_conflict`, `ambiguous_intent`, `intentional_exception`, or `low_value`.
-- Recommend exactly one follow-up path: `sync`, `shape`, `plan -> build`, or `none`.
-- Do not rewrite docs or code during review.
+- `sync`: confirmed formal docs or code-adjacent README drift.
+- `shape`: unclear product, design, or architecture intent.
+- `plan -> build`: code likely diverged from accepted behavior.
+- `external-agent`: native Plan/Implement is appropriate for the fix.
+- `none`: accepted exception or low-value difference.
 
 ## Output Hints
 
-- Use `.workflow/templates/consistency_review.md` with `review`.
-- Use `sync` only for confirmed document drift.
-- If code may be wrong, route to `plan -> build` instead of changing docs to match code.
-- If intent is unclear, route to `shape` before changing code or docs.
+- Reviews can be persisted as `.session/decisions/dec_{topic}_review.md`.
+- `sync` may write only `docs/**` or `src/**/README.md`.
+- Do not silently rewrite formal docs to match code when code may be wrong.

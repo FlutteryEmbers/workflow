@@ -1,4 +1,4 @@
-# Sync
+# Formal Docs Sync: {{topic}}
 
 ## Language / Style
 
@@ -6,32 +6,47 @@
 
 ## Source
 
-{{code, change, raw material, or doc source}}
+- {{session decision, code path, diff, test, existing docs, or README}}
+
+## Target
+
+- {{docs/** or src/**/README.md}}
+
+## Source Of Truth
+
+{{confirmed source of truth}}
+
+## Audience
+
+{{formal docs readers or code readers}}
 
 ## Sync Flow
 
-> Optional. Add a Mermaid diagram only when it makes the sync path easier to audit.
+> Optional. Keep this diagram only if it makes the sync path easier to audit.
 
 ```mermaid
-flowchart LR
+flowchart TD
     source_node["Source"] --> sync_node["Sync"]
-    sync_node --> current_node[".docs/current"]
-    sync_node --> knowledge_node[".docs/knowledge"]
-    sync_node --> shared_node[".docs/shared"]
+    sync_node --> docs_node["docs or code README"]
+    sync_node --> verify_node["Verify"]
 ```
+
+## Formal Docs Rules Check
+
+- Source is clear: {{yes/no}}
+- Audience is clear: {{yes/no}}
+- Source of truth is clear: {{yes/no}}
+- Session-only residue removed: {{yes/no}}
+- Sensitive or not-yet-announced details removed: {{yes/no}}
 
 ## Updates
 
-- {{updated document and reason}}
+- {{formal docs or README update}}
 
-## Durable Facts
+## Verification
 
-- {{fact promoted to current or shared knowledge}}
+- {{how consistency was checked}}
 
-## Removed Drift
+## Follow-up
 
-- {{stale or conflicting information removed}}
-
-## Follow-ups
-
-- {{next action or none}}
+- {{follow-up or none}}

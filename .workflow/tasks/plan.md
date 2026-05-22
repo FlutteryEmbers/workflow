@@ -1,14 +1,11 @@
 ---
 id: plan
 role: designer
-purpose: Convert a clear goal, target design, or solution shape into executable repo-aware steps.
+purpose: Turn a chosen direction into a repo-aware plan or external-agent handoff decision.
 inputs:
-  - brief_or_shape
-  - target_design_or_concept
-  - repo_context_or_notes
+  - decision_or_target
 outputs:
-  - .docs/work/plans/plan_{topic}.md
-  - .docs/changes/{change_id}/plan.md
+  - .session/decisions/dec_{topic}_plan.md
 user_selectable_lenses:
   - iteration
   - expand
@@ -16,13 +13,10 @@ user_selectable_lenses:
   - strategy
   - test
   - architecture
-  - change
 done_check:
-  - target_design_is_linked
-  - current_repo_fit_is_named
-  - steps_are_executable
-  - verification_is_named
-  - scope_boundaries_are_preserved
+  - sequence_is_executable
+  - constraints_are_named
+  - verification_is_defined
 ---
 
 # Plan Task
@@ -33,16 +27,29 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial; ask only when ambiguity would affect file writes, execution, or material scope.
-- `Mode: discuss` is default: discuss or revise plan direction in chat, do not load templates, and do not write files.
-- In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in the user's lens order, then give a converged planning recommendation.
-- `Mode: persist`: write only the requested `.docs/**` target using one of the persist templates below.
-- In `Mode: persist`, prefer one primary lens and at most one supporting lens; split into multiple artifacts if more views are needed.
-- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+- Start with an inline `Understanding` unless the request is trivial.
+- `Mode: discuss` is default: plan in chat, do not load templates, and do not write files.
+- In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
+- `Mode: persist`: write only the requested `.session/decisions/**` target.
+- `Mode: execute`: not valid for this task; use `build` with an approved plan or use the external-agent path.
+
+## Task Boundary Check
+
+Before planning, classify the request:
+
+- `fits`: target direction is chosen and the user needs repo-aware implementation steps or handoff.
+- `fits_with_preflight`: plan depends on current code, formal docs, or session context. In `Mode: discuss`, perform read-only target-to-repo fit first.
+- `wrong_task`: target direction is not chosen; recommend `shape`.
+- `wrong_task`: user asks whether current implementation or target is reasonable; recommend `review`.
+- `composite`: user asks to implement from target docs and current code; recommend `plan -> review -> external-agent/build -> review`.
+- `missing_prerequisite`: `Mode: persist` lacks a `.session/decisions/**` target.
+
+Plan may identify blockers and conflicts, but must not invent a new target. If target and repo conflict, recommend `review` or `shape`.
 
 ## Persist Templates
 
-- Default: `.workflow/templates/plan.md`
+- Default: `.workflow/templates/decision.md`
+- Plan detail: `.workflow/templates/plan.md`
 - With `expand`: `.workflow/templates/expanded.md`
 
 ## Copilot Add Context
@@ -50,48 +57,28 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 Required:
 
 - #.workflow/tasks/plan.md
-- relevant brief, shape, concept, note, review, target design, or requested work
-- relevant source files or docs when the plan must map onto the current repo
+- relevant `.session/goal/*`, `.session/notes/**`, `.session/decisions/**`, docs, and target source files
 
 For `Mode: persist`:
 
-- Add #.workflow/templates/plan.md, or #.workflow/templates/expanded.md when expanding a plan.
-- Provide a `.docs/**` `Target`.
+- Add #.workflow/templates/decision.md or #.workflow/templates/plan.md.
+- Provide `Target: .session/decisions/dec_{topic}_plan.md`.
 
 User-selected lenses:
 
-- Add #.workflow/lenses/iteration.md only if the user selects `iteration`.
-- Add #.workflow/lenses/expand.md only if the user selects `expand`.
-- Add #.workflow/lenses/language.md only if the user selects `language`.
-- Add #.workflow/lenses/strategy.md only if the user selects `strategy`.
-- Add #.workflow/lenses/test.md only if the user selects `test`.
-- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
-- Add #.workflow/lenses/change.md only if the user selects `change`.
+- Add selected lens files only when the user names them.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
 
-Write the smallest repo-aware plan that another agent or engineer can execute without making product decisions. Start from the target design or chosen direction, map it to the current repository reality, then recommend an executable sequence.
-
-## Lens Suggestions
-
-- Suggest `iteration` when plan steps are still being discussed, reordered, scoped, or revised. Do not apply it unless selected by the user.
-- Suggest `expand` when a plan needs detailed steps, examples, pseudocode, validation notes, handoff detail, or split part files. Do not apply it unless selected by the user.
-- Suggest `language` when a plan needs full English, translation, terminology consistency, or glossary-ready terms. Do not apply it unless selected by the user.
-- Suggest `strategy` when multiple implementation sequences, slicing approaches, or migration paths are viable. Do not apply it unless selected by the user.
-- Suggest `test` when verification needs stronger structure. Do not apply it unless selected by the user.
-- Suggest `architecture` when the plan must preserve boundaries, interfaces, dependency direction, or architectural constraints. Do not apply it unless selected by the user.
-- Suggest `change` when the plan belongs to a tracked change. Do not apply it unless selected by the user.
+Write the smallest repo-aware plan or handoff another engineer, Codex, or Copilot can execute without making product decisions. Include target files, do-not-touch areas, verification, rollback or recovery notes, and target docs affected.
 
 ## Output Rules
 
-- In `Mode: discuss`, discuss the plan, sequence, risks, or tradeoffs in chat only.
-- Default path: `{WorkflowRoot}/.docs/work/plans/plan_{topic}.md`
-- With `change` lens: `{WorkflowRoot}/.docs/changes/{change_id}/plan.md`
-- For target design planning, explicitly connect target design, current repo fit, impact map, step options, and recommended sequence.
-- With `expand` lens, use `.workflow/templates/expanded.md` and write `{base}.expanded.md` plus optional `{base}.part_{topic}.md` in the same directory as the source plan.
-- Prefer a short executable plan over a comprehensive document.
+- Default persisted path: `{WorkflowRoot}/.session/decisions/dec_{topic}_plan.md`.
+- External-agent handoff is also a session decision; keep it under `.session/decisions/**`.
+- Formal docs updates go through `sync`.
 
 ## User Input
 
-{{brief, shape, concept, repo context, review finding, or requested work}}
+{{decision, target design, repo context, or implementation planning request}}
