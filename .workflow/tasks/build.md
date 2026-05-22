@@ -18,7 +18,7 @@ done_check:
 
 # Build Task
 
-`build` is the workflow-managed execution task. Codex/Copilot native Plan -> Implement is the external-agent write path; it does not use `build`, but its plan should be audited before implementation and its diff should be reviewed afterward.
+`build` is the workflow-managed execution task. Native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents is the external-agent write path; it does not use `build`, but its plan should be audited before implementation and its diff should be reviewed afterward.
 
 ## Context Injection
 
@@ -31,7 +31,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 - `Mode: discuss` is default: explain the build approach or missing prerequisites in chat, do not write files.
 - `Mode: persist`: not valid for this task; use the relevant session or sync task instead.
 - `Mode: execute`: required for repository changes and must include an approved `Plan`.
-- For native Codex/Copilot Implement, use the external-agent path instead of this task, then run `review` on the resulting diff.
+- For native external-agent Implement, use the external-agent path instead of this task, then run `review` on the resulting diff.
 
 ## Task Boundary Check
 

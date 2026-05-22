@@ -60,7 +60,7 @@ Recommend the smallest path:
 - New background or staged requirements: `clarify` or `explore` -> `.session/notes/**`.
 - Target direction, option, architecture, or concept: `shape` -> `.session/decisions/**` or `.session/goal/**`.
 - Repo-aware implementation sequence or handoff: `plan` -> `.session/decisions/**`.
-- Native Codex/Copilot implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
+- Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
 - Formal documentation alignment: `sync` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute` and an approved plan.
 

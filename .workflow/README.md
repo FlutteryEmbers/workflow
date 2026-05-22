@@ -85,7 +85,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 - Ordinary `Mode: persist`: writes session artifacts to `.session/**`.
 - `Task: sync` in `Mode: persist`: writes only `docs/**` or explicit `src/**/README.md`.
 - `Mode: execute`: uses `Task: build` with an approved plan.
-- External-agent path: native Codex/Copilot Plan -> Implement, with plan audit before implementation and diff review afterward.
+- External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan audit before implementation and diff review afterward.
 
 `Mode: execute` is workflow-managed execution only. Native Plan/Implement is a separate external-agent write path.
 
@@ -132,6 +132,16 @@ Any write to `docs/**` must:
 - Add templates only in `Mode: persist`.
 - Add relevant `.session/goal/*`, `.session/notes/**`, `.session/decisions/**`, `docs/**`, and source files.
 - Use `.workflow/copilot.md` as the Add Context menu.
+
+## Using With OpenCode
+
+- Use `.workflow/opencode.md` as the OpenCode adapter guide.
+- Keep `.workflow/**` as the source of truth; do not create a separate OpenCode workflow.
+- Use OpenCode first as a read-only context helper when its context management or model quality is uncertain.
+- Treat OpenCode native Plan output as an external draft plan, not as approved work.
+- Audit OpenCode plans with `review` before implementation and review diffs afterward.
+- OpenCode bounded implementation should execute only approved narrow segments.
+- Temporary `.opencode/plans/` files are scratch; persist accepted handoffs to `.session/decisions/**`.
 
 ## Using With Codex
 

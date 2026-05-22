@@ -78,7 +78,7 @@ Inspect the target and report findings first. Keep review scope explicit. A revi
 
 ## External Plan Audit
 
-Use this in `Mode: discuss` to audit a Codex/Copilot native Plan before native implementation.
+Use this in `Mode: discuss` to audit a native external-agent Plan before implementation.
 
 Decision values:
 
@@ -91,7 +91,7 @@ Check scope, target files, do-not-touch areas, interface or data changes, verifi
 
 ## External Diff Review
 
-Use this in `Mode: discuss` after Codex/Copilot native implementation. Compare the diff against the approved external plan and Formal Docs Rules.
+Use this in `Mode: discuss` after native external-agent implementation. Compare the diff against the approved external plan and Formal Docs Rules.
 
 Check for scope drift, unrelated edits, missing edits, missing verification, changed files outside the approved target list, and unsafe formal docs content.
 
