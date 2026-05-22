@@ -60,6 +60,7 @@ Before syncing, classify the request:
 - `wrong_task`: user asks to change code; recommend `plan -> build` or external-agent.
 - `missing_prerequisite`: `Mode: persist` target is missing or is not `docs/**` or `src/**/README.md`.
 - `missing_prerequisite`: source, target audience, source of truth, or Formal Docs Rules safety is unclear for `docs/**`.
+- `missing_prerequisite`: source is only `.session/drafts/**` and the user has not explicitly confirmed it as source of truth.
 
 Default implicit preflight runs only in `Mode: discuss` and checks source, target, audience, source of truth, reader-facing success criteria, existing docs tone, and Formal Docs Rules. In `Mode: persist`, do not preflight; block with `docs blocked` when any formal docs prerequisite is missing.
 
@@ -75,7 +76,8 @@ If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, an
 Required:
 
 - #.workflow/tasks/sync.md
-- source `.session/**` decision or note, existing `docs/**`, code, diff, or code-adjacent README
+- source `.session/accepted/**` decision, plan, or review by default; existing `docs/**`, code, diff, or code-adjacent README as needed
+- `.session/drafts/**` only when the user explicitly confirms it as source of truth
 
 For `Mode: persist`:
 
@@ -103,11 +105,14 @@ Any write to `docs/**` must:
 
 Use `sync` only for formal docs and code-adjacent README alignment. Inputs may come from `.session/**`, source code, diffs, tests, or existing docs, but outputs are limited to `docs/**` and `src/**/README.md`.
 
+Prefer `.session/accepted/**` as the session-level input source. If the only available source is `.session/drafts/**`, block until the user explicitly confirms that draft as source of truth or routes it through `review` / `shape` / `plan` into `.session/accepted/**`.
+
 ## Output Rules
 
 - Formal docs go to `{WorkflowRoot}/docs/**`.
 - Code-adjacent README files go to `src/**/README.md`.
 - Do not write `.session/**`.
+- Default formal docs source from session is `.session/accepted/**`; drafts require explicit source-of-truth confirmation.
 - With `consistency`, sync only confirmed drift. If code may be wrong, route to `plan -> build` or external-agent implementation; if intent is unclear, route to `shape`.
 - With `architecture`, formal constraints go to `docs/architecture/boundaries.md` or a user-specified docs target.
 - With `language`, stable terminology goes to `docs/glossary.md` or a user-specified docs target.

@@ -19,6 +19,7 @@ Use full English only when explicitly requested.
 
 ## Output Hints
 
-- Draft terminology notes can live in `.session/notes/**` or `.session/decisions/**`.
+- Draft terminology notes can live in `.session/inbox/**` or `.session/drafts/**`.
+- Accepted terminology choices can live in `.session/accepted/**`.
 - Stable terminology belongs in `docs/glossary.md` or another user-specified `docs/**` target through `sync`.
 - Do not create language-specific directories or filename variants by default.

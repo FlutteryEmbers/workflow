@@ -19,7 +19,8 @@ Use this lens when structure, boundaries, dependencies, interfaces, or durable t
 
 ## Output Hints
 
-- Session architecture decisions belong in `.session/decisions/**`.
+- Draft architecture decisions belong in `.session/drafts/**`.
+- Accepted architecture decisions belong in `.session/accepted/**`.
 - Goal-level architecture direction may update `.session/goal/vision.md` or `.session/goal/roadmap.md`.
 - Accepted formal constraints belong in `docs/architecture/boundaries.md` or another user-specified `docs/**` target through `sync`.
 - Do not turn prototype exceptions into formal constraints unless explicitly accepted.

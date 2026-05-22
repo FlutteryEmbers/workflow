@@ -22,6 +22,6 @@ Use this lens when session decisions, formal docs, code, tests, or code-adjacent
 
 ## Output Hints
 
-- Reviews can be persisted as `.session/decisions/dec_{topic}_review.md`.
+- Reviews can be persisted as `.session/drafts/review_{topic}.md`.
 - `sync` may write only `docs/**` or `src/**/README.md`.
 - Do not silently rewrite formal docs to match code when code may be wrong.

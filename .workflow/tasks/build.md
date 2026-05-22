@@ -36,6 +36,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 ## When To Use
 
 - Use only for workflow-managed implementation after an approved plan exists.
+- Prefer approved plans from `.session/accepted/plan_{topic}.md`.
 - Use when repository artifacts must be changed inside an explicit scope with verification evidence.
 
 ## Do Not Use When
@@ -55,7 +56,7 @@ Before building, classify the request:
 
 - `fits`: `Mode: execute` includes an approved plan and requested edits stay inside that plan.
 - `fits_with_preflight`: in `Mode: discuss`, user asks whether a plan is ready to build; run conditional implicit preflight for approved-plan readiness only.
-- `missing_prerequisite`: approved `Plan` is missing, unclear, or not approved.
+- `missing_prerequisite`: approved `Plan` is missing, unclear, not approved, or points only to `.session/drafts/**` without explicit approval.
 - `composite`: user asks to implement from target docs/current code without an approved plan; recommend `plan -> review -> external-agent/build -> review`.
 - `wrong_task`: user asks to save session notes, decisions, or formal docs; recommend the corresponding persist task or `sync`.
 
@@ -68,7 +69,7 @@ If not `fits`, do not modify files. Return Boundary, Reason, Recommended Path, a
 Required:
 
 - #.workflow/tasks/build.md
-- approved plan file or approved session decision for `Mode: execute`
+- approved plan file, preferably `.session/accepted/plan_{topic}.md`, for `Mode: execute`
 - target source files, docs, prompts, templates, or workflow artifacts
 
 User-selected lenses:
@@ -87,6 +88,8 @@ If `Mode: execute` or an approved `Plan` is missing, do not modify files; explai
 
 Do not treat native Plan/Implement output as workflow-managed execution unless the user explicitly provides it as the approved `Plan` for `Mode: execute`.
 
+Do not execute `.session/drafts/**` by default. Draft plans are intermediate working memory; they must be promoted to `.session/accepted/plan_{topic}.md` or explicitly approved by the user, ideally after `review`.
+
 Build may update code, docs, prompts, templates, or workflow artifacts only when the approved plan explicitly names them. Do not modify `.workflow/**`, `.session/**`, `docs/**`, or `src/**/README.md` unless the approved plan names those targets.
 
 When writing `docs/**`, the approved plan must explicitly name the docs targets and include a Formal Docs Checklist: source, target audience, source of truth, reader-facing success criteria, existing docs tone/structure, and safety. If the checklist is missing, do not modify `docs/**`; recommend `sync`.
@@ -101,6 +104,8 @@ When writing `docs/**`, the approved plan must explicitly name the docs targets 
 - Repository changes live in the project codebase.
 - Workflow system changes live in `.workflow/**` and require an explicit approved plan.
 - Session working memory lives in `.session/**` and should usually be updated by session tasks, not `build`.
+- `.session/accepted/**` is the preferred session-level source for approved build input.
+- `.session/drafts/**` is not executable by default.
 - Code-adjacent README updates live in `src/**/README.md` and require an explicit approved plan.
 - Formal docs live in `docs/**` and require an approved-plan Formal Docs Checklist; otherwise route to `sync`.
 

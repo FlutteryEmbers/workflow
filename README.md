@@ -4,7 +4,7 @@ Workflow Lite is an embeddable prompt workspace for AI-assisted development.
 
 ```text
 .workflow/   # workflow system: tasks, lenses, roles, templates, guidance
-.session/    # AI session working memory: goal, notes, decisions, archive
+.session/    # AI session working memory: goal, inbox, drafts, accepted, archive
 docs/        # formal project documentation, when the host project uses it
 .opencode/   # optional OpenCode adapter agents
 ```

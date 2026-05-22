@@ -22,7 +22,7 @@ Use this when OpenCode native Plan can draft an implementation plan.
 - Treat the result as a draft external plan.
 - Do not edit files during native Plan.
 - Audit the draft with `review` before implementation.
-- Persist accepted handoff decisions to `.session/decisions/**` when they should survive the conversation.
+- Persist draft handoff plans to `.session/drafts/**`; persist accepted handoff plans to `.session/accepted/**`.
 
 ### Level 3: Bounded Implementer
 
@@ -54,7 +54,7 @@ Use only the files needed for the current step.
 - `.workflow/tasks/plan.md` for a repo-aware handoff.
 - `.workflow/tasks/sync.md` for formal docs or code-adjacent README alignment.
 - `.workflow/lenses/<lens>.md` only when explicitly selected.
-- `.session/goal/*`, relevant `.session/notes/**`, relevant `.session/decisions/**`, `docs/**`, and source files as needed.
+- `.session/goal/*`, relevant `.session/inbox/**`, relevant `.session/drafts/**`, relevant `.session/accepted/**`, `docs/**`, and source files as needed.
 
 Do not load all tasks or all lenses by default.
 
@@ -67,8 +67,9 @@ Use OpenCode as context helper only. Do not edit files and do not create an impl
 
 Context:
 - .session/goal/*
-- .session/notes/<relevant>
-- .session/decisions/<relevant>
+- .session/inbox/<relevant>
+- .session/drafts/<relevant>
+- .session/accepted/<relevant>
 - docs/<relevant>
 - <source files>
 
@@ -93,7 +94,8 @@ Goal:
 
 Context:
 - .session/goal/*
-- .session/decisions/<relevant>
+- .session/drafts/<relevant>
+- .session/accepted/<relevant>
 - docs/<relevant>
 - <source files>
 

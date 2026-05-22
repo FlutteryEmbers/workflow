@@ -5,7 +5,8 @@ purpose: Capture staged requirements, background, scope, and acceptance notes.
 inputs:
   - user_goal_or_context
 outputs:
-  - .session/notes/note_{topic}.md
+  - .session/inbox/brief_{topic}.md
+  - .session/inbox/note_{topic}.md
 user_selectable_lenses:
   - iteration
   - language
@@ -26,7 +27,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: clarify in chat, do not load templates, and do not write files.
-- `Mode: persist`: write only the requested `.session/notes/**` target.
+- `Mode: persist`: write only the requested `.session/inbox/**` target.
 - `Mode: execute`: not valid for this task.
 
 ## When To Use
@@ -44,7 +45,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 ## Expected Output
 
 - `Mode: discuss`: concise clarified goal, scope, acceptance signals, assumptions, and open questions.
-- `Mode: persist`: a `.session/notes/**` note that preserves user-provided context without turning it into formal source of truth.
+- `Mode: persist`: a `.session/inbox/**` brief or note that preserves user-provided context without turning it into formal source of truth.
 
 ## Task Boundary Check
 
@@ -55,7 +56,7 @@ Before clarifying, classify obvious boundary problems:
 - `wrong_task`: user asks to form a direction or decision; recommend `shape`.
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
-- `missing_prerequisite`: `Mode: persist` lacks a `.session/notes/**` target.
+- `missing_prerequisite`: `Mode: persist` lacks a `.session/inbox/**` target.
 
 No implicit preflight runs in `clarify`. Only run Task Boundary Check; do not scan evidence before clarifying.
 
@@ -63,7 +64,8 @@ If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, an
 
 ## Persist Templates
 
-- Default: `.workflow/templates/note.md`
+- Default: `.workflow/templates/brief.md`
+- Raw or background-heavy input: `.workflow/templates/note.md`
 
 ## Copilot Add Context
 
@@ -74,8 +76,8 @@ Required:
 
 For `Mode: persist`:
 
-- Add #.workflow/templates/note.md.
-- Provide `Target: .session/notes/note_{topic}.md`.
+- Add #.workflow/templates/brief.md for clarified goals or #.workflow/templates/note.md for raw/background-heavy input.
+- Provide `Target: .session/inbox/brief_{topic}.md` or `Target: .session/inbox/note_{topic}.md`.
 
 User-selected lenses:
 
@@ -90,7 +92,8 @@ Capture the user's goal, staged requirements, background, constraints, non-goals
 
 ## Output Rules
 
-- Default persisted path: `{WorkflowRoot}/.session/notes/note_{topic}.md`.
+- Default persisted path: `{WorkflowRoot}/.session/inbox/brief_{topic}.md`.
+- Use `{WorkflowRoot}/.session/inbox/note_{topic}.md` for loose background, raw input, or staged material that is not yet a brief.
 - Do not write `docs/**`; use `sync` when a stable formal doc must be updated.
 - Do not treat `.session/**` as source of truth.
 

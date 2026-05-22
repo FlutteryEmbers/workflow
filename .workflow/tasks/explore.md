@@ -5,7 +5,8 @@ purpose: Understand code, materials, current behavior, feasibility, or reference
 inputs:
   - question_or_source
 outputs:
-  - .session/notes/note_{topic}.md
+  - .session/inbox/note_{topic}.md
+  - .session/drafts/option_{topic}.md
 user_selectable_lenses:
   - distill
   - strategy
@@ -29,7 +30,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: explain findings in chat, do not load templates, and do not write files.
-- `Mode: persist`: write only the requested `.session/notes/**` target.
+- `Mode: persist`: write only the requested `.session/inbox/**` target, or `.session/drafts/option_{topic}.md` when the user asks for structured candidate options.
 - `Mode: execute`: not valid for this task.
 
 ## When To Use
@@ -47,7 +48,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - `Mode: discuss`: facts, evidence, assumptions, unknowns, and suggested next decision.
-- `Mode: persist`: a `.session/notes/**` note that separates observed facts from assumptions.
+- `Mode: persist`: a `.session/inbox/**` note that separates observed facts from assumptions, or a `.session/drafts/option_{topic}.md` candidate set when exploration becomes structured alternatives.
 
 ## Task Boundary Check
 
@@ -59,7 +60,7 @@ Before exploring, classify obvious boundary problems:
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
 - `wrong_task`: user asks to judge a target or diff; recommend `review`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
-- `missing_prerequisite`: `Mode: persist` lacks a `.session/notes/**` target.
+- `missing_prerequisite`: `Mode: persist` lacks a `.session/inbox/**` target or a structured `.session/drafts/option_{topic}.md` target.
 
 Conditional implicit preflight for `explore` only checks boundary, source, and scope. Do not duplicate exploration inside preflight; once the boundary is clear, proceed with normal explore or recommend the right task.
 
@@ -81,7 +82,8 @@ Required:
 For `Mode: persist`:
 
 - Add #.workflow/templates/note.md, or #.workflow/templates/distillation.md / #.workflow/templates/options.md when selected.
-- Provide `Target: .session/notes/note_{topic}.md`.
+- Provide `Target: .session/inbox/note_{topic}.md` by default.
+- Provide `Target: .session/drafts/option_{topic}.md` only when the output is structured candidate options.
 
 User-selected lenses:
 
@@ -99,8 +101,9 @@ Explore enough to reduce uncertainty for the next decision. Separate observed fa
 
 ## Output Rules
 
-- Default persisted path: `{WorkflowRoot}/.session/notes/note_{topic}.md`.
-- With `distill`, write distillation notes to `.session/notes/**` unless the user requests a session decision.
+- Default persisted path: `{WorkflowRoot}/.session/inbox/note_{topic}.md`.
+- With `distill`, write distillation notes to `.session/inbox/**` unless the user requests a session decision.
+- With structured alternatives, write candidate options to `{WorkflowRoot}/.session/drafts/option_{topic}.md`; drafts are not approved sources for execution.
 - Do not write `docs/**`; use `sync` after a decision is stable.
 
 ## User Input

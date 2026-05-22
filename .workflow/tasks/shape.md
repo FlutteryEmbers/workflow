@@ -5,7 +5,8 @@ purpose: Form a direction, concept, architecture, goal update, or session decisi
 inputs:
   - clarified_context
 outputs:
-  - .session/decisions/dec_{topic}.md
+  - .session/drafts/shape_{topic}.md
+  - .session/accepted/decision_{topic}.md
   - .session/goal/{vision|target_docs|assumptions|roadmap}.md
 user_selectable_lenses:
   - iteration
@@ -33,7 +34,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: shape in chat, do not load templates, and do not write files.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
-- `Mode: persist`: write only the requested `.session/decisions/**` or `.session/goal/**` target.
+- `Mode: persist`: write only the requested `.session/drafts/**`, `.session/accepted/**`, or `.session/goal/**` target.
 - `Mode: execute`: not valid for this task.
 
 ## When To Use
@@ -51,7 +52,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - `Mode: discuss`: `Reframed Goal`, `Narrowest Useful Wedge`, `Success Criteria`, `Rejected Larger Scope`, tradeoffs, and recommended next step.
-- `Mode: persist`: a `.session/decisions/**` decision or `.session/goal/**` update.
+- `Mode: persist`: a `.session/drafts/**` draft shape, `.session/accepted/**` accepted decision, or `.session/goal/**` update.
 
 ## Task Boundary Check
 
@@ -62,7 +63,7 @@ Before shaping, classify the request:
 - `wrong_task`: user only asks whether current code/docs are reasonable; recommend `review`.
 - `wrong_task`: user has a fixed target and wants implementation steps; recommend `plan`.
 - `composite`: user asks to evaluate reasonableness and then design a replacement; recommend `review -> shape`.
-- `missing_prerequisite`: `Mode: persist` lacks a `.session/decisions/**` or `.session/goal/**` target.
+- `missing_prerequisite`: `Mode: persist` lacks a `.session/drafts/**`, `.session/accepted/**`, or `.session/goal/**` target.
 
 Default implicit preflight runs only in `Mode: discuss`. Output `Evidence`, `Unknowns`, and `Boundary` before the shape. If evidence is insufficient, source of truth is unclear, or the request should be decomposed, stop and output Recommended Segments. In `Mode: persist`, do not preflight; block when the target or required source context is missing.
 
@@ -79,13 +80,14 @@ Default implicit preflight runs only in `Mode: discuss`. Output `Evidence`, `Unk
 Required:
 
 - #.workflow/tasks/shape.md
-- relevant `.session/goal/*`, `.session/notes/**`, existing decisions, docs, or source files
+- relevant `.session/goal/*`, `.session/inbox/**`, existing decisions, docs, or source files
 
 For `Mode: persist`:
 
-- Add #.workflow/templates/decision.md for `.session/decisions/**`.
+- Add #.workflow/templates/decision.md for compact `.session/accepted/**` decisions.
+- Add #.workflow/templates/shape.md for `.session/drafts/**` shape artifacts or accepted decisions needing goal reframing / PoC wedge.
 - Add #.workflow/templates/goal.md for `.session/goal/**`.
-- Provide `Target: .session/decisions/dec_{topic}.md` or `Target: .session/goal/{file}.md`.
+- Provide `Target: .session/drafts/shape_{topic}.md`, `Target: .session/accepted/decision_{topic}.md`, or `Target: .session/goal/{file}.md`.
 
 User-selected lenses:
 
@@ -100,7 +102,8 @@ For vague or broad goals, first reframe the request. Name the smallest useful we
 
 ## Output Rules
 
-- Default persisted decision path: `{WorkflowRoot}/.session/decisions/dec_{topic}.md`.
+- Default draft path: `{WorkflowRoot}/.session/drafts/shape_{topic}.md`.
+- Accepted decision path: `{WorkflowRoot}/.session/accepted/decision_{topic}.md`.
 - Goal updates go to `{WorkflowRoot}/.session/goal/{vision|target_docs|assumptions|roadmap}.md`.
 - Formal long-term docs go through `sync`, not `shape`.
 - Target docs should be listed when a decision may later update `docs/**`.

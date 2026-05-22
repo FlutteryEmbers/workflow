@@ -14,8 +14,9 @@ graph TD
     B --> V["review"]
     V --> Y["sync formal docs"]
 
-    C -. "notes" .-> N[".session/notes"]
-    S -. "decisions" .-> D[".session/decisions"]
+    C -. "input" .-> N[".session/inbox"]
+    S -. "drafts" .-> D[".session/drafts"]
+    V -. "accepted" .-> A[".session/accepted"]
     S -. "goal" .-> G[".session/goal"]
     Y -. "formal docs" .-> F["docs"]
 ```
@@ -27,8 +28,9 @@ graph TD
 - `lens`: optional user-selected thinking method in `.workflow/lenses/`.
 - `.session`: AI session working memory, not formal source of truth.
 - `.session/goal`: evolving goal space and target docs map.
-- `.session/notes`: staged inputs, background, exploration, and reference notes.
-- `.session/decisions`: session decisions such as direction, scope, plan, constraint, handoff, or review.
+- `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, and reference material.
+- `.session/drafts`: work-in-progress shapes, options, plans, and reviews; not approved for execution by default.
+- `.session/accepted`: accepted session-level conclusions such as decisions, approved plans, and accepted review verdicts.
 - `docs`: formal project documentation maintained by the host project.
 - `src/**/README.md`: optional code-adjacent reading entrypoint.
 
@@ -41,24 +43,37 @@ graph TD
     target_docs.md
     assumptions.md
     roadmap.md
-  notes/
-  decisions/
+  inbox/
+  drafts/
+  accepted/
   archive/
 ```
 
 Use `.session/**` for work that may change during AI collaboration. Stable long-term knowledge, terms, architecture constraints, and design docs belong in `docs/**`.
+
+## Session Naming
+
+Session directories express state; file prefixes express artifact kind.
+
+- `inbox`: `note_{topic}.md`, `brief_{topic}.md`
+- `drafts`: `brief_`, `shape_`, `option_`, `plan_`, `review_`
+- `accepted`: `brief_`, `decision_`, `plan_`, `review_`
+
+Do not use task names as mandatory file prefixes. `docs/**` follows the host project's formal docs naming. `src/**/README.md` is fixed.
+
+Drafts are not approved execution sources. `build` and external-agent implementation should prefer `.session/accepted/**`; using `.session/drafts/**` requires explicit user approval and should usually pass through `review`.
 
 ## Tasks
 
 | Task | Role | Default Output | Purpose |
 | :--- | :--- | :--- | :--- |
 | `route` | `analyst` | chat | Recommend the smallest useful next path. |
-| `clarify` | `analyst` | `.session/notes/` | Capture staged requirements, background, scope, and acceptance notes. |
-| `explore` | `designer` | `.session/notes/` | Understand code, materials, behavior, feasibility, or reference structure. |
-| `shape` | `designer` | `.session/decisions/` or `.session/goal/` | Form a direction, concept, architecture, goal update, or session decision. |
-| `plan` | `designer` | `.session/decisions/` | Turn a chosen direction into a repo-aware plan or external-agent handoff. |
+| `clarify` | `analyst` | `.session/inbox/` | Capture staged requirements, background, scope, and acceptance notes. |
+| `explore` | `designer` | `.session/inbox/` | Understand code, materials, behavior, feasibility, or reference structure. |
+| `shape` | `designer` | `.session/drafts/`, `.session/accepted/`, or `.session/goal/` | Form a direction, concept, architecture, goal update, or session decision. |
+| `plan` | `designer` | `.session/drafts/` or `.session/accepted/` | Turn a chosen direction into a repo-aware plan or external-agent handoff. |
 | `build` | `builder` | repository changes | Apply an approved workflow-managed plan. |
-| `review` | `reviewer` | `.session/decisions/` | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
+| `review` | `reviewer` | `.session/drafts/` or `.session/accepted/` | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
 | `sync` | `steward` | `docs/**` or `src/**/README.md` | Align formal docs and code-adjacent README files with confirmed decisions, code, or diffs. |
 
 ## Lenses
@@ -139,10 +154,10 @@ Any write to `docs/**` must:
 ## Common Paths
 
 - Usage guidance: `route`.
-- Stage requirements or background: `clarify -> .session/notes/**`.
-- Explore code or reference material: `explore -> .session/notes/**`.
-- Shape a direction or goal: `shape -> .session/decisions/**` or `.session/goal/**`.
-- Plan work or handoff: `plan -> .session/decisions/**`.
+- Stage requirements or background: `clarify -> .session/inbox/**`.
+- Explore code or reference material: `explore -> .session/inbox/**`.
+- Shape a direction or goal: `shape -> .session/drafts/**`, `.session/accepted/**`, or `.session/goal/**`.
+- Plan work or handoff: `plan -> .session/drafts/**` or `.session/accepted/**`.
 - Native implementation: external-agent native Plan -> `review` audit -> native Implement -> `review` diff.
 - Workflow-managed implementation: `plan -> build`.
 - Formal docs sync: `sync -> docs/**`.
@@ -153,7 +168,7 @@ Any write to `docs/**` must:
 - Add one task file from `.workflow/tasks/`.
 - Add selected lenses only when explicitly named.
 - Add templates only in `Mode: persist`.
-- Add relevant `.session/goal/*`, `.session/notes/**`, `.session/decisions/**`, `docs/**`, and source files.
+- Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, `docs/**`, and source files.
 - Use `.workflow/copilot.md` as the Add Context menu.
 
 ## Using With OpenCode
@@ -164,7 +179,7 @@ Any write to `docs/**` must:
 - Treat OpenCode native Plan output as an external draft plan, not as approved work.
 - Audit OpenCode plans with `review` before implementation and review diffs afterward.
 - OpenCode bounded implementation should execute only approved narrow segments.
-- Temporary `.opencode/plans/` files are scratch; persist accepted handoffs to `.session/decisions/**`.
+- Temporary `.opencode/plans/` files are scratch; persist draft handoffs to `.session/drafts/**` and accepted handoffs to `.session/accepted/**`.
 
 ## Using With Codex
 

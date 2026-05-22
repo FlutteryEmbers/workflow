@@ -25,6 +25,6 @@ This repo uses Workflow Lite.
 - Use `.workflow/copilot.md` as the context menu when guidance is needed.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
-- Use `.session/goal/**` for session goals, `.session/notes/**` for staged inputs, and `.session/decisions/**` for session decisions.
+- Use `.session/goal/**` for session goals, `.session/inbox/**` for staged inputs, `.session/drafts/**` for unapproved session artifacts, and `.session/accepted/**` for accepted session artifacts.
 - Treat `.session/**` as working memory, not formal source of truth.
 - Use `src/**/README.md` only when a code area needs a local reading entrypoint.

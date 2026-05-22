@@ -14,7 +14,7 @@ Context:
 - #.workflow/tasks/<task>.md
 - #.workflow/lenses/<lens>.md only when selected
 - #.workflow/templates/<template>.md only in Mode: persist
-- #.session/goal/*, relevant .session/notes/**, relevant .session/decisions/**, docs/**, or source files
+- #.session/goal/*, relevant .session/inbox/**, relevant .session/drafts/**, relevant .session/accepted/**, docs/**, or source files
 Request:
 <what you want>
 ```
@@ -152,7 +152,7 @@ Recommended Segments:
    Task: review
    Lens: consistency, architecture
    Target/Plan: none
-   Context: docs/**, relevant source files, related .session/decisions/**
+   Context: docs/**, relevant source files, related .session/drafts/** or .session/accepted/**
    Request: Judge whether the current implementation is reasonable. Return verdict and evidence.
    Expected Output: reasonable | partially reasonable | unreasonable | unclear, with next task.
    Continue Condition: Continue only after the verdict is clear.
@@ -179,7 +179,7 @@ Recommended Segments:
    Task: plan
    Lens: consistency, architecture, test
    Target/Plan: none
-   Context: target docs, relevant source files, related .session/decisions/**
+   Context: target docs, relevant source files, related .session/drafts/** or .session/accepted/**
    Request: Produce target-to-repo fit, blockers, implementation sequence, and verification. Do not write files.
    Expected Output: repo-aware plan or blocker.
    Continue Condition: Continue only if there are no blockers.
@@ -229,7 +229,7 @@ Add:
 
 - #.workflow/tasks/<task>.md
 - selected #.workflow/lenses/<lens>.md only when the user names it
-- relevant `.session/goal/*`, `.session/notes/**`, `.session/decisions/**`, `docs/**`, or source files
+- relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, `docs/**`, or source files
 
 Do not add:
 
@@ -241,8 +241,9 @@ Use this when the user says save, write, generate, update, land, or persist a se
 
 Allowed targets:
 
-- `.session/notes/**` for `clarify` and `explore`
-- `.session/decisions/**` for `shape`, `plan`, and `review`
+- `.session/inbox/**` for `clarify` and `explore`
+- `.session/drafts/**` for candidate shapes, plans, options, and reviews
+- `.session/accepted/**` for accepted decisions, approved plans, and accepted review verdicts
 - `.session/goal/**` for `shape`
 - `docs/**` only for `Task: sync`
 - `src/**/README.md` only for `Task: sync`
@@ -256,7 +257,7 @@ Use this when the user asks to apply an approved workflow-managed plan.
 Add:
 
 - #.workflow/tasks/build.md
-- approved plan or approved `.session/decisions/**` file
+- approved plan, preferably `.session/accepted/plan_{topic}.md`
 - target source files, docs, prompts, templates, or workflow artifacts named by the plan
 - selected #.workflow/lenses/test.md or #.workflow/lenses/debug.md only when selected
 
@@ -298,7 +299,7 @@ Audit this external plan before implementation. Return approved, needs changes, 
 ### 4. Native Implement
 
 ```text
-Implement only the approved external plan. Use minimal diff. Do not broaden scope, perform drive-by refactors, or modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved plan. Stop and ask for plan/review if scope must expand.
+Implement only the approved external plan. Prefer `.session/accepted/**` as the plan source. Use minimal diff. Do not broaden scope, perform drive-by refactors, or modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved plan. Stop and ask for plan/review if scope must expand.
 After each major step, report the verification result requested by the plan.
 ```
 
@@ -315,7 +316,7 @@ Treat drive-by edits or unapproved scope expansion as blocking unless explicitly
 
 ## Task To Template Map
 
-- `clarify`: #.workflow/templates/note.md
+- `clarify`: #.workflow/templates/brief.md or #.workflow/templates/note.md
 - `explore`: #.workflow/templates/note.md; with `distill` use #.workflow/templates/distillation.md; with `strategy` use #.workflow/templates/options.md
 - `shape`: #.workflow/templates/decision.md for compact decisions; use #.workflow/templates/shape.md when goal reframing, PoC wedge, or rejected larger scope matters; for goal updates use #.workflow/templates/goal.md; optional #.workflow/templates/expanded.md
 - `plan`: #.workflow/templates/decision.md or #.workflow/templates/plan.md; with `expand` use #.workflow/templates/expanded.md
@@ -339,7 +340,7 @@ Add #.workflow/tasks/route.md. Add #.workflow/copilot.md only when the user want
 ```text
 Mode: persist
 Task: clarify
-Target: .session/notes/note_{topic}.md
+Target: .session/inbox/note_{topic}.md
 ```
 
 Add #.workflow/tasks/clarify.md, #.workflow/templates/note.md, and relevant context.
@@ -349,10 +350,10 @@ Add #.workflow/tasks/clarify.md, #.workflow/templates/note.md, and relevant cont
 ```text
 Mode: persist
 Task: shape
-Target: .session/decisions/dec_{topic}.md
+Target: .session/accepted/decision_{topic}.md
 ```
 
-Add #.workflow/tasks/shape.md, #.workflow/templates/decision.md, selected lenses, and source context.
+Add #.workflow/tasks/shape.md, #.workflow/templates/decision.md, selected lenses, and source context. For draft shapes, use `Target: .session/drafts/shape_{topic}.md` with #.workflow/templates/shape.md.
 
 ### Update Goal
 
@@ -369,10 +370,10 @@ Add #.workflow/tasks/shape.md, #.workflow/templates/goal.md, current goal contex
 ```text
 Mode: persist
 Task: plan
-Target: .session/decisions/dec_{topic}_plan.md
+Target: .session/drafts/plan_{topic}.md
 ```
 
-Add #.workflow/tasks/plan.md, #.workflow/templates/plan.md or #.workflow/templates/decision.md, source decision, repo context, and selected lenses.
+Add #.workflow/tasks/plan.md, #.workflow/templates/plan.md or #.workflow/templates/decision.md, source decision, repo context, and selected lenses. Use `Target: .session/accepted/plan_{topic}.md` only after the plan is approved.
 
 ### Sync Formal Docs
 
@@ -381,10 +382,10 @@ Mode: persist
 Task: sync
 Target: docs/{area}/{topic}.md
 Source:
-- .session/decisions/dec_{topic}.md
+- .session/accepted/decision_{topic}.md
 ```
 
-Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant session decisions, existing docs, and source files. Apply Formal Docs Rules.
+Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant accepted session artifacts, existing docs, and source files. Apply Formal Docs Rules. If using `.session/drafts/**` as source, require explicit source-of-truth confirmation.
 
 ### Sync Code-Adjacent README
 
@@ -401,7 +402,7 @@ Add #.workflow/tasks/sync.md and #.workflow/templates/code_readme.md.
 ```text
 Mode: execute
 Task: build
-Plan: .session/decisions/dec_{topic}_plan.md
+Plan: .session/accepted/plan_{topic}.md
 ```
 
 Add #.workflow/tasks/build.md, the approved plan, and target artifacts named by the plan.

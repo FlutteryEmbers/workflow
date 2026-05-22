@@ -73,9 +73,10 @@ Boundary classes:
 
 Recommend the smallest path:
 
-- New background or staged requirements: `clarify` or `explore` -> `.session/notes/**`.
-- Target direction, option, architecture, or concept: `shape` -> `.session/decisions/**` or `.session/goal/**`.
-- Repo-aware implementation sequence or handoff: `plan` -> `.session/decisions/**`.
+- Typical session state flow: `goal -> inbox -> drafts -> accepted -> build/external-agent -> review -> sync`.
+- New background or staged requirements: `clarify` or `explore` -> `.session/inbox/**`.
+- Target direction, option, architecture, or concept: `shape` -> `.session/drafts/**`, `.session/accepted/**`, or `.session/goal/**`.
+- Repo-aware implementation sequence or handoff: `plan` -> `.session/drafts/**` or `.session/accepted/**`.
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
 - Formal documentation alignment: `sync` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute` and an approved plan.
@@ -108,7 +109,7 @@ Add Context:
 - .workflow/tasks/<task>.md
 - .workflow/lenses/<lens>.md only when selected
 - .workflow/templates/<template>.md only in Mode: persist
-- .session/goal/*, relevant .session/notes/**, relevant .session/decisions/**, docs/**, or source files as needed
+- .session/goal/*, relevant .session/inbox/**, relevant .session/drafts/**, relevant .session/accepted/**, docs/**, or source files as needed
 Next prompt: <copyable prompt>
 ```
 

@@ -16,4 +16,4 @@ Default to `Lens: none`. Add a lens only when the user explicitly names it or ad
 - `debug`: diagnose defects or uncertain runtime behavior.
 - `consistency`: compare code, formal docs, session decisions, tests, and code-adjacent README files for drift.
 
-Session outputs go to `.session/**`. Formal project knowledge goes to `docs/**` through `sync`. Code-adjacent reading notes go to `src/**/README.md`.
+Session outputs use state directories: `.session/inbox/**` for staged inputs, `.session/drafts/**` for unapproved working artifacts, and `.session/accepted/**` for accepted session-level sources. Formal project knowledge goes to `docs/**` through `sync`. Code-adjacent reading notes go to `src/**/README.md`.

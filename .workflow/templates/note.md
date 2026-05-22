@@ -28,4 +28,4 @@
 
 - {{docs path or none}}
 
-> Session notes are working memory under `.session/notes/**`. They are not formal source of truth.
+> Inbox notes are working memory under `.session/inbox/**`. They are not formal source of truth.

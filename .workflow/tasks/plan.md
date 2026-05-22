@@ -5,7 +5,8 @@ purpose: Turn a chosen direction into a repo-aware plan or external-agent handof
 inputs:
   - decision_or_target
 outputs:
-  - .session/decisions/dec_{topic}_plan.md
+  - .session/drafts/plan_{topic}.md
+  - .session/accepted/plan_{topic}.md
 user_selectable_lenses:
   - iteration
   - expand
@@ -30,7 +31,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: plan in chat, do not load templates, and do not write files.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
-- `Mode: persist`: write only the requested `.session/decisions/**` target.
+- `Mode: persist`: write only the requested `.session/drafts/**` or `.session/accepted/**` target.
 - `Mode: execute`: not valid for this task; use `build` with an approved plan.
 - For native Plan/Implement, use the external-agent path.
 
@@ -49,7 +50,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - `Mode: discuss`: a repo-aware plan with `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
-- `Mode: persist`: a `.session/decisions/**` plan or handoff decision.
+- `Mode: persist`: a `.session/drafts/**` draft plan or `.session/accepted/**` accepted plan/handoff.
 
 ## Task Boundary Check
 
@@ -60,7 +61,7 @@ Before planning, classify the request:
 - `wrong_task`: target direction is not chosen; recommend `shape`.
 - `wrong_task`: user asks whether current implementation or target is reasonable; recommend `review`.
 - `composite`: user asks to implement from target docs and current code; recommend `plan -> review -> external-agent/build -> review`.
-- `missing_prerequisite`: `Mode: persist` lacks a `.session/decisions/**` target.
+- `missing_prerequisite`: `Mode: persist` lacks a `.session/drafts/**` or `.session/accepted/**` target.
 
 Default implicit preflight runs only in `Mode: discuss` and checks target stability, repo fit, target files, do-not-touch areas, and verification readiness. Plan may identify blockers and conflicts, but must not invent a new target. If the target is unstable, target and repo conflict, or verification is unclear, recommend `review` or `shape`. In `Mode: persist`, do not preflight; block when the target path or source decision is missing.
 
@@ -75,12 +76,12 @@ Default implicit preflight runs only in `Mode: discuss` and checks target stabil
 Required:
 
 - #.workflow/tasks/plan.md
-- relevant `.session/goal/*`, `.session/notes/**`, `.session/decisions/**`, docs, and target source files
+- relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, docs, and target source files
 
 For `Mode: persist`:
 
 - Add #.workflow/templates/decision.md or #.workflow/templates/plan.md.
-- Provide `Target: .session/decisions/dec_{topic}_plan.md`.
+- Provide `Target: .session/drafts/plan_{topic}.md` for candidate plans, or `Target: .session/accepted/plan_{topic}.md` for approved handoff plans.
 
 User-selected lenses:
 
@@ -95,8 +96,8 @@ Every major step must include a verification method. If the verification method 
 
 ## Output Rules
 
-- Default persisted path: `{WorkflowRoot}/.session/decisions/dec_{topic}_plan.md`.
-- External-agent handoff is also a session decision; keep it under `.session/decisions/**`.
+- Default persisted path: `{WorkflowRoot}/.session/drafts/plan_{topic}.md`.
+- External-agent draft handoff stays under `.session/drafts/**`; accepted handoff goes under `.session/accepted/**`.
 - Formal docs updates go through `sync`.
 
 ## User Input

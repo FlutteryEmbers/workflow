@@ -6,7 +6,7 @@
 
 ## Decision Link
 
-{{.session/decisions/dec_{topic}_plan.md}}
+{{.session/drafts/plan_{topic}.md or .session/accepted/plan_{topic}.md}}
 
 ## Target Direction
 

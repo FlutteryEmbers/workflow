@@ -56,7 +56,7 @@ Request: ${input:request:describe the work}
 Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only in `Mode: persist`.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
-Add relevant `.session/goal/*`, `.session/notes/**`, `.session/decisions/**`, `docs/**`, and source files.
+Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, `docs/**`, and source files.
 
 ## Boundary Output
 

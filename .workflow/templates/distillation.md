@@ -34,8 +34,9 @@
 
 ## Apply To Workflow Lite
 
-- Session notes: {{suggested use or none}}
-- Session decisions: {{suggested use or none}}
+- Inbox material: {{suggested `.session/inbox/**` use or none}}
+- Draft artifacts: {{suggested `.session/drafts/**` use or none}}
+- Accepted artifacts: {{suggested `.session/accepted/**` use or none}}
 - Formal docs: {{suggested use or none}}
 - Workflow prompts: {{suggested change or none}}
 

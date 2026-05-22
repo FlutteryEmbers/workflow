@@ -6,7 +6,7 @@
 
 ## Decision Link
 
-{{.session/decisions/dec_{topic}.md or .session/goal/{file}.md}}
+{{.session/drafts/shape_{topic}.md, .session/accepted/decision_{topic}.md, or .session/goal/{file}.md}}
 
 ## Visual Overview
 

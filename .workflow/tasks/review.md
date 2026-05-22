@@ -5,7 +5,8 @@ purpose: Review behavior, evidence, decisions, plans, diffs, or formal docs alig
 inputs:
   - target_or_claim
 outputs:
-  - .session/decisions/dec_{topic}_review.md
+  - .session/drafts/review_{topic}.md
+  - .session/accepted/review_{topic}.md
 user_selectable_lenses:
   - redteam
   - consistency
@@ -32,7 +33,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: review in chat, do not load templates, and do not write files.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in user-provided order, then give actionable findings.
-- `Mode: persist`: write only the requested `.session/decisions/**` target.
+- `Mode: persist`: write only the requested `.session/drafts/**` or `.session/accepted/**` target.
 - `Mode: execute`: not valid for this task.
 
 ## When To Use
@@ -50,7 +51,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 ## Expected Output
 
 - `Mode: discuss`: findings first, then `Decision`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
-- `Mode: persist`: a `.session/decisions/**` review decision.
+- `Mode: persist`: a `.session/drafts/**` draft review or `.session/accepted/**` accepted review verdict.
 
 ## Task Boundary Check
 
@@ -61,7 +62,7 @@ Before reviewing, classify the request:
 - `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
 - `wrong_task`: user asks to implement steps from an approved direction; recommend `plan` or `build`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
-- `missing_prerequisite`: `Mode: persist` lacks a `.session/decisions/**` target.
+- `missing_prerequisite`: `Mode: persist` lacks a `.session/drafts/**` or `.session/accepted/**` target.
 
 Conditional implicit preflight for `review` only gathers evidence needed for the verdict. It must not become a second full review before the review, must not load templates, and must not write files.
 
@@ -84,7 +85,7 @@ Required:
 For `Mode: persist`:
 
 - Add #.workflow/templates/decision.md or the selected review template.
-- Provide `Target: .session/decisions/dec_{topic}_review.md`.
+- Provide `Target: .session/drafts/review_{topic}.md` for draft reviews, or `Target: .session/accepted/review_{topic}.md` for accepted verdicts.
 
 User-selected lenses:
 
@@ -132,7 +133,8 @@ Treat drive-by refactors and unapproved scope expansion as blocking unless the a
 - In `Mode: discuss`, report findings in chat only.
 - For external plan audit, output `Decision: approved | needs changes | blocked | docs blocked` before detailed findings.
 - For external diff review, compare the diff against the approved plan before broader recommendations.
-- Default persisted path: `{WorkflowRoot}/.session/decisions/dec_{topic}_review.md`.
+- Default draft path: `{WorkflowRoot}/.session/drafts/review_{topic}.md`.
+- Accepted verdict path: `{WorkflowRoot}/.session/accepted/review_{topic}.md`.
 - Formal docs fixes go through `sync`.
 
 ## User Input

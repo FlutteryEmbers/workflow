@@ -16,6 +16,7 @@ Do not force tactical DDD patterns such as entities, aggregates, repositories, o
 
 ## Output Hints
 
-- Draft language and model notes go to `.session/notes/**`.
-- Accepted domain decisions go to `.session/decisions/**`.
+- Draft language and model notes go to `.session/inbox/**`.
+- Draft domain decisions go to `.session/drafts/**`.
+- Accepted domain decisions go to `.session/accepted/**`.
 - Formal terminology, business rules, and boundaries go to `docs/**` through `sync`.
