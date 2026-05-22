@@ -36,6 +36,23 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Mode: persist`: write only the requested `.session/decisions/**` or `.session/goal/**` target.
 - `Mode: execute`: not valid for this task.
 
+## When To Use
+
+- Use when the user needs a direction, concept, architecture shape, goal update, or session decision.
+- Use for vision-driven PoC work where the initial request should be reframed into the smallest useful wedge.
+
+## Do Not Use When
+
+- Do not use only to collect raw context; use `clarify` or `explore`.
+- Do not use to judge whether existing code/docs/plan are reasonable; use `review`.
+- Do not use when the direction is fixed and the user needs executable steps; use `plan`.
+- Do not use to update formal docs directly; use `sync`.
+
+## Expected Output
+
+- `Mode: discuss`: `Reframed Goal`, `Narrowest Useful Wedge`, `Success Criteria`, `Rejected Larger Scope`, tradeoffs, and recommended next step.
+- `Mode: persist`: a `.session/decisions/**` decision or `.session/goal/**` update.
+
 ## Task Boundary Check
 
 Before shaping, classify the request:
@@ -78,6 +95,8 @@ User-selected lenses:
 ## Instructions
 
 Convert notes, goals, and discussion into a clear session decision or goal update. Decisions may represent direction, scope, plan, constraint, handoff, or review stance. Keep session decisions lighter than formal docs.
+
+For vague or broad goals, first reframe the request. Name the smallest useful wedge that can validate the goal, the success criteria that would make it worth continuing, and the larger scope that is intentionally rejected for now.
 
 ## Output Rules
 

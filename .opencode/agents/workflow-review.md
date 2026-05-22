@@ -28,13 +28,22 @@ Decision: approved | needs changes | blocked | docs blocked
 Check:
 
 - Scope and target files
+- Success criteria
 - Source of truth
 - Do-not-touch areas
 - Interface, data, architecture, or docs impact
-- Verification and rollback
+- Step-by-step verification and rollback
+- Minimal diff risk
 - Open questions
 - Formal Docs Rules when `docs/**` is touched
 
-For diff review, compare the diff against the approved external plan before broader recommendations. Check scope drift, unrelated edits, missing edits, missing verification, and unsafe formal docs content.
+For diff review, compare the diff against the approved external plan before broader recommendations. Check scope drift, unrelated edits, drive-by refactors, missing edits, missing verification, and unsafe formal docs content.
+
+Include readiness:
+
+- Confidence: `high | medium | low`
+- Readiness: `0-10`
+- Blocking Gaps
+- Non-blocking Gaps
 
 Recommend one next step: `none`, `sync`, `shape`, `plan`, `build`, or `external-agent`.

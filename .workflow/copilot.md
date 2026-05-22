@@ -250,7 +250,7 @@ Discuss the target direction. Do not write files.
 
 ```text
 Use native Plan phase. Create an implementation plan only; do not edit files.
-Include goal, target files, proposed changes, do-not-touch areas, risks, verification, rollback, formal docs impact, and open questions.
+Include goal, success criteria, target files, allowed changes, do-not-touch areas, step-by-step verification, risks, stop conditions, rollback, formal docs impact, and open questions.
 ```
 
 ### 3. Audit Plan
@@ -266,7 +266,8 @@ Audit this external plan before implementation. Return approved, needs changes, 
 ### 4. Native Implement
 
 ```text
-Implement only the approved external plan. Do not broaden scope. Do not modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved plan.
+Implement only the approved external plan. Use minimal diff. Do not broaden scope, perform drive-by refactors, or modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved plan. Stop and ask for plan/review if scope must expand.
+After each major step, report the verification result requested by the plan.
 ```
 
 ### 5. Review Diff
@@ -277,6 +278,7 @@ Task: review
 Lens: consistency, test
 Request:
 Review the diff against the approved external plan. Identify scope drift, missing verification, Formal Docs Rules issues, and required follow-up.
+Treat drive-by edits or unapproved scope expansion as blocking unless explicitly approved.
 ```
 
 ## Task To Template Map

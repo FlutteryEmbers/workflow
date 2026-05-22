@@ -35,6 +35,23 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - `Mode: persist`: write only the requested `.session/decisions/**` target.
 - `Mode: execute`: not valid for this task.
 
+## When To Use
+
+- Use when the user asks whether code, docs, a decision, a plan, a diff, or a behavior claim is reasonable.
+- Use as a gateway before external-agent implementation and after external-agent diffs.
+
+## Do Not Use When
+
+- Do not use to create a new direction without evaluation; use `shape`.
+- Do not use to create implementation steps from an accepted direction; use `plan`.
+- Do not use to perform repository edits; use `build` or the external-agent path after approval.
+- Do not use to update formal docs; use `sync`.
+
+## Expected Output
+
+- `Mode: discuss`: findings first, then `Decision`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
+- `Mode: persist`: a `.session/decisions/**` review decision.
+
 ## Task Boundary Check
 
 Before reviewing, classify the request:
@@ -76,6 +93,15 @@ User-selected lenses:
 
 Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session decision is accepted, needs revision, blocked, or should be synced to formal docs.
 
+For non-trivial reviews, include a readiness dashboard:
+
+- `Decision`: `approved | needs changes | blocked | docs blocked | accepted | revise`
+- `Confidence`: `high | medium | low`
+- `Readiness`: `0-10`
+- `Blocking Gaps`: issues that must be resolved before the next write or implementation step.
+- `Non-blocking Gaps`: issues that can be tracked without blocking.
+- `Recommended Action`: `none | sync | shape | plan | build | external-agent`.
+
 ## External Plan Audit
 
 Use this in `Mode: discuss` to audit a native external-agent Plan before implementation.
@@ -89,11 +115,15 @@ Decision values:
 
 Check scope, target files, do-not-touch areas, interface or data changes, verification, rollback, open questions, and whether the plan exceeds the user's stated intent.
 
+Also check that success criteria are explicit, every major step has a verification method, and the plan minimizes diff size.
+
 ## External Diff Review
 
 Use this in `Mode: discuss` after native external-agent implementation. Compare the diff against the approved external plan and Formal Docs Rules.
 
 Check for scope drift, unrelated edits, missing edits, missing verification, changed files outside the approved target list, and unsafe formal docs content.
+
+Treat drive-by refactors and unapproved scope expansion as blocking unless the approved plan explicitly allowed them.
 
 ## Output Rules
 

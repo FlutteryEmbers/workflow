@@ -33,6 +33,22 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 - `Mode: execute`: required for repository changes and must include an approved `Plan`.
 - For native external-agent Implement, use the external-agent path instead of this task, then run `review` on the resulting diff.
 
+## When To Use
+
+- Use only for workflow-managed implementation after an approved plan exists.
+- Use when repository artifacts must be changed inside an explicit scope with verification evidence.
+
+## Do Not Use When
+
+- Do not use to create or approve the plan; use `plan` and `review`.
+- Do not use for native external-agent implementation; use the external-agent path and then `review`.
+- Do not use to save session notes, decisions, or formal docs directly.
+
+## Expected Output
+
+- `Mode: discuss`: missing prerequisite or build-readiness guidance only.
+- `Mode: execute`: minimal diff inside the approved scope, changed files, verification evidence, and any stopped scope-expansion reason.
+
 ## Task Boundary Check
 
 Before building, classify the request:
@@ -62,6 +78,8 @@ User-selected lenses:
 ## Instructions
 
 In `Mode: execute`, implement the approved plan. Read relevant artifacts first, keep edits inside the plan's scope, and stop if the plan requires unapproved interface, config, data, architecture, documentation, or workflow behavior changes.
+
+Use minimal diff discipline: do not perform drive-by refactors, formatting churn, unrelated cleanup, or opportunistic rewrites. After each major plan step, record the verification evidence requested by the plan. If implementation reveals that scope must expand, stop and return to `plan` or `review` instead of editing beyond the approved scope.
 
 If `Mode: execute` or an approved `Plan` is missing, do not modify files; explain what is needed to proceed.
 

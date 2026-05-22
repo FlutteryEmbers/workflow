@@ -37,6 +37,21 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Do not load templates, create files, or apply lenses automatically.
 - If no lens is named by the user, use `Lens: none`.
 
+## When To Use
+
+- Use when the user wants guidance, the request is mixed, the selected task seems wrong, or the next write path is unclear.
+- Use when the safest output is a segmented path rather than immediate execution.
+
+## Do Not Use When
+
+- Do not use to perform analysis, planning, review, sync, or implementation itself.
+- Do not use to apply lenses; only recommend them.
+
+## Expected Output
+
+- Always chat-only.
+- Return interpreted goal, boundary, recommended path, mode, lens, target when needed, Add Context, next prompt, and stop points for composite work.
+
 ## Task Boundary Check
 
 `route` handles both active guidance and correction routing.

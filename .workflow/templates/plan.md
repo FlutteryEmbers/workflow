@@ -12,6 +12,18 @@
 
 {{source decision, goal, or target design}}
 
+## Success Criteria
+
+- {{what must be true when this plan is done}}
+
+## Allowed Changes
+
+- {{files, docs, behavior, or interfaces allowed to change}}
+
+## Do Not Touch
+
+- {{path, behavior, interface, data, or docs area}}
+
 ## Current Repo Fit
 
 - Relevant Files: {{files, packages, docs, or none}}
@@ -37,19 +49,25 @@ flowchart TD
 
 ## Recommended Sequence
 
-1. {{step}}
-
-## Do Not Touch
-
-- {{path or behavior}}
+| Step | Change | Verify | Risk | Stop Condition |
+| :--- | :--- | :--- | :--- | :--- |
+| {{step}} | {{change}} | {{test, check, or manual verification}} | {{risk}} | {{when to stop and return to plan/review}} |
 
 ## Verification
 
 - {{test, check, or manual verification}}
 
+## Stop Conditions
+
+- {{condition that requires stopping instead of expanding scope}}
+
+## Rollback / Recovery
+
+- {{how to revert or recover if this plan fails}}
+
 ## External-Agent Handoff
 
-{{prompt or constraints for native Plan/Implement, if relevant}}
+{{success criteria, approved scope, allowed changes, do-not-touch areas, step verification, and minimal diff constraints for native Plan/Implement, if relevant}}
 
 ## Target Docs
 

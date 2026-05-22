@@ -12,6 +12,14 @@
 
 {{approved | needs changes | blocked | docs blocked | accepted | revise}}
 
+## Readiness
+
+- Confidence: {{high | medium | low}}
+- Readiness: {{0-10}}
+- Blocking Gaps: {{must-fix before next write or implementation}}
+- Non-blocking Gaps: {{can track without blocking}}
+- Recommended Action: {{none | sync | shape | plan | build | external-agent}}
+
 ## Findings
 
 | Severity | Finding | Evidence | Recommended Action |

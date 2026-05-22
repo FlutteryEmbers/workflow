@@ -33,6 +33,22 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - Reject `.session/**` targets; session files are maintained by the task that produced them.
 - `Mode: execute`: not valid for this task.
 
+## When To Use
+
+- Use when confirmed decisions, code, diffs, or existing docs need to be aligned into formal `docs/**` or `src/**/README.md`.
+- Use after review/build/external-agent work when stable facts should become formal reader-facing documentation.
+
+## Do Not Use When
+
+- Do not use to maintain `.session/**`; use the task that produced the session artifact.
+- Do not use to decide whether code or docs are correct; use `review`.
+- Do not use to change source code; use `plan -> build` or the external-agent path.
+
+## Expected Output
+
+- `Mode: discuss`: proposed sync target, source of truth, reader-facing success criteria, blockers, and next prompt.
+- `Mode: persist`: updates only to `docs/**` or explicit `src/**/README.md` targets.
+
 ## Task Boundary Check
 
 Before syncing, classify the request:
@@ -75,10 +91,11 @@ User-selected lenses:
 Any write to `docs/**` must:
 
 - Name source, target audience, and source of truth.
+- Name reader-facing success criteria for the target document.
 - Preserve stable, confirmed facts useful to the formal reader.
 - Preserve existing docs structure and tone when updating an existing file.
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, internal redteam-only risks, temporary workarounds, sensitive implementation detail, and not-yet-announced plans.
-- Output `docs blocked` and do not write `docs/**` when source, audience, source of truth, or safety is unclear.
+- Output `docs blocked` and do not write `docs/**` when source, audience, source of truth, reader-facing success criteria, or safety is unclear.
 
 ## Instructions
 

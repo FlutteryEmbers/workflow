@@ -98,11 +98,13 @@ Context:
 - <source files>
 
 Plan requirements:
+- Success criteria
 - Target files
 - Allowed changes
 - Do-not-touch areas
 - Assumptions
-- Verification
+- Step-by-step verification
+- Stop conditions
 - Rollback or recovery
 - Formal docs impact
 - Open questions
@@ -122,9 +124,11 @@ Decision: approved | needs changes | blocked | docs blocked
 
 Check:
 - Scope and target files
+- Success criteria
+- Step-by-step verification
 - Source of truth
 - Formal Docs Rules if docs/** is touched
-- Verification
+- Minimal diff risk
 - Open questions
 - Whether the plan exceeds the user's stated intent
 ```
@@ -133,15 +137,17 @@ Check:
 
 ```text
 Implement only the approved external plan segment below. Do not broaden scope.
+Use minimal diff. Do not perform drive-by refactors, formatting churn, unrelated cleanup, or opportunistic rewrites.
 
 Approved segment:
 <approved segment>
 
 Do not modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved segment.
+Stop and return to plan/review if implementation requires expanding scope.
 
 Report:
 - Changed files
-- Verification run
+- Verification run for each major step
 - Anything skipped and why
 ```
 
@@ -159,6 +165,7 @@ Check:
 - Missing edits
 - Unrelated edits
 - Missing verification
+- Drive-by refactors
 - Formal Docs Rules issues
 - Required follow-up
 ```

@@ -32,6 +32,23 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Mode: persist`: write only the requested `.session/notes/**` target.
 - `Mode: execute`: not valid for this task.
 
+## When To Use
+
+- Use when the user needs evidence about current code, docs, behavior, feasibility, reference material, or unknowns.
+- Use before `shape` or `plan` when the decision depends on repository reality or external references.
+
+## Do Not Use When
+
+- Do not use to make the final direction decision; use `shape`.
+- Do not use to judge whether a plan, diff, or implementation is acceptable; use `review`.
+- Do not use to create executable steps; use `plan`.
+- Do not use to update formal docs; use `sync`.
+
+## Expected Output
+
+- `Mode: discuss`: facts, evidence, assumptions, unknowns, and suggested next decision.
+- `Mode: persist`: a `.session/notes/**` note that separates observed facts from assumptions.
+
 ## Task Boundary Check
 
 Before exploring, classify obvious boundary problems:

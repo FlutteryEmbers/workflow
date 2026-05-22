@@ -23,6 +23,22 @@ flowchart TD
 
 {{problem or opportunity}}
 
+## Reframed Goal
+
+{{clearer version of the user's goal}}
+
+## Narrowest Useful Wedge
+
+{{smallest scope that can validate the goal}}
+
+## Success Criteria
+
+- {{what would make this worth continuing}}
+
+## Rejected Larger Scope
+
+- {{larger scope intentionally not included now}}
+
 ## Proposed Shape
 
 {{solution shape, concept, architecture, or decision}}

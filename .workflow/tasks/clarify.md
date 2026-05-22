@@ -29,6 +29,23 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - `Mode: persist`: write only the requested `.session/notes/**` target.
 - `Mode: execute`: not valid for this task.
 
+## When To Use
+
+- Use when the user is providing goals, staged requirements, background, scope, assumptions, acceptance signals, or unresolved questions.
+- Use before `shape` when the target is still ambiguous or the success criteria are not stated.
+
+## Do Not Use When
+
+- Do not use to choose a direction; use `shape`.
+- Do not use to evaluate code, docs, plans, or diffs; use `review`.
+- Do not use to produce implementation steps; use `plan`.
+- Do not use to update formal docs; use `sync`.
+
+## Expected Output
+
+- `Mode: discuss`: concise clarified goal, scope, acceptance signals, assumptions, and open questions.
+- `Mode: persist`: a `.session/notes/**` note that preserves user-provided context without turning it into formal source of truth.
+
 ## Task Boundary Check
 
 Before clarifying, classify obvious boundary problems:

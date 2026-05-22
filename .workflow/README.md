@@ -103,15 +103,28 @@ Read-only preflight is allowed only in `Mode: discuss`. It may inspect code, doc
 
 Composite requests should return segmented prompts with stop points. Do not silently switch tasks or automatically run later write/implementation segments.
 
+## Prompt Discipline
+
+These rules are core protocol, not optional lenses:
+
+- `Success Criteria First`: before `plan`, `build`, or `sync` writes, name what must be true when the work is done.
+- `Step -> Verify`: every major plan step needs a matching verification method.
+- `Minimal Diff`: implementation changes only the approved scope; no drive-by refactors, formatting churn, or opportunistic cleanup.
+- `Stop On Scope Expansion`: if execution reveals that scope must expand, stop and return to `plan` or `review`.
+- `Readiness Before Write`: external-agent plans and diffs should be reviewed before further implementation or formal docs sync.
+
+This project borrows prompt discipline from agent prompt repositories, but it does not copy role-command systems and does not add a root Claude-specific instruction file by default.
+
 ## Formal Docs Rules
 
 Any write to `docs/**` must:
 
 - Name source, target audience, and source of truth.
+- Name reader-facing success criteria for the target document.
 - Preserve stable, confirmed facts useful to formal readers.
 - Preserve existing docs structure and tone when updating an existing file.
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, internal redteam-only risks, temporary workarounds, sensitive implementation detail, and not-yet-announced plans.
-- Output `docs blocked` and do not write `docs/**` when source, audience, source of truth, or safety is unclear.
+- Output `docs blocked` and do not write `docs/**` when source, audience, source of truth, reader-facing success criteria, or safety is unclear.
 
 ## Common Paths
 

@@ -33,6 +33,23 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Mode: persist`: write only the requested `.session/decisions/**` target.
 - `Mode: execute`: not valid for this task; use `build` with an approved plan or use the external-agent path.
 
+## When To Use
+
+- Use when the target direction is chosen and the user needs repo-aware implementation steps, sequencing, or external-agent handoff.
+- Use when a plan must name success criteria, allowed changes, do-not-touch areas, verification, and stop conditions before any write.
+
+## Do Not Use When
+
+- Do not use to invent the target direction; use `shape`.
+- Do not use to judge whether a plan, target, code, or diff is good; use `review`.
+- Do not use to implement the plan; use `build` or the external-agent path after review.
+- Do not use to update formal docs; use `sync`.
+
+## Expected Output
+
+- `Mode: discuss`: a repo-aware plan with `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
+- `Mode: persist`: a `.session/decisions/**` plan or external-agent handoff decision.
+
 ## Task Boundary Check
 
 Before planning, classify the request:
@@ -71,7 +88,9 @@ User-selected lenses:
 
 ## Instructions
 
-Write the smallest repo-aware plan or handoff another engineer, Codex, or Copilot can execute without making product decisions. Include target files, do-not-touch areas, verification, rollback or recovery notes, and target docs affected.
+Write the smallest repo-aware plan or handoff another engineer, Codex, Copilot, OpenCode, or similar agent can execute without making product decisions. Include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected.
+
+Every major step must include a verification method. If the verification method is unclear, mark the plan as not ready and recommend `review` or `shape` instead of treating it as approved.
 
 ## Output Rules
 

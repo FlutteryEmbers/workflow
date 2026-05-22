@@ -16,6 +16,22 @@
 
 {{why this decision exists and what inputs it uses}}
 
+## Reframed Goal
+
+{{use when this decision changes or narrows the original goal}}
+
+## Narrowest Useful Wedge
+
+{{smallest useful scope, if relevant}}
+
+## Success Criteria
+
+- {{what must be true for this decision to be considered successful}}
+
+## Rejected Larger Scope
+
+- {{larger scope intentionally excluded, if relevant}}
+
 ## Decision
 
 {{the chosen direction, scope, plan, constraint, handoff, or review decision}}
