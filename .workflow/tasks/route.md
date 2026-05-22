@@ -59,6 +59,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Use `Boundary Assessment` when the user has selected a task but the request appears composite, wrong-task, or missing prerequisites.
 - Output `Recommended Segments` for composite requests.
 - Do not silently switch tasks or execute later segments.
+- No implicit preflight runs in `route`. Do not scan evidence; only recommend which later task should run implicit preflight.
 
 Boundary classes:
 
@@ -99,7 +100,8 @@ Recommend the smallest path:
 Interpreted goal: <one sentence>
 Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
 Recommended path: <task -> task>
-Mode: <discuss|persist|execute or external-agent path>
+Mode: <discuss|persist|execute>
+Write Path: <workflow-managed|external-agent>
 Lens: <none or explicit lenses>
 Target: <only when writing>
 Add Context:

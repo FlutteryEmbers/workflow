@@ -31,7 +31,8 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Mode: discuss` is default: plan in chat, do not load templates, and do not write files.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - `Mode: persist`: write only the requested `.session/decisions/**` target.
-- `Mode: execute`: not valid for this task; use `build` with an approved plan or use the external-agent path.
+- `Mode: execute`: not valid for this task; use `build` with an approved plan.
+- For native Plan/Implement, use the external-agent path.
 
 ## When To Use
 
@@ -48,20 +49,20 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - `Mode: discuss`: a repo-aware plan with `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
-- `Mode: persist`: a `.session/decisions/**` plan or external-agent handoff decision.
+- `Mode: persist`: a `.session/decisions/**` plan or handoff decision.
 
 ## Task Boundary Check
 
 Before planning, classify the request:
 
 - `fits`: target direction is chosen and the user needs repo-aware implementation steps or handoff.
-- `fits_with_preflight`: plan depends on current code, formal docs, or session context. In `Mode: discuss`, perform read-only target-to-repo fit first.
+- `fits_with_preflight`: plan depends on current code, formal docs, session context, target-to-repo fit, target files, or verification readiness. In `Mode: discuss`, run default implicit preflight first.
 - `wrong_task`: target direction is not chosen; recommend `shape`.
 - `wrong_task`: user asks whether current implementation or target is reasonable; recommend `review`.
 - `composite`: user asks to implement from target docs and current code; recommend `plan -> review -> external-agent/build -> review`.
 - `missing_prerequisite`: `Mode: persist` lacks a `.session/decisions/**` target.
 
-Plan may identify blockers and conflicts, but must not invent a new target. If target and repo conflict, recommend `review` or `shape`.
+Default implicit preflight runs only in `Mode: discuss` and checks target stability, repo fit, target files, do-not-touch areas, and verification readiness. Plan may identify blockers and conflicts, but must not invent a new target. If the target is unstable, target and repo conflict, or verification is unclear, recommend `review` or `shape`. In `Mode: persist`, do not preflight; block when the target path or source decision is missing.
 
 ## Persist Templates
 

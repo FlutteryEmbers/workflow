@@ -43,6 +43,8 @@ flowchart TD
 - Source clear: {{yes/no}}
 - Audience clear: {{yes/no}}
 - Source of truth clear: {{yes/no}}
+- Reader-facing success criteria clear: {{yes/no}}
+- Existing docs tone and structure preserved: {{yes/no}}
 - Session-only material excluded: {{yes/no}}
 
 ## Verification

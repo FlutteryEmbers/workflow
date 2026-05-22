@@ -87,7 +87,9 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 - `Mode: execute`: uses `Task: build` with an approved plan.
 - External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan audit before implementation and diff review afterward.
 
-`Mode: execute` is workflow-managed execution only. Native Plan/Implement is a separate external-agent write path.
+`Mode: execute` is workflow-managed execution only.
+
+Native Plan/Implement is a separate external-agent write path.
 
 ## Task Boundary Router
 
@@ -99,9 +101,17 @@ Before acting, classify whether the request fits the selected task:
 - `wrong_task`: another task is the proper entrypoint.
 - `missing_prerequisite`: required target, approved plan, source of truth, or formal docs safety is missing.
 
-Read-only preflight is allowed only in `Mode: discuss`. It may inspect code, docs, session files, or diffs, but it must not load templates, write files, run implementation, or apply unselected deep lenses.
-
 Composite requests should return segmented prompts with stop points. Do not silently switch tasks or automatically run later write/implementation segments.
+
+## Implicit Preflight
+
+Implicit preflight is a same-response, read-only check that can run automatically in `Mode: discuss`. It does not require the user to ask for preflight explicitly.
+
+- Default implicit preflight: `shape`, `plan`, `sync`.
+- Conditional implicit preflight: `review`, `build`, `explore`.
+- No implicit preflight: `clarify`, `route`.
+
+Implicit preflight must not load templates, write files, run implementation, run tests, perform sync, apply unselected lenses, or do a full repository scan. In `Mode: persist` and `Mode: execute`, do not run implicit preflight; block when prerequisites are missing.
 
 ## Prompt Discipline
 

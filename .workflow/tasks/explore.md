@@ -54,11 +54,14 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 Before exploring, classify obvious boundary problems:
 
 - `fits`: user asks to understand code, docs, behavior, feasibility, or reference material.
+- `fits_with_preflight`: request scope is too broad, source is unclear, or the request may actually belong to `review`, `shape`, or `plan`. In `Mode: discuss`, run conditional boundary preflight only.
 - `wrong_task`: user asks to choose a direction; recommend `shape`.
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
 - `wrong_task`: user asks to judge a target or diff; recommend `review`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
 - `missing_prerequisite`: `Mode: persist` lacks a `.session/notes/**` target.
+
+Conditional implicit preflight for `explore` only checks boundary, source, and scope. Do not duplicate exploration inside preflight; once the boundary is clear, proceed with normal explore or recommend the right task.
 
 If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
 

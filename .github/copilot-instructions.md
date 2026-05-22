@@ -11,11 +11,13 @@ This repo uses Workflow Lite.
 - Auto write, auto sync, auto build, and auto external-agent implementation are not allowed.
 - In `Mode: discuss`, do not load templates and do not create or update files.
 - In `Mode: discuss`, multiple lenses are allowed only when explicitly listed; keep `Lens: none` by default.
+- Implicit preflight is automatic in discuss for `shape`, `plan`, and `sync`; see `.workflow/copilot.md` for the full matrix.
 - In ordinary `Mode: persist`, write session artifacts only to `.session/**`.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
 - `docs/**` is formal project documentation and must follow Formal Docs Rules.
 - In `Mode: execute`, require `Task: build` and an approved plan before modifying repository artifacts.
 - Native Plan/Implement may be used as an `external-agent` write path; do not treat it as workflow-managed execution.
+- External-agent is a write path, not a Mode.
 - Audit external plans before native implementation, and review external diffs afterward.
 - Use lenses only when the user explicitly names or adds them.
 - If no lens is named, assume `Lens: none`.

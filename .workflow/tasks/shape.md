@@ -58,13 +58,13 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 Before shaping, classify the request:
 
 - `fits`: user asks to form a direction, concept, architecture, goal update, or session decision.
-- `fits_with_preflight`: user asks to shape based on current code, formal docs, or session context. In `Mode: discuss`, perform read-only preflight first, then shape.
+- `fits_with_preflight`: user asks to shape based on current code, formal docs, session context, external tools, references, repository fit, architecture entrypoints, implementation entrypoints, or how to start. In `Mode: discuss`, run default implicit preflight first, then shape.
 - `wrong_task`: user only asks whether current code/docs are reasonable; recommend `review`.
 - `wrong_task`: user has a fixed target and wants implementation steps; recommend `plan`.
 - `composite`: user asks to evaluate reasonableness and then design a replacement; recommend `review -> shape`.
 - `missing_prerequisite`: `Mode: persist` lacks a `.session/decisions/**` or `.session/goal/**` target.
 
-Preflight is read-only, chat-only, and allowed only in `Mode: discuss`. If preflight finds blockers or unclear source of truth, stop and output Recommended Segments.
+Default implicit preflight runs only in `Mode: discuss`. Output `Evidence`, `Unknowns`, and `Boundary` before the shape. If evidence is insufficient, source of truth is unclear, or the request should be decomposed, stop and output Recommended Segments. In `Mode: persist`, do not preflight; block when the target or required source context is missing.
 
 ## Persist Templates
 

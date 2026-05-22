@@ -54,12 +54,14 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 Before syncing, classify the request:
 
 - `fits`: user asks to align formal docs or code-adjacent README with confirmed source.
-- `fits_with_preflight`: sync depends on checking source, existing docs, code, diff, consistency, or Formal Docs Rules. In `Mode: discuss`, perform read-only preflight first.
+- `fits_with_preflight`: sync depends on checking source, existing docs, code, diff, consistency, reader-facing success criteria, or Formal Docs Rules. In `Mode: discuss`, run default implicit preflight first.
 - `wrong_task`: user asks to save a session note; recommend `clarify` or `explore`.
 - `wrong_task`: user asks to save a session decision, plan, or review; recommend `shape`, `plan`, or `review`.
 - `wrong_task`: user asks to change code; recommend `plan -> build` or external-agent.
 - `missing_prerequisite`: `Mode: persist` target is missing or is not `docs/**` or `src/**/README.md`.
 - `missing_prerequisite`: source, target audience, source of truth, or Formal Docs Rules safety is unclear for `docs/**`.
+
+Default implicit preflight runs only in `Mode: discuss` and checks source, target, audience, source of truth, reader-facing success criteria, existing docs tone, and Formal Docs Rules. In `Mode: persist`, do not preflight; block with `docs blocked` when any formal docs prerequisite is missing.
 
 If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
 

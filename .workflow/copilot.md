@@ -72,19 +72,48 @@ Recommended Path: <task -> task>
 Next Prompt: <copyable prompt>
 ```
 
-## Preflight Vs Segments
+## Implicit Preflight Vs Segments
 
-Preflight is a same-response, read-only check. It is allowed only in `Mode: discuss`.
+Implicit preflight is a same-response, read-only check. It is allowed only in `Mode: discuss` and does not require the user to ask for it explicitly.
 
-Allowed preflight:
+Default implicit preflight:
 
 - `shape`: inspect code/docs/session context before forming a direction.
 - `plan`: perform target-to-repo fit before planning.
-- `sync`: check Formal Docs Rules and consistency before recommending docs sync.
-- `review`: read evidence before verdict.
-- `build`: check approved-plan readiness only.
+- `sync`: check source, audience, source of truth, reader-facing success criteria, Formal Docs Rules, and consistency before recommending docs sync.
 
-Preflight must not load templates, write files, run implementation, perform sync, or apply unselected deep lenses.
+Conditional implicit preflight:
+
+- `review`: read evidence only when verdict depends on code/docs/diff/session evidence.
+- `build`: check approved-plan readiness only in `Mode: discuss`.
+- `explore`: check boundary only when scope/source is unclear or the request may belong to `review`, `shape`, or `plan`.
+
+No implicit preflight:
+
+- `clarify`: only run Task Boundary Check.
+- `route`: only route; it may recommend a later task that will run implicit preflight.
+
+Recommended discuss output:
+
+```text
+## Understanding
+...
+
+## Preflight
+Evidence:
+- ...
+Unknowns:
+- ...
+Boundary:
+- ...
+
+## <Task Output>
+...
+```
+
+If evidence is insufficient, stop and output `Recommended Segments`.
+
+Implicit preflight must not load templates, write files, run implementation, run tests, perform sync, apply unselected lenses, or do a full repository scan. In `Mode: persist` and `Mode: execute`, block when prerequisites are missing.
 
 Segments are separate user-executed steps. Use segments for any write, approved plan, external-agent implementation, formal docs sync, or blocker resolution.
 
@@ -164,7 +193,8 @@ Recommended Segments:
    Expected Output: approved | needs changes | blocked | docs blocked.
    Continue Condition: Continue only after approval.
 3. Implement
-   Mode: execute or external-agent path
+   Mode: execute
+   Write Path: workflow-managed | external-agent
    Task: build for workflow-managed execution
    Lens: test or debug if selected
    Target/Plan: approved plan
@@ -189,7 +219,7 @@ Stop Points:
 
 ## Formal Docs Rules
 
-Any write to `docs/**` must name source, target audience, and source of truth. Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, internal redteam-only risks, temporary workarounds, sensitive implementation detail, and not-yet-announced plans. If formal doc safety is unclear, output `docs blocked` and do not write `docs/**`.
+Any write to `docs/**` must name source, target audience, source of truth, and reader-facing success criteria. Preserve existing docs tone and structure when updating. Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, internal redteam-only risks, temporary workarounds, sensitive implementation detail, and not-yet-announced plans. If source, audience, source of truth, reader-facing success criteria, or safety is unclear, output `docs blocked` and do not write `docs/**`.
 
 ## Discuss Context
 
@@ -231,6 +261,8 @@ Add:
 - selected #.workflow/lenses/test.md or #.workflow/lenses/debug.md only when selected
 
 If an approved plan is missing, do not modify files. Explain what plan is needed.
+
+If the approved plan modifies `docs/**`, it must include a Formal Docs Checklist with source, target audience, source of truth, reader-facing success criteria, existing docs tone/structure, and safety. Otherwise, do not modify `docs/**`; recommend `sync`.
 
 ## External Agent Write Path
 
@@ -285,7 +317,7 @@ Treat drive-by edits or unapproved scope expansion as blocking unless explicitly
 
 - `clarify`: #.workflow/templates/note.md
 - `explore`: #.workflow/templates/note.md; with `distill` use #.workflow/templates/distillation.md; with `strategy` use #.workflow/templates/options.md
-- `shape`: #.workflow/templates/decision.md; for goal updates use #.workflow/templates/goal.md; optional #.workflow/templates/shape.md or #.workflow/templates/expanded.md
+- `shape`: #.workflow/templates/decision.md for compact decisions; use #.workflow/templates/shape.md when goal reframing, PoC wedge, or rejected larger scope matters; for goal updates use #.workflow/templates/goal.md; optional #.workflow/templates/expanded.md
 - `plan`: #.workflow/templates/decision.md or #.workflow/templates/plan.md; with `expand` use #.workflow/templates/expanded.md
 - `review`: #.workflow/templates/decision.md or #.workflow/templates/review.md; with `redteam` use #.workflow/templates/critique.md; with `consistency` use #.workflow/templates/consistency_review.md
 - `sync`: #.workflow/templates/sync.md; for `src/**/README.md` use #.workflow/templates/code_readme.md

@@ -57,11 +57,13 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 Before reviewing, classify the request:
 
 - `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, or reasonableness.
-- `fits_with_preflight`: review requires reading code/docs/session context before verdict. In `Mode: discuss`, perform read-only evidence preflight first.
+- `fits_with_preflight`: review verdict depends on code, docs, diff, session evidence, or external plan context. In `Mode: discuss`, run conditional implicit preflight first.
 - `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
 - `wrong_task`: user asks to implement steps from an approved direction; recommend `plan` or `build`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
 - `missing_prerequisite`: `Mode: persist` lacks a `.session/decisions/**` target.
+
+Conditional implicit preflight for `review` only gathers evidence needed for the verdict. It must not become a second full review before the review, must not load templates, and must not write files.
 
 Review acts as a gateway. Verdicts should recommend next task: `none`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 
@@ -104,7 +106,7 @@ For non-trivial reviews, include a readiness dashboard:
 
 ## External Plan Audit
 
-Use this in `Mode: discuss` to audit a native external-agent Plan before implementation.
+Use this in discuss mode to audit a native external-agent Plan before implementation.
 
 Decision values:
 
@@ -119,7 +121,7 @@ Also check that success criteria are explicit, every major step has a verificati
 
 ## External Diff Review
 
-Use this in `Mode: discuss` after native external-agent implementation. Compare the diff against the approved external plan and Formal Docs Rules.
+Use this in discuss mode after native external-agent implementation. Compare the diff against the approved external plan and Formal Docs Rules.
 
 Check for scope drift, unrelated edits, missing edits, missing verification, changed files outside the approved target list, and unsafe formal docs content.
 

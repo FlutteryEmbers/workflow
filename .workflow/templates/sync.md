@@ -20,6 +20,10 @@
 
 {{formal docs readers or code readers}}
 
+## Reader-Facing Success Criteria
+
+- {{what the target reader should understand or be able to do after reading}}
+
 ## Sync Flow
 
 > Optional. Keep this diagram only if it makes the sync path easier to audit.
@@ -36,6 +40,8 @@ flowchart TD
 - Source is clear: {{yes/no}}
 - Audience is clear: {{yes/no}}
 - Source of truth is clear: {{yes/no}}
+- Reader-facing success criteria clear: {{yes/no}}
+- Existing docs tone and structure preserved: {{yes/no}}
 - Session-only residue removed: {{yes/no}}
 - Sensitive or not-yet-announced details removed: {{yes/no}}
 

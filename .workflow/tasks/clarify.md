@@ -57,6 +57,8 @@ Before clarifying, classify obvious boundary problems:
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
 - `missing_prerequisite`: `Mode: persist` lacks a `.session/notes/**` target.
 
+No implicit preflight runs in `clarify`. Only run Task Boundary Check; do not scan evidence before clarifying.
+
 If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
 
 ## Persist Templates

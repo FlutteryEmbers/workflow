@@ -186,7 +186,8 @@ Audience:
 
 Rules:
 - Follow Formal Docs Rules.
+- Source, audience, source of truth, and reader-facing success criteria must be clear.
 - Preserve existing docs structure and tone.
 - Do not write .session/**, .workflow/**, source code, or unrelated docs.
-- Output docs blocked if source, audience, source of truth, or safety is unclear.
+- Output docs blocked if source, audience, source of truth, reader-facing success criteria, or safety is unclear.
 ```

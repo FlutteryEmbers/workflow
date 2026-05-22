@@ -72,3 +72,14 @@ flowchart TD
 ## Target Docs
 
 - {{docs path or none}}
+
+## Formal Docs Checklist
+
+{{required only when the approved plan allows direct docs/** edits; otherwise use sync}}
+
+- Source: {{source material}}
+- Target Audience: {{reader}}
+- Source Of Truth: {{confirmed source}}
+- Reader-Facing Success Criteria: {{what the reader should understand or do}}
+- Existing Docs Tone / Structure: {{preserve or describe intended change}}
+- Safety: {{session-only residue and unsafe details removed}}
