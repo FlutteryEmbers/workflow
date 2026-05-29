@@ -4,10 +4,24 @@
 
 - Artifact: option
 - Status: {{draft | accepted}}
-- Style: {{exploration | audit}}
+- Intent: {{exploration | decision | audit}}
+- Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | file path}}
 - Target: {{.session/...}}
 - Last Updated: {{date}}
+
+## Source Context
+
+- {{discussion, file, reference, or goal that triggered the comparison}}
+
+## Decision-Relevant Facts
+
+- {{fact that changes option fit, cost, or risk}}
+
+## Assumptions vs Facts
+
+- Fact: {{confirmed input}}
+- Assumption: {{inference that still needs validation}}
 
 ## Decision Question
 
@@ -49,6 +63,10 @@ flowchart TD
 
 {{recommended option and why}}
 
+## Reasoning Trail
+
+{{how the option set and recommendation changed during discussion}}
+
 ## Why Not The Others
 
 - {{option}}: {{reason}}
@@ -56,3 +74,19 @@ flowchart TD
 ## What Would Change The Decision
 
 - {{new fact, constraint, or risk that would change the recommendation}}
+
+## Risks / Unknowns
+
+- {{risk or missing evidence}}
+
+## Open Questions
+
+- {{question that could change option fit, cost, risk, or recommendation}}
+
+## Examples / Pseudocode
+
+{{example, pseudocode, or none}}
+
+## Next Use
+
+{{shape, plan, review, save accepted, sync, or none}}

@@ -6,7 +6,7 @@ inputs:
   - question_or_source
 outputs:
   - chat_findings
-  - suggested_save
+  - save_packet
 user_selectable_lenses:
   - distill
   - strategy
@@ -31,7 +31,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Do not load templates and do not write files.
-- If the user asks to save or provides a target, return `Suggested Save` and route the write to `save`.
+- If the user asks to save or provides a target, return `Save Packet` and route the write to `save`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -50,7 +50,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - Facts, evidence, assumptions, unknowns, and suggested next decision.
-- `Suggested Save` when findings should become an inbox note, option draft, or distillation artifact.
+- `Save Packet` when findings should become an inbox note, option draft, or distillation artifact.
 
 ## Task Boundary Check
 
@@ -84,18 +84,37 @@ User-selected lenses:
 
 Explore enough to reduce uncertainty for the next decision. Separate observed facts from assumptions. Preserve reference-derived structure in chat until the user chooses `save`.
 
-## Suggested Save
+## Save Packet
 
 When useful, end with:
 
 ```text
-Suggested Save:
+Save Packet:
 Artifact: note | option | distillation
 Status: inbox | draft
-Style: exploration | audit | summary
+Intent: exploration | audit | reference
+Depth: standard | detailed
 Topic: <topic>
 Suggested Target: .session/<inbox|drafts>/<artifact>_<topic>.md
+Source Context:
+- <code paths, docs, references, or discussion sources checked>
+Key Points:
+- <main finding or structure discovered>
+Decision-Relevant Facts:
+- <facts that affect shape, plan, review, or sync>
+Reasoning Trail:
+- <how evidence led to the current interpretation>
+Rejected Options:
+- <interpretations or sources ruled out>
+Risks / Unknowns:
+- <unknowns, weak evidence, or follow-up checks>
+Examples / Pseudocode:
+- <example, code path, or pseudocode if useful>
+Next Use:
+- <shape | plan | review | save | sync>
 ```
+
+If the exploration is not worth preserving, output `Save Packet: none`.
 
 ## User Input
 

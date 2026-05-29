@@ -4,7 +4,8 @@
 
 - Artifact: plan
 - Status: {{draft | accepted}}
-- Style: {{handoff | audit}}
+- Intent: {{handoff | decision | audit}}
+- Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | file path}}
 - Target: {{.session/...}}
 - Last Updated: {{date}}
@@ -21,11 +22,32 @@
 
 {{source decision, goal, or target design}}
 
+## Source Context
+
+- {{accepted decision, draft shape, goal file, formal doc, code path, or user correction}}
+
+## Inputs
+
+- {{input artifact, source file, target docs, constraint, or external plan source}}
+
+## Decision-Relevant Facts
+
+- {{fact that affects sequence, scope, verification, or target files}}
+
+## Assumptions vs Facts
+
+- Fact: {{confirmed input}}
+- Assumption: {{inference that still needs validation}}
+
 ## Planning Rationale
 
 - Why This Sequence: {{reason}}
 - Rejected Sequencing: {{alternatives and why not}}
 - Open Questions: {{remaining uncertainty}}
+
+## Execution Strategy
+
+{{why this implementation order is the safest or smallest useful path}}
 
 ## Execution Readiness
 
@@ -52,6 +74,10 @@
 - Reusable Parts: {{what can be reused}}
 - Conflicts: {{where current repo shape conflicts with target direction}}
 
+## Dependencies Between Steps
+
+- {{step dependency, ordering constraint, or parallelizable part}}
+
 ## Impact Map
 
 | Target | Files / Docs | Change | Risk |
@@ -75,6 +101,10 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | {{step}} | {{change}} | {{test, check, or manual verification}} | {{risk}} | {{when to stop and return to plan/review}} |
 
+## Reasoning Trail
+
+{{how the plan changed during discussion and why this sequence remains preferred}}
+
 ## Verification
 
 - {{test, check, or manual verification}}
@@ -83,6 +113,10 @@ flowchart TD
 
 - {{condition that requires stopping instead of expanding scope}}
 
+## Open Questions
+
+- {{question that blocks approval, execution, or docs sync}}
+
 ## Rollback / Recovery
 
 - {{how to revert or recover if this plan fails}}
@@ -90,6 +124,10 @@ flowchart TD
 ## External-Agent Handoff
 
 {{success criteria, approved scope, allowed changes, do-not-touch areas, step verification, and minimal diff constraints for native Plan/Implement, if relevant}}
+
+## Handoff Notes
+
+- {{context an implementer or external agent needs to execute without making product decisions}}
 
 ## Target Docs
 
@@ -105,3 +143,7 @@ flowchart TD
 - Reader-Facing Success Criteria: {{what the reader should understand or do}}
 - Existing Docs Tone / Structure: {{preserve or describe intended change}}
 - Safety: {{session-only residue and unsafe details removed}}
+
+## Next Use
+
+{{review, save accepted, build, external-agent, sync, or none}}

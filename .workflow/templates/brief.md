@@ -4,7 +4,8 @@
 
 - Artifact: brief
 - Status: {{inbox | draft | accepted}}
-- Style: {{summary | exploration}}
+- Intent: {{summary | exploration}}
+- Depth: {{compact | standard}}
 - Source: {{recent discussion | user input | file path}}
 - Target: {{.session/...}}
 - Last Updated: {{date}}
@@ -16,6 +17,14 @@
 ## Why
 
 {{why it matters}}
+
+## Why This Matters
+
+{{why this is worth preserving instead of leaving only in chat}}
+
+## Useful Facts
+
+- {{fact that should influence later clarify, explore, shape, or plan work}}
 
 ## Scope
 
@@ -37,3 +46,7 @@
 ## Suggested Next Step
 
 {{route to explore, shape, plan, save, build, review, or sync}}
+
+## Possible Follow-up
+
+- {{follow-up question, next artifact, or promotion path}}

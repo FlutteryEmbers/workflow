@@ -4,7 +4,8 @@
 
 - Artifact: distillation
 - Status: {{inbox | draft | accepted}}
-- Style: {{exploration | audit | summary}}
+- Intent: {{exploration | audit | reference}}
+- Depth: {{detailed}}
 - Source: {{reference document | folder | discussion}}
 - Target: {{.session/...}}
 - Last Updated: {{date}}
@@ -16,6 +17,19 @@
 ## What This Is
 
 {{brief description of the reference}}
+
+## Source Context
+
+- {{reference path, section, repo, discussion, or user-provided sample}}
+
+## Decision-Relevant Facts
+
+- {{fact about structure, reader journey, or maintainability that affects adoption}}
+
+## Assumptions vs Facts
+
+- Fact: {{observed source structure}}
+- Assumption: {{interpretation about why it works}}
 
 ## Observed Structure
 
@@ -33,13 +47,30 @@
 
 {{structural reason, not just content summary}}
 
+## Reasoning Trail
+
+{{how observation became a transferable recommendation}}
+
 ## Transferable Structures
 
 - {{what can transfer into session decisions or formal docs}}
 
+## Transfer Criteria
+
+- {{when this structure should be adopted or adapted}}
+
 ## Non-Transferable Context
 
 - {{what should not be copied}}
+
+## Concrete Adaptation
+
+{{specific adaptation for Workflow Lite, `.session/**`, formal docs, or templates}}
+
+## Before / After
+
+- Before: {{current local structure or output weakness}}
+- After: {{target structure after applying the distilled idea}}
 
 ## Apply To Workflow Lite
 
@@ -56,3 +87,7 @@
 ## Open Questions
 
 - {{question}}
+
+## Next Use
+
+{{shape, plan, save accepted, sync, build, or none}}

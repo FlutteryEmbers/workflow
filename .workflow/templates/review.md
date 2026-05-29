@@ -4,7 +4,8 @@
 
 - Artifact: review
 - Status: {{draft | accepted}}
-- Style: {{audit}}
+- Intent: {{audit | decision}}
+- Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | diff | file path}}
 - Target: {{.session/...}}
 - Last Updated: {{date}}
@@ -17,6 +18,27 @@
 
 {{code, docs, session decision, external plan, diff, or behavior claim}}
 
+## Review Question
+
+{{what this review is trying to decide}}
+
+## Source Context
+
+- {{plan, diff, code path, formal doc, session artifact, or user claim}}
+
+## Evidence Checked
+
+- {{file, diff, command output, doc, artifact, or discussion evidence}}
+
+## Decision-Relevant Facts
+
+- {{fact that materially changes the verdict}}
+
+## Assumptions vs Facts
+
+- Fact: {{confirmed input}}
+- Assumption: {{inference that still needs validation}}
+
 ## Discussion Trace
 
 - Trigger: {{why this review exists}}
@@ -24,6 +46,10 @@
 - Decision Trail: {{initial concern -> evidence -> verdict}}
 - Rejected Options: {{fixes or interpretations rejected}}
 - Open Questions: {{remaining uncertainty}}
+
+## Reasoning Trail
+
+{{how evidence changed or confirmed the verdict}}
 
 ## Decision
 
@@ -44,6 +70,18 @@
 | Severity | Finding | Evidence | Recommended Action |
 | :--- | :--- | :--- | :--- |
 | {{severity}} | {{finding}} | {{evidence}} | {{action}} |
+
+## What Is Still Reasonable
+
+- {{part of the target that can remain unchanged}}
+
+## Required Revisions
+
+- {{required change before approval or next write}}
+
+## Open Questions
+
+- {{question that prevents approval, execution, or sync}}
 
 ## Failure Or Risk Path
 
@@ -73,3 +111,11 @@ flowchart TD
 ## Follow-up
 
 - {{save, sync, shape, plan, build, external-agent, or none}}
+
+## Recommended Next Task
+
+{{shape | plan | build | sync | save | external-agent | none}}
+
+## Next Use
+
+{{save draft, save accepted, plan, build, sync, or none}}

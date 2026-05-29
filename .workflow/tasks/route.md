@@ -73,7 +73,7 @@ Boundary classes:
 
 Recommend the smallest path:
 
-- Typical session state flow: `discuss loop -> save draft -> review -> save accepted -> build/external-agent -> review -> sync`.
+- Typical session state flow: `discuss loop -> Save Packet -> save draft -> review -> Save Packet -> save accepted -> build/external-agent -> review -> sync`.
 - New background or staged requirements: `clarify` or `explore` -> `save` to `.session/inbox/**`.
 - Target direction, option, architecture, or concept: `shape` -> `save` to `.session/drafts/**` or `.session/accepted/**`.
 - Repo-aware implementation sequence or handoff: `plan` -> `save` to `.session/drafts/**` or `.session/accepted/**`.
@@ -81,6 +81,7 @@ Recommend the smallest path:
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
 - Formal documentation alignment: `sync` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute` and an approved plan.
+- Discussion chains should end with `Save Packet` when the result is worth preserving. `save` consumes the packet; the original discussion task does not write files.
 
 ## Lens Suggestions
 

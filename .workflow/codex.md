@@ -48,19 +48,22 @@ Mode: persist
 Task: save
 Artifact: <brief|note|shape|option|plan|review|decision|distillation|expanded|goal>
 Status: <inbox|draft|accepted>
-Style: <summary|exploration|audit|constraint|handoff>
+Intent: <summary|exploration|decision|audit|handoff|constraint|reference>
+Depth: <compact|standard|detailed>
 Topic: <topic>
 Target: <optional for inbox/drafts; explicit for accepted/goal when needed>
 Context:
 - .workflow/tasks/save.md
 - .workflow/templates/<artifact template>.md
 - selected lenses only when named
-- source context
+- Save Packet or source context
 Request:
 Save the distilled artifact only.
 ```
 
 `save` may infer `.session/inbox/**` and `.session/drafts/**`. Accepted artifacts require explicit accepted, approved, or promote intent. Targets outside `.session/**` route to `sync`, `build`, or external-agent.
+
+Use `Save Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, reasoning trail, rejected options, risks, examples, and next use when they affect later work.
 
 ### Workflow-Managed Execute
 
@@ -126,7 +129,7 @@ Mode: discuss
 Task: shape
 Lens: <none or selected lenses>
 Request:
-Discuss the target direction. Include evidence, unknowns, tradeoffs, and Suggested Save. Do not write files.
+Discuss the target direction. Include evidence, unknowns, tradeoffs, and a Save Packet when worth preserving. Do not write files.
 ```
 
 ### Save Artifact
@@ -137,10 +140,11 @@ Mode: persist
 Task: save
 Artifact: <artifact>
 Status: <inbox|draft|accepted>
-Style: <style>
+Intent: <summary|exploration|decision|audit|handoff|constraint|reference>
+Depth: <compact|standard|detailed>
 Topic: <topic>
 Request:
-Save the current converged session state. Preserve decision trail, not full transcript.
+Save the current converged session state. Preserve decision-relevant reasoning, not full transcript.
 ```
 
 ### Native Plan

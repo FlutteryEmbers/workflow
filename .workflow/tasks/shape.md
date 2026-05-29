@@ -6,7 +6,7 @@ inputs:
   - clarified_context
 outputs:
   - chat_shape
-  - suggested_save
+  - save_packet
 user_selectable_lenses:
   - iteration
   - expand
@@ -34,7 +34,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
-- If the user asks to save or provides a target, return `Suggested Save` and route the write to `save`.
+- If the user asks to save or provides a target, return `Save Packet` and route the write to `save`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -53,7 +53,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - `Reframed Goal`, `Narrowest Useful Wedge`, `Success Criteria`, `Rejected Larger Scope`, tradeoffs, and recommended next step.
-- `Suggested Save` when the current shape should become a draft, accepted decision, or explicit goal update.
+- `Save Packet` when the current shape should become a draft, accepted decision, or explicit goal update.
 
 ## Task Boundary Check
 
@@ -88,20 +88,46 @@ Convert notes, goals, and discussion into a clear session direction or goal upda
 
 When a shape is likely to become `.session/accepted/**`, involves costly reversal, or depends on unverified assumptions, include `Suggested Lens: redteam` as a recommendation rather than applying it automatically.
 
-## Suggested Save
+## Save Packet
 
 When useful, end with:
 
 ```text
-Suggested Save:
+Save Packet:
 Artifact: shape | decision | goal
 Status: draft | accepted
-Style: exploration | audit | constraint | summary
+Intent: exploration | decision | constraint
+Depth: detailed
 Topic: <topic>
 Suggested Target: .session/drafts/shape_<topic>.md or .session/accepted/decision_<topic>.md
+Source Context:
+- <goal, session artifact, code/docs evidence, or user correction>
+Key Points:
+- <current recommendation and core boundaries>
+Decision-Relevant Facts:
+- <facts that materially affect the direction>
+Reasoning Trail:
+- <initial direction -> revisions -> current direction>
+Options Considered:
+- <option and short description>
+Why This Option:
+- <reason the recommendation is preferred>
+Why Not Others:
+- <rejected option and reason>
+Rejected Options:
+- <larger scopes or directions intentionally not chosen>
+Risks / Unknowns:
+- <risky assumptions, missing evidence, or follow-up review needs>
+Examples / Pseudocode:
+- <example scenario, conceptual flow, or pseudocode if useful>
+Validation Approach:
+- <how this shape can be tested or falsified>
+Next Use:
+- <save draft | review | plan | sync>
 ```
 
 Use `.session/goal/**` only when the user explicitly provides that target.
+If the shape is not worth preserving, output `Save Packet: none`.
 
 ## User Input
 

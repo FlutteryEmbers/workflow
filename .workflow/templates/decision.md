@@ -4,7 +4,8 @@
 
 - Artifact: decision
 - Status: accepted
-- Style: {{summary | constraint | handoff}}
+- Intent: {{decision | constraint | handoff | audit}}
+- Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | file path}}
 - Target: {{.session/...}}
 - Last Updated: {{date}}
@@ -31,6 +32,19 @@
 
 {{why this decision exists and what inputs it uses}}
 
+## Source Context
+
+- {{discussion, draft, review, code path, formal doc, or user approval source}}
+
+## Decision-Relevant Facts
+
+- {{confirmed fact that materially affects this decision}}
+
+## Assumptions vs Facts
+
+- Fact: {{confirmed input}}
+- Assumption: {{inference that still needs validation}}
+
 ## Success Criteria
 
 - {{what must be true for this decision to be considered successful}}
@@ -47,13 +61,43 @@
 - Rejected Options: {{compressed list}}
 - Open Questions: {{remaining uncertainty}}
 
+## Reasoning Trail
+
+{{how the accepted decision emerged from discussion, evidence, review, or user approval}}
+
 ## Rationale
 
 {{why this is the current recommendation}}
 
+## Evidence
+
+- {{evidence, source, code path, doc, review finding, or user confirmation}}
+
+## Constraints
+
+- {{constraint this decision must respect}}
+
+## Alternatives Considered
+
+| Alternative | Why Not | Status |
+| :--- | :--- | :--- |
+| {{alternative}} | {{reason}} | {{rejected | parked | superseded}} |
+
 ## Implications
 
 - {{impact, tradeoff, or required follow-up}}
+
+## Consequences
+
+- {{expected operational, architectural, product, or docs consequence}}
+
+## Validity / Review Trigger
+
+- {{condition that should cause this decision to be revisited}}
+
+## How To Use This Decision
+
+{{how future shape, plan, build, review, sync, or external-agent work should use this decision}}
 
 ## Target Docs
 
@@ -62,6 +106,10 @@
 ## Open Questions
 
 - {{question}}
+
+## Next Use
+
+{{plan, build, external-agent, review, sync, or none}}
 
 ## Source
 

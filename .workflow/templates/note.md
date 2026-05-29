@@ -4,7 +4,8 @@
 
 - Artifact: note
 - Status: {{inbox | draft | accepted}}
-- Style: {{summary | exploration | audit}}
+- Intent: {{summary | exploration | audit | reference}}
+- Depth: {{compact | standard}}
 - Source: {{recent discussion | user input | file path}}
 - Target: {{.session/...}}
 - Last Updated: {{date}}
@@ -13,6 +14,10 @@
 
 {{why this note exists}}
 
+## Why This Matters
+
+{{why this note should be saved instead of remaining only in chat}}
+
 ## Source
 
 - {{user input, code path, reference doc, formal docs, or discussion}}
@@ -20,6 +25,10 @@
 ## Observations
 
 - {{observed fact or staged requirement}}
+
+## Useful Facts
+
+- {{fact that affects a later decision, plan, review, or docs sync}}
 
 ## Assumptions
 

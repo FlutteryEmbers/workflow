@@ -123,15 +123,23 @@ Composite requests should return segmented prompts with stop points. Do not sile
 
 ## Save-Centered Session Writes
 
-Discussion tasks do not write files. They should end with `Suggested Save` when the current output is worth preserving.
+Discussion tasks do not write files. They should end with `Save Packet` when the current output is worth preserving, or `Save Packet: none` when it is not.
 
 - `save` writes `.session/**`.
+- `save` consumes `Save Packet`, recent discussion, existing artifacts, or source files.
 - `save` can infer targets for `.session/inbox/**` and `.session/drafts/**`.
 - `.session/accepted/**` requires explicit accepted, approved, or promote intent.
 - Explicit `.session/**` targets are respected even when the file name does not follow the recommended prefix.
 - Targets outside `.session/**` are routed instead of rejected: `docs/**` and `src/**/README.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
 
-Saved artifacts preserve decision trail, not full transcript. Include discussion content only when it explains why the artifact exists, why the recommendation changed, why options were rejected, or what remains unresolved.
+Saved artifacts preserve decision-relevant reasoning, not full transcript. They should be more structured than chat without dropping useful context, evidence, tradeoffs, rejected options, examples, risks, open questions, or next use.
+
+`save` uses:
+
+- `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
+- `Depth`: `compact | standard | detailed`.
+
+Default depth is `standard` for `brief` and `note`, and `detailed` for `shape`, `option`, `plan`, `review`, `decision`, `distillation`, and `expanded`.
 
 ## Implicit Preflight
 

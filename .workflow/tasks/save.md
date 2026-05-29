@@ -5,7 +5,8 @@ purpose: Save distilled session artifacts from discussion, drafts, or user-provi
 inputs:
   - artifact
   - status
-  - style
+  - intent
+  - depth
   - topic
   - source
   - target
@@ -33,7 +34,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: persist` is required for writes.
-- `Mode: discuss` may propose a save target, artifact kind, status, and template without writing.
+- `Mode: discuss` may propose a save packet, target, artifact kind, status, intent, depth, and template without writing.
 - `Mode: execute` is not valid for this task.
 - Load templates only for the artifact being saved.
 
@@ -53,10 +54,45 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 - `Artifact`: `brief | note | shape | option | plan | review | decision | distillation | expanded | goal`.
 - `Status`: `inbox | draft | accepted`.
-- `Style`: `summary | exploration | audit | constraint | handoff`.
+- `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
+- `Depth`: `compact | standard | detailed`.
 - `Topic`: short file-safe topic.
-- `Source`: recent discussion, existing artifact, user input, file path, or selected context.
+- `Source`: `Save Packet`, recent discussion, existing artifact, user input, file path, or selected context.
 - `Target`: optional for `.session/inbox/**` and `.session/drafts/**`; explicit for `.session/accepted/**` unless accepted intent is already clear.
+
+Canonical fields:
+
+```text
+Intent: summary | exploration | decision | audit | handoff | constraint | reference
+Depth: compact | standard | detailed
+```
+
+## Content Fidelity Contract
+
+Saved artifacts must be more structured than chat without losing the reasoning needed for future work.
+
+- Preserve decision-relevant reasoning: context, constraints, evidence, user corrections, option tradeoffs, rejected options, examples, pseudocode, risks, unknowns, and next use.
+- Do not compress multi-turn discussion into unsupported conclusions.
+- Remove conversational noise, repetition, stale intermediate phrasing, and obvious dead ends.
+- Separate confirmed facts from assumptions or AI-added inferences.
+- If the source is thin, say what is missing instead of inventing confidence.
+- Full transcript is not the default. If the user asks to save the process, write a conversation summary. Save verbatim transcript only when explicitly requested and label it noisy and not source of truth.
+
+## Depth Rules
+
+- `compact`: keep the artifact short, but include why it matters, useful facts, and next step.
+- `standard`: include source context, key points, decision-relevant facts, assumptions, open questions, and next use.
+- `detailed`: include reasoning trail, evidence, alternatives considered, rejected options, risks, examples or pseudocode when useful, validation approach, and next use.
+- Default `Depth: standard` for `brief` and `note`.
+- Default `Depth: detailed` for `shape`, `option`, `plan`, `review`, `decision`, `distillation`, and `expanded`.
+- Use a lower depth only when the user explicitly asks for a compact artifact.
+
+## Source Handling
+
+- Prefer an explicit `Save Packet` when present.
+- If no `Save Packet` exists, synthesize one from recent discussion, source artifacts, user corrections, and selected files.
+- If source material conflicts, preserve the conflict and mark the source of truth as unresolved.
+- Do not use `save` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
 
 ## Target Rules
 
@@ -76,10 +112,8 @@ If the user explicitly provides a target path, respect it unless it violates wri
 
 ## Conversation Handling
 
-- Preserve decision trail, not transcript.
-- Include discussion content only when it explains why the artifact exists, why the recommendation changed, why options were rejected, or what remains unresolved.
-- If the user asks to save the process, save a conversation summary by default.
-- Save verbatim transcript only when the user explicitly asks for verbatim transcript, and note that it is noisy and not source of truth.
+- Preserve decision trail and decision-relevant discussion content, not the full transcript.
+- Include why the artifact exists, why the recommendation changed, what evidence mattered, why options were rejected, what remains unresolved, and how the artifact should be used next.
 
 ## Template Selection
 
@@ -98,10 +132,11 @@ If the user explicitly provides a target path, respect it unless it violates wri
 
 - Write only the target session artifact.
 - Add `Save Metadata` to the artifact.
-- Keep `Style` as metadata; do not use it to choose directories or permissions.
+- Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
 - Draft artifacts are not approved execution sources.
 - Accepted artifacts are session-level accepted sources, but formal long-term docs still go through `sync`.
+- The saved artifact should be denser and more durable than chat. It must not be a low-context bullet summary when detailed reasoning is available.
 
 ## User Input
 
-{{artifact, status, style, topic, source, target, and save request}}
+{{artifact, status, intent, depth, topic, source, target, and save request}}

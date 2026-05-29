@@ -4,7 +4,8 @@
 
 - Artifact: shape
 - Status: {{draft | accepted}}
-- Style: {{exploration | audit | summary}}
+- Intent: {{exploration | decision | constraint}}
+- Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | file path}}
 - Target: {{.session/...}}
 - Last Updated: {{date}}
@@ -32,6 +33,19 @@ flowchart TD
 
 {{problem or opportunity}}
 
+## Source Context
+
+- {{discussion, goal, source file, formal doc, or user correction that this shape depends on}}
+
+## Decision-Relevant Facts
+
+- {{confirmed fact that materially affects the shape}}
+
+## Assumptions vs Facts
+
+- Fact: {{confirmed input}}
+- Assumption: {{inference that still needs validation}}
+
 ## Discussion Trace
 
 - Trigger: {{why this artifact exists}}
@@ -39,6 +53,19 @@ flowchart TD
 - Decision Trail: {{initial direction -> revision -> current direction}}
 - Rejected Options: {{compressed list}}
 - Open Questions: {{remaining uncertainty}}
+
+## Reasoning Trail
+
+{{how the discussion moved from initial framing to the current shape}}
+
+## Problem Framing
+
+- Is: {{what problem this shape solves}}
+- Is Not: {{what similar problem this shape does not solve}}
+
+## Forces / Constraints
+
+- {{constraint, pressure, tradeoff, or preference affecting the decision}}
 
 ## Reframed Goal
 
@@ -60,6 +87,24 @@ flowchart TD
 
 {{solution shape, concept, architecture, or decision}}
 
+## Conceptual Model
+
+- {{core concept, boundary, relationship, lifecycle, or rule ownership note}}
+
+## Options Considered
+
+| Option | Fit | Cost | Risk | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| {{option}} | {{fit}} | {{cost}} | {{risk}} | {{chosen | rejected | parked}} |
+
+## Why This Option
+
+{{why the proposed shape is the current recommendation}}
+
+## Why Not Others
+
+- {{option}}: {{reason rejected or parked}}
+
 ## Boundaries
 
 - In: {{included}}
@@ -69,6 +114,14 @@ flowchart TD
 
 - {{tradeoff}}
 
+## Examples
+
+- {{example scenario, workflow, API sketch, or concrete usage}}
+
+## Validation Approach
+
+- {{how to validate or falsify this shape}}
+
 ## Target Docs
 
 - {{docs path or none}}
@@ -76,3 +129,7 @@ flowchart TD
 ## Open Questions
 
 - {{question}}
+
+## Next Use
+
+{{save draft, review, plan, save accepted, sync, or none}}

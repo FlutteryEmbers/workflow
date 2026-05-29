@@ -40,7 +40,7 @@ Use this only after an approved narrow plan exists.
 ```text
 OpenCode context summary
 -> workflow review / shape / plan
--> save draft or accepted handoff when useful
+-> Save Packet -> save draft or accepted handoff when useful
 -> OpenCode bounded implement
 -> workflow diff review
 -> sync formal docs when stable
@@ -123,10 +123,11 @@ Mode: persist
 Task: save
 Artifact: plan
 Status: draft | accepted
-Style: handoff
+Intent: handoff
+Depth: detailed
 Topic: <topic>
 Request:
-Save the OpenCode handoff plan. Preserve decision trail, not full transcript.
+Save the OpenCode handoff plan. Preserve decision-relevant reasoning, not full transcript.
 ```
 
 ### Plan Audit

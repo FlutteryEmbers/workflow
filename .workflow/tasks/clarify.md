@@ -6,7 +6,7 @@ inputs:
   - user_goal_or_context
 outputs:
   - chat_clarification
-  - suggested_save
+  - save_packet
 user_selectable_lenses:
   - iteration
   - language
@@ -28,7 +28,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Do not load templates and do not write files.
-- If the user asks to save or provides a target, return `Suggested Save` and route the write to `save`.
+- If the user asks to save or provides a target, return `Save Packet` and route the write to `save`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -47,7 +47,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 ## Expected Output
 
 - Concise clarified goal, scope, acceptance signals, assumptions, and open questions.
-- `Suggested Save` when the clarification should become an inbox artifact.
+- `Save Packet` when the clarification should become an inbox artifact.
 
 ## Task Boundary Check
 
@@ -82,18 +82,37 @@ User-selected lenses:
 
 Capture the user's goal, staged requirements, background, constraints, non-goals, acceptance signals, and open questions. Keep this as chat output until the user chooses `save`.
 
-## Suggested Save
+## Save Packet
 
 When useful, end with:
 
 ```text
-Suggested Save:
+Save Packet:
 Artifact: brief | note
 Status: inbox
-Style: summary | exploration
+Intent: summary | exploration
+Depth: compact | standard
 Topic: <topic>
 Suggested Target: .session/inbox/<artifact>_<topic>.md
+Source Context:
+- <user goal, background, or staged requirement source>
+Key Points:
+- <clarified goal, scope, acceptance signal, or constraint>
+Decision-Relevant Facts:
+- <facts worth preserving for later shape/plan>
+Reasoning Trail:
+- <how the clarification changed the understanding, or none>
+Rejected Options:
+- <non-goals or excluded scope>
+Risks / Unknowns:
+- <unknowns or assumptions>
+Examples / Pseudocode:
+- <example if useful, otherwise none>
+Next Use:
+- <explore | shape | plan | save | sync>
 ```
+
+If the clarification is not worth preserving, output `Save Packet: none`.
 
 ## User Input
 

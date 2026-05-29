@@ -6,7 +6,7 @@ inputs:
   - target_or_claim
 outputs:
   - chat_review
-  - suggested_save
+  - save_packet
 user_selectable_lenses:
   - redteam
   - consistency
@@ -34,7 +34,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in user-provided order, then give actionable findings.
 - Do not load templates and do not write files.
-- If the user asks to save or provides a target, return `Suggested Save` and route the write to `save`.
+- If the user asks to save or provides a target, return `Save Packet` and route the write to `save`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -53,7 +53,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 ## Expected Output
 
 - Findings first, then `Decision`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
-- `Suggested Save` when the review should become a draft review or accepted verdict.
+- `Save Packet` when the review should become a draft review or accepted verdict.
 
 ## Task Boundary Check
 
@@ -121,20 +121,50 @@ Check for scope drift, unrelated edits, missing edits, missing verification, cha
 
 Treat drive-by refactors and unapproved scope expansion as blocking unless the approved plan explicitly allowed them.
 
-## Suggested Save
+## Save Packet
 
 When useful, end with:
 
 ```text
-Suggested Save:
-Artifact: review
+Save Packet:
+Artifact: review | decision
 Status: draft | accepted
-Style: audit
+Intent: audit | decision
+Depth: detailed
 Topic: <topic>
 Suggested Target: .session/drafts/review_<topic>.md or .session/accepted/review_<topic>.md
+Source Context:
+- <plan, diff, code, docs, session artifact, or claim reviewed>
+Review Question:
+- <what was being judged>
+Evidence Checked:
+- <files, docs, diffs, artifacts, or discussion evidence>
+Key Points:
+- <verdict and main reasons>
+Decision-Relevant Facts:
+- <facts that affect approval, revision, or blocking>
+Reasoning Trail:
+- <concern -> evidence -> verdict>
+Findings:
+- <finding with severity and evidence>
+What Is Still Reasonable:
+- <parts that should be preserved>
+Required Revisions:
+- <must-change items>
+Rejected Options:
+- <fixes or interpretations rejected>
+Risks / Unknowns:
+- <remaining risk or missing evidence>
+Examples / Pseudocode:
+- <example failure path or reproduction if useful>
+Recommended Next Task:
+- <shape | plan | build | sync | save | none>
+Next Use:
+- <save draft | save accepted | plan | build | sync>
 ```
 
 Accepted review verdicts require explicit accepted, approved, or promote intent.
+If the review is not worth preserving, output `Save Packet: none`.
 
 ## User Input
 

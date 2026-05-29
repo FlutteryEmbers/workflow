@@ -6,7 +6,7 @@ inputs:
   - decision_or_target
 outputs:
   - chat_plan
-  - suggested_save
+  - save_packet
 user_selectable_lenses:
   - iteration
   - expand
@@ -32,7 +32,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
-- If the user asks to save or provides a target, return `Suggested Save` and route the write to `save`.
+- If the user asks to save or provides a target, return `Save Packet` and route the write to `save`.
 - `Mode: execute` is not valid for this task; use `build` with an approved plan.
 - For native Plan/Implement, use the external-agent path.
 
@@ -52,7 +52,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - A repo-aware plan with `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
-- `Suggested Save` when the plan should become a draft handoff or accepted plan.
+- `Save Packet` when the plan should become a draft handoff or accepted plan.
 
 ## Task Boundary Check
 
@@ -87,20 +87,48 @@ Every major step must use `Step / Change / Verify / Risk / Stop Condition`. If t
 
 If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend plan audit with `review --lens redteam,test`. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
 
-## Suggested Save
+## Save Packet
 
 When useful, end with:
 
 ```text
-Suggested Save:
+Save Packet:
 Artifact: plan
 Status: draft | accepted
-Style: handoff | audit
+Intent: handoff | decision | audit
+Depth: detailed
 Topic: <topic>
 Suggested Target: .session/drafts/plan_<topic>.md or .session/accepted/plan_<topic>.md
+Source Context:
+- <accepted decision, target design, code/docs evidence, or planning discussion>
+Target Outcome:
+- <what should be true after execution>
+Key Points:
+- <sequence summary and main constraints>
+Decision-Relevant Facts:
+- <facts affecting execution order or scope>
+Reasoning Trail:
+- <why this sequence is preferred>
+Allowed Changes:
+- <paths, behavior, docs, tests, or prompts allowed to change>
+Do Not Touch:
+- <areas excluded from the plan>
+Step -> Verify:
+- <step> -> <verification>
+Stop Conditions:
+- <when to stop and return to plan/review>
+Risks / Unknowns:
+- <execution risk or missing information>
+Examples / Pseudocode:
+- <implementation sketch if useful>
+Handoff Notes:
+- <minimal context for build or external-agent>
+Next Use:
+- <save draft | review | save accepted | build | external-agent>
 ```
 
 Accepted plans require explicit accepted, approved, or promote intent.
+If the plan is not worth preserving, output `Save Packet: none`.
 
 ## User Input
 
