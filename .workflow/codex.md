@@ -8,6 +8,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 
 - `.workflow/README.md` is the workflow source of truth.
 - Default to `Mode: discuss`.
+- When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
@@ -17,6 +18,14 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Treat `.session/drafts/**` as unapproved working artifacts.
 - Prefer `.session/accepted/**` for approved plans, accepted decisions, and implementation handoffs.
 - Treat `docs/**` as formal project documentation and apply Formal Docs Rules before writing.
+- Lenses may strengthen the selected task, but must not change task responsibility.
+
+## Task Boundary Shortcut
+
+- `shape = synthesis`: ambiguous, what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests.
+- `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
+- `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
+- `plan = executable sequence`: chosen direction to implementable steps.
 
 ## Common Paths
 

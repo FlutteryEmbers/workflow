@@ -79,6 +79,17 @@ Drafts are not approved execution sources. `build` and external-agent implementa
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
 | `sync` | `steward` | `docs/**` or `src/**/README.md` | Align formal docs and code-adjacent README files with confirmed decisions, code, or diffs. |
 
+## Task Boundary Shortcut
+
+When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
+
+- `shape = synthesis`: default for ambiguous, what-if, strategy, conceptual, direction-setting, entrypoint-selection, or "how should I think about this" requests.
+- `explore = evidence`: use only when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, or dependencies.
+- `review = verdict`: use only when there is an existing target to judge, such as code, docs, plan, diff, decision, behavior claim, or accepted artifact.
+- `plan = executable sequence`: use when the direction is chosen and the user needs implementable steps.
+
+`shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` must not choose final direction. `review` must not invent replacement design.
+
 ## Lenses
 
 Lenses are user-selected. Copilot may suggest a lens, but must not apply it unless the user explicitly names it or adds its file as context.
@@ -149,6 +160,12 @@ Implicit preflight is a same-response, read-only check that can run automaticall
 - Conditional implicit preflight: `review`, `build`, `explore`.
 - No implicit preflight: `clarify`, `route`.
 
+With shape-first routing:
+
+- `shape` preflight is triage plus evidence check: decide whether to shape now, recommend `explore -> shape`, or route to `review`.
+- `explore` preflight is source/scope/evidence-type check only.
+- `review` preflight is target/question/evidence-readiness check only.
+
 Implicit preflight must not load templates, write files, run implementation, run tests, perform sync, apply unselected lenses, or do a full repository scan. In `Mode: persist` and `Mode: execute`, do not run implicit preflight; block when prerequisites are missing.
 
 ## Built-in Safety Checks
@@ -192,6 +209,8 @@ Any write to `docs/**` must:
 - Stage requirements or background: `clarify -> save -> .session/inbox/**`.
 - Explore code or reference material: `explore -> save -> .session/inbox/**` or `.session/drafts/option_*.md`.
 - Shape a direction or goal: `shape -> save -> .session/drafts/**` or `.session/accepted/**`.
+- Ambiguous what-if or strategy: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
+- Existing target reasonableness: `review`, then `shape` or `plan` only if revision is needed.
 - Plan work or handoff: `plan -> save -> .session/drafts/**` or `.session/accepted/**`.
 - Multi-turn design: `shape/review/explore discuss loop -> save draft -> review -> save accepted`.
 - Native implementation: external-agent native Plan -> `review` audit -> native Implement -> `review` diff.

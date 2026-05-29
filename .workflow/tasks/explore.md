@@ -1,7 +1,7 @@
 ---
 id: explore
 role: designer
-purpose: Understand code, materials, current behavior, feasibility, or reference structure in chat.
+purpose: Extract evidence from code, docs, behavior, feasibility checks, or reference material in chat.
 inputs:
   - question_or_source
 outputs:
@@ -9,7 +9,6 @@ outputs:
   - save_packet
 user_selectable_lenses:
   - distill
-  - strategy
   - architecture
   - debug
   - language
@@ -36,12 +35,14 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## When To Use
 
-- Use when the user needs evidence about current code, docs, behavior, feasibility, reference material, or unknowns.
+- Use when the user clearly needs evidence about current code, docs, behavior, feasibility, reference material, entrypoints, dependencies, or unknowns.
+- Use when `shape` cannot safely recommend a direction because missing facts could change the answer.
 - Use before `shape` or `plan` when the decision depends on repository reality or external references.
 
 ## Do Not Use When
 
 - Do not use to make the final direction decision; use `shape`.
+- Do not use for ambiguous what-if, route-comparison, conceptual, or direction-setting requests unless the user primarily asks for evidence.
 - Do not use to judge whether a plan, diff, or implementation is acceptable; use `review`.
 - Do not use to create executable steps; use `plan`.
 - Do not use to write session artifacts; use `save`.
@@ -49,14 +50,14 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## Expected Output
 
-- Facts, evidence, assumptions, unknowns, and suggested next decision.
+- `Sources Checked`, `Observed Facts`, `Evidence Map`, `Unknowns`, `Constraints Found`, `Potential Options`, and `Recommended Next Task`.
 - `Save Packet` when findings should become an inbox note, option draft, or distillation artifact.
 
 ## Task Boundary Check
 
 Before exploring, classify obvious boundary problems:
 
-- `fits`: user asks to understand code, docs, behavior, feasibility, or reference material.
+- `fits`: user asks to understand code, docs, behavior, feasibility, reference material, entrypoints, dependencies, or source evidence.
 - `fits_with_preflight`: request scope is too broad, source is unclear, or the request may actually belong to `review`, `shape`, or `plan`. In `Mode: discuss`, run conditional boundary preflight only.
 - `composite`: user asks to explore and save; explore first, then route to `save`.
 - `wrong_task`: user asks to choose a direction; recommend `shape`.
@@ -64,7 +65,7 @@ Before exploring, classify obvious boundary problems:
 - `wrong_task`: user asks to judge a target or diff; recommend `review`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
 
-Conditional implicit preflight for `explore` only checks boundary, source, and scope. Do not duplicate exploration inside preflight; once the boundary is clear, proceed with normal explore or recommend the right task.
+Conditional implicit preflight for `explore` only checks boundary, source, scope, and evidence type. Do not duplicate exploration inside preflight; once the boundary is clear, proceed with normal evidence extraction or recommend the right task.
 
 If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
 
@@ -82,7 +83,19 @@ User-selected lenses:
 
 ## Instructions
 
-Explore enough to reduce uncertainty for the next decision. Separate observed facts from assumptions. Preserve reference-derived structure in chat until the user chooses `save`.
+Explore enough to reduce uncertainty for the next decision. Separate observed facts from assumptions and inferences. Do not choose the final direction unless the user explicitly routes back to `shape`; prepare evidence for `shape`, `review`, or `plan`.
+
+Use this structure for non-trivial output:
+
+- `Sources Checked`: code paths, docs, references, commands, or materials reviewed.
+- `Observed Facts`: facts directly supported by checked sources.
+- `Evidence Map`: source -> fact -> implication.
+- `Unknowns`: missing facts or weak evidence.
+- `Constraints Found`: boundaries, existing behavior, dependencies, or doc constraints.
+- `Potential Options`: candidate materials for `shape`; these are not final recommendations.
+- `Recommended Next Task`: usually `shape`, `review`, `plan`, `save`, or `sync`.
+
+Lens use must not change task responsibility. `distill`, `architecture`, `debug`, `domain`, and `language` may improve evidence extraction, but `explore` must not become final synthesis or verdict.
 
 ## Save Packet
 
@@ -106,6 +119,16 @@ Reasoning Trail:
 - <how evidence led to the current interpretation>
 Rejected Options:
 - <interpretations or sources ruled out>
+Sources Checked:
+- <source list>
+Observed Facts:
+- <source-backed fact>
+Evidence Map:
+- <source -> fact -> implication>
+Constraints Found:
+- <constraint or boundary found>
+Potential Options:
+- <candidate material for shape, not final choice>
 Risks / Unknowns:
 - <unknowns, weak evidence, or follow-up checks>
 Examples / Pseudocode:

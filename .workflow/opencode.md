@@ -6,6 +6,15 @@ Use OpenCode when it helps with context reading, draft planning, or bounded impl
 
 OpenCode may suggest `redteam` when risk triggers match, but must not auto-load or apply it. Use full `redteam` only when the user explicitly selected that lens or the prompt explicitly includes it.
 
+When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility.
+
+Task shortcut:
+
+- `shape = synthesis`: ambiguous, what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests.
+- `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
+- `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
+- `plan = executable sequence`: chosen direction to implementable steps.
+
 ## Usage Levels
 
 ### Level 1: Context Helper

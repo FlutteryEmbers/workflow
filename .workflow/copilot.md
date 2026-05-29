@@ -32,6 +32,17 @@ Request:
 - `Mode: execute` applies an approved workflow-managed plan through `Task: build`.
 - Native Codex/Copilot Plan -> Implement is the `external-agent` write path. It is not a Workflow Mode and does not use `Task: build`.
 
+## Task Boundary Shortcut
+
+When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
+
+- `shape = synthesis`: ambiguous, what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests.
+- `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
+- `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
+- `plan = executable sequence`: chosen direction to implementable steps.
+
+Lenses may strengthen the selected task, but must not change task responsibility.
+
 ## Lens Selection Rules
 
 - Default to `Lens: none`.
@@ -96,6 +107,7 @@ Common segmentations:
 - Implement a feature from target docs and current code: `plan -> Save Packet -> save draft plan -> review -> Save Packet -> save accepted plan -> external-agent/build -> review`.
 - Move discussion into formal docs: `shape/plan/review -> Save Packet -> save accepted -> sync`.
 - Distill a reference and improve workflow: `explore --lens distill -> Save Packet -> shape -> Save Packet -> save draft -> plan -> build`.
+- Ambiguous what-if or entrypoint selection: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 
 Use stop points before accepted promotion, implementation, and formal docs sync.
 

@@ -1,7 +1,7 @@
 ---
 id: review
 role: reviewer
-purpose: Review behavior, evidence, decisions, plans, diffs, or formal docs alignment in chat.
+purpose: Provide verdicts and gatekeeping for behavior, evidence, decisions, plans, diffs, or formal docs alignment in chat.
 inputs:
   - target_or_claim
 outputs:
@@ -11,7 +11,6 @@ user_selectable_lenses:
   - redteam
   - consistency
   - debug
-  - distill
   - language
   - domain
   - test
@@ -39,12 +38,13 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 ## When To Use
 
-- Use when the user asks whether code, docs, a decision, a plan, a diff, or a behavior claim is reasonable.
+- Use when the user asks whether code, docs, a decision, a plan, a diff, or a behavior claim is reasonable, safe, acceptable, executable, consistent, or ready.
 - Use as a gateway before external-agent implementation and after external-agent diffs.
 
 ## Do Not Use When
 
 - Do not use to create a new direction without evaluation; use `shape`.
+- Do not use for ambiguous what-if, strategy, conceptual, or direction-setting requests unless there is an existing target to judge.
 - Do not use to create implementation steps from an accepted direction; use `plan`.
 - Do not use to perform repository edits; use `build` or the external-agent path after approval.
 - Do not use to write session artifacts; use `save`.
@@ -59,14 +59,16 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 Before reviewing, classify the request:
 
-- `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, or reasonableness.
+- `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, readiness, acceptability, consistency, safety, or reasonableness.
 - `fits_with_preflight`: review verdict depends on code, docs, diff, session evidence, or external plan context. In `Mode: discuss`, run conditional implicit preflight first.
 - `composite`: user asks to review and save; review first, then route to `save`.
 - `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
 - `wrong_task`: user asks to implement steps from an approved direction; recommend `plan` or `build`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
 
-Conditional implicit preflight for `review` only gathers evidence needed for the verdict. It must not become a second full review before the review, must not load templates, and must not write files.
+Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become a second full review before the review, must not load templates, and must not write files.
+
+If evidence is insufficient for a verdict, output `Decision: needs more evidence`, name the missing evidence, and recommend `explore` instead of inventing approval or blocking conclusions.
 
 Review acts as a gateway. Verdicts should recommend next task: `none`, `save`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 
@@ -86,11 +88,15 @@ User-selected lenses:
 
 Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session artifact is accepted, needs revision, blocked, or should be synced to formal docs.
 
+Do not invent a replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions and next task, but it should not become a design synthesis task.
+
 Default review is normal review. Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam`. Otherwise, you may output `Suggested Lens: redteam` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
+
+Lens use must not change task responsibility. `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, and `architecture` may deepen the verdict, but `review` must not become evidence-only `explore`, synthesis-oriented `shape`, or executable `plan`.
 
 For non-trivial reviews, include a readiness dashboard:
 
-- `Decision`: `approved | needs changes | blocked | docs blocked | accepted | revise`
+- `Decision`: `approved | needs changes | needs more evidence | blocked | docs blocked | accepted | revise`
 - `Confidence`: `high | medium | low`
 - `Readiness`: `0-10`
 - `Blocking Gaps`: issues that must be resolved before the next write or implementation step.

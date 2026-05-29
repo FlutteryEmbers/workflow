@@ -73,6 +73,10 @@ Boundary classes:
 
 Recommend the smallest path:
 
+- When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
+- Ambiguous what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests default to `shape`.
+- Evidence-only requests such as reading code, finding entrypoints, checking docs, understanding behavior, or studying references go to `explore`.
+- Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
 - Typical session state flow: `discuss loop -> Save Packet -> save draft -> review -> Save Packet -> save accepted -> build/external-agent -> review -> sync`.
 - New background or staged requirements: `clarify` or `explore` -> `save` to `.session/inbox/**`.
 - Target direction, option, architecture, or concept: `shape` -> `save` to `.session/drafts/**` or `.session/accepted/**`.

@@ -29,6 +29,10 @@ Request: ${input:request:describe the work}
 - Run a lightweight Task Boundary Check before acting.
 - Classify boundary as `fits`, `fits_with_preflight`, `composite`, `wrong_task`, or `missing_prerequisite` when the request is not straightforward.
 - If composite, output segmented prompts with stop points instead of forcing the request into one task.
+- When unsure, start with `shape`.
+- Ambiguous what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests default to `shape`.
+- Evidence-only requests go to `explore`; verdict-only requests go to `review`.
+- Lenses may strengthen the selected task, but must not change task responsibility.
 - Read-only preflight is allowed only in `Mode: discuss`; do not load templates, write files, run implementation, or apply unselected deep lenses during preflight.
 - Implicit preflight defaults to `shape`, `plan`, and `sync`; conditional preflight applies to `review`, `build`, and `explore`; no implicit preflight runs for `clarify` or `route`.
 - Ask for confirmation only when ambiguity would affect file writes, execution, source of truth, or material scope.
