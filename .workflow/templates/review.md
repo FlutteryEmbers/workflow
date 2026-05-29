@@ -1,5 +1,14 @@
 # Review: {{topic}}
 
+## Save Metadata
+
+- Artifact: review
+- Status: {{draft | accepted}}
+- Style: {{audit}}
+- Source: {{recent discussion | existing artifact | diff | file path}}
+- Target: {{.session/...}}
+- Last Updated: {{date}}
+
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
@@ -7,6 +16,14 @@
 ## Review Target
 
 {{code, docs, session decision, external plan, diff, or behavior claim}}
+
+## Discussion Trace
+
+- Trigger: {{why this review exists}}
+- Context Added: {{background that changed the verdict}}
+- Decision Trail: {{initial concern -> evidence -> verdict}}
+- Rejected Options: {{fixes or interpretations rejected}}
+- Open Questions: {{remaining uncertainty}}
 
 ## Decision
 
@@ -18,7 +35,9 @@
 - Readiness: {{0-10}}
 - Blocking Gaps: {{must-fix before next write or implementation}}
 - Non-blocking Gaps: {{can track without blocking}}
-- Recommended Action: {{none | sync | shape | plan | build | external-agent}}
+- Recommended Action: {{none | save | sync | shape | plan | build | external-agent}}
+- Can Promote Source: {{yes/no}}
+- Can Execute Plan: {{yes/no}}
 
 ## Findings
 
@@ -53,4 +72,4 @@ flowchart TD
 
 ## Follow-up
 
-- {{sync, shape, plan, build, external-agent, or none}}
+- {{save, sync, shape, plan, build, external-agent, or none}}

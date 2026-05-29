@@ -30,7 +30,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: recommend sync targets in chat, do not load templates, and do not write files.
 - `Mode: persist`: write only `docs/**` or explicit `src/**/README.md` targets.
-- Reject `.session/**` targets; session files are maintained by the task that produced them.
+- Reject `.session/**` targets; session files are maintained by `save`.
 - `Mode: execute`: not valid for this task.
 
 ## When To Use
@@ -40,7 +40,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 ## Do Not Use When
 
-- Do not use to maintain `.session/**`; use the task that produced the session artifact.
+- Do not use to maintain `.session/**`; use `save`.
 - Do not use to decide whether code or docs are correct; use `review`.
 - Do not use to change source code; use `plan -> build` or the external-agent path.
 
@@ -55,8 +55,7 @@ Before syncing, classify the request:
 
 - `fits`: user asks to align formal docs or code-adjacent README with confirmed source.
 - `fits_with_preflight`: sync depends on checking source, existing docs, code, diff, consistency, reader-facing success criteria, or Formal Docs Rules. In `Mode: discuss`, run default implicit preflight first.
-- `wrong_task`: user asks to save a session note; recommend `clarify` or `explore`.
-- `wrong_task`: user asks to save a session decision, plan, or review; recommend `shape`, `plan`, or `review`.
+- `wrong_task`: user asks to save any session artifact; recommend `save`.
 - `wrong_task`: user asks to change code; recommend `plan -> build` or external-agent.
 - `missing_prerequisite`: `Mode: persist` target is missing or is not `docs/**` or `src/**/README.md`.
 - `missing_prerequisite`: source, target audience, source of truth, or Formal Docs Rules safety is unclear for `docs/**`.
@@ -107,7 +106,7 @@ These Formal Docs Rules are built-in safety, not the `redteam` lens. Do not run 
 
 Use `sync` only for formal docs and code-adjacent README alignment. Inputs may come from `.session/**`, source code, diffs, tests, or existing docs, but outputs are limited to `docs/**` and `src/**/README.md`.
 
-Prefer `.session/accepted/**` as the session-level input source. If the only available source is `.session/drafts/**`, block until the user explicitly confirms that draft as source of truth or routes it through `review` / `shape` / `plan` into `.session/accepted/**`.
+Prefer `.session/accepted/**` as the session-level input source. If the only available source is `.session/drafts/**`, block until the user explicitly confirms that draft as source of truth or routes it through `review` and `save` into `.session/accepted/**`.
 
 ## Output Rules
 

@@ -1,8 +1,25 @@
 # Options
 
+## Save Metadata
+
+- Artifact: option
+- Status: {{draft | accepted}}
+- Style: {{exploration | audit}}
+- Source: {{recent discussion | existing artifact | file path}}
+- Target: {{.session/...}}
+- Last Updated: {{date}}
+
 ## Decision Question
 
 {{what choice is being compared}}
+
+## Discussion Trace
+
+- Trigger: {{why these options were compared}}
+- Context Added: {{background that changed the comparison}}
+- Decision Trail: {{initial option set -> revision -> current recommendation}}
+- Rejected Options: {{compressed list}}
+- Open Questions: {{remaining uncertainty}}
 
 ## Option Map
 

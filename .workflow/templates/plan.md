@@ -1,5 +1,14 @@
 # Plan: {{topic}}
 
+## Save Metadata
+
+- Artifact: plan
+- Status: {{draft | accepted}}
+- Style: {{handoff | audit}}
+- Source: {{recent discussion | existing artifact | file path}}
+- Target: {{.session/...}}
+- Last Updated: {{date}}
+
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
@@ -11,6 +20,19 @@
 ## Target Direction
 
 {{source decision, goal, or target design}}
+
+## Planning Rationale
+
+- Why This Sequence: {{reason}}
+- Rejected Sequencing: {{alternatives and why not}}
+- Open Questions: {{remaining uncertainty}}
+
+## Execution Readiness
+
+- Approved For Build: {{yes/no}}
+- Approved For External Agent: {{yes/no}}
+- Blocking Gaps: {{gap or none}}
+- Draft Warning: {{draft plans are not executable by default}}
 
 ## Success Criteria
 

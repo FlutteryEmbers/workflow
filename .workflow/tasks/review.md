@@ -1,12 +1,12 @@
 ---
 id: review
 role: reviewer
-purpose: Review behavior, evidence, decisions, plans, diffs, or formal docs alignment.
+purpose: Review behavior, evidence, decisions, plans, diffs, or formal docs alignment in chat.
 inputs:
   - target_or_claim
 outputs:
-  - .session/drafts/review_{topic}.md
-  - .session/accepted/review_{topic}.md
+  - chat_review
+  - suggested_save
 user_selectable_lenses:
   - redteam
   - consistency
@@ -31,10 +31,11 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 ## Mode Rules
 
 - Start with an inline `Understanding` unless the request is trivial.
-- `Mode: discuss` is default: review in chat, do not load templates, and do not write files.
+- `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in user-provided order, then give actionable findings.
-- `Mode: persist`: write only the requested `.session/drafts/**` or `.session/accepted/**` target.
-- `Mode: execute`: not valid for this task.
+- Do not load templates and do not write files.
+- If the user asks to save or provides a target, return `Suggested Save` and route the write to `save`.
+- `Mode: execute` is not valid for this task.
 
 ## When To Use
 
@@ -46,12 +47,13 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - Do not use to create a new direction without evaluation; use `shape`.
 - Do not use to create implementation steps from an accepted direction; use `plan`.
 - Do not use to perform repository edits; use `build` or the external-agent path after approval.
+- Do not use to write session artifacts; use `save`.
 - Do not use to update formal docs; use `sync`.
 
 ## Expected Output
 
-- `Mode: discuss`: findings first, then `Decision`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
-- `Mode: persist`: a `.session/drafts/**` draft review or `.session/accepted/**` accepted review verdict.
+- Findings first, then `Decision`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
+- `Suggested Save` when the review should become a draft review or accepted verdict.
 
 ## Task Boundary Check
 
@@ -59,21 +61,14 @@ Before reviewing, classify the request:
 
 - `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, or reasonableness.
 - `fits_with_preflight`: review verdict depends on code, docs, diff, session evidence, or external plan context. In `Mode: discuss`, run conditional implicit preflight first.
+- `composite`: user asks to review and save; review first, then route to `save`.
 - `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
 - `wrong_task`: user asks to implement steps from an approved direction; recommend `plan` or `build`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
-- `missing_prerequisite`: `Mode: persist` lacks a `.session/drafts/**` or `.session/accepted/**` target.
 
 Conditional implicit preflight for `review` only gathers evidence needed for the verdict. It must not become a second full review before the review, must not load templates, and must not write files.
 
-Review acts as a gateway. Verdicts should recommend next task: `none`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
-
-## Persist Templates
-
-- Default: `.workflow/templates/decision.md`
-- Review detail: `.workflow/templates/review.md`
-- With `redteam`: `.workflow/templates/critique.md`
-- With `consistency`: `.workflow/templates/consistency_review.md`
+Review acts as a gateway. Verdicts should recommend next task: `none`, `save`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 
 ## Copilot Add Context
 
@@ -82,11 +77,6 @@ Required:
 - #.workflow/tasks/review.md
 - target source, docs, session decision, external plan, diff, behavior claim, or evidence
 
-For `Mode: persist`:
-
-- Add #.workflow/templates/decision.md or the selected review template.
-- Provide `Target: .session/drafts/review_{topic}.md` for draft reviews, or `Target: .session/accepted/review_{topic}.md` for accepted verdicts.
-
 User-selected lenses:
 
 - Add selected lens files only when the user names them.
@@ -94,9 +84,9 @@ User-selected lenses:
 
 ## Instructions
 
-Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session decision is accepted, needs revision, blocked, or should be synced to formal docs.
+Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session artifact is accepted, needs revision, blocked, or should be synced to formal docs.
 
-Default review is normal review. Only use `.workflow/lenses/redteam.md` and `.workflow/templates/critique.md` when the user explicitly selects `redteam`. Otherwise, you may output `Suggested Lens: redteam` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
+Default review is normal review. Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam`. Otherwise, you may output `Suggested Lens: redteam` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
 
 For non-trivial reviews, include a readiness dashboard:
 
@@ -105,7 +95,7 @@ For non-trivial reviews, include a readiness dashboard:
 - `Readiness`: `0-10`
 - `Blocking Gaps`: issues that must be resolved before the next write or implementation step.
 - `Non-blocking Gaps`: issues that can be tracked without blocking.
-- `Recommended Action`: `none | sync | shape | plan | build | external-agent`.
+- `Recommended Action`: `none | save | sync | shape | plan | build | external-agent`.
 - `Suggested Lens`: `redteam` or `none`.
 
 ## External Plan Audit
@@ -131,14 +121,20 @@ Check for scope drift, unrelated edits, missing edits, missing verification, cha
 
 Treat drive-by refactors and unapproved scope expansion as blocking unless the approved plan explicitly allowed them.
 
-## Output Rules
+## Suggested Save
 
-- In `Mode: discuss`, report findings in chat only.
-- For external plan audit, output `Decision: approved | needs changes | blocked | docs blocked` before detailed findings.
-- For external diff review, compare the diff against the approved plan before broader recommendations.
-- Default draft path: `{WorkflowRoot}/.session/drafts/review_{topic}.md`.
-- Accepted verdict path: `{WorkflowRoot}/.session/accepted/review_{topic}.md`.
-- Formal docs fixes go through `sync`.
+When useful, end with:
+
+```text
+Suggested Save:
+Artifact: review
+Status: draft | accepted
+Style: audit
+Topic: <topic>
+Suggested Target: .session/drafts/review_<topic>.md or .session/accepted/review_<topic>.md
+```
+
+Accepted review verdicts require explicit accepted, approved, or promote intent.
 
 ## User Input
 

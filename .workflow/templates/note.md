@@ -1,5 +1,14 @@
 # Note: {{topic}}
 
+## Save Metadata
+
+- Artifact: note
+- Status: {{inbox | draft | accepted}}
+- Style: {{summary | exploration | audit}}
+- Source: {{recent discussion | user input | file path}}
+- Target: {{.session/...}}
+- Last Updated: {{date}}
+
 ## Purpose
 
 {{why this note exists}}

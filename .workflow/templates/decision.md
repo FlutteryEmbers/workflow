@@ -1,5 +1,14 @@
 # Decision: {{topic}}
 
+## Save Metadata
+
+- Artifact: decision
+- Status: accepted
+- Style: {{summary | constraint | handoff}}
+- Source: {{recent discussion | existing artifact | file path}}
+- Target: {{.session/...}}
+- Last Updated: {{date}}
+
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
@@ -12,6 +21,12 @@
 
 {{draft | active | superseded | synced}}
 
+## Acceptance
+
+- Accepted By: {{user | review | explicit approval}}
+- Accepted From: {{draft artifact or discussion}}
+- Effective Scope: {{where this decision applies}}
+
 ## Context
 
 {{why this decision exists and what inputs it uses}}
@@ -23,6 +38,14 @@
 ## Decision
 
 {{the chosen direction, scope, plan, constraint, handoff, or review decision}}
+
+## Discussion Trace
+
+- Trigger: {{why this decision exists}}
+- Context Added: {{background that changed the decision}}
+- Decision Trail: {{initial direction -> revision -> accepted decision}}
+- Rejected Options: {{compressed list}}
+- Open Questions: {{remaining uncertainty}}
 
 ## Rationale
 

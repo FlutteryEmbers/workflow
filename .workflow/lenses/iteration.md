@@ -21,7 +21,7 @@ Use this lens when work evolves through multi-turn conversation and changing bac
 ## Output Hints
 
 - Keep current goal visible from `.session/goal/**`.
-- Put staged context in `.session/inbox/**`.
-- Put work-in-progress judgments in `.session/drafts/**`.
-- Put accepted session judgments in `.session/accepted/**`.
+- Use `save` for staged context in `.session/inbox/**`.
+- Use `save` for work-in-progress judgments in `.session/drafts/**`.
+- Use `save` for accepted session judgments in `.session/accepted/**` when accepted intent is explicit.
 - Do not sync every iteration; sync formal docs only after a decision is stable enough for `docs/**`.

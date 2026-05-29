@@ -1,5 +1,14 @@
 # Expanded: {{topic}}
 
+## Save Metadata
+
+- Artifact: expanded
+- Status: {{draft | accepted}}
+- Style: {{summary | handoff | audit}}
+- Source: {{recent discussion | existing artifact | file path}}
+- Target: {{.session/...}}
+- Last Updated: {{date}}
+
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}

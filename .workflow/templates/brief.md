@@ -1,5 +1,14 @@
 # Brief
 
+## Save Metadata
+
+- Artifact: brief
+- Status: {{inbox | draft | accepted}}
+- Style: {{summary | exploration}}
+- Source: {{recent discussion | user input | file path}}
+- Target: {{.session/...}}
+- Last Updated: {{date}}
+
 ## Goal
 
 {{what the user wants}}
@@ -27,4 +36,4 @@
 
 ## Suggested Next Step
 
-{{route to explore, shape, plan, build, review, or sync}}
+{{route to explore, shape, plan, save, build, review, or sync}}

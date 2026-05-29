@@ -12,18 +12,11 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
 - Codex may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
-- Load templates only in `Mode: persist`.
+- Load templates only for `save` or `sync` in `Mode: persist`.
 - Treat `.session/**` as working memory, not formal source of truth.
 - Treat `.session/drafts/**` as unapproved working artifacts.
 - Prefer `.session/accepted/**` for approved plans, accepted decisions, and implementation handoffs.
 - Treat `docs/**` as formal project documentation and apply Formal Docs Rules before writing.
-
-## Write Paths
-
-- `workflow-managed`: use Workflow Lite modes and tasks.
-- `external-agent`: use Codex native Plan -> Implement, then audit the plan before implementation and review the diff afterward.
-
-`Mode: execute` is workflow-managed execution through `Task: build`. Codex native Plan -> Implement is `Write Path: external-agent`; it is not `Mode: execute`.
 
 ## Common Paths
 
@@ -46,25 +39,28 @@ Request:
 
 Do not add templates. Do not write files.
 
-### Persist Session Artifact
+### Save Session Artifact
 
-Use when the user wants to save a session artifact.
+Use when the user wants to save a session artifact from recent discussion, an existing draft, or user-provided source.
 
 ```text
 Mode: persist
-Task: <clarify|explore|shape|plan|review>
-Lens: <none or explicit lenses>
-Target: .session/<inbox|drafts|accepted>/<artifact_kind>_{topic}.md
+Task: save
+Artifact: <brief|note|shape|option|plan|review|decision|distillation|expanded|goal>
+Status: <inbox|draft|accepted>
+Style: <summary|exploration|audit|constraint|handoff>
+Topic: <topic>
+Target: <optional for inbox/drafts; explicit for accepted/goal when needed>
 Context:
-- .workflow/tasks/<task>.md
-- .workflow/templates/<template>.md
+- .workflow/tasks/save.md
+- .workflow/templates/<artifact template>.md
 - selected lenses only when named
 - source context
 Request:
-Write the target artifact only.
+Save the distilled artifact only.
 ```
 
-Ordinary `persist` writes only `.session/**`.
+`save` may infer `.session/inbox/**` and `.session/drafts/**`. Accepted artifacts require explicit accepted, approved, or promote intent. Targets outside `.session/**` route to `sync`, `build`, or external-agent.
 
 ### Workflow-Managed Execute
 
@@ -97,7 +93,7 @@ Codex native Plan
 -> review diff
 ```
 
-The native plan is a draft until reviewed. Persist draft handoffs to `.session/drafts/**`; persist accepted handoffs to `.session/accepted/**`.
+The native plan is a draft until reviewed. Persist draft handoffs with `save` to `.session/drafts/**`; persist accepted handoffs with `save` to `.session/accepted/**`.
 
 ### Formal Docs Sync
 
@@ -122,24 +118,6 @@ If the source is only `.session/drafts/**`, require explicit source-of-truth con
 
 ## Copyable Prompts
 
-### Context Summary
-
-```text
-Use .workflow/codex.md as the Codex adapter.
-Mode: discuss
-Task: explore
-Lens: none
-Request:
-Summarize the current state from the provided context. Do not write files.
-
-Return:
-- Current state
-- Relevant files
-- Gaps
-- Unknowns
-- Suggested next workflow task
-```
-
 ### Discuss Direction
 
 ```text
@@ -148,19 +126,21 @@ Mode: discuss
 Task: shape
 Lens: <none or selected lenses>
 Request:
-Discuss the target direction. Include evidence, unknowns, tradeoffs, and a suggested persist target. Do not write files.
+Discuss the target direction. Include evidence, unknowns, tradeoffs, and Suggested Save. Do not write files.
 ```
 
-### Persist Artifact
+### Save Artifact
 
 ```text
 Use .workflow/codex.md as the Codex adapter.
 Mode: persist
-Task: <clarify|explore|shape|plan|review>
-Lens: <none or selected lenses>
-Target: .session/<inbox|drafts|accepted>/<artifact_kind>_{topic}.md
+Task: save
+Artifact: <artifact>
+Status: <inbox|draft|accepted>
+Style: <style>
+Topic: <topic>
 Request:
-Write only the target artifact using the matching template.
+Save the current converged session state. Preserve decision trail, not full transcript.
 ```
 
 ### Native Plan
@@ -170,12 +150,6 @@ Use Codex native Plan phase only. Do not edit files.
 
 Goal:
 <goal>
-
-Context:
-- .session/goal/*
-- relevant .session/inbox/**, .session/drafts/**, .session/accepted/**
-- docs/<relevant>
-- <source files>
 
 Plan requirements:
 - Success criteria
@@ -198,20 +172,7 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this Codex native plan before implementation.
-
-Return:
-Decision: approved | needs changes | blocked | docs blocked
-
-Check:
-- Scope and target files
-- Success criteria
-- Step-by-step verification
-- Source of truth
-- Formal Docs Rules if docs/** is touched
-- Minimal diff risk
-- Open questions
-- Whether the plan exceeds the user's stated intent
+Audit this Codex native plan before implementation. Return approved, needs changes, blocked, or docs blocked.
 ```
 
 ### Bounded Implement
@@ -219,17 +180,7 @@ Check:
 ```text
 Implement only the approved external plan segment below. Do not broaden scope.
 Use minimal diff. Do not perform drive-by refactors, formatting churn, unrelated cleanup, or opportunistic rewrites.
-
-Approved segment:
-<approved segment>
-
-Do not modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved segment.
 Stop and return to plan/review if implementation requires expanding scope.
-
-Report:
-- Changed files
-- Verification run for each major step
-- Anything skipped and why
 ```
 
 ### Diff Review
@@ -241,15 +192,6 @@ Task: review
 Lens: consistency, test
 Request:
 Review the Codex diff against the approved external plan.
-
-Check:
-- Scope drift
-- Missing edits
-- Unrelated edits
-- Missing verification
-- Drive-by refactors
-- Formal Docs Rules issues
-- Required follow-up
 ```
 
 ### Formal Docs Sync
@@ -258,7 +200,6 @@ Check:
 Use .workflow/codex.md as the Codex adapter.
 Mode: persist
 Task: sync
-Lens: <none or selected lenses>
 Target: docs/<area>/<topic>.md
 Source:
 - .session/accepted/<artifact>.md

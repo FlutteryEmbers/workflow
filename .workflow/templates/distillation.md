@@ -1,5 +1,14 @@
 # Distillation: {{source}}
 
+## Save Metadata
+
+- Artifact: distillation
+- Status: {{inbox | draft | accepted}}
+- Style: {{exploration | audit | summary}}
+- Source: {{reference document | folder | discussion}}
+- Target: {{.session/...}}
+- Last Updated: {{date}}
+
 ## Source
 
 {{document, repo, folder, handbook, RFC, ADR, formal docs, or knowledge base}}

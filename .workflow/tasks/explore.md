@@ -1,12 +1,12 @@
 ---
 id: explore
 role: designer
-purpose: Understand code, materials, current behavior, feasibility, or reference structure.
+purpose: Understand code, materials, current behavior, feasibility, or reference structure in chat.
 inputs:
   - question_or_source
 outputs:
-  - .session/inbox/note_{topic}.md
-  - .session/drafts/option_{topic}.md
+  - chat_findings
+  - suggested_save
 user_selectable_lenses:
   - distill
   - strategy
@@ -29,9 +29,10 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Mode Rules
 
 - Start with an inline `Understanding` unless the request is trivial.
-- `Mode: discuss` is default: explain findings in chat, do not load templates, and do not write files.
-- `Mode: persist`: write only the requested `.session/inbox/**` target, or `.session/drafts/option_{topic}.md` when the user asks for structured candidate options.
-- `Mode: execute`: not valid for this task.
+- `Mode: discuss` is default and is the only valid mode for this task.
+- Do not load templates and do not write files.
+- If the user asks to save or provides a target, return `Suggested Save` and route the write to `save`.
+- `Mode: execute` is not valid for this task.
 
 ## When To Use
 
@@ -43,12 +44,13 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to make the final direction decision; use `shape`.
 - Do not use to judge whether a plan, diff, or implementation is acceptable; use `review`.
 - Do not use to create executable steps; use `plan`.
+- Do not use to write session artifacts; use `save`.
 - Do not use to update formal docs; use `sync`.
 
 ## Expected Output
 
-- `Mode: discuss`: facts, evidence, assumptions, unknowns, and suggested next decision.
-- `Mode: persist`: a `.session/inbox/**` note that separates observed facts from assumptions, or a `.session/drafts/option_{topic}.md` candidate set when exploration becomes structured alternatives.
+- Facts, evidence, assumptions, unknowns, and suggested next decision.
+- `Suggested Save` when findings should become an inbox note, option draft, or distillation artifact.
 
 ## Task Boundary Check
 
@@ -56,21 +58,15 @@ Before exploring, classify obvious boundary problems:
 
 - `fits`: user asks to understand code, docs, behavior, feasibility, or reference material.
 - `fits_with_preflight`: request scope is too broad, source is unclear, or the request may actually belong to `review`, `shape`, or `plan`. In `Mode: discuss`, run conditional boundary preflight only.
+- `composite`: user asks to explore and save; explore first, then route to `save`.
 - `wrong_task`: user asks to choose a direction; recommend `shape`.
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
 - `wrong_task`: user asks to judge a target or diff; recommend `review`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
-- `missing_prerequisite`: `Mode: persist` lacks a `.session/inbox/**` target or a structured `.session/drafts/option_{topic}.md` target.
 
 Conditional implicit preflight for `explore` only checks boundary, source, and scope. Do not duplicate exploration inside preflight; once the boundary is clear, proceed with normal explore or recommend the right task.
 
 If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
-
-## Persist Templates
-
-- Default: `.workflow/templates/note.md`
-- With `distill`: `.workflow/templates/distillation.md`
-- With `strategy`: `.workflow/templates/options.md`
 
 ## Copilot Add Context
 
@@ -79,32 +75,27 @@ Required:
 - #.workflow/tasks/explore.md
 - relevant source files, docs, references, or `.session/**` context
 
-For `Mode: persist`:
-
-- Add #.workflow/templates/note.md, or #.workflow/templates/distillation.md / #.workflow/templates/options.md when selected.
-- Provide `Target: .session/inbox/note_{topic}.md` by default.
-- Provide `Target: .session/drafts/option_{topic}.md` only when the output is structured candidate options.
-
 User-selected lenses:
 
-- Add #.workflow/lenses/distill.md only if the user selects `distill`.
-- Add #.workflow/lenses/strategy.md only if the user selects `strategy`.
-- Add #.workflow/lenses/architecture.md only if the user selects `architecture`.
-- Add #.workflow/lenses/debug.md only if the user selects `debug`.
-- Add #.workflow/lenses/language.md only if the user selects `language`.
-- Add #.workflow/lenses/domain.md only if the user selects `domain`.
+- Add selected lens files only when the user names them.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions
 
-Explore enough to reduce uncertainty for the next decision. Separate observed facts from assumptions. Preserve reference-derived structure as session notes first; stable formal documentation should later be handled by `sync`.
+Explore enough to reduce uncertainty for the next decision. Separate observed facts from assumptions. Preserve reference-derived structure in chat until the user chooses `save`.
 
-## Output Rules
+## Suggested Save
 
-- Default persisted path: `{WorkflowRoot}/.session/inbox/note_{topic}.md`.
-- With `distill`, write distillation notes to `.session/inbox/**` unless the user requests a session decision.
-- With structured alternatives, write candidate options to `{WorkflowRoot}/.session/drafts/option_{topic}.md`; drafts are not approved sources for execution.
-- Do not write `docs/**`; use `sync` after a decision is stable.
+When useful, end with:
+
+```text
+Suggested Save:
+Artifact: note | option | distillation
+Status: inbox | draft
+Style: exploration | audit | summary
+Topic: <topic>
+Suggested Target: .session/<inbox|drafts>/<artifact>_<topic>.md
+```
 
 ## User Input
 

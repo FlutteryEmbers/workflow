@@ -44,7 +44,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 
 ## Do Not Use When
 
-- Do not use to perform analysis, planning, review, sync, or implementation itself.
+- Do not use to perform analysis, planning, review, save, sync, or implementation itself.
 - Do not use to apply lenses; only recommend them.
 
 ## Expected Output
@@ -73,10 +73,11 @@ Boundary classes:
 
 Recommend the smallest path:
 
-- Typical session state flow: `goal -> inbox -> drafts -> accepted -> build/external-agent -> review -> sync`.
-- New background or staged requirements: `clarify` or `explore` -> `.session/inbox/**`.
-- Target direction, option, architecture, or concept: `shape` -> `.session/drafts/**`, `.session/accepted/**`, or `.session/goal/**`.
-- Repo-aware implementation sequence or handoff: `plan` -> `.session/drafts/**` or `.session/accepted/**`.
+- Typical session state flow: `discuss loop -> save draft -> review -> save accepted -> build/external-agent -> review -> sync`.
+- New background or staged requirements: `clarify` or `explore` -> `save` to `.session/inbox/**`.
+- Target direction, option, architecture, or concept: `shape` -> `save` to `.session/drafts/**` or `.session/accepted/**`.
+- Repo-aware implementation sequence or handoff: `plan` -> `save` to `.session/drafts/**` or `.session/accepted/**`.
+- Session artifact write: `save` -> `.session/**`.
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
 - Formal documentation alignment: `sync` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute` and an approved plan.
@@ -109,7 +110,7 @@ Target: <only when writing>
 Add Context:
 - .workflow/tasks/<task>.md
 - .workflow/lenses/<lens>.md only when selected
-- .workflow/templates/<template>.md only in Mode: persist
+- .workflow/templates/<template>.md only for `save` or `sync` in Mode: persist
 - .session/goal/*, relevant .session/inbox/**, relevant .session/drafts/**, relevant .session/accepted/**, docs/**, or source files as needed
 Next prompt: <copyable prompt>
 ```

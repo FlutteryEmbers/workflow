@@ -1,5 +1,14 @@
 # Shape: {{topic}}
 
+## Save Metadata
+
+- Artifact: shape
+- Status: {{draft | accepted}}
+- Style: {{exploration | audit | summary}}
+- Source: {{recent discussion | existing artifact | file path}}
+- Target: {{.session/...}}
+- Last Updated: {{date}}
+
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
@@ -22,6 +31,14 @@ flowchart TD
 ## Problem
 
 {{problem or opportunity}}
+
+## Discussion Trace
+
+- Trigger: {{why this artifact exists}}
+- Context Added: {{background that changed the answer}}
+- Decision Trail: {{initial direction -> revision -> current direction}}
+- Rejected Options: {{compressed list}}
+- Open Questions: {{remaining uncertainty}}
 
 ## Reframed Goal
 

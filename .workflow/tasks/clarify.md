@@ -1,12 +1,12 @@
 ---
 id: clarify
 role: analyst
-purpose: Capture staged requirements, background, scope, and acceptance notes.
+purpose: Clarify staged requirements, background, scope, and acceptance notes in chat.
 inputs:
   - user_goal_or_context
 outputs:
-  - .session/inbox/brief_{topic}.md
-  - .session/inbox/note_{topic}.md
+  - chat_clarification
+  - suggested_save
 user_selectable_lenses:
   - iteration
   - language
@@ -26,9 +26,10 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 ## Mode Rules
 
 - Start with an inline `Understanding` unless the request is trivial.
-- `Mode: discuss` is default: clarify in chat, do not load templates, and do not write files.
-- `Mode: persist`: write only the requested `.session/inbox/**` target.
-- `Mode: execute`: not valid for this task.
+- `Mode: discuss` is default and is the only valid mode for this task.
+- Do not load templates and do not write files.
+- If the user asks to save or provides a target, return `Suggested Save` and route the write to `save`.
+- `Mode: execute` is not valid for this task.
 
 ## When To Use
 
@@ -40,32 +41,28 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Do not use to choose a direction; use `shape`.
 - Do not use to evaluate code, docs, plans, or diffs; use `review`.
 - Do not use to produce implementation steps; use `plan`.
+- Do not use to write session artifacts; use `save`.
 - Do not use to update formal docs; use `sync`.
 
 ## Expected Output
 
-- `Mode: discuss`: concise clarified goal, scope, acceptance signals, assumptions, and open questions.
-- `Mode: persist`: a `.session/inbox/**` brief or note that preserves user-provided context without turning it into formal source of truth.
+- Concise clarified goal, scope, acceptance signals, assumptions, and open questions.
+- `Suggested Save` when the clarification should become an inbox artifact.
 
 ## Task Boundary Check
 
 Before clarifying, classify obvious boundary problems:
 
 - `fits`: user is providing goals, staged requirements, scope, assumptions, or acceptance notes.
+- `composite`: user asks to clarify and save; clarify first, then route to `save`.
 - `wrong_task`: user asks to judge code/docs reasonableness; recommend `review`.
 - `wrong_task`: user asks to form a direction or decision; recommend `shape`.
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
-- `missing_prerequisite`: `Mode: persist` lacks a `.session/inbox/**` target.
 
 No implicit preflight runs in `clarify`. Only run Task Boundary Check; do not scan evidence before clarifying.
 
 If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
-
-## Persist Templates
-
-- Default: `.workflow/templates/brief.md`
-- Raw or background-heavy input: `.workflow/templates/note.md`
 
 ## Copilot Add Context
 
@@ -73,11 +70,6 @@ Required:
 
 - #.workflow/tasks/clarify.md
 - user request, existing `.session/goal/*`, or relevant background
-
-For `Mode: persist`:
-
-- Add #.workflow/templates/brief.md for clarified goals or #.workflow/templates/note.md for raw/background-heavy input.
-- Provide `Target: .session/inbox/brief_{topic}.md` or `Target: .session/inbox/note_{topic}.md`.
 
 User-selected lenses:
 
@@ -88,14 +80,20 @@ User-selected lenses:
 
 ## Instructions
 
-Capture the user's goal, staged requirements, background, constraints, non-goals, acceptance signals, and open questions. Keep this as session input, not as formal project documentation.
+Capture the user's goal, staged requirements, background, constraints, non-goals, acceptance signals, and open questions. Keep this as chat output until the user chooses `save`.
 
-## Output Rules
+## Suggested Save
 
-- Default persisted path: `{WorkflowRoot}/.session/inbox/brief_{topic}.md`.
-- Use `{WorkflowRoot}/.session/inbox/note_{topic}.md` for loose background, raw input, or staged material that is not yet a brief.
-- Do not write `docs/**`; use `sync` when a stable formal doc must be updated.
-- Do not treat `.session/**` as source of truth.
+When useful, end with:
+
+```text
+Suggested Save:
+Artifact: brief | note
+Status: inbox
+Style: summary | exploration
+Topic: <topic>
+Suggested Target: .session/inbox/<artifact>_<topic>.md
+```
 
 ## User Input
 

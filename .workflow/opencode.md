@@ -24,7 +24,7 @@ Use this when OpenCode native Plan can draft an implementation plan.
 - Treat the result as a draft external plan.
 - Do not edit files during native Plan.
 - Audit the draft with `review` before implementation.
-- Persist draft handoff plans to `.session/drafts/**`; persist accepted handoff plans to `.session/accepted/**`.
+- Use `save` to persist draft handoff plans to `.session/drafts/**` or accepted handoff plans to `.session/accepted/**`.
 
 ### Level 3: Bounded Implementer
 
@@ -40,6 +40,7 @@ Use this only after an approved narrow plan exists.
 ```text
 OpenCode context summary
 -> workflow review / shape / plan
+-> save draft or accepted handoff when useful
 -> OpenCode bounded implement
 -> workflow diff review
 -> sync formal docs when stable
@@ -54,6 +55,7 @@ Use only the files needed for the current step.
 - `.workflow/tasks/route.md` for choosing a path.
 - `.workflow/tasks/review.md` for plan audit or diff review.
 - `.workflow/tasks/plan.md` for a repo-aware handoff.
+- `.workflow/tasks/save.md` for session artifact persistence.
 - `.workflow/tasks/sync.md` for formal docs or code-adjacent README alignment.
 - `.workflow/lenses/<lens>.md` only when explicitly selected.
 - `.session/goal/*`, relevant `.session/inbox/**`, relevant `.session/drafts/**`, relevant `.session/accepted/**`, `docs/**`, and source files as needed.
@@ -112,6 +114,19 @@ Plan requirements:
 - Rollback or recovery
 - Formal docs impact
 - Open questions
+```
+
+### Save Draft Or Accepted Handoff
+
+```text
+Mode: persist
+Task: save
+Artifact: plan
+Status: draft | accepted
+Style: handoff
+Topic: <topic>
+Request:
+Save the OpenCode handoff plan. Preserve decision trail, not full transcript.
 ```
 
 ### Plan Audit

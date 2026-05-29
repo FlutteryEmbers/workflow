@@ -1,6 +1,6 @@
 ---
 description: Use Workflow Lite with explicit user-selected lenses.
-argument-hint: "Mode=<discuss|persist|execute>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>; Target=<required for persist>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|save|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>; Target=<required for sync/accepted/docs/code; optional for save inbox/drafts>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Prompt
@@ -12,9 +12,9 @@ Use Workflow Lite with progressive context.
 ```text
 Mode: ${input:mode:discuss}
 Write Path: ${input:write_path:workflow-managed|external-agent}
-Task: ${input:task:route|clarify|explore|shape|plan|build|review|sync}
+Task: ${input:task:route|clarify|explore|shape|plan|save|build|review|sync}
 Lens: ${input:lens:none; comma-separated lenses allowed only when explicitly selected}
-Target: ${input:target:required for persist; otherwise none}
+Target: ${input:target:required for sync/accepted/docs/code; optional for save inbox/drafts; otherwise none}
 Plan: ${input:plan:required for execute; otherwise none}
 Request: ${input:request:describe the work}
 ```
@@ -34,12 +34,14 @@ Request: ${input:request:describe the work}
 - Multiple lenses are allowed in `Mode: discuss` only when explicitly listed; follow the user's lens order.
 - Do not infer, auto-apply, or load all lenses.
 - In `Mode: discuss`, do not load templates and do not create or update files.
-- In ordinary `Mode: persist`, load the matching template and write only the requested `.session/**` target.
+- In `Mode: persist`, use `Task: save` for `.session/**` artifacts or `Task: sync` for `docs/**` / `src/**/README.md`.
+- For `save`, `.session/inbox/**` and `.session/drafts/**` targets may be inferred from `Artifact + Status + Topic`.
+- For `save`, `.session/accepted/**` requires explicit accepted, approved, or promote intent.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
 - In `Mode: execute`, require `Task: build` and an approved plan.
 - If using Codex/Copilot native Plan -> Implement, set `Write Path: external-agent`; external-agent is not a Mode.
 - For `Write Path: external-agent`, audit the native plan before implementation and review the diff after implementation.
-- Block instead of writing when `Mode: persist` lacks `Target`, `Mode: execute` lacks `Plan`, the target is outside the mode boundary, or instructions conflict.
+- Block instead of writing when `Mode: execute` lacks `Plan`, the target is outside the mode boundary, or instructions conflict.
 - `docs/**` writes must follow Formal Docs Rules.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
@@ -54,7 +56,7 @@ Request: ${input:request:describe the work}
 ## Context Format
 
 Add the selected task file from `.workflow/tasks/`.
-Add the matching template from `.workflow/templates/` only in `Mode: persist`.
+Add the matching template from `.workflow/templates/` only for `save` or `sync` in `Mode: persist`.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
 Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, `docs/**`, and source files.
 

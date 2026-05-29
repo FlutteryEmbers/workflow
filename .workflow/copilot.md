@@ -6,14 +6,18 @@ Use this file as a manual Add Context menu. Prefer one mode, one task, selected 
 
 ```text
 Mode: <discuss|persist|execute>
-Task: <route|clarify|explore|shape|plan|build|review|sync>
+Task: <route|clarify|explore|shape|plan|save|build|review|sync>
 Lens: <none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>
-Target: <required for persist; otherwise none>
+Artifact: <required for save unless target is explicit>
+Status: <inbox|draft|accepted; for save>
+Style: <summary|exploration|audit|constraint|handoff; optional for save>
+Topic: <file-safe topic; for inferred save target>
+Target: <optional for save inbox/drafts; required for sync and explicit writes>
 Plan: <required for execute; otherwise none>
 Context:
 - #.workflow/tasks/<task>.md
 - #.workflow/lenses/<lens>.md only when selected
-- #.workflow/templates/<template>.md only in Mode: persist
+- #.workflow/templates/<template>.md only for save or sync in Mode: persist
 - #.session/goal/*, relevant .session/inbox/**, relevant .session/drafts/**, relevant .session/accepted/**, docs/**, or source files
 Request:
 <what you want>
@@ -22,7 +26,7 @@ Request:
 ## Mode Rules
 
 - `Mode: discuss` is the default. Add the task, selected lenses, and relevant context. Do not add templates. Do not create or update files.
-- Ordinary `Mode: persist` writes a session artifact. Add the task, matching template, selected lenses, source context, and `.session/**` target.
+- `Task: save` in `Mode: persist` writes session artifacts to `.session/**`.
 - `Task: sync` in `Mode: persist` writes only `docs/**` or explicit `src/**/README.md`.
 - `Mode: execute` applies an approved workflow-managed plan through `Task: build`.
 - Native Codex/Copilot Plan -> Implement is the `external-agent` write path. It is not a Workflow Mode and does not use `Task: build`.
@@ -33,26 +37,36 @@ Request:
 - Multiple lenses are allowed in `Mode: discuss` only when the user explicitly lists them.
 - Copilot may recommend lenses, but must not load or apply them automatically.
 - Copilot may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
-- In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and suggested persist step.
-- In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
-
-## Understanding Check
-
-- Start with an inline `## Understanding` unless the request is trivial.
-- Keep it short: one sentence for simple work, up to three bullets for complex work.
-- Include mode, task, selected lenses, target or plan, and key constraints when relevant.
-- Do not ask for confirmation by default; continue in the same response.
-- Ask before proceeding only when ambiguity would affect file writes, execution, scope, target, plan, or source of truth.
-
-For `Mode: execute`, use `## Execution Understanding` and name the approved plan before changing files.
+- In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and suggested save step.
+- In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple save steps.
 
 ## Write Boundaries
 
 - `discuss`: no writes.
-- Ordinary `persist`: write `.session/**`.
+- `save` persist: write `.session/**`.
 - `sync` persist: write only `docs/**` or `src/**/README.md`.
 - `execute`: may modify broader repository artifacts only when the approved plan says so.
 - `external-agent`: native Plan/Implement may write files directly, but the native plan must be audited before implementation and the diff must be reviewed afterward.
+
+## Save Context
+
+Use this when the user says save, write, generate, update, land, or persist a session artifact.
+
+Add:
+
+- #.workflow/tasks/save.md
+- the matching artifact template from #.workflow/templates/
+- selected #.workflow/lenses/<lens>.md only when named
+- source discussion, source artifact, or relevant context
+
+Target rules:
+
+- `.session/inbox/**` and `.session/drafts/**` may be inferred from `Artifact + Status + Topic`.
+- `.session/accepted/**` requires explicit accepted, approved, or promote intent.
+- `.session/goal/**` requires an explicit target.
+- Explicit `.session/**` targets should be respected even if naming differs from the recommended prefix.
+- `docs/**` or `src/**/README.md` targets route to `sync`.
+- Code, `.workflow/**`, `.github/**`, or other repo artifacts route to `build` or external-agent.
 
 ## Task Boundary Check
 
@@ -66,315 +80,67 @@ Before acting, classify the request when it is not obviously a fit:
 
 If not `fits`, do not force-fit the request.
 
-```text
-Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
-Reason: <one sentence>
-Recommended Path: <task -> task>
-Next Prompt: <copyable prompt>
-```
-
-## Implicit Preflight Vs Segments
-
-Implicit preflight is a same-response, read-only check. It is allowed only in `Mode: discuss` and does not require the user to ask for it explicitly.
-
-Default implicit preflight:
-
-- `shape`: inspect code/docs/session context before forming a direction.
-- `plan`: perform target-to-repo fit before planning.
-- `sync`: check source, audience, source of truth, reader-facing success criteria, Formal Docs Rules, and consistency before recommending docs sync.
-
-Conditional implicit preflight:
-
-- `review`: read evidence only when verdict depends on code/docs/diff/session evidence.
-- `build`: check approved-plan readiness only in `Mode: discuss`.
-- `explore`: check boundary only when scope/source is unclear or the request may belong to `review`, `shape`, or `plan`.
-
-No implicit preflight:
-
-- `clarify`: only run Task Boundary Check.
-- `route`: only route; it may recommend a later task that will run implicit preflight.
-
-Recommended discuss output:
-
-```text
-## Understanding
-...
-
-## Preflight
-Evidence:
-- ...
-Unknowns:
-- ...
-Boundary:
-- ...
-
-## <Task Output>
-...
-```
-
-If evidence is insufficient, stop and output `Recommended Segments`.
-
-Implicit preflight must not load templates, write files, run implementation, run tests, perform sync, apply unselected lenses, or do a full repository scan. In `Mode: persist` and `Mode: execute`, block when prerequisites are missing.
-
-Segments are separate user-executed steps. Use segments for any write, approved plan, external-agent implementation, formal docs sync, or blocker resolution.
-
 ## Composite Task Segmentation
-
-For composite requests, output segmented prompts:
-
-```text
-Recommended Segments:
-1. <segment name>
-   Mode:
-   Task:
-   Lens:
-   Target/Plan:
-   Context:
-   Request:
-   Expected Output:
-   Continue Condition:
-Stop Points:
-- <approval, audit, source-of-truth, Formal Docs Rules, or diff review point>
-```
 
 Common segmentations:
 
-- Judge current code/docs and decide what to do: `review -> shape/plan/sync/build`.
-- Implement a feature from target docs and current code: `plan -> review -> external-agent/build -> review`.
-- Move discussion into formal docs: `shape/plan/review -> sync`.
-- Distill a reference and improve workflow: `explore --lens distill -> shape -> plan -> build`.
+- Judge current code/docs and decide what to do: `review -> shape/plan -> save`.
+- Implement a feature from target docs and current code: `plan -> save draft plan -> review -> save accepted plan -> external-agent/build -> review`.
+- Move discussion into formal docs: `shape/plan/review -> save accepted -> sync`.
+- Distill a reference and improve workflow: `explore --lens distill -> shape -> save draft -> plan -> build`.
 
-### Example: Judge Reasonableness, Then Decide Next Step
+Use stop points before accepted promotion, implementation, and formal docs sync.
 
-```text
-Recommended Segments:
-1. Review current fit
-   Mode: discuss
-   Task: review
-   Lens: consistency, architecture
-   Target/Plan: none
-   Context: docs/**, relevant source files, related .session/drafts/** or .session/accepted/**
-   Request: Judge whether the current implementation is reasonable. Return verdict and evidence.
-   Expected Output: reasonable | partially reasonable | unreasonable | unclear, with next task.
-   Continue Condition: Continue only after the verdict is clear.
-2. Shape or plan next step
-   Mode: discuss
-   Task: shape or plan
-   Lens: strategy or architecture if selected
-   Target/Plan: none
-   Context: review verdict and source context
-   Request: Form the next direction or implementation plan based on the review.
-   Expected Output: recommendation or repo-aware plan.
-   Continue Condition: Continue only after user accepts the direction or plan.
-Stop Points:
-- review verdict
-- plan approval
-```
+## Template Map For Save
 
-### Example: Implement From Target Docs And Current Code
+- `Artifact: brief`: #.workflow/templates/brief.md
+- `Artifact: note`: #.workflow/templates/note.md
+- `Artifact: shape`: #.workflow/templates/shape.md
+- `Artifact: option`: #.workflow/templates/options.md
+- `Artifact: plan`: #.workflow/templates/plan.md
+- `Artifact: review`: #.workflow/templates/review.md
+- `Artifact: decision`: #.workflow/templates/decision.md
+- `Artifact: distillation`: #.workflow/templates/distillation.md
+- `Artifact: expanded`: #.workflow/templates/expanded.md
+- `Artifact: goal`: #.workflow/templates/goal.md
 
-```text
-Recommended Segments:
-1. Plan from target to repo
-   Mode: discuss
-   Task: plan
-   Lens: consistency, architecture, test
-   Target/Plan: none
-   Context: target docs, relevant source files, related .session/drafts/** or .session/accepted/**
-   Request: Produce target-to-repo fit, blockers, implementation sequence, and verification. Do not write files.
-   Expected Output: repo-aware plan or blocker.
-   Continue Condition: Continue only if there are no blockers.
-2. Audit plan
-   Mode: discuss
-   Task: review
-   Lens: redteam, test
-   Target/Plan: none
-   Context: plan and target docs
-   Request: Audit the plan before implementation.
-   Expected Output: approved | needs changes | blocked | docs blocked.
-   Continue Condition: Continue only after approval.
-3. Implement
-   Mode: execute
-   Write Path: workflow-managed | external-agent
-   Task: build for workflow-managed execution
-   Lens: test or debug if selected
-   Target/Plan: approved plan
-   Context: approved plan and target files
-   Request: Implement only the approved plan.
-   Expected Output: changes plus verification.
-   Continue Condition: Continue only after implementation completes.
-4. Review diff
-   Mode: discuss
-   Task: review
-   Lens: consistency, test
-   Target/Plan: approved plan
-   Context: diff and approved plan
-   Request: Review the diff against the approved plan.
-   Expected Output: accept | revise diff | add verification | follow-up.
-Stop Points:
-- blocker in target-to-repo fit
-- plan audit
-- implementation completion
-- diff review
-```
+## Common Scenarios
 
-## Formal Docs Rules
-
-Any write to `docs/**` must name source, target audience, source of truth, and reader-facing success criteria. Preserve existing docs tone and structure when updating. Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, internal redteam-only risks, temporary workarounds, sensitive implementation detail, and not-yet-announced plans. If source, audience, source of truth, reader-facing success criteria, or safety is unclear, output `docs blocked` and do not write `docs/**`.
-
-## Discuss Context
-
-Use this for brainstorming, comparison, critique, route guidance, code explanation, or early planning.
-
-Add:
-
-- #.workflow/tasks/<task>.md
-- selected #.workflow/lenses/<lens>.md only when the user names it
-- relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, `docs/**`, or source files
-
-Do not add:
-
-- #.workflow/templates/**
-
-## Persist Context
-
-Use this when the user says save, write, generate, update, land, or persist a session artifact.
-
-Allowed targets:
-
-- `.session/inbox/**` for `clarify` and `explore`
-- `.session/drafts/**` for candidate shapes, plans, options, and reviews
-- `.session/accepted/**` for accepted decisions, approved plans, and accepted review verdicts
-- `.session/goal/**` for `shape`
-- `docs/**` only for `Task: sync`
-- `src/**/README.md` only for `Task: sync`
-
-If `Target` is missing, propose a target path in chat instead of writing.
-
-## Execute Context
-
-Use this when the user asks to apply an approved workflow-managed plan.
-
-Add:
-
-- #.workflow/tasks/build.md
-- approved plan, preferably `.session/accepted/plan_{topic}.md`
-- target source files, docs, prompts, templates, or workflow artifacts named by the plan
-- selected #.workflow/lenses/test.md or #.workflow/lenses/debug.md only when selected
-
-If an approved plan is missing, do not modify files. Explain what plan is needed.
-
-If the approved plan modifies `docs/**`, it must include a Formal Docs Checklist with source, target audience, source of truth, reader-facing success criteria, existing docs tone/structure, and safety. Otherwise, do not modify `docs/**`; recommend `sync`.
-
-## External Agent Write Path
-
-Use this when Codex/Copilot native Plan -> Implement should edit files directly. Workflow Lite is context, constraints, audit checklist, and diff review.
-
-### 1. Discuss
+### Discuss Direction
 
 ```text
 Mode: discuss
 Task: shape
 Lens: none or selected lenses
-Request:
-Discuss the target direction. Do not write files.
 ```
 
-### 2. Native Plan
+Add #.workflow/tasks/shape.md, selected lenses, and relevant context. Do not add templates.
 
-```text
-Use native Plan phase. Create an implementation plan only; do not edit files.
-Include goal, success criteria, target files, allowed changes, do-not-touch areas, step-by-step verification, risks, stop conditions, rollback, formal docs impact, and open questions.
-```
-
-### 3. Audit Plan
-
-```text
-Mode: discuss
-Task: review
-Lens: redteam, test, architecture
-Request:
-Audit this external plan before implementation. Return approved, needs changes, blocked, or docs blocked.
-```
-
-### 4. Native Implement
-
-```text
-Implement only the approved external plan. Prefer `.session/accepted/**` as the plan source. Use minimal diff. Do not broaden scope, perform drive-by refactors, or modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved plan. Stop and ask for plan/review if scope must expand.
-After each major step, report the verification result requested by the plan.
-```
-
-### 5. Review Diff
-
-```text
-Mode: discuss
-Task: review
-Lens: consistency, test
-Request:
-Review the diff against the approved external plan. Identify scope drift, missing verification, Formal Docs Rules issues, and required follow-up.
-Treat drive-by edits or unapproved scope expansion as blocking unless explicitly approved.
-```
-
-## Task To Template Map
-
-- `clarify`: #.workflow/templates/brief.md or #.workflow/templates/note.md
-- `explore`: #.workflow/templates/note.md; with `distill` use #.workflow/templates/distillation.md; with `strategy` use #.workflow/templates/options.md
-- `shape`: #.workflow/templates/decision.md for compact decisions; use #.workflow/templates/shape.md when goal reframing, PoC wedge, or rejected larger scope matters; for goal updates use #.workflow/templates/goal.md; optional #.workflow/templates/expanded.md
-- `plan`: #.workflow/templates/decision.md or #.workflow/templates/plan.md; with `expand` use #.workflow/templates/expanded.md
-- `review`: #.workflow/templates/decision.md or #.workflow/templates/review.md; with `redteam` use #.workflow/templates/critique.md; with `consistency` use #.workflow/templates/consistency_review.md
-- `sync`: #.workflow/templates/sync.md; for `src/**/README.md` use #.workflow/templates/code_readme.md
-
-## Common Scenarios
-
-### Ask For Usage Guidance
-
-```text
-Mode: discuss
-Task: route
-Lens: none
-```
-
-Add #.workflow/tasks/route.md. Add #.workflow/copilot.md only when the user wants Copilot-specific Add Context guidance.
-
-### Capture A Note
+### Save Draft Shape
 
 ```text
 Mode: persist
-Task: clarify
-Target: .session/inbox/note_{topic}.md
+Task: save
+Artifact: shape
+Status: draft
+Style: exploration
+Topic: graph10x_entrypoints
 ```
 
-Add #.workflow/tasks/clarify.md, #.workflow/templates/note.md, and relevant context.
+Add #.workflow/tasks/save.md and #.workflow/templates/shape.md. Target may be inferred as `.session/drafts/shape_graph10x_entrypoints.md`.
 
-### Persist A Decision
+### Save Accepted Decision
 
 ```text
 Mode: persist
-Task: shape
-Target: .session/accepted/decision_{topic}.md
+Task: save
+Artifact: decision
+Status: accepted
+Style: constraint
+Topic: auth_boundary
 ```
 
-Add #.workflow/tasks/shape.md, #.workflow/templates/decision.md, selected lenses, and source context. For draft shapes, use `Target: .session/drafts/shape_{topic}.md` with #.workflow/templates/shape.md.
-
-### Update Goal
-
-```text
-Mode: persist
-Task: shape
-Target: .session/goal/vision.md
-```
-
-Add #.workflow/tasks/shape.md, #.workflow/templates/goal.md, current goal context, and selected lenses.
-
-### Persist A Plan
-
-```text
-Mode: persist
-Task: plan
-Target: .session/drafts/plan_{topic}.md
-```
-
-Add #.workflow/tasks/plan.md, #.workflow/templates/plan.md or #.workflow/templates/decision.md, source decision, repo context, and selected lenses. Use `Target: .session/accepted/plan_{topic}.md` only after the plan is approved.
+Add #.workflow/tasks/save.md and #.workflow/templates/decision.md. Accepted intent is explicit.
 
 ### Sync Formal Docs
 
@@ -386,17 +152,7 @@ Source:
 - .session/accepted/decision_{topic}.md
 ```
 
-Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant accepted session artifacts, existing docs, and source files. Apply Formal Docs Rules. If using `.session/drafts/**` as source, require explicit source-of-truth confirmation.
-
-### Sync Code-Adjacent README
-
-```text
-Mode: persist
-Task: sync
-Target: src/{area}/README.md
-```
-
-Add #.workflow/tasks/sync.md and #.workflow/templates/code_readme.md.
+Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant accepted session artifacts, existing docs, and source files. Apply Formal Docs Rules.
 
 ### Execute A Plan
 
