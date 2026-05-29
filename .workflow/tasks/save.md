@@ -1,7 +1,7 @@
 ---
 id: save
 role: steward
-purpose: Save distilled session artifacts from discussion, drafts, or user-provided sources.
+purpose: Save high-fidelity structured session artifacts from discussion, drafts, Save Packets, or user-provided sources.
 inputs:
   - artifact
   - status

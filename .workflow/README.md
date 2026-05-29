@@ -74,7 +74,7 @@ Drafts are not approved execution sources. `build` and external-agent implementa
 | `explore` | `designer` | chat | Understand code, materials, behavior, feasibility, or reference structure. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, goal update, or session decision. |
 | `plan` | `designer` | chat | Turn a chosen direction into a repo-aware plan or external-agent handoff. |
-| `save` | `steward` | `.session/**` | Save distilled session artifacts from discussion, drafts, or user-provided sources. |
+| `save` | `steward` | `.session/**` | Save high-fidelity structured session artifacts from discussion, drafts, Save Packets, or user-provided sources. |
 | `build` | `builder` | repository changes | Apply an approved workflow-managed plan. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
 | `sync` | `steward` | `docs/**` or `src/**/README.md` | Align formal docs and code-adjacent README files with confirmed decisions, code, or diffs. |

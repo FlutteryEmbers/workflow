@@ -18,4 +18,6 @@ Use this lens when the user wants to challenge a current option, model, plan, or
 
 ## Output Hints
 
-- Use `.workflow/templates/critique.md`.
+- Use the critique structure in chat when useful.
+- Persist durable critique results through `Save Packet` and `save`, usually as a `review` or `decision` artifact.
+- Do not load `.workflow/templates/critique.md` by default in `Mode: discuss`; templates are for `save` or `sync` persist steps.

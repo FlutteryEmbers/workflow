@@ -67,7 +67,7 @@ Context:
 - selected lenses only when named
 - Save Packet or source context
 Request:
-Save the distilled artifact only.
+Save the high-fidelity structured artifact only.
 ```
 
 `save` may infer `.session/inbox/**` and `.session/drafts/**`. Accepted artifacts require explicit accepted, approved, or promote intent. Targets outside `.session/**` route to `sync`, `build`, or external-agent.
