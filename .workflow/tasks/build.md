@@ -57,6 +57,7 @@ Before building, classify the request:
 - `fits`: `Mode: execute` includes an approved plan and requested edits stay inside that plan.
 - `fits_with_preflight`: in `Mode: discuss`, user asks whether a plan is ready to build; run conditional implicit preflight for approved-plan readiness only.
 - `missing_prerequisite`: approved `Plan` is missing, unclear, not approved, or points only to `.session/drafts/**` without explicit approval.
+- `missing_prerequisite`: approved `Plan` points to `notes/**`; disposable exploration notes are not approved execution sources.
 - `composite`: user asks to implement from target docs/current code without an approved plan; recommend `plan -> review -> external-agent/build -> review`.
 - `wrong_task`: user asks to save session artifacts; recommend `save`.
 - `wrong_task`: user asks to update formal docs; recommend `sync`.
@@ -93,6 +94,8 @@ Do not treat native Plan/Implement output as workflow-managed execution unless t
 
 Do not execute `.session/drafts/**` by default. Draft plans are intermediate working memory; they must be promoted to `.session/accepted/plan_{topic}.md` or explicitly approved by the user, ideally after `review`.
 
+Do not execute `notes/**`. Exploration notes are disposable working memory and must be converted into an approved plan under `.session/accepted/**` or explicitly approved through a reviewed external-agent plan before implementation.
+
 Build may update code, docs, prompts, templates, or workflow artifacts only when the approved plan explicitly names them. Do not modify `.workflow/**`, `.session/**`, `docs/**`, or `src/**/README.md` unless the approved plan names those targets.
 
 When writing `docs/**`, the approved plan must explicitly name the docs targets and include a Formal Docs Checklist: source, target audience, source of truth, reader-facing success criteria, existing docs tone/structure, and safety. If the checklist is missing, do not modify `docs/**`; recommend `sync`.
@@ -109,6 +112,7 @@ When writing `docs/**`, the approved plan must explicitly name the docs targets 
 - Session working memory lives in `.session/**` and should be updated by `save`, not `build`.
 - `.session/accepted/**` is the preferred session-level source for approved build input.
 - `.session/drafts/**` is not executable by default.
+- `notes/**` is disposable exploration memory and is not executable by default.
 - Code-adjacent README updates live in `src/**/README.md` and require an explicit approved plan.
 - Formal docs live in `docs/**` and require an approved-plan Formal Docs Checklist; otherwise route to `sync`.
 

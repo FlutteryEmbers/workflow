@@ -1,5 +1,14 @@
 # Note: {{topic}}
 
+<!-- Optional for explicit `Target: notes/**` disposable exploration notes:
+---
+status: active | parked | discarded | promoted
+source: chat | script | code | external
+updated: {{date}}
+promoted_to: {{path or none}}
+---
+-->
+
 ## Save Metadata
 
 - Artifact: note
@@ -46,4 +55,4 @@
 
 - {{docs path or none}}
 
-> Inbox notes are working memory under `.session/inbox/**`. They are not formal source of truth.
+> Inbox notes are working memory under `.session/inbox/**`. Explicit `notes/**` targets are disposable exploration notes. Neither is formal source of truth.

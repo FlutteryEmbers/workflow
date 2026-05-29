@@ -31,6 +31,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - `Mode: discuss` is default: recommend sync targets in chat, do not load templates, and do not write files.
 - `Mode: persist`: write only `docs/**` or explicit `src/**/README.md` targets.
 - Reject `.session/**` targets; session files are maintained by `save`.
+- Reject `notes/**` targets; disposable exploration notes are maintained by `save`.
 - `Mode: execute`: not valid for this task.
 
 ## When To Use
@@ -41,6 +42,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 ## Do Not Use When
 
 - Do not use to maintain `.session/**`; use `save`.
+- Do not use to maintain `notes/**`; use `save`.
 - Do not use to decide whether code or docs are correct; use `review`.
 - Do not use to change source code; use `plan -> build` or the external-agent path.
 
@@ -58,6 +60,7 @@ Before syncing, classify the request:
 - `wrong_task`: user asks to save any session artifact; recommend `save`.
 - `wrong_task`: user asks to change code; recommend `plan -> build` or external-agent.
 - `missing_prerequisite`: `Mode: persist` target is missing or is not `docs/**` or `src/**/README.md`.
+- `wrong_task`: target is `notes/**`; recommend `save` because exploration notes are not formal docs.
 - `missing_prerequisite`: source, target audience, source of truth, or Formal Docs Rules safety is unclear for `docs/**`.
 - `missing_prerequisite`: source is only `.session/drafts/**` and the user has not explicitly confirmed it as source of truth.
 
@@ -113,6 +116,7 @@ Prefer `.session/accepted/**` as the session-level input source. If the only ava
 - Formal docs go to `{WorkflowRoot}/docs/**`.
 - Code-adjacent README files go to `src/**/README.md`.
 - Do not write `.session/**`.
+- Do not write `notes/**`.
 - Default formal docs source from session is `.session/accepted/**`; drafts require explicit source-of-truth confirmation.
 - With `consistency`, sync only confirmed drift. If code may be wrong, route to `plan -> build` or external-agent implementation; if intent is unclear, route to `shape`.
 - With `architecture`, formal constraints go to `docs/architecture/boundaries.md` or a user-specified docs target.

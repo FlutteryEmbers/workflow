@@ -13,6 +13,8 @@ The workflow system belongs in `.workflow/`. Session artifacts belong in `.sessi
 
 Use `save` for high-fidelity session artifacts from `Save Packet`, `sync` for formal docs / code-adjacent README, and `build` for approved repository changes.
 
+Exploration repos may use explicit `notes/**` targets for disposable exploration notes. Formal project docs remain `docs/**`.
+
 Read [.workflow/README.md](.workflow/README.md) for the full workflow guide.
 Read [.workflow/codex.md](.workflow/codex.md) when using Codex manually.
 Read [.workflow/opencode.md](.workflow/opencode.md) when using OpenCode.

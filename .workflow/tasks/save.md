@@ -15,6 +15,7 @@ outputs:
   - .session/inbox/{artifact}_{topic}.md
   - .session/drafts/{artifact}_{topic}.md
   - .session/accepted/{artifact}_{topic}.md
+  - notes/{topic}.md
 user_selectable_lenses:
   - iteration
   - language
@@ -43,6 +44,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - Use after `clarify`, `explore`, `shape`, `plan`, or `review` discussion when the user wants to save a session artifact.
 - Use to update an existing `.session/**` artifact with newer discussion, review feedback, or user corrections.
 - Use to promote a draft to `.session/accepted/**` only when the user explicitly says accepted, approved, promote, or equivalent.
+- Use to write disposable exploration notes only when the user explicitly provides `Target: notes/**`.
 
 ## Do Not Use When
 
@@ -59,6 +61,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - `Topic`: short file-safe topic.
 - `Source`: `Save Packet`, recent discussion, existing artifact, user input, file path, or selected context.
 - `Target`: optional for `.session/inbox/**` and `.session/drafts/**`; explicit for `.session/accepted/**` unless accepted intent is already clear.
+- `Target: notes/**`: explicit only; used for disposable exploration notes.
 
 Canonical fields:
 
@@ -99,14 +102,28 @@ Saved artifacts must be more structured than chat without losing the reasoning n
 - Infer `.session/inbox/{artifact}_{topic}.md` for `Status: inbox`.
 - Infer `.session/drafts/{artifact}_{topic}.md` for `Status: draft`.
 - Infer `.session/accepted/{artifact}_{topic}.md` only when accepted intent is explicit.
+- Never infer `notes/**`. Write `notes/**` only when the user explicitly provides that target.
 - Write `.session/goal/**` only when the user explicitly provides that target.
 - Respect explicit `.session/**` targets even when the file name does not follow the recommended prefix; include a naming note instead of blocking.
+
+## Exploration Notes Rule
+
+`notes/**` is disposable exploration memory for lightweight exploration repos or one-off exploratory work.
+
+- `save` may write `notes/**` only when `Target: notes/**` is explicit.
+- `notes/**` is not formal docs and does not use Formal Docs Rules.
+- `notes/**` is not an approved execution source and must not be treated as an accepted plan.
+- `notes/**` may be overwritten, deleted, parked, discarded, or promoted later.
+- Useful conclusions from `notes/**` should be promoted through normal workflow: save to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed reader-facing material to `docs/**`.
+- Optional note metadata may be used when helpful: `status`, `source`, `updated`, `promoted_to`.
+- `notes/**` is suitable for `Artifact: brief | note | shape | option | review | distillation | expanded`; do not use it for accepted plans or formal docs.
 
 ## Explicit Target Override
 
 If the user explicitly provides a target path, respect it unless it violates write safety, lacks required prerequisites, or belongs to another write boundary.
 
 - `.session/**`: `save` may write it when the request is a session artifact.
+- `notes/**`: `save` may write it only as an explicit disposable exploration note target.
 - `docs/**` or `src/**/README.md`: route to `sync` and require Formal Docs Rules.
 - Source code, `.workflow/**`, `.github/**`, or other repository artifacts: route to `build` or external-agent with an approved plan.
 
@@ -130,12 +147,13 @@ If the user explicitly provides a target path, respect it unless it violates wri
 
 ## Output Rules
 
-- Write only the target session artifact.
+- Write only the target session artifact or explicit `notes/**` exploration note.
 - Add `Save Metadata` to the artifact.
 - Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
 - Draft artifacts are not approved execution sources.
 - Accepted artifacts are session-level accepted sources, but formal long-term docs still go through `sync`.
 - The saved artifact should be denser and more durable than chat. It must not be a low-context bullet summary when detailed reasoning is available.
+- For `notes/**`, compact or standard depth is acceptable. Preserve useful conclusion, evidence, and next use, but do not treat the note as an accepted artifact.
 
 ## User Input
 

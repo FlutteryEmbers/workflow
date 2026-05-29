@@ -44,6 +44,8 @@ Request: ${input:request:describe the work}
 - In `Mode: persist`, use `Task: save` for `.session/**` artifacts or `Task: sync` for `docs/**` / `src/**/README.md`.
 - For `save`, `.session/inbox/**` and `.session/drafts/**` targets may be inferred from `Artifact + Status + Topic`.
 - For `save`, `.session/accepted/**` requires explicit accepted, approved, or promote intent.
+- For `save`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
+- `notes/**` is not formal docs and is not an approved execution source.
 - For `save`, preserve decision-relevant reasoning, not full transcript. Use `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact output.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
 - In `Mode: execute`, require `Task: build` and an approved plan.

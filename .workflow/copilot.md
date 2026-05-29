@@ -55,7 +55,7 @@ Lenses may strengthen the selected task, but must not change task responsibility
 ## Write Boundaries
 
 - `discuss`: no writes.
-- `save` persist: write `.session/**`.
+- `save` persist: write `.session/**` or explicit `notes/**` disposable exploration notes.
 - `sync` persist: write only `docs/**` or `src/**/README.md`.
 - `execute`: may modify broader repository artifacts only when the approved plan says so.
 - `external-agent`: native Plan/Implement may write files directly, but the native plan must be audited before implementation and the diff must be reviewed afterward.
@@ -77,6 +77,7 @@ Target rules:
 - `.session/accepted/**` requires explicit accepted, approved, or promote intent.
 - `.session/goal/**` requires an explicit target.
 - Explicit `.session/**` targets should be respected even if naming differs from the recommended prefix.
+- Explicit `notes/**` targets are allowed for disposable exploration notes. Never infer `notes/**`.
 - `docs/**` or `src/**/README.md` targets route to `sync`.
 - Code, `.workflow/**`, `.github/**`, or other repo artifacts route to `build` or external-agent.
 
@@ -86,6 +87,14 @@ Content fidelity:
 - Preserve decision-relevant reasoning, not full transcript.
 - Keep context, key facts, reasoning trail, rejected options, risks, examples, and next use when they affect later work.
 - Use `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact output.
+- For `notes/**`, compact or standard depth is enough unless the user asks for more detail.
+
+Exploration notes:
+
+- `notes/**` is disposable exploration memory, not formal docs.
+- `notes/**` is not an approved source for build or external-agent implementation.
+- Stable conclusions should later be saved to `.session/**` or synced to `docs/**`.
+- If `notes/**` grows beyond five active notes, suggest an optional `notes/INDEX.md`.
 
 ## Task Boundary Check
 
@@ -149,6 +158,20 @@ Topic: graph10x_entrypoints
 ```
 
 Add #.workflow/tasks/save.md and #.workflow/templates/shape.md. Target may be inferred as `.session/drafts/shape_graph10x_entrypoints.md`.
+
+### Save Exploration Note
+
+```text
+Mode: persist
+Task: save
+Artifact: note
+Status: inbox
+Intent: exploration
+Depth: compact | standard
+Target: notes/graph10x.md
+```
+
+Add #.workflow/tasks/save.md and #.workflow/templates/note.md. `notes/**` must be explicit and remains disposable exploration memory.
 
 ### Save Accepted Decision
 

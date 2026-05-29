@@ -34,6 +34,7 @@ graph TD
 - `.session/accepted`: accepted session-level conclusions such as decisions, approved plans, and accepted review verdicts.
 - `save`: the only task that writes session artifacts.
 - `docs`: formal project documentation maintained by the host project.
+- `notes`: optional disposable exploration notes for lightweight exploration repos when explicitly targeted.
 - `src/**/README.md`: optional code-adjacent reading entrypoint.
 
 ## Session Structure
@@ -137,11 +138,13 @@ Composite requests should return segmented prompts with stop points. Do not sile
 Discussion tasks do not write files. They should end with `Save Packet` when the current output is worth preserving, or `Save Packet: none` when it is not.
 
 - `save` writes `.session/**`.
+- `save` may also write explicit `notes/**` disposable exploration notes.
 - `save` consumes `Save Packet`, recent discussion, existing artifacts, or source files.
 - `save` can infer targets for `.session/inbox/**` and `.session/drafts/**`.
 - `.session/accepted/**` requires explicit accepted, approved, or promote intent.
 - Explicit `.session/**` targets are respected even when the file name does not follow the recommended prefix.
-- Targets outside `.session/**` are routed instead of rejected: `docs/**` and `src/**/README.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
+- `notes/**` must be explicit and is never inferred.
+- Targets outside `.session/**` and `notes/**` are routed instead of rejected: `docs/**` and `src/**/README.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
 
 Saved artifacts preserve decision-relevant reasoning, not full transcript. They should be more structured than chat without dropping useful context, evidence, tradeoffs, rejected options, examples, risks, open questions, or next use.
 
@@ -151,6 +154,18 @@ Saved artifacts preserve decision-relevant reasoning, not full transcript. They 
 - `Depth`: `compact | standard | detailed`.
 
 Default depth is `standard` for `brief` and `note`, and `detailed` for `shape`, `option`, `plan`, `review`, `decision`, `distillation`, and `expanded`.
+
+## Exploration Notes
+
+`notes/**` is a lightweight convention for exploration repos or one-off exploratory work.
+
+- Use `Target: notes/{topic}.md` only when the user explicitly wants a disposable exploration note.
+- `notes/**` is not formal docs and does not use Formal Docs Rules.
+- `notes/**` is not an approved source for `build` or external-agent implementation.
+- `save` must not infer `notes/**`; default save inference remains `.session/inbox/**` or `.session/drafts/**`.
+- Useful conclusions from `notes/**` should be promoted through normal workflow: save to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed reader-facing material to `docs/**`.
+- `notes/INDEX.md` is optional. Consider it only when there are more than five active notes.
+- Optional note metadata can track `status`, `source`, `updated`, and `promoted_to`.
 
 ## Implicit Preflight
 
@@ -208,6 +223,7 @@ Any write to `docs/**` must:
 - Usage guidance: `route`.
 - Stage requirements or background: `clarify -> save -> .session/inbox/**`.
 - Explore code or reference material: `explore -> save -> .session/inbox/**` or `.session/drafts/option_*.md`.
+- Disposable exploration note: `save -> notes/{topic}.md` only with explicit target.
 - Shape a direction or goal: `shape -> save -> .session/drafts/**` or `.session/accepted/**`.
 - Ambiguous what-if or strategy: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 - Existing target reasonableness: `review`, then `shape` or `plan` only if revision is needed.

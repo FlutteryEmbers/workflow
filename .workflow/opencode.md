@@ -15,6 +15,12 @@ Task shortcut:
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = executable sequence`: chosen direction to implementable steps.
 
+Exploration notes:
+
+- Explicit `notes/**` targets may be saved as disposable exploration notes through `Task: save`.
+- Do not treat `notes/**` as formal docs or approved implementation plans.
+- Do not use OpenCode bounded implement from `notes/**`; promote useful conclusions into `.session/**` or create an approved external plan first.
+
 ## Usage Levels
 
 ### Level 1: Context Helper
@@ -68,6 +74,7 @@ Use only the files needed for the current step.
 - `.workflow/tasks/sync.md` for formal docs or code-adjacent README alignment.
 - `.workflow/lenses/<lens>.md` only when explicitly selected.
 - `.session/goal/*`, relevant `.session/inbox/**`, relevant `.session/drafts/**`, relevant `.session/accepted/**`, `docs/**`, and source files as needed.
+- explicit `notes/**` only when saving disposable exploration notes.
 
 Do not load all tasks or all lenses by default.
 
@@ -139,6 +146,20 @@ Request:
 Save the OpenCode handoff plan. Preserve decision-relevant reasoning, not full transcript.
 ```
 
+### Save Exploration Note
+
+```text
+Mode: persist
+Task: save
+Artifact: note
+Status: inbox
+Intent: exploration
+Depth: compact | standard
+Target: notes/<topic>.md
+Request:
+Save this as a disposable exploration note. Do not treat it as formal docs or an approved source.
+```
+
 ### Plan Audit
 
 ```text
@@ -172,6 +193,7 @@ Approved segment:
 <approved segment>
 
 Do not modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved segment.
+Do not use notes/** as the approved segment; notes are disposable exploration memory.
 Stop and return to plan/review if implementation requires expanding scope.
 
 Report:

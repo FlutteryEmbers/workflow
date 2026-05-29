@@ -17,6 +17,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Treat `.session/**` as working memory, not formal source of truth.
 - Treat `.session/drafts/**` as unapproved working artifacts.
 - Prefer `.session/accepted/**` for approved plans, accepted decisions, and implementation handoffs.
+- Treat explicit `notes/**` targets as disposable exploration notes, not formal docs or approved sources.
 - Treat `docs/**` as formal project documentation and apply Formal Docs Rules before writing.
 - Lenses may strengthen the selected task, but must not change task responsibility.
 
@@ -70,9 +71,11 @@ Request:
 Save the high-fidelity structured artifact only.
 ```
 
-`save` may infer `.session/inbox/**` and `.session/drafts/**`. Accepted artifacts require explicit accepted, approved, or promote intent. Targets outside `.session/**` route to `sync`, `build`, or external-agent.
+`save` may infer `.session/inbox/**` and `.session/drafts/**`. Accepted artifacts require explicit accepted, approved, or promote intent. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. Targets outside `.session/**` and `notes/**` route to `sync`, `build`, or external-agent.
 
 Use `Save Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, reasoning trail, rejected options, risks, examples, and next use when they affect later work.
+
+`notes/**` is not an approved execution source. Stable conclusions should be promoted through normal workflow into `.session/**` or `docs/**`.
 
 ### Workflow-Managed Execute
 
@@ -154,6 +157,21 @@ Depth: <compact|standard|detailed>
 Topic: <topic>
 Request:
 Save the current converged session state. Preserve decision-relevant reasoning, not full transcript.
+```
+
+### Save Exploration Note
+
+```text
+Use .workflow/codex.md as the Codex adapter.
+Mode: persist
+Task: save
+Artifact: note
+Status: inbox
+Intent: exploration
+Depth: compact | standard
+Target: notes/<topic>.md
+Request:
+Save this as a disposable exploration note. Do not treat it as formal docs or an approved source.
 ```
 
 ### Native Plan
