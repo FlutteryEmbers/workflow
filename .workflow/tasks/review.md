@@ -1,7 +1,7 @@
 ---
 id: review
 role: reviewer
-purpose: Provide verdicts and gatekeeping for behavior, evidence, decisions, plans, diffs, or formal docs alignment in chat.
+purpose: Provide verdicts and gatekeeping for behavior, evidence, decisions, plans, diffs, source-of-truth, or project docs alignment in chat.
 inputs:
   - target_or_claim
 outputs:
@@ -48,7 +48,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - Do not use to create implementation steps from an accepted direction; use `plan`.
 - Do not use to perform repository edits; use `build` or the external-agent path after approval.
 - Do not use to write session artifacts; use `save`.
-- Do not use to update formal docs; use `sync`.
+- Do not use to update project docs; use `sync`.
 
 ## Expected Output
 
@@ -64,7 +64,7 @@ Before reviewing, classify the request:
 - `composite`: user asks to review and save; review first, then route to `save`.
 - `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
 - `wrong_task`: user asks to implement steps from an approved direction; recommend `plan` or `build`.
-- `wrong_task`: user asks to update formal docs; recommend `sync`.
+- `wrong_task`: user asks to update project docs; recommend `sync`.
 
 Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become a second full review before the review, must not load templates, and must not write files.
 
@@ -86,7 +86,7 @@ User-selected lenses:
 
 ## Instructions
 
-Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session artifact is accepted, needs revision, blocked, or should be synced to formal docs.
+Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session artifact is accepted, needs revision, blocked, or should be synced to code-aligned project docs.
 
 Do not invent a replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions and next task, but it should not become a design synthesis task.
 
@@ -113,7 +113,7 @@ Decision values:
 - `approved`: safe to implement as written.
 - `needs changes`: direction is valid but the plan needs edits.
 - `blocked`: critical scope, safety, verification, or source-of-truth information is missing.
-- `docs blocked`: the plan touches formal docs and source, audience, source of truth, or Formal Docs Rules are unclear.
+- `docs blocked`: the target touches project docs and source, future use, source of truth, or Project Docs Rules are unclear.
 
 Check scope, target files, do-not-touch areas, interface or data changes, verification, rollback, open questions, and whether the plan exceeds the user's stated intent.
 
@@ -121,9 +121,9 @@ Also check that success criteria are explicit, every major step has a verificati
 
 ## External Diff Review
 
-Use this in discuss mode after native external-agent implementation. Compare the diff against the approved external plan and Formal Docs Rules.
+Use this in discuss mode after native external-agent implementation. Compare the diff against the approved external plan and Project Docs Rules.
 
-Check for scope drift, unrelated edits, missing edits, missing verification, changed files outside the approved target list, and unsafe formal docs content.
+Check for scope drift, unrelated edits, missing edits, missing verification, changed files outside the approved target list, and unsafe or misleading project docs content.
 
 Treat drive-by refactors and unapproved scope expansion as blocking unless the approved plan explicitly allowed them.
 

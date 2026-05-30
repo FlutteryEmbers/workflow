@@ -48,7 +48,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 ## Do Not Use When
 
-- Do not write formal docs; use `sync` for `docs/**` and `src/**/README.md`.
+- Do not write project docs; use `sync` for `docs/**` and `src/**/README.md`.
 - Do not modify source code, `.workflow/**`, `.github/**`, or other repository artifacts; use `build` or external-agent.
 - Do not save full transcripts by default.
 
@@ -111,12 +111,12 @@ Saved artifacts must be more structured than chat without losing the reasoning n
 `notes/**` is disposable exploration memory for lightweight exploration repos or one-off exploratory work.
 
 - `save` may write `notes/**` only when `Target: notes/**` is explicit.
-- `notes/**` is not formal docs and does not use Formal Docs Rules.
+- `notes/**` is not project docs and does not use Project Docs Rules.
 - `notes/**` is not an approved execution source and must not be treated as an accepted plan.
 - `notes/**` may be overwritten, deleted, parked, discarded, or promoted later.
-- Useful conclusions from `notes/**` should be promoted through normal workflow: save to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed reader-facing material to `docs/**`.
+- Useful conclusions from `notes/**` should be promoted through normal workflow: save to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed project context to `docs/**`.
 - Optional note metadata may be used when helpful: `status`, `source`, `updated`, `promoted_to`.
-- `notes/**` is suitable for `Artifact: brief | note | shape | option | review | distillation | expanded`; do not use it for accepted plans or formal docs.
+- `notes/**` is suitable for `Artifact: brief | note | shape | option | review | distillation | expanded`; do not use it for accepted plans or project docs.
 
 ## Explicit Target Override
 
@@ -124,7 +124,7 @@ If the user explicitly provides a target path, respect it unless it violates wri
 
 - `.session/**`: `save` may write it when the request is a session artifact.
 - `notes/**`: `save` may write it only as an explicit disposable exploration note target.
-- `docs/**` or `src/**/README.md`: route to `sync` and require Formal Docs Rules.
+- `docs/**` or `src/**/README.md`: route to `sync` and require Project Docs Rules.
 - Source code, `.workflow/**`, `.github/**`, or other repository artifacts: route to `build` or external-agent with an approved plan.
 
 ## Conversation Handling
@@ -151,7 +151,7 @@ If the user explicitly provides a target path, respect it unless it violates wri
 - Add `Save Metadata` to the artifact.
 - Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
 - Draft artifacts are not approved execution sources.
-- Accepted artifacts are session-level accepted sources, but formal long-term docs still go through `sync`.
+- Accepted artifacts are session-level accepted sources, but code-aligned project docs still go through `sync`.
 - The saved artifact should be denser and more durable than chat. It must not be a low-context bullet summary when detailed reasoning is available.
 - For `notes/**`, compact or standard depth is acceptable. Preserve useful conclusion, evidence, and next use, but do not treat the note as an accepted artifact.
 

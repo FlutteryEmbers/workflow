@@ -48,9 +48,9 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use only to collect raw context; use `clarify` or `explore`.
 - Do not use to judge whether existing code/docs/plan are reasonable; use `review`.
 - Do not use when the direction is fixed and the user needs executable steps; use `plan`.
-- Do not use to approve a plan, code change, diff, formal docs update, or accepted artifact; use `review`.
+- Do not use to approve a plan, code change, diff, project docs update, or accepted artifact; use `review`.
 - Do not use to write session artifacts; use `save`.
-- Do not use to update formal docs directly; use `sync`.
+- Do not use to update project docs directly; use `sync`.
 
 ## Expected Output
 
@@ -63,7 +63,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 Before shaping, classify the request:
 
 - `fits`: user asks to form a direction, concept, architecture, strategy, what-if recommendation, goal update, or session decision.
-- `fits_with_preflight`: user asks to shape based on current code, formal docs, session context, external tools, references, repository fit, architecture entrypoints, implementation entrypoints, or how to start. In `Mode: discuss`, run default implicit preflight first, then shape.
+- `fits_with_preflight`: user asks to shape based on current code, project docs, session context, external tools, references, repository fit, architecture entrypoints, implementation entrypoints, or how to start. In `Mode: discuss`, run default implicit preflight first, then shape.
 - `composite`: user asks to shape and save; shape first, then route to `save`.
 - `wrong_task`: user only asks whether current code/docs are reasonable; recommend `review`.
 - `wrong_task`: user has a fixed target and wants implementation steps; recommend `plan`.

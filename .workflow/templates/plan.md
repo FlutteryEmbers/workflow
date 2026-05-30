@@ -1,8 +1,9 @@
-# Plan: {{topic}}
+# Plan
 
 ## Save Metadata
 
 - Artifact: plan
+- Topic: {{topic}}
 - Status: {{draft | accepted}}
 - Intent: {{handoff | decision | audit}}
 - Depth: {{detailed}}
@@ -16,7 +17,8 @@
 
 ## Decision Link
 
-{{.session/drafts/plan_{topic}.md or .session/accepted/plan_{topic}.md}}
+- Draft plan: `.session/drafts/plan_<topic>.md`
+- Accepted plan: `.session/accepted/plan_<topic>.md`
 
 ## Target Direction
 
@@ -24,7 +26,7 @@
 
 ## Source Context
 
-- {{accepted decision, draft shape, goal file, formal doc, code path, or user correction}}
+- {{accepted decision, draft shape, goal file, project doc, code path, or user correction}}
 
 ## Inputs
 
@@ -133,16 +135,25 @@ flowchart TD
 
 - {{docs path or none}}
 
-## Formal Docs Checklist
+## Docs Follow-up
+
+{{include only when the plan clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context}}
+
+- Impact: {{none | suggested | required}}
+- Target: {{docs/** path or none}}
+- Reason: {{why future human/agent execution could be misled without docs update}}
+- Suggested Sync: {{sync prompt or none}}
+
+## Project Docs Conditions
 
 {{required only when the approved plan allows direct docs/** edits; otherwise use sync}}
 
 - Source: {{source material}}
-- Target Audience: {{reader}}
+- Future Use: {{how the doc guides future human/agent work}}
 - Source Of Truth: {{confirmed source}}
-- Reader-Facing Success Criteria: {{what the reader should understand or do}}
-- Existing Docs Tone / Structure: {{preserve or describe intended change}}
-- Safety: {{session-only residue and unsafe details removed}}
+- Future-Use Success Criteria: {{what future work should understand or avoid}}
+- Existing Docs Structure: {{preserve or describe intended change}}
+- Safety: {{session-only residue, temporary PoC detail, low-level mirror content, and misleading details removed}}
 
 ## Next Use
 

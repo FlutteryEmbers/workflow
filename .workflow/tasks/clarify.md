@@ -42,7 +42,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Do not use to evaluate code, docs, plans, or diffs; use `review`.
 - Do not use to produce implementation steps; use `plan`.
 - Do not use to write session artifacts; use `save`.
-- Do not use to update formal docs; use `sync`.
+- Do not use to update project docs; use `sync`.
 
 ## Expected Output
 
@@ -58,7 +58,7 @@ Before clarifying, classify obvious boundary problems:
 - `wrong_task`: user asks to judge code/docs reasonableness; recommend `review`.
 - `wrong_task`: user asks to form a direction or decision; recommend `shape`.
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
-- `wrong_task`: user asks to update formal docs; recommend `sync`.
+- `wrong_task`: user asks to update project docs; recommend `sync`.
 
 No implicit preflight runs in `clarify`. Only run Task Boundary Check; do not scan evidence before clarifying.
 

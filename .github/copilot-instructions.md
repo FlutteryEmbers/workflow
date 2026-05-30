@@ -14,11 +14,11 @@ This repo uses Workflow Lite.
 - Implicit preflight is automatic in discuss for `shape`, `plan`, and `sync`; see `.workflow/copilot.md` for the full matrix.
 - In `Mode: persist`, use `Task: save` for session artifacts under `.session/**`.
 - Explicit `notes/**` targets may be saved as disposable exploration memory; never infer `notes/**`.
-- Do not treat `notes/**` as formal docs or approved execution source.
+- Do not treat `notes/**` as project docs or approved execution source.
 - Discussion tasks do not write files; they should produce `Save Packet` when useful.
 - When saving session artifacts, preserve decision-relevant reasoning; do not save full transcript by default.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
-- `docs/**` is formal project documentation and must follow Formal Docs Rules.
+- `docs/**` is code-aligned project docs and must follow Project Docs Rules.
 - In `Mode: execute`, require `Task: build` and an approved plan before modifying repository artifacts.
 - Native Plan/Implement may be used as an `external-agent` write path; do not treat it as workflow-managed execution.
 - External-agent is a write path, not a Mode.
@@ -30,5 +30,5 @@ This repo uses Workflow Lite.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
 - Use `.session/goal/**` for session goals, `.session/inbox/**` for staged inputs, `.session/drafts/**` for unapproved session artifacts, and `.session/accepted/**` for accepted session artifacts.
-- Treat `.session/**` as working memory, not formal source of truth.
+- Treat `.session/**` as working memory, not project docs source of truth.
 - Use `src/**/README.md` only when a code area needs a local reading entrypoint.

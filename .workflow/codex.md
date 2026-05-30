@@ -2,7 +2,7 @@
 
 Codex support is a manual adapter. It does not add `AGENTS.md`, does not replace `.workflow/tasks/**`, and does not create a separate Codex workflow.
 
-Use this file when you want Codex to follow Workflow Lite explicitly. Add only the task, selected lenses, templates, session artifacts, formal docs, and source files needed for the current request.
+Use this file when you want Codex to follow Workflow Lite explicitly. Add only the task, selected lenses, templates, session artifacts, project docs, and source files needed for the current request.
 
 ## Core Rules
 
@@ -14,11 +14,11 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Load lenses only when the user explicitly selects them.
 - Codex may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
 - Load templates only for `save` or `sync` in `Mode: persist`.
-- Treat `.session/**` as working memory, not formal source of truth.
+- Treat `.session/**` as working memory, not project source of truth.
 - Treat `.session/drafts/**` as unapproved working artifacts.
 - Prefer `.session/accepted/**` for approved plans, accepted decisions, and implementation handoffs.
-- Treat explicit `notes/**` targets as disposable exploration notes, not formal docs or approved sources.
-- Treat `docs/**` as formal project documentation and apply Formal Docs Rules before writing.
+- Treat explicit `notes/**` targets as disposable exploration notes, not project docs or approved sources.
+- Treat `docs/**` as code-aligned project docs and apply Project Docs Rules before writing.
 - Lenses may strengthen the selected task, but must not change task responsibility.
 
 ## Task Boundary Shortcut
@@ -117,9 +117,9 @@ Codex native Plan
 
 The native plan is a draft until reviewed. Persist draft handoffs with `save` to `.session/drafts/**`; persist accepted handoffs with `save` to `.session/accepted/**`.
 
-### Formal Docs Sync
+### Project Docs Sync
 
-Use `sync` for formal docs and code-adjacent README alignment.
+Use `sync` for code-aligned project docs and code-adjacent README alignment.
 
 ```text
 Mode: persist
@@ -136,7 +136,9 @@ Request:
 Sync confirmed facts into the target only.
 ```
 
-If the source is only `.session/drafts/**`, require explicit source-of-truth confirmation before writing formal docs.
+When creating a new `docs/**` target, add `.workflow/templates/project_doc.md` or `.workflow/templates/architecture_note.md`. When updating existing docs, preserve the target file's structure.
+
+If the source is only `.session/drafts/**`, require explicit source-of-truth confirmation before writing project docs.
 
 ## Copyable Prompts
 
@@ -178,7 +180,7 @@ Intent: exploration
 Depth: compact | standard
 Target: notes/<topic>.md
 Request:
-Save this as a disposable exploration note. Do not treat it as formal docs or an approved source.
+Save this as a disposable exploration note. Do not treat it as project docs or an approved source.
 ```
 
 ### Native Plan
@@ -198,7 +200,7 @@ Plan requirements:
 - Step-by-step verification
 - Stop conditions
 - Rollback or recovery
-- Formal docs impact
+- Project docs follow-up
 - Open questions
 ```
 
@@ -232,7 +234,7 @@ Request:
 Review the Codex diff against the approved external plan.
 ```
 
-### Formal Docs Sync
+### Project Docs Sync
 
 ```text
 Use .workflow/codex.md as the Codex adapter.
@@ -241,10 +243,10 @@ Task: sync
 Target: docs/<area>/<topic>.md
 Source:
 - .session/accepted/<artifact>.md
-Audience:
-<reader>
+Future Use:
+<how this doc guides future human/agent work>
 Request:
-Sync confirmed facts into formal docs. Follow Formal Docs Rules and preserve existing docs tone and structure.
+Sync confirmed facts into code-aligned project docs. Follow Project Docs Rules and preserve existing docs tone and structure.
 ```
 
 ## When Not To Use Codex Adapter

@@ -1,8 +1,9 @@
-# Distillation: {{source}}
+# Distillation
 
 ## Save Metadata
 
 - Artifact: distillation
+- Topic: {{source}}
 - Status: {{inbox | draft | accepted}}
 - Intent: {{exploration | audit | reference}}
 - Depth: {{detailed}}
@@ -12,7 +13,7 @@
 
 ## Source
 
-{{document, repo, folder, handbook, RFC, ADR, formal docs, or knowledge base}}
+{{document, repo, folder, handbook, RFC, ADR, project docs, or knowledge base}}
 
 ## What This Is
 
@@ -53,7 +54,7 @@
 
 ## Transferable Structures
 
-- {{what can transfer into session decisions or formal docs}}
+- {{what can transfer into session decisions or project docs}}
 
 ## Transfer Criteria
 
@@ -65,7 +66,7 @@
 
 ## Concrete Adaptation
 
-{{specific adaptation for Workflow Lite, `.session/**`, formal docs, or templates}}
+{{specific adaptation for Workflow Lite, `.session/**`, project docs, or templates}}
 
 ## Before / After
 
@@ -77,7 +78,7 @@
 - Inbox material: {{suggested `.session/inbox/**` use or none}}
 - Draft artifacts: {{suggested `.session/drafts/**` use or none}}
 - Accepted artifacts: {{suggested `.session/accepted/**` use or none}}
-- Formal docs: {{suggested use or none}}
+- Project docs: {{suggested use or none}}
 - Workflow prompts: {{suggested change or none}}
 
 ## Adoption Recommendation

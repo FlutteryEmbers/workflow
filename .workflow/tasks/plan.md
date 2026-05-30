@@ -47,7 +47,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to judge whether a plan, target, code, or diff is good; use `review`.
 - Do not use to implement the plan; use `build` or the external-agent path after review.
 - Do not use to write session artifacts; use `save`.
-- Do not use to update formal docs; use `sync`.
+- Do not use to update project docs; use `sync`.
 
 ## Expected Output
 
@@ -59,7 +59,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 Before planning, classify the request:
 
 - `fits`: target direction is chosen and the user needs repo-aware implementation steps or handoff.
-- `fits_with_preflight`: plan depends on current code, formal docs, session context, target-to-repo fit, target files, or verification readiness. In `Mode: discuss`, run default implicit preflight first.
+- `fits_with_preflight`: plan depends on current code, project docs, session context, target-to-repo fit, target files, or verification readiness. In `Mode: discuss`, run default implicit preflight first.
 - `composite`: user asks to plan and save; plan first, then route to `save`.
 - `wrong_task`: target direction is not chosen; recommend `shape`.
 - `wrong_task`: user asks whether current implementation or target is reasonable; recommend `review`.
@@ -81,9 +81,11 @@ User-selected lenses:
 
 ## Instructions
 
-Write the smallest repo-aware plan or handoff another engineer, Codex, Copilot, OpenCode, or similar agent can execute without making product decisions. Include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected.
+Write the smallest repo-aware plan or handoff another engineer, Codex, Copilot, OpenCode, or similar agent can execute without making product decisions. Include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected when they matter.
 
 Every major step must use `Step / Change / Verify / Risk / Stop Condition`. If the verification method is unclear, mark the plan as not ready and recommend `review` or `shape` instead of treating it as approved.
+
+Include `Docs Follow-up` only when the planned change clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context. Do not force docs impact analysis for small or temporary changes.
 
 If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend plan audit with `review --lens redteam,test`. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
 
@@ -123,6 +125,8 @@ Examples / Pseudocode:
 - <implementation sketch if useful>
 Handoff Notes:
 - <minimal context for build or external-agent>
+Docs Follow-up:
+- <none | suggested | required; include target and reason only when future human/agent execution could be misled>
 Next Use:
 - <save draft | review | save accepted | build | external-agent>
 ```

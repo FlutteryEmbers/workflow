@@ -1,8 +1,9 @@
-# Review: {{topic}}
+# Review
 
 ## Save Metadata
 
 - Artifact: review
+- Topic: {{topic}}
 - Status: {{draft | accepted}}
 - Intent: {{audit | decision}}
 - Depth: {{detailed}}
@@ -24,7 +25,7 @@
 
 ## Source Context
 
-- {{plan, diff, code path, formal doc, session artifact, or user claim}}
+- {{plan, diff, code path, project doc, session artifact, or user claim}}
 
 ## Evidence Checked
 
@@ -93,16 +94,23 @@ flowchart TD
     risk_node --> impact_node["Impact"]
 ```
 
-## Formal Docs Rules Check
+## Project Docs Rules Check
 
 {{only when docs/** is involved}}
 
 - Source clear: {{yes/no}}
-- Audience clear: {{yes/no}}
+- Future use clear: {{yes/no}}
 - Source of truth clear: {{yes/no}}
-- Reader-facing success criteria clear: {{yes/no}}
+- Future-use success criteria clear: {{yes/no}}
 - Existing docs tone and structure preserved: {{yes/no}}
 - Session-only material excluded: {{yes/no}}
+
+## Docs Follow-up
+
+- Impact: {{none | suggested | required}}
+- Target: {{docs/** path or none}}
+- Reason: {{why future human/agent execution could be misled without docs update}}
+- Recommended Sync: {{sync prompt or none}}
 
 ## Verification
 

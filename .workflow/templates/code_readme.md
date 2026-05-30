@@ -1,4 +1,4 @@
-# {{Code Area}} README
+# Code README
 
 ## Note Type
 
@@ -38,7 +38,7 @@
 
 ## Source Of Truth
 
-- Formal docs: {{docs/** path or none}}
+- Project docs: {{docs/** path or none}}
 - Code: {{source path}}
 
 ## Last Reviewed

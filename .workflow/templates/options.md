@@ -51,7 +51,7 @@ flowchart TD
 
 | Option | Fit | Cost | Risk | Evidence | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| {{option}} | {{where it fits}} | {{cost}} | {{risk}} | {{evidence}} | {{current | rejected | parked}} |
+| {{option}} | {{where it fits}} | {{cost}} | {{risk}} | {{evidence}} | {{current / rejected / parked}} |
 
 ## Model Fit
 

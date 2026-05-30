@@ -5,7 +5,7 @@ Use this lens when a strong reference document, architecture folder, RFC, ADR, h
 ## Add Only When Needed
 
 - The user wants to understand why a document works, not just summarize its content.
-- A reference structure may improve session decisions or formal docs.
+- A reference structure may improve session decisions or project docs.
 - Current outputs should be compared against a strong example.
 
 ## Distillation Rules

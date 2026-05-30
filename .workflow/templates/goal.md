@@ -1,8 +1,12 @@
-# Goal: {{topic}}
+# Goal
 
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
+
+## Topic
+
+{{topic}}
 
 ## Goal Type
 
@@ -14,7 +18,7 @@
 
 ## Context
 
-- Source: {{user input, session note, decision, code, or formal docs}}
+- Source: {{user input, session note, decision, code, or project docs}}
 - Last Updated: {{date}}
 
 ## Open Questions

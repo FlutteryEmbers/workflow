@@ -1,8 +1,9 @@
-# Expanded: {{topic}}
+# Expanded
 
 ## Save Metadata
 
 - Artifact: expanded
+- Topic: {{topic}}
 - Status: {{draft | accepted}}
 - Intent: {{summary | handoff | audit | reference}}
 - Depth: {{detailed}}

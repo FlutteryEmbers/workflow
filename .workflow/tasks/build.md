@@ -29,7 +29,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 - Start with `## Execution Understanding` in `Mode: execute`, naming the approved plan, selected lenses, scope, and key constraints.
 - Ask instead of editing when the approved plan is missing, scope is unclear, or requested edits exceed the plan.
 - `Mode: discuss` is default: explain the build approach or missing prerequisites in chat, do not write files.
-- `Mode: persist`: not valid for this task; use `save` for session artifacts or `sync` for formal docs / code-adjacent README.
+- `Mode: persist`: not valid for this task; use `save` for session artifacts or `sync` for project docs / code-adjacent README.
 - `Mode: execute`: required for repository changes and must include an approved `Plan`.
 - For native external-agent Implement, use the external-agent path instead of this task, then run `review` on the resulting diff.
 
@@ -43,7 +43,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 
 - Do not use to create or approve the plan; use `plan` and `review`.
 - Do not use for native external-agent implementation; use the external-agent path and then `review`.
-- Do not use to save session artifacts or formal docs directly.
+- Do not use to save session artifacts or project docs directly.
 
 ## Expected Output
 
@@ -60,7 +60,7 @@ Before building, classify the request:
 - `missing_prerequisite`: approved `Plan` points to `notes/**`; disposable exploration notes are not approved execution sources.
 - `composite`: user asks to implement from target docs/current code without an approved plan; recommend `plan -> review -> external-agent/build -> review`.
 - `wrong_task`: user asks to save session artifacts; recommend `save`.
-- `wrong_task`: user asks to update formal docs; recommend `sync`.
+- `wrong_task`: user asks to update project docs; recommend `sync`.
 
 Conditional implicit preflight for `build` is allowed only in `Mode: discuss` and only checks readiness: approved plan, scope, allowed changes, do-not-touch areas, and verification. In `Mode: execute`, do not preflight; if the approved plan is missing or unclear, block without editing.
 
@@ -98,7 +98,9 @@ Do not execute `notes/**`. Exploration notes are disposable working memory and m
 
 Build may update code, docs, prompts, templates, or workflow artifacts only when the approved plan explicitly names them. Do not modify `.workflow/**`, `.session/**`, `docs/**`, or `src/**/README.md` unless the approved plan names those targets.
 
-When writing `docs/**`, the approved plan must explicitly name the docs targets and include a Formal Docs Checklist: source, target audience, source of truth, reader-facing success criteria, existing docs tone/structure, and safety. If the checklist is missing, do not modify `docs/**`; recommend `sync`.
+When writing `docs/**`, the approved plan must explicitly name the docs targets and include Project Docs conditions: source, future use, source of truth, future-use success criteria, existing docs structure, and safety. If these conditions are missing, do not modify `docs/**`; output `Docs Follow-up` and recommend `sync`.
+
+After implementation, output `Docs Follow-up` only when the change clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context. Do not invent docs work for small or temporary changes.
 
 ## Lens Suggestions
 
@@ -114,7 +116,7 @@ When writing `docs/**`, the approved plan must explicitly name the docs targets 
 - `.session/drafts/**` is not executable by default.
 - `notes/**` is disposable exploration memory and is not executable by default.
 - Code-adjacent README updates live in `src/**/README.md` and require an explicit approved plan.
-- Formal docs live in `docs/**` and require an approved-plan Formal Docs Checklist; otherwise route to `sync`.
+- Project docs live in `docs/**` and require approved-plan Project Docs conditions; otherwise output `Docs Follow-up` and route to `sync`.
 
 ## User Input
 

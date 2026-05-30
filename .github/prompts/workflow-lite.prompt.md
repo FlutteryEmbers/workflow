@@ -45,28 +45,30 @@ Request: ${input:request:describe the work}
 - For `save`, `.session/inbox/**` and `.session/drafts/**` targets may be inferred from `Artifact + Status + Topic`.
 - For `save`, `.session/accepted/**` requires explicit accepted, approved, or promote intent.
 - For `save`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
-- `notes/**` is not formal docs and is not an approved execution source.
+- `notes/**` is not project docs and is not an approved execution source.
 - For `save`, preserve decision-relevant reasoning, not full transcript. Use `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact output.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
 - In `Mode: execute`, require `Task: build` and an approved plan.
 - If using Codex/Copilot native Plan -> Implement, set `Write Path: external-agent`; external-agent is not a Mode.
 - For `Write Path: external-agent`, audit the native plan before implementation and review the diff after implementation.
 - Block instead of writing when `Mode: execute` lacks `Plan`, the target is outside the mode boundary, or instructions conflict.
-- `docs/**` writes must follow Formal Docs Rules.
+- `docs/**` writes must follow Project Docs Rules.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
 
-## Formal Docs Rules
+## Project Docs Rules
 
-- Source, target audience, source of truth, and reader-facing success criteria must be clear.
+- Source, future use, source of truth, and future-use success criteria must be clear.
 - Preserve existing docs tone and structure when updating.
-- Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, internal redteam-only risks, temporary workarounds, sensitive implementation detail, and not-yet-announced plans.
-- If source, audience, source of truth, reader-facing success criteria, or safety is unclear, output `docs blocked` and do not write `docs/**`.
+- Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, temporary PoC detail, low-level implementation mirror content, and details that would mislead future execution.
+- If source, future use, source of truth, future-use success criteria, or safety is unclear, output `docs blocked` and do not write `docs/**`.
+- `docs/**` is updated only when drift would cause future human/agent execution mistakes.
 
 ## Context Format
 
 Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only for `save` or `sync` in `Mode: persist`.
+For new `docs/**` targets, add `project_doc.md` or `architecture_note.md`; for existing docs, preserve the target structure.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
 Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, `docs/**`, and source files.
 

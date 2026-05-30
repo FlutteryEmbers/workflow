@@ -67,7 +67,7 @@ Boundary classes:
 - `fits_with_preflight`: the selected task can handle it after read-only preflight in `Mode: discuss`.
 - `composite`: multiple tasks are needed.
 - `wrong_task`: another task is the proper entrypoint.
-- `missing_prerequisite`: target, approved plan, source of truth, or Formal Docs Rules safety is missing.
+- `missing_prerequisite`: target, approved plan, source of truth, or Project Docs Rules safety is missing.
 
 ## Routing Model
 
@@ -85,7 +85,7 @@ Recommend the smallest path:
 - Repo-aware implementation sequence or handoff: `plan` -> `save` to `.session/drafts/**` or `.session/accepted/**`.
 - Session artifact write: `save` -> `.session/**`.
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
-- Formal documentation alignment: `sync` -> `docs/**` or `src/**/README.md`.
+- Project docs alignment: `sync` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute` and an approved plan.
 - Discussion chains should end with `Save Packet` when the result is worth preserving. `save` consumes the packet; the original discussion task does not write files.
 
@@ -95,11 +95,11 @@ Recommend the smallest path:
 - Suggest `architecture` for boundaries, dependency direction, public surfaces, or constraints.
 - Suggest `domain` for terminology, rules, ownership, and conceptual model questions.
 - Suggest `iteration` for multi-turn work with changing background.
-- Suggest `redteam` when a draft will become `.session/accepted/**`, a plan will enter `build` or external-agent Implement, the work touches architecture boundaries, permissions, security, data migration, irreversible changes, formal docs, high-cost tradeoffs, or the user asks to find problems, critique, identify pitfalls, or judge reasonableness.
+- Suggest `redteam` when a draft will become `.session/accepted/**`, a plan will enter `build` or external-agent Implement, the work touches architecture boundaries, permissions, security, data migration, irreversible changes, project docs, high-cost tradeoffs, or the user asks to find problems, critique, identify pitfalls, or judge reasonableness.
 - Do not enable `redteam` automatically; output it only as a suggested lens unless the user explicitly selected it.
 - Suggest `test` for verification planning.
 - Suggest `debug` for defects or uncertain runtime behavior.
-- Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across session accepted sources, formal docs, code, tests, or code-adjacent README files.
+- Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across session accepted sources, project docs, code, tests, or code-adjacent README files.
 - Do not suggest `consistency` for discovery questions like whether a capability exists, where it is implemented, or how reliable the evidence is.
 - Suggest `language` for terminology or output language.
 - Suggest `distill` for learning structure from strong reference material.
@@ -137,7 +137,7 @@ Recommended Segments:
    Expected Output:
    Continue Condition:
 Stop Points:
-- <approval, audit, source-of-truth, Formal Docs Rules, or diff review point>
+- <approval, audit, source-of-truth, Project Docs Rules, or diff review point>
 ```
 
 ## User Input

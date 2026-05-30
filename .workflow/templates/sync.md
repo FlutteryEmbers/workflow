@@ -1,8 +1,12 @@
-# Formal Docs Sync: {{topic}}
+# Project Docs Sync
 
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
+
+## Topic
+
+{{topic}}
 
 ## Source
 
@@ -16,13 +20,13 @@
 
 {{confirmed source of truth}}
 
-## Audience
+## Future Use
 
-{{formal docs readers or code readers}}
+{{how this doc or README will guide future human/agent work}}
 
-## Reader-Facing Success Criteria
+## Future-Use Success Criteria
 
-- {{what the target reader should understand or be able to do after reading}}
+- {{what future human/agent work should understand or avoid after reading}}
 
 ## Sync Flow
 
@@ -35,19 +39,23 @@ flowchart TD
     sync_node --> verify_node["Verify"]
 ```
 
-## Formal Docs Rules Check
+## Project Docs Rules Check
 
 - Source is clear: {{yes/no}}
-- Audience is clear: {{yes/no}}
+- Future use is clear: {{yes/no}}
 - Source of truth is clear: {{yes/no}}
-- Reader-facing success criteria clear: {{yes/no}}
+- Future-use success criteria clear: {{yes/no}}
 - Existing docs tone and structure preserved: {{yes/no}}
 - Session-only residue removed: {{yes/no}}
-- Sensitive or not-yet-announced details removed: {{yes/no}}
+- Temporary PoC, low-level mirror, or misleading details removed: {{yes/no}}
+
+## Create Docs Gate
+
+{{for new docs/** targets only: why this doc will reduce future human/agent execution mistakes, or docs blocked}}
 
 ## Updates
 
-- {{formal docs or README update}}
+- {{project docs or README update}}
 
 ## Verification
 

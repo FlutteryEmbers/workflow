@@ -21,4 +21,4 @@ Use this lens to expand a compact decision, concept, or plan into a more detaile
 - Expanded draft artifacts can be saved next to the source under `.session/drafts/**`.
 - Expanded accepted artifacts can be saved next to the source under `.session/accepted/**` when accepted intent is explicit.
 - Use `{base}.expanded.md` and optional `{base}.part_{topic}.md`.
-- Formal docs updates go through `sync`, not direct expansion.
+- Project docs updates go through `sync`, not direct expansion.

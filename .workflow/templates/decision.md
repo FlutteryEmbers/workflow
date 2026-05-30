@@ -1,8 +1,9 @@
-# Decision: {{topic}}
+# Decision
 
 ## Save Metadata
 
 - Artifact: decision
+- Topic: {{topic}}
 - Status: accepted
 - Intent: {{decision | constraint | handoff | audit}}
 - Depth: {{detailed}}
@@ -34,7 +35,7 @@
 
 ## Source Context
 
-- {{discussion, draft, review, code path, formal doc, or user approval source}}
+- {{discussion, draft, review, code path, project doc, or user approval source}}
 
 ## Decision-Relevant Facts
 
@@ -81,7 +82,7 @@
 
 | Alternative | Why Not | Status |
 | :--- | :--- | :--- |
-| {{alternative}} | {{reason}} | {{rejected | parked | superseded}} |
+| {{alternative}} | {{reason}} | {{rejected / parked / superseded}} |
 
 ## Implications
 
@@ -113,4 +114,4 @@
 
 ## Source
 
-- {{session note, goal file, formal doc, code path, or user input}}
+- {{session note, goal file, project doc, code path, or user input}}

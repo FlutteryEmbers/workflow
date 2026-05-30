@@ -1,6 +1,6 @@
 # Workflow Lite
 
-> Lightweight by default. Session memory is separate from formal docs.
+> Lightweight by default. Session memory is separate from code-aligned project docs.
 
 ## Workflow
 
@@ -13,13 +13,13 @@ graph TD
     P --> W["save session artifact"]
     P --> B["build or external-agent"]
     B --> V["review"]
-    V --> Y["sync formal docs"]
+    V --> Y["sync project docs"]
 
     C -. "input" .-> N[".session/inbox"]
     W -. "drafts" .-> D[".session/drafts"]
     W -. "accepted" .-> A[".session/accepted"]
     S -. "goal" .-> G[".session/goal"]
-    Y -. "formal docs" .-> F["docs"]
+    Y -. "project docs" .-> F["docs"]
 ```
 
 ## Core Ideas
@@ -27,13 +27,13 @@ graph TD
 - `task`: lightweight action prompt in `.workflow/tasks/`.
 - `role`: small perspective file in `.workflow/roles/`.
 - `lens`: optional user-selected thinking method in `.workflow/lenses/`.
-- `.session`: AI session working memory, not formal source of truth.
+- `.session`: AI session working memory, not project source of truth.
 - `.session/goal`: evolving goal space and target docs map.
 - `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, and reference material.
 - `.session/drafts`: work-in-progress shapes, options, plans, and reviews; not approved for execution by default.
 - `.session/accepted`: accepted session-level conclusions such as decisions, approved plans, and accepted review verdicts.
 - `save`: the only task that writes session artifacts.
-- `docs`: formal project documentation maintained by the host project.
+- `docs`: code-aligned project docs maintained by the host project.
 - `notes`: optional disposable exploration notes for lightweight exploration repos when explicitly targeted.
 - `src/**/README.md`: optional code-adjacent reading entrypoint.
 
@@ -62,7 +62,7 @@ Session directories express state; file prefixes express artifact kind.
 - `drafts`: `brief_`, `shape_`, `option_`, `plan_`, `review_`
 - `accepted`: `brief_`, `decision_`, `plan_`, `review_`
 
-Do not use task names as mandatory file prefixes. `docs/**` follows the host project's formal docs naming. `src/**/README.md` is fixed.
+Do not use task names as mandatory file prefixes. `docs/**` follows the host project's project docs naming. `src/**/README.md` is fixed.
 
 Drafts are not approved execution sources. `build` and external-agent implementation should prefer `.session/accepted/**`; using `.session/drafts/**` requires explicit user approval and should usually pass through `review`.
 
@@ -78,7 +78,7 @@ Drafts are not approved execution sources. `build` and external-agent implementa
 | `save` | `steward` | `.session/**` | Save high-fidelity structured session artifacts from discussion, drafts, Save Packets, or user-provided sources. |
 | `build` | `builder` | repository changes | Apply an approved workflow-managed plan. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
-| `sync` | `steward` | `docs/**` or `src/**/README.md` | Align formal docs and code-adjacent README files with confirmed decisions, code, or diffs. |
+| `sync` | `steward` | `docs/**` or `src/**/README.md` | Project confirmed facts into code-aligned project docs and code-adjacent README files. |
 
 ## Task Boundary Shortcut
 
@@ -97,6 +97,11 @@ For repository conflicts:
 - Judgment question: conflict = possible source-of-truth issue. Use `review --lens consistency` when the user asks what is correct, acceptable, ready, or worth changing.
 - Do not infer repo ownership. Use the user's question type to choose `explore` vs `review`.
 
+For project docs:
+
+- `review` makes the judgment: source-of-truth, readiness, drift, and whether a fact should enter `docs/**`.
+- `sync` performs the projection: rewrite confirmed facts into `docs/**` or `src/**/README.md` without reopening the design judgment.
+
 ## Lenses
 
 Lenses are user-selected. Copilot may suggest a lens, but must not apply it unless the user explicitly names it or adds its file as context.
@@ -105,9 +110,9 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 | :--- | :--- |
 | `iteration` | Multi-turn discussion needs session state, goal changes, decisions, and open questions. |
 | `expand` | A decision or plan needs examples, pseudocode, smaller diagrams, or split parts. |
-| `consistency` | Session decisions, formal docs, code, tests, or README files may conflict. |
+| `consistency` | Session decisions, project docs, code, tests, or README files may conflict. |
 | `distill` | A strong reference document should be studied for reusable structure and writing principles. |
-| `language` | Full English, translation, terminology consistency, or formal glossary updates are needed. |
+| `language` | Full English, translation, terminology consistency, or project glossary updates are needed. |
 | `domain` | Terms, rules, ownership, boundaries, or conceptual model are unclear. |
 | `strategy` | Technical routes or design options need comparison. |
 | `redteam` | The current recommendation needs deliberate critique. |
@@ -135,7 +140,7 @@ Before acting, classify whether the request fits the selected task:
 - `fits_with_preflight`: the task can handle it after a read-only preflight.
 - `composite`: multiple tasks are needed.
 - `wrong_task`: another task is the proper entrypoint.
-- `missing_prerequisite`: required target, approved plan, source of truth, or formal docs safety is missing.
+- `missing_prerequisite`: required target, approved plan, source of truth, or project docs safety is missing.
 
 Composite requests should return segmented prompts with stop points. Do not silently switch tasks or automatically run later write/implementation segments.
 
@@ -166,10 +171,10 @@ Default depth is `standard` for `brief` and `note`, and `detailed` for `shape`, 
 `notes/**` is a lightweight convention for exploration repos or one-off exploratory work.
 
 - Use `Target: notes/{topic}.md` only when the user explicitly wants a disposable exploration note.
-- `notes/**` is not formal docs and does not use Formal Docs Rules.
+- `notes/**` is not project docs and does not use Project Docs Rules.
 - `notes/**` is not an approved source for `build` or external-agent implementation.
 - `save` must not infer `notes/**`; default save inference remains `.session/inbox/**` or `.session/drafts/**`.
-- Useful conclusions from `notes/**` should be promoted through normal workflow: save to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed reader-facing material to `docs/**`.
+- Useful conclusions from `notes/**` should be promoted through normal workflow: save to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed project context to `docs/**`.
 - `notes/INDEX.md` is optional. Consider it only when there are more than five active notes.
 - Optional note metadata can track `status`, `source`, `updated`, and `promoted_to`.
 
@@ -196,10 +201,10 @@ Built-in safety checks are core protocol, not a lens. They do not load `.workflo
 - `shape`: name key unknowns, risky assumptions, and whether a separate `review --lens redteam` is recommended.
 - `plan`: include `Step / Change / Verify / Risk / Stop Condition` for major steps.
 - `build`: stop on unapproved scope expansion instead of editing beyond the approved plan.
-- `sync`: use Formal Docs Rules and output `docs blocked` when formal-doc safety is unclear.
+- `sync`: use Project Docs Rules and output `docs blocked` when project-doc safety is unclear.
 - `review`: recommend `redteam` when the target is costly, ambiguous, or about to enter execution.
 
-Safety checks should stay lightweight and should not block ordinary PoC discussion unless a write, execution, formal docs update, source-of-truth decision, or irreversible change is at risk.
+Safety checks should stay lightweight and should not block ordinary PoC discussion unless a write, execution, project docs update, source-of-truth decision, or irreversible change is at risk.
 
 ## Prompt Discipline
 
@@ -209,20 +214,22 @@ These rules are core protocol, not optional lenses:
 - `Step -> Verify`: every major plan step needs a matching verification method.
 - `Minimal Diff`: implementation changes only the approved scope; no drive-by refactors, formatting churn, or opportunistic cleanup.
 - `Stop On Scope Expansion`: if execution reveals that scope must expand, stop and return to `plan` or `review`.
-- `Readiness Before Write`: external-agent plans and diffs should be reviewed before further implementation or formal docs sync.
+- `Readiness Before Write`: external-agent plans and diffs should be reviewed before further implementation or project docs sync.
 
 This project borrows prompt discipline from agent prompt repositories, but it does not copy role-command systems and does not add a root Claude-specific instruction file by default.
 
-## Formal Docs Rules
+## Project Docs Rules
 
 Any write to `docs/**` must:
 
-- Name source, target audience, and source of truth.
-- Name reader-facing success criteria for the target document.
-- Preserve stable, confirmed facts useful to formal readers.
+- Name source, future use, and source of truth.
+- Name future-use success criteria for the target document.
+- Preserve stable, confirmed facts useful for future human or agent execution.
 - Preserve existing docs structure and tone when updating an existing file.
-- Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, internal redteam-only risks, temporary workarounds, sensitive implementation detail, and not-yet-announced plans.
-- Output `docs blocked` and do not write `docs/**` when source, audience, source of truth, reader-facing success criteria, or safety is unclear.
+- Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, temporary PoC detail, low-level implementation mirror content, and details that would mislead future execution.
+- Output `docs blocked` and do not write `docs/**` when source, future use, source of truth, future-use success criteria, or safety is unclear.
+
+`docs/**` is updated only when drift would cause future human/agent execution mistakes. Do not use it as a transcript, exploration log, temporary PoC journal, or low-level implementation mirror.
 
 ## Common Paths
 
@@ -237,7 +244,7 @@ Any write to `docs/**` must:
 - Multi-turn design: `shape/review/explore discuss loop -> save draft -> review -> save accepted`.
 - Native implementation: external-agent native Plan -> `review` audit -> native Implement -> `review` diff.
 - Workflow-managed implementation: `plan -> build`.
-- Formal docs sync: `sync -> docs/**`.
+- Project docs sync: `sync -> docs/**`.
 - Code-adjacent README sync: `sync -> src/**/README.md`.
 
 ## Using With Copilot
@@ -278,6 +285,6 @@ Workflow artifacts default to Chinese explanations with English technical terms 
 - Start non-trivial responses with an inline `Understanding Check`.
 - Select lenses only when the user explicitly asks or adds them as context.
 - Multiple lenses are allowed in `Mode: discuss` only when explicitly listed.
-- Do not create formal docs from session material without source, audience, and source of truth.
+- Do not create project docs from session material without source, future use, and source of truth.
 - Use Mermaid diagrams only when they reduce understanding cost.
 - Workflow Root is the repository root containing `.workflow/`.

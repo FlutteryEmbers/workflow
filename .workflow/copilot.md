@@ -98,7 +98,7 @@ Content fidelity:
 
 Exploration notes:
 
-- `notes/**` is disposable exploration memory, not formal docs.
+- `notes/**` is disposable exploration memory, not project docs.
 - `notes/**` is not an approved source for build or external-agent implementation.
 - Stable conclusions should later be saved to `.session/**` or synced to `docs/**`.
 - If `notes/**` grows beyond five active notes, suggest an optional `notes/INDEX.md`.
@@ -111,7 +111,7 @@ Before acting, classify the request when it is not obviously a fit:
 - `fits_with_preflight`: the current task can handle it after a read-only preflight.
 - `composite`: the request needs multiple tasks.
 - `wrong_task`: another task is the proper entrypoint.
-- `missing_prerequisite`: required target, approved plan, source of truth, or formal docs safety is missing.
+- `missing_prerequisite`: required target, approved plan, source of truth, or project docs safety is missing.
 
 If not `fits`, do not force-fit the request.
 
@@ -121,12 +121,12 @@ Common segmentations:
 
 - Judge current code/docs and decide what to do: `review -> Save Packet -> shape/plan -> Save Packet -> save`.
 - Implement a feature from target docs and current code: `plan -> Save Packet -> save draft plan -> review -> Save Packet -> save accepted plan -> external-agent/build -> review`.
-- Move discussion into formal docs: `shape/plan/review -> Save Packet -> save accepted -> sync`.
+- Move accepted conclusions into project docs: `shape/plan/review -> Save Packet -> save accepted -> sync`.
 - Distill a reference and improve workflow: `explore --lens distill -> Save Packet -> shape -> Save Packet -> save draft -> plan -> build`.
 - Ambiguous what-if or entrypoint selection: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 - Understand code/docs mismatches as discovery: `explore -> Save Packet -> save note`, with `Reliability Notes`; use `review --lens consistency` only for source-of-truth judgments.
 
-Use stop points before accepted promotion, implementation, and formal docs sync.
+Use stop points before accepted promotion, implementation, and project docs sync.
 
 ## Template Map For Save
 
@@ -195,7 +195,7 @@ Topic: auth_boundary
 
 Add #.workflow/tasks/save.md and #.workflow/templates/decision.md. Accepted intent is explicit.
 
-### Sync Formal Docs
+### Sync Project Docs
 
 ```text
 Mode: persist
@@ -205,7 +205,9 @@ Source:
 - .session/accepted/decision_{topic}.md
 ```
 
-Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant accepted session artifacts, existing docs, and source files. Apply Formal Docs Rules.
+Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant accepted session artifacts, existing docs, and source files. Apply Project Docs Rules.
+
+When creating a new `docs/**` target, also add #.workflow/templates/project_doc.md or #.workflow/templates/architecture_note.md. When updating existing docs, preserve the target file's existing structure.
 
 ### Execute A Plan
 

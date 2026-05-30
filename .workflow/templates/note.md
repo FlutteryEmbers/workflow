@@ -1,17 +1,18 @@
-# Note: {{topic}}
+# Note
 
-<!-- Optional for explicit `Target: notes/**` disposable exploration notes:
----
-status: active | parked | discarded | promoted
-source: chat | script | code | external
-updated: {{date}}
-promoted_to: {{path or none}}
----
--->
+> Optional for explicit `Target: notes/**` disposable exploration notes:
+>
+> ```yaml
+> status: active | parked | discarded | promoted
+> source: chat | script | code | external
+> updated: {{date}}
+> promoted_to: {{path or none}}
+> ```
 
 ## Save Metadata
 
 - Artifact: note
+- Topic: {{topic}}
 - Status: {{inbox | draft | accepted}}
 - Intent: {{summary | exploration | audit | reference}}
 - Depth: {{compact | standard}}
@@ -29,7 +30,7 @@ promoted_to: {{path or none}}
 
 ## Source
 
-- {{user input, code path, reference doc, formal docs, or discussion}}
+- {{user input, code path, reference doc, project docs, or discussion}}
 
 ## Observations
 
@@ -55,4 +56,4 @@ promoted_to: {{path or none}}
 
 - {{docs path or none}}
 
-> Inbox notes are working memory under `.session/inbox/**`. Explicit `notes/**` targets are disposable exploration notes. Neither is formal source of truth.
+> Inbox notes are working memory under `.session/inbox/**`. Explicit `notes/**` targets are disposable exploration notes. Neither is project source of truth.

@@ -49,7 +49,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to decide whether docs or code should be modified; use `review` for verdicts and `sync` or `plan/build` only after that verdict.
 - Do not use to create executable steps; use `plan`.
 - Do not use to write session artifacts; use `save`.
-- Do not use to update formal docs; use `sync`.
+- Do not use to update project docs; use `sync`.
 
 ## Expected Output
 
@@ -66,7 +66,7 @@ Before exploring, classify obvious boundary problems:
 - `wrong_task`: user asks to choose a direction; recommend `shape`.
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
 - `wrong_task`: user asks to judge a target or diff; recommend `review`.
-- `wrong_task`: user asks to update formal docs; recommend `sync`.
+- `wrong_task`: user asks to update project docs; recommend `sync`.
 
 Conditional implicit preflight for `explore` only checks boundary, source, scope, and evidence type. Do not duplicate exploration inside preflight; once the boundary is clear, proceed with normal evidence extraction or recommend the right task.
 

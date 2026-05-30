@@ -1,6 +1,6 @@
 # Lens: Language
 
-Use this lens for output language, terminology consistency, translation, readability, or formal glossary updates.
+Use this lens for output language, terminology consistency, translation, readability, or project glossary updates.
 
 ## Default Style
 
@@ -12,10 +12,10 @@ Use full English only when explicitly requested.
 
 ## Checks
 
-- Are terms used consistently across session decisions, formal docs, code, and APIs?
+- Are terms used consistently across session decisions, project docs, code, and APIs?
 - Are near-synonyms intentionally different?
 - Does the audience understand the explanation?
-- Should a stable term be added to formal docs?
+- Should a stable term be added to project docs?
 
 ## Output Hints
 

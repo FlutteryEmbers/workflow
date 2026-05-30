@@ -2,7 +2,7 @@
 
 OpenCode support is a thin adapter. It does not replace `.workflow/tasks/**`, `.workflow/lenses/**`, or `.workflow/templates/**`, and it does not create a separate OpenCode workflow.
 
-Use OpenCode when it helps with context reading, draft planning, or bounded implementation. Keep `.workflow/**` as the source of truth for task semantics, lenses, write boundaries, and Formal Docs Rules.
+Use OpenCode when it helps with context reading, draft planning, or bounded implementation. Keep `.workflow/**` as the source of truth for task semantics, lenses, write boundaries, and Project Docs Rules.
 
 OpenCode may suggest `redteam` when risk triggers match, but must not auto-load or apply it. Use full `redteam` only when the user explicitly selected that lens or the prompt explicitly includes it.
 
@@ -25,7 +25,7 @@ Discovery vs judgment rule:
 Exploration notes:
 
 - Explicit `notes/**` targets may be saved as disposable exploration notes through `Task: save`.
-- Do not treat `notes/**` as formal docs or approved implementation plans.
+- Do not treat `notes/**` as project docs or approved implementation plans.
 - Do not use OpenCode bounded implement from `notes/**`; promote useful conclusions into `.session/**` or create an approved external plan first.
 
 ## Usage Levels
@@ -65,7 +65,7 @@ OpenCode context summary
 -> Save Packet -> save draft or accepted handoff when useful
 -> OpenCode bounded implement
 -> workflow diff review
--> sync formal docs when stable
+-> sync project docs when stable
 ```
 
 OpenCode native Plan belongs to the `external-agent` path. It is not `Mode: execute`. `Mode: execute` remains workflow-managed execution through `Task: build`.
@@ -78,7 +78,7 @@ Use only the files needed for the current step.
 - `.workflow/tasks/review.md` for plan audit or diff review.
 - `.workflow/tasks/plan.md` for a repo-aware handoff.
 - `.workflow/tasks/save.md` for session artifact persistence.
-- `.workflow/tasks/sync.md` for formal docs or code-adjacent README alignment.
+- `.workflow/tasks/sync.md` for project docs or code-adjacent README alignment.
 - `.workflow/lenses/<lens>.md` only when explicitly selected.
 - `.session/goal/*`, relevant `.session/inbox/**`, relevant `.session/drafts/**`, relevant `.session/accepted/**`, `docs/**`, and source files as needed.
 - explicit `notes/**` only when saving disposable exploration notes.
@@ -135,7 +135,7 @@ Plan requirements:
 - Step-by-step verification
 - Stop conditions
 - Rollback or recovery
-- Formal docs impact
+- Project docs impact
 - Open questions
 ```
 
@@ -164,7 +164,7 @@ Intent: exploration
 Depth: compact | standard
 Target: notes/<topic>.md
 Request:
-Save this as a disposable exploration note. Do not treat it as formal docs or an approved source.
+Save this as a disposable exploration note. Do not treat it as project docs or an approved source.
 ```
 
 ### Plan Audit
@@ -184,7 +184,7 @@ Check:
 - Success criteria
 - Step-by-step verification
 - Source of truth
-- Formal Docs Rules if docs/** is touched
+- Project Docs Rules if docs/** is touched
 - Minimal diff risk
 - Open questions
 - Whether the plan exceeds the user's stated intent
@@ -224,14 +224,14 @@ Check:
 - Unrelated edits
 - Missing verification
 - Drive-by refactors
-- Formal Docs Rules issues
+- Project Docs Rules issues
 - Required follow-up
 ```
 
-### Formal Docs Sync
+### Project Docs Sync
 
 ```text
-Use OpenCode docs sync only for formal docs or code-adjacent README alignment.
+Use OpenCode docs sync only for code-aligned project docs or code-adjacent README alignment.
 
 Source:
 - <session decision, diff, code, or existing docs>
@@ -239,13 +239,13 @@ Source:
 Target:
 - docs/<area>/<topic>.md or src/<area>/README.md
 
-Audience:
-<reader>
+Future Use:
+<how this doc guides future human/agent work>
 
 Rules:
-- Follow Formal Docs Rules.
-- Source, audience, source of truth, and reader-facing success criteria must be clear.
+- Follow Project Docs Rules.
+- Source, future use, source of truth, and future-use success criteria must be clear.
 - Preserve existing docs structure and tone.
 - Do not write .session/**, .workflow/**, source code, or unrelated docs.
-- Output docs blocked if source, audience, source of truth, reader-facing success criteria, or safety is unclear.
+- Output docs blocked if source, future use, source of truth, future-use success criteria, or safety is unclear.
 ```

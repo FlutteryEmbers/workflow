@@ -1,8 +1,9 @@
-# Shape: {{topic}}
+# Shape
 
 ## Save Metadata
 
 - Artifact: shape
+- Topic: {{topic}}
 - Status: {{draft | accepted}}
 - Intent: {{exploration | decision | constraint}}
 - Depth: {{detailed}}
@@ -16,7 +17,9 @@
 
 ## Decision Link
 
-{{.session/drafts/shape_{topic}.md, .session/accepted/decision_{topic}.md, or .session/goal/{file}.md}}
+- Draft shape: `.session/drafts/shape_<topic>.md`
+- Accepted decision: `.session/accepted/decision_<topic>.md`
+- Goal file: `.session/goal/<file>.md`
 
 ## Visual Overview
 
@@ -35,7 +38,7 @@ flowchart TD
 
 ## Source Context
 
-- {{discussion, goal, source file, formal doc, or user correction that this shape depends on}}
+- {{discussion, goal, source file, project doc, or user correction that this shape depends on}}
 
 ## Decision-Relevant Facts
 
@@ -95,7 +98,7 @@ flowchart TD
 
 | Option | Fit | Cost | Risk | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| {{option}} | {{fit}} | {{cost}} | {{risk}} | {{chosen | rejected | parked}} |
+| {{option}} | {{fit}} | {{cost}} | {{risk}} | {{chosen / rejected / parked}} |
 
 ## Why This Option
 

@@ -14,7 +14,7 @@ Use this lens when structure, boundaries, dependencies, interfaces, or durable t
 - Direction: which dependencies are allowed or forbidden?
 - Surface: what public API, contract, CLI, UI, or doc surface changes?
 - Data: who owns reads, writes, lifecycle, and migration?
-- Constraint: which formal constraints must be preserved?
+- Constraint: which durable project constraints must be preserved?
 - Exception: is this a prototype exception or a durable constraint?
 
 ## Output Hints
@@ -22,5 +22,5 @@ Use this lens when structure, boundaries, dependencies, interfaces, or durable t
 - Draft architecture decisions can be saved to `.session/drafts/**`.
 - Accepted architecture decisions can be saved to `.session/accepted/**` when accepted intent is explicit.
 - Goal-level architecture direction may update `.session/goal/vision.md` or `.session/goal/roadmap.md`.
-- Accepted formal constraints belong in `docs/architecture/boundaries.md` or another user-specified `docs/**` target through `sync`.
-- Do not turn prototype exceptions into formal constraints unless explicitly accepted.
+- Accepted project constraints belong in `docs/architecture/boundaries.md` or another user-specified `docs/**` target through `sync`.
+- Do not turn prototype exceptions into durable project constraints unless explicitly accepted.
