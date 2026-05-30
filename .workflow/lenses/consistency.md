@@ -1,6 +1,8 @@
 # Lens: Consistency
 
-Use this lens when session decisions, formal docs, code, tests, or code-adjacent README files may disagree.
+Use this lens when session decisions, formal docs, code, tests, or code-adjacent README files may disagree and the user needs a source-of-truth or follow-up action judgment.
+
+Do not use this lens by default for discovery questions. If the user asks what exists, where it is, how it works, or how reliable the evidence is, use `explore` and record mismatches as reliability risks. Use `consistency` only when the user asks whether something is correct, acceptable, ready, worth changing, or which source should be treated as truth.
 
 ## Conflict Types
 

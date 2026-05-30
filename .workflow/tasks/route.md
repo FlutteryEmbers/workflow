@@ -76,6 +76,8 @@ Recommend the smallest path:
 - When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
 - Ambiguous what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests default to `shape`.
 - Evidence-only requests such as reading code, finding entrypoints, checking docs, understanding behavior, or studying references go to `explore`.
+- Existence and discovery questions such as "does this repo have X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
+- Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
 - Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
 - Typical session state flow: `discuss loop -> Save Packet -> save draft -> review -> Save Packet -> save accepted -> build/external-agent -> review -> sync`.
 - New background or staged requirements: `clarify` or `explore` -> `save` to `.session/inbox/**`.
@@ -97,7 +99,8 @@ Recommend the smallest path:
 - Do not enable `redteam` automatically; output it only as a suggested lens unless the user explicitly selected it.
 - Suggest `test` for verification planning.
 - Suggest `debug` for defects or uncertain runtime behavior.
-- Suggest `consistency` for code/docs/design drift.
+- Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across session accepted sources, formal docs, code, tests, or code-adjacent README files.
+- Do not suggest `consistency` for discovery questions like whether a capability exists, where it is implemented, or how reliable the evidence is.
 - Suggest `language` for terminology or output language.
 - Suggest `distill` for learning structure from strong reference material.
 - Suggest `expand` when a compact decision or plan needs examples, pseudocode, or split parts.

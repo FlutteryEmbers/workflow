@@ -28,6 +28,13 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = executable sequence`: chosen direction to implementable steps.
 
+Discovery vs judgment rule:
+
+- Do not infer repo ownership or maintenance responsibility.
+- Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
+- Use `review` for whether something is correct, acceptable, ready, worth changing, or which source should be treated as truth.
+- Do not add the `consistency` lens for discovery questions.
+
 ## Common Paths
 
 ### Discuss

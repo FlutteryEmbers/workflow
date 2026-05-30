@@ -91,6 +91,12 @@ When unsure, start with `shape`. Use `explore` for evidence and `review` for ver
 
 `shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` must not choose final direction. `review` must not invent replacement design.
 
+For repository conflicts:
+
+- Discovery question: conflict = reliability risk. Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
+- Judgment question: conflict = possible source-of-truth issue. Use `review --lens consistency` when the user asks what is correct, acceptable, ready, or worth changing.
+- Do not infer repo ownership. Use the user's question type to choose `explore` vs `review`.
+
 ## Lenses
 
 Lenses are user-selected. Copilot may suggest a lens, but must not apply it unless the user explicitly names it or adds its file as context.

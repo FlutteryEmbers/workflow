@@ -43,6 +43,13 @@ When unsure, start with `shape`. Use `explore` for evidence and `review` for ver
 
 Lenses may strengthen the selected task, but must not change task responsibility.
 
+Discovery vs judgment rule:
+
+- Do not infer repo ownership or maintenance responsibility.
+- Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
+- Use `review` for whether something is correct, acceptable, ready, worth changing, or which source should be treated as truth.
+- Do not add the `consistency` lens for discovery questions.
+
 ## Lens Selection Rules
 
 - Default to `Lens: none`.
@@ -117,6 +124,7 @@ Common segmentations:
 - Move discussion into formal docs: `shape/plan/review -> Save Packet -> save accepted -> sync`.
 - Distill a reference and improve workflow: `explore --lens distill -> Save Packet -> shape -> Save Packet -> save draft -> plan -> build`.
 - Ambiguous what-if or entrypoint selection: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
+- Understand code/docs mismatches as discovery: `explore -> Save Packet -> save note`, with `Reliability Notes`; use `review --lens consistency` only for source-of-truth judgments.
 
 Use stop points before accepted promotion, implementation, and formal docs sync.
 
