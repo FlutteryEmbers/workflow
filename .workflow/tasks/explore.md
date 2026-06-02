@@ -6,7 +6,7 @@ inputs:
   - question_or_source
 outputs:
   - chat_findings
-  - save_packet
+  - persist_packet
 user_selectable_lenses:
   - distill
   - architecture
@@ -30,7 +30,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Do not load templates and do not write files.
-- If the user asks to save or provides a target, return `Save Packet` and route the write to `save`.
+- If the user asks to persist or provides a target, return `Persist Packet` and route the write to `persist`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -48,13 +48,13 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to judge whether a plan, diff, or implementation is acceptable; use `review`.
 - Do not use to decide whether docs or code should be modified; use `review` for verdicts and `sync` or `plan/build` only after that verdict.
 - Do not use to create executable steps; use `plan`.
-- Do not use to write session artifacts; use `save`.
+- Do not use to write session artifacts; use `persist`.
 - Do not use to update project docs; use `sync`.
 
 ## Expected Output
 
 - `Sources Checked`, `Observed Facts`, `Evidence Map`, `Reliability Notes`, `Unknowns`, `Constraints Found`, `Potential Options`, and `Recommended Next Task`.
-- `Save Packet` when findings should become an inbox note, option draft, or distillation artifact.
+- `Persist Packet` when findings should become an inbox note, option draft, or distillation artifact.
 
 ## Task Boundary Check
 
@@ -62,7 +62,7 @@ Before exploring, classify obvious boundary problems:
 
 - `fits`: user asks to understand code, docs, behavior, feasibility, reference material, entrypoints, dependencies, or source evidence.
 - `fits_with_preflight`: request scope is too broad, source is unclear, or the request may actually belong to `review`, `shape`, or `plan`. In `Mode: discuss`, run conditional boundary preflight only.
-- `composite`: user asks to explore and save; explore first, then route to `save`.
+- `composite`: user asks to explore and persist; explore first, then route to `persist`.
 - `wrong_task`: user asks to choose a direction; recommend `shape`.
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
 - `wrong_task`: user asks to judge a target or diff; recommend `review`.
@@ -109,7 +109,7 @@ Use this structure for non-trivial output:
 - `Unknowns`: missing facts or weak evidence.
 - `Constraints Found`: boundaries, existing behavior, dependencies, or doc constraints.
 - `Potential Options`: candidate materials for `shape`; these are not final recommendations.
-- `Recommended Next Task`: usually `shape`, `review`, `plan`, `save`, or `sync`.
+- `Recommended Next Task`: usually `shape`, `review`, `plan`, `persist`, or `sync`.
 
 Lens use must not change task responsibility. `distill`, `architecture`, `debug`, `domain`, and `language` may improve evidence extraction, but `explore` must not become final synthesis or verdict.
 
@@ -125,12 +125,12 @@ Reliability Notes:
 - Suggested Follow-up: <inspect runtime behavior | check tests | ask owner | compare versions | treat as hypothesis>
 ```
 
-## Save Packet
+## Persist Packet
 
 When useful, end with:
 
 ```text
-Save Packet:
+Persist Packet:
 Artifact: note | option | distillation
 Status: inbox | draft
 Intent: exploration | audit | reference
@@ -164,10 +164,10 @@ Risks / Unknowns:
 Examples / Pseudocode:
 - <example, code path, or pseudocode if useful>
 Next Use:
-- <shape | plan | review | save | sync>
+- <shape | plan | review | persist | sync>
 ```
 
-If the exploration is not worth preserving, output `Save Packet: none`.
+If the exploration is not worth preserving, output `Persist Packet: none`.
 
 ## User Input
 

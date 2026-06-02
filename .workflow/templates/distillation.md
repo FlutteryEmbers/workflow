@@ -1,6 +1,6 @@
 # Distillation
 
-## Save Metadata
+## Persist Metadata
 
 - Artifact: distillation
 - Topic: {{source}}
@@ -91,4 +91,4 @@
 
 ## Next Use
 
-{{shape, plan, save accepted, sync, build, or none}}
+{{shape, plan, persist accepted, sync, build, or none}}

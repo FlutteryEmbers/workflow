@@ -14,7 +14,7 @@
 
 | Conflict | Sources | Classification | Source Of Truth | Recommended Action | Confidence |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| {{short conflict}} | {{paths}} | {{doc_stale / code_drift / docs_conflict / ambiguous_intent / intentional_exception / low_value}} | {{source or unknown}} | {{save / sync / shape / plan -> build / none}} | {{high / medium / low}} |
+| {{short conflict}} | {{paths}} | {{doc_stale / code_drift / docs_conflict / ambiguous_intent / intentional_exception / low_value}} | {{source or unknown}} | {{persist / sync / shape / plan -> build / none}} | {{high / medium / low}} |
 
 ## Source Of Truth Decision
 
@@ -26,7 +26,7 @@
 
 ## Follow-up Path
 
-{{save | sync | shape | plan -> build | none}}
+{{persist | sync | shape | plan -> build | none}}
 
 ## Ignored Or Accepted Differences
 

@@ -29,7 +29,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 - Start with `## Execution Understanding` in `Mode: execute`, naming the approved plan, selected lenses, scope, and key constraints.
 - Ask instead of editing when the approved plan is missing, scope is unclear, or requested edits exceed the plan.
 - `Mode: discuss` is default: explain the build approach or missing prerequisites in chat, do not write files.
-- `Mode: persist`: not valid for this task; use `save` for session artifacts or `sync` for project docs / code-adjacent README.
+- `Mode: persist`: not valid for this task; use `persist` for session artifacts or `sync` for project docs / code-adjacent README.
 - `Mode: execute`: required for repository changes and must include an approved `Plan`.
 - For native external-agent Implement, use the external-agent path instead of this task, then run `review` on the resulting diff.
 
@@ -43,7 +43,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 
 - Do not use to create or approve the plan; use `plan` and `review`.
 - Do not use for native external-agent implementation; use the external-agent path and then `review`.
-- Do not use to save session artifacts or project docs directly.
+- Do not use to persist session artifacts or project docs directly.
 
 ## Expected Output
 
@@ -59,7 +59,7 @@ Before building, classify the request:
 - `missing_prerequisite`: approved `Plan` is missing, unclear, not approved, or points only to `.session/drafts/**` without explicit approval.
 - `missing_prerequisite`: approved `Plan` points to `notes/**`; disposable exploration notes are not approved execution sources.
 - `composite`: user asks to implement from target docs/current code without an approved plan; recommend `plan -> review -> external-agent/build -> review`.
-- `wrong_task`: user asks to save session artifacts; recommend `save`.
+- `wrong_task`: user asks to persist session artifacts; recommend `persist`.
 - `wrong_task`: user asks to update project docs; recommend `sync`.
 
 Conditional implicit preflight for `build` is allowed only in `Mode: discuss` and only checks readiness: approved plan, scope, allowed changes, do-not-touch areas, and verification. In `Mode: execute`, do not preflight; if the approved plan is missing or unclear, block without editing.
@@ -111,7 +111,7 @@ After implementation, output `Docs Follow-up` only when the change clearly affec
 
 - Repository changes live in the project codebase.
 - Workflow system changes live in `.workflow/**` and require an explicit approved plan.
-- Session working memory lives in `.session/**` and should be updated by `save`, not `build`.
+- Session working memory lives in `.session/**` and should be updated by `persist`, not `build`.
 - `.session/accepted/**` is the preferred session-level source for approved build input.
 - `.session/drafts/**` is not executable by default.
 - `notes/**` is disposable exploration memory and is not executable by default.

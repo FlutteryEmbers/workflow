@@ -6,7 +6,7 @@ inputs:
   - user_goal_or_context
 outputs:
   - chat_clarification
-  - save_packet
+  - persist_packet
 user_selectable_lenses:
   - iteration
   - language
@@ -28,7 +28,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Do not load templates and do not write files.
-- If the user asks to save or provides a target, return `Save Packet` and route the write to `save`.
+- If the user asks to persist or provides a target, return `Persist Packet` and route the write to `persist`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -41,20 +41,20 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Do not use to choose a direction; use `shape`.
 - Do not use to evaluate code, docs, plans, or diffs; use `review`.
 - Do not use to produce implementation steps; use `plan`.
-- Do not use to write session artifacts; use `save`.
+- Do not use to write session artifacts; use `persist`.
 - Do not use to update project docs; use `sync`.
 
 ## Expected Output
 
 - Concise clarified goal, scope, acceptance signals, assumptions, and open questions.
-- `Save Packet` when the clarification should become an inbox artifact.
+- `Persist Packet` when the clarification should become an inbox artifact.
 
 ## Task Boundary Check
 
 Before clarifying, classify obvious boundary problems:
 
 - `fits`: user is providing goals, staged requirements, scope, assumptions, or acceptance notes.
-- `composite`: user asks to clarify and save; clarify first, then route to `save`.
+- `composite`: user asks to clarify and persist; clarify first, then route to `persist`.
 - `wrong_task`: user asks to judge code/docs reasonableness; recommend `review`.
 - `wrong_task`: user asks to form a direction or decision; recommend `shape`.
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
@@ -80,14 +80,14 @@ User-selected lenses:
 
 ## Instructions
 
-Capture the user's goal, staged requirements, background, constraints, non-goals, acceptance signals, and open questions. Keep this as chat output until the user chooses `save`.
+Capture the user's goal, staged requirements, background, constraints, non-goals, acceptance signals, and open questions. Keep this as chat output until the user chooses `persist`.
 
-## Save Packet
+## Persist Packet
 
 When useful, end with:
 
 ```text
-Save Packet:
+Persist Packet:
 Artifact: brief | note
 Status: inbox
 Intent: summary | exploration
@@ -109,10 +109,10 @@ Risks / Unknowns:
 Examples / Pseudocode:
 - <example if useful, otherwise none>
 Next Use:
-- <explore | shape | plan | save | sync>
+- <explore | shape | plan | persist | sync>
 ```
 
-If the clarification is not worth preserving, output `Save Packet: none`.
+If the clarification is not worth preserving, output `Persist Packet: none`.
 
 ## User Input
 

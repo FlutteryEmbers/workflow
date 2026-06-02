@@ -1,6 +1,6 @@
 # Brief
 
-## Save Metadata
+## Persist Metadata
 
 - Artifact: brief
 - Status: {{inbox | draft | accepted}}
@@ -45,7 +45,7 @@
 
 ## Suggested Next Step
 
-{{route to explore, shape, plan, save, build, review, or sync}}
+{{route to explore, shape, plan, persist, build, review, or sync}}
 
 ## Possible Follow-up
 

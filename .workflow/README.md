@@ -10,7 +10,7 @@ graph TD
     C --> E["explore"]
     E --> S["shape"]
     S --> P["plan"]
-    P --> W["save session artifact"]
+    P --> W["persist session artifact"]
     P --> B["build or external-agent"]
     B --> V["review"]
     V --> Y["sync project docs"]
@@ -32,7 +32,7 @@ graph TD
 - `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, and reference material.
 - `.session/drafts`: work-in-progress shapes, options, plans, and reviews; not approved for execution by default.
 - `.session/accepted`: accepted session-level conclusions such as decisions, approved plans, and accepted review verdicts.
-- `save`: the only task that writes session artifacts.
+- `persist`: the only task that writes session artifacts.
 - `docs`: code-aligned project docs maintained by the host project.
 - `notes`: optional disposable exploration notes for lightweight exploration repos when explicitly targeted.
 - `src/**/README.md`: optional code-adjacent reading entrypoint.
@@ -75,7 +75,7 @@ Drafts are not approved execution sources. `build` and external-agent implementa
 | `explore` | `designer` | chat | Understand code, materials, behavior, feasibility, or reference structure. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, goal update, or session decision. |
 | `plan` | `designer` | chat | Turn a chosen direction into a repo-aware plan or external-agent handoff. |
-| `save` | `steward` | `.session/**` | Save high-fidelity structured session artifacts from discussion, drafts, Save Packets, or user-provided sources. |
+| `persist` | `steward` | `.session/**` | Persist high-fidelity structured session artifacts from discussion, drafts, Persist Packets, or user-provided sources. |
 | `build` | `builder` | repository changes | Apply an approved workflow-managed plan. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
 | `sync` | `steward` | `docs/**` or `src/**/README.md` | Project confirmed facts into code-aligned project docs and code-adjacent README files. |
@@ -123,7 +123,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 ## Mode And Write Boundaries
 
 - `Mode: discuss`: chat only; no templates and no writes.
-- `Task: save` in `Mode: persist`: writes session artifacts to `.session/**`.
+- `Task: persist` in `Mode: persist`: writes session artifacts to `.session/**`.
 - `Task: sync` in `Mode: persist`: writes only `docs/**` or explicit `src/**/README.md`.
 - `Mode: execute`: uses `Task: build` with an approved plan.
 - External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan audit before implementation and diff review afterward.
@@ -144,22 +144,24 @@ Before acting, classify whether the request fits the selected task:
 
 Composite requests should return segmented prompts with stop points. Do not silently switch tasks or automatically run later write/implementation segments.
 
-## Save-Centered Session Writes
+## Persist-Centered Session Writes
 
-Discussion tasks do not write files. They should end with `Save Packet` when the current output is worth preserving, or `Save Packet: none` when it is not.
+Discussion tasks do not write files. They should end with `Persist Packet` when the current output is worth preserving, or `Persist Packet: none` when it is not.
 
-- `save` writes `.session/**`.
-- `save` may also write explicit `notes/**` disposable exploration notes.
-- `save` consumes `Save Packet`, recent discussion, existing artifacts, or source files.
-- `save` can infer targets for `.session/inbox/**` and `.session/drafts/**`.
+- `persist` writes `.session/**`.
+- `persist` may also write explicit `notes/**` disposable exploration notes.
+- `persist` consumes `Persist Packet`, recent discussion, existing artifacts, or source files.
+- `persist` can infer targets for `.session/inbox/**` and `.session/drafts/**`.
 - `.session/accepted/**` requires explicit accepted, approved, or promote intent.
 - Explicit `.session/**` targets are respected even when the file name does not follow the recommended prefix.
 - `notes/**` must be explicit and is never inferred.
 - Targets outside `.session/**` and `notes/**` are routed instead of rejected: `docs/**` and `src/**/README.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
 
-Saved artifacts preserve decision-relevant reasoning, not full transcript. They should be more structured than chat without dropping useful context, evidence, tradeoffs, rejected options, examples, risks, open questions, or next use.
+Persisted artifacts preserve decision-relevant reasoning, not full transcript. They should be more structured than chat without dropping useful context, evidence, tradeoffs, rejected options, examples, risks, open questions, or next use.
 
-`save` uses:
+`persist` may apply explicit accepted revisions, but it must not make new design, planning, or review judgments. If review feedback requires choosing a new direction, reordering a plan, or deciding whether a finding is correct, return to `shape`, `plan`, or `review` before persisting.
+
+`persist` uses:
 
 - `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
 - `Depth`: `compact | standard | detailed`.
@@ -173,8 +175,8 @@ Default depth is `standard` for `brief` and `note`, and `detailed` for `shape`, 
 - Use `Target: notes/{topic}.md` only when the user explicitly wants a disposable exploration note.
 - `notes/**` is not project docs and does not use Project Docs Rules.
 - `notes/**` is not an approved source for `build` or external-agent implementation.
-- `save` must not infer `notes/**`; default save inference remains `.session/inbox/**` or `.session/drafts/**`.
-- Useful conclusions from `notes/**` should be promoted through normal workflow: save to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed project context to `docs/**`.
+- `persist` must not infer `notes/**`; default persist inference remains `.session/inbox/**` or `.session/drafts/**`.
+- Useful conclusions from `notes/**` should be promoted through normal workflow: persist to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed project context to `docs/**`.
 - `notes/INDEX.md` is optional. Consider it only when there are more than five active notes.
 - Optional note metadata can track `status`, `source`, `updated`, and `promoted_to`.
 
@@ -234,14 +236,14 @@ Any write to `docs/**` must:
 ## Common Paths
 
 - Usage guidance: `route`.
-- Stage requirements or background: `clarify -> save -> .session/inbox/**`.
-- Explore code or reference material: `explore -> save -> .session/inbox/**` or `.session/drafts/option_*.md`.
-- Disposable exploration note: `save -> notes/{topic}.md` only with explicit target.
-- Shape a direction or goal: `shape -> save -> .session/drafts/**` or `.session/accepted/**`.
+- Stage requirements or background: `clarify -> persist -> .session/inbox/**`.
+- Explore code or reference material: `explore -> persist -> .session/inbox/**` or `.session/drafts/option_*.md`.
+- Disposable exploration note: `persist -> notes/{topic}.md` only with explicit target.
+- Shape a direction or goal: `shape -> persist -> .session/drafts/**` or `.session/accepted/**`.
 - Ambiguous what-if or strategy: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 - Existing target reasonableness: `review`, then `shape` or `plan` only if revision is needed.
-- Plan work or handoff: `plan -> save -> .session/drafts/**` or `.session/accepted/**`.
-- Multi-turn design: `shape/review/explore discuss loop -> save draft -> review -> save accepted`.
+- Plan work or handoff: `plan -> persist -> .session/drafts/**` or `.session/accepted/**`.
+- Multi-turn design: `shape/review/explore discuss loop -> persist draft -> review -> persist accepted`.
 - Native implementation: external-agent native Plan -> `review` audit -> native Implement -> `review` diff.
 - Workflow-managed implementation: `plan -> build`.
 - Project docs sync: `sync -> docs/**`.
@@ -251,7 +253,7 @@ Any write to `docs/**` must:
 
 - Add one task file from `.workflow/tasks/`.
 - Add selected lenses only when explicitly named.
-- Add templates only for `save` or `sync` in `Mode: persist`.
+- Add templates only for `persist` or `sync` in `Mode: persist`.
 - Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, `docs/**`, and source files.
 - Use `.workflow/copilot.md` as the Add Context menu.
 
@@ -263,14 +265,14 @@ Any write to `docs/**` must:
 - Treat OpenCode native Plan output as an external draft plan, not as approved work.
 - Audit OpenCode plans with `review` before implementation and review diffs afterward.
 - OpenCode bounded implementation should execute only approved narrow segments.
-- Temporary `.opencode/plans/` files are scratch; use `save` to persist draft handoffs to `.session/drafts/**` and accepted handoffs to `.session/accepted/**`.
+- Temporary `.opencode/plans/` files are scratch; use `persist` to persist draft handoffs to `.session/drafts/**` and accepted handoffs to `.session/accepted/**`.
 
 ## Using With Codex
 
 - Codex support is manual. This project does not add `AGENTS.md` by default.
 - Add or read `.workflow/codex.md` when you want Codex to follow Workflow Lite.
 - Do not load all `.workflow/**`; use one task, explicitly selected lenses, and relevant context.
-- Template files are persist-only and should be loaded only for `save` or `sync` in `Mode: persist`.
+- Template files are persist-only and should be loaded only for `persist` or `sync` in `Mode: persist`.
 - Codex native Plan -> Implement is `Write Path: external-agent`, not `Mode: execute`.
 - If a future project needs automatic agent instructions, add a shared `AGENTS.md` separately; this repository does not require it.
 

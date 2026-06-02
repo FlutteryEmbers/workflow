@@ -1,7 +1,7 @@
 ---
-id: save
+id: persist
 role: steward
-purpose: Save high-fidelity structured session artifacts from discussion, drafts, Save Packets, or user-provided sources.
+purpose: Persist high-fidelity structured session artifacts from discussion, drafts, Persist Packets, or user-provided sources.
 inputs:
   - artifact
   - status
@@ -25,7 +25,7 @@ done_check:
   - target_boundary_is_valid
 ---
 
-# Save Task
+# Persist Task
 
 ## Context Injection
 
@@ -35,13 +35,13 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: persist` is required for writes.
-- `Mode: discuss` may propose a save packet, target, artifact kind, status, intent, depth, and template without writing.
+- `Mode: discuss` may propose a persist packet, target, artifact kind, status, intent, depth, and template without writing.
 - `Mode: execute` is not valid for this task.
-- Load templates only for the artifact being saved.
+- Load templates only for the artifact being persisted.
 
 ## When To Use
 
-- Use after `clarify`, `explore`, `shape`, `plan`, or `review` discussion when the user wants to save a session artifact.
+- Use after `clarify`, `explore`, `shape`, `plan`, or `review` discussion when the user wants to persist a session artifact.
 - Use to update an existing `.session/**` artifact with newer discussion, review feedback, or user corrections.
 - Use to promote a draft to `.session/accepted/**` only when the user explicitly says accepted, approved, promote, or equivalent.
 - Use to write disposable exploration notes only when the user explicitly provides `Target: notes/**`.
@@ -50,16 +50,16 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 - Do not write project docs; use `sync` for `docs/**` and `src/**/README.md`.
 - Do not modify source code, `.workflow/**`, `.github/**`, or other repository artifacts; use `build` or external-agent.
-- Do not save full transcripts by default.
+- Do not persist full transcripts by default.
 
-## Save Inputs
+## Persist Inputs
 
 - `Artifact`: `brief | note | shape | option | plan | review | decision | distillation | expanded | goal`.
 - `Status`: `inbox | draft | accepted`.
 - `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
 - `Depth`: `compact | standard | detailed`.
 - `Topic`: short file-safe topic.
-- `Source`: `Save Packet`, recent discussion, existing artifact, user input, file path, or selected context.
+- `Source`: `Persist Packet`, recent discussion, existing artifact, user input, file path, or selected context.
 - `Target`: optional for `.session/inbox/**` and `.session/drafts/**`; explicit for `.session/accepted/**` unless accepted intent is already clear.
 - `Target: notes/**`: explicit only; used for disposable exploration notes.
 
@@ -72,14 +72,14 @@ Depth: compact | standard | detailed
 
 ## Content Fidelity Contract
 
-Saved artifacts must be more structured than chat without losing the reasoning needed for future work.
+Persisted artifacts must be more structured than chat without losing the reasoning needed for future work.
 
 - Preserve decision-relevant reasoning: context, constraints, evidence, user corrections, option tradeoffs, rejected options, examples, pseudocode, risks, unknowns, and next use.
 - Do not compress multi-turn discussion into unsupported conclusions.
 - Remove conversational noise, repetition, stale intermediate phrasing, and obvious dead ends.
 - Separate confirmed facts from assumptions or AI-added inferences.
 - If the source is thin, say what is missing instead of inventing confidence.
-- Full transcript is not the default. If the user asks to save the process, write a conversation summary. Save verbatim transcript only when explicitly requested and label it noisy and not source of truth.
+- Full transcript is not the default. If the user asks to persist the process, write a conversation summary. Persist verbatim transcript only when explicitly requested and label it noisy and not source of truth.
 
 ## Depth Rules
 
@@ -92,10 +92,30 @@ Saved artifacts must be more structured than chat without losing the reasoning n
 
 ## Source Handling
 
-- Prefer an explicit `Save Packet` when present.
-- If no `Save Packet` exists, synthesize one from recent discussion, source artifacts, user corrections, and selected files.
+- Prefer an explicit `Persist Packet` when present.
+- If no `Persist Packet` exists, synthesize one from recent discussion, source artifacts, user corrections, and selected files.
 - If source material conflicts, preserve the conflict and mark the source of truth as unresolved.
-- Do not use `save` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
+- Do not use `persist` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
+
+## Persist Revision Rule
+
+`persist` may revise artifact form and apply explicit accepted edits, but it must not make new design, planning, or source-of-truth judgments.
+
+Allowed:
+
+- Restructure an artifact using the matching template.
+- Improve wording, metadata, reasoning trail, examples, and traceability.
+- Merge an existing artifact with explicit review findings or user-approved edits.
+- Move rejected or invalidated content into rejected options, risks, or open questions.
+
+Not allowed:
+
+- Choose a new direction, boundary, or architecture.
+- Reorder an implementation plan based on new judgment.
+- Decide whether a review finding is correct.
+- Turn an unclear `needs changes` review into an accepted artifact.
+
+If review feedback is not explicit enough to apply mechanically, route back to `shape`, `plan`, or `review` before persisting.
 
 ## Target Rules
 
@@ -110,11 +130,11 @@ Saved artifacts must be more structured than chat without losing the reasoning n
 
 `notes/**` is disposable exploration memory for lightweight exploration repos or one-off exploratory work.
 
-- `save` may write `notes/**` only when `Target: notes/**` is explicit.
+- `persist` may write `notes/**` only when `Target: notes/**` is explicit.
 - `notes/**` is not project docs and does not use Project Docs Rules.
 - `notes/**` is not an approved execution source and must not be treated as an accepted plan.
 - `notes/**` may be overwritten, deleted, parked, discarded, or promoted later.
-- Useful conclusions from `notes/**` should be promoted through normal workflow: save to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed project context to `docs/**`.
+- Useful conclusions from `notes/**` should be promoted through normal workflow: persist to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed project context to `docs/**`.
 - Optional note metadata may be used when helpful: `status`, `source`, `updated`, `promoted_to`.
 - `notes/**` is suitable for `Artifact: brief | note | shape | option | review | distillation | expanded`; do not use it for accepted plans or project docs.
 
@@ -122,8 +142,8 @@ Saved artifacts must be more structured than chat without losing the reasoning n
 
 If the user explicitly provides a target path, respect it unless it violates write safety, lacks required prerequisites, or belongs to another write boundary.
 
-- `.session/**`: `save` may write it when the request is a session artifact.
-- `notes/**`: `save` may write it only as an explicit disposable exploration note target.
+- `.session/**`: `persist` may write it when the request is a session artifact.
+- `notes/**`: `persist` may write it only as an explicit disposable exploration note target.
 - `docs/**` or `src/**/README.md`: route to `sync` and require Project Docs Rules.
 - Source code, `.workflow/**`, `.github/**`, or other repository artifacts: route to `build` or external-agent with an approved plan.
 
@@ -148,13 +168,13 @@ If the user explicitly provides a target path, respect it unless it violates wri
 ## Output Rules
 
 - Write only the target session artifact or explicit `notes/**` exploration note.
-- Add `Save Metadata` to the artifact.
+- Add `Persist Metadata` to the artifact.
 - Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
 - Draft artifacts are not approved execution sources.
 - Accepted artifacts are session-level accepted sources, but code-aligned project docs still go through `sync`.
-- The saved artifact should be denser and more durable than chat. It must not be a low-context bullet summary when detailed reasoning is available.
+- The persisted artifact should be denser and more durable than chat. It must not be a low-context bullet summary when detailed reasoning is available.
 - For `notes/**`, compact or standard depth is acceptable. Preserve useful conclusion, evidence, and next use, but do not treat the note as an accepted artifact.
 
 ## User Input
 
-{{artifact, status, intent, depth, topic, source, target, and save request}}
+{{artifact, status, intent, depth, topic, source, target, and persist request}}

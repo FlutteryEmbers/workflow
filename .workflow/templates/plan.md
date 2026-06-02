@@ -1,6 +1,6 @@
 # Plan
 
-## Save Metadata
+## Persist Metadata
 
 - Artifact: plan
 - Topic: {{topic}}
@@ -157,4 +157,4 @@ flowchart TD
 
 ## Next Use
 
-{{review, save accepted, build, external-agent, sync, or none}}
+{{review, persist accepted, build, external-agent, sync, or none}}

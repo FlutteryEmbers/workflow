@@ -1,6 +1,6 @@
 # Review
 
-## Save Metadata
+## Persist Metadata
 
 - Artifact: review
 - Topic: {{topic}}
@@ -62,7 +62,7 @@
 - Readiness: {{0-10}}
 - Blocking Gaps: {{must-fix before next write or implementation}}
 - Non-blocking Gaps: {{can track without blocking}}
-- Recommended Action: {{none | save | sync | shape | plan | build | external-agent}}
+- Recommended Action: {{none | persist | sync | shape | plan | build | external-agent}}
 - Can Promote Source: {{yes/no}}
 - Can Execute Plan: {{yes/no}}
 
@@ -118,12 +118,12 @@ flowchart TD
 
 ## Follow-up
 
-- {{save, sync, shape, plan, build, external-agent, or none}}
+- {{persist, sync, shape, plan, build, external-agent, or none}}
 
 ## Recommended Next Task
 
-{{shape | plan | build | sync | save | external-agent | none}}
+{{shape | plan | build | sync | persist | external-agent | none}}
 
 ## Next Use
 
-{{save draft, save accepted, plan, build, sync, or none}}
+{{persist draft, persist accepted, plan, build, sync, or none}}

@@ -17,8 +17,8 @@ Use this lens when a strong reference document, architecture folder, RFC, ADR, h
 
 ## Output Hints
 
-- Exploration output can be saved to `.session/inbox/note_{source}_distillation.md`.
-- Draft shaping output can be saved to `.session/drafts/shape_distill_{topic}.md`.
-- Accepted adoption decisions can be saved to `.session/accepted/decision_distill_{topic}.md` when accepted intent is explicit.
+- Exploration output can be persisted to `.session/inbox/note_{source}_distillation.md`.
+- Draft shaping output can be persisted to `.session/drafts/shape_distill_{topic}.md`.
+- Accepted adoption decisions can be persisted to `.session/accepted/decision_distill_{topic}.md` when accepted intent is explicit.
 - Stable writing principles can later be synced into `docs/**`.
 - Do not directly modify `.workflow/**`; use `shape -> plan -> build` for workflow changes.

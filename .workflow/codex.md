@@ -13,7 +13,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
 - Codex may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
-- Load templates only for `save` or `sync` in `Mode: persist`.
+- Load templates only for `persist` or `sync` in `Mode: persist`.
 - Treat `.session/**` as working memory, not project source of truth.
 - Treat `.session/drafts/**` as unapproved working artifacts.
 - Prefer `.session/accepted/**` for approved plans, accepted decisions, and implementation handoffs.
@@ -56,13 +56,13 @@ Request:
 
 Do not add templates. Do not write files.
 
-### Save Session Artifact
+### Persist Session Artifact
 
-Use when the user wants to save a session artifact from recent discussion, an existing draft, or user-provided source.
+Use when the user wants to persist a session artifact from recent discussion, an existing draft, or user-provided source.
 
 ```text
 Mode: persist
-Task: save
+Task: persist
 Artifact: <brief|note|shape|option|plan|review|decision|distillation|expanded|goal>
 Status: <inbox|draft|accepted>
 Intent: <summary|exploration|decision|audit|handoff|constraint|reference>
@@ -70,17 +70,19 @@ Depth: <compact|standard|detailed>
 Topic: <topic>
 Target: <optional for inbox/drafts; explicit for accepted/goal when needed>
 Context:
-- .workflow/tasks/save.md
+- .workflow/tasks/persist.md
 - .workflow/templates/<artifact template>.md
 - selected lenses only when named
-- Save Packet or source context
+- Persist Packet or source context
 Request:
-Save the high-fidelity structured artifact only.
+Persist the high-fidelity structured artifact only.
 ```
 
-`save` may infer `.session/inbox/**` and `.session/drafts/**`. Accepted artifacts require explicit accepted, approved, or promote intent. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. Targets outside `.session/**` and `notes/**` route to `sync`, `build`, or external-agent.
+`persist` may infer `.session/inbox/**` and `.session/drafts/**`. Accepted artifacts require explicit accepted, approved, or promote intent. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. Targets outside `.session/**` and `notes/**` route to `sync`, `build`, or external-agent.
 
-Use `Save Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, reasoning trail, rejected options, risks, examples, and next use when they affect later work.
+Use `Persist Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, reasoning trail, rejected options, risks, examples, and next use when they affect later work.
+
+`persist` may restructure artifacts and apply explicit accepted review edits. It must not choose a new direction, re-plan execution, judge whether review feedback is correct, or promote unclear `needs changes` content; route those cases back to `shape`, `plan`, or `review`.
 
 `notes/**` is not an approved execution source. Stable conclusions should be promoted through normal workflow into `.session/**` or `docs/**`.
 
@@ -115,7 +117,7 @@ Codex native Plan
 -> review diff
 ```
 
-The native plan is a draft until reviewed. Persist draft handoffs with `save` to `.session/drafts/**`; persist accepted handoffs with `save` to `.session/accepted/**`.
+The native plan is a draft until reviewed. Persist draft handoffs with `persist` to `.session/drafts/**`; persist accepted handoffs with `persist` to `.session/accepted/**`.
 
 ### Project Docs Sync
 
@@ -150,37 +152,37 @@ Mode: discuss
 Task: shape
 Lens: <none or selected lenses>
 Request:
-Discuss the target direction. Include evidence, unknowns, tradeoffs, and a Save Packet when worth preserving. Do not write files.
+Discuss the target direction. Include evidence, unknowns, tradeoffs, and a Persist Packet when worth preserving. Do not write files.
 ```
 
-### Save Artifact
+### Persist Artifact
 
 ```text
 Use .workflow/codex.md as the Codex adapter.
 Mode: persist
-Task: save
+Task: persist
 Artifact: <artifact>
 Status: <inbox|draft|accepted>
 Intent: <summary|exploration|decision|audit|handoff|constraint|reference>
 Depth: <compact|standard|detailed>
 Topic: <topic>
 Request:
-Save the current converged session state. Preserve decision-relevant reasoning, not full transcript.
+Persist the current converged session state. Preserve decision-relevant reasoning, not full transcript.
 ```
 
-### Save Exploration Note
+### Persist Exploration Note
 
 ```text
 Use .workflow/codex.md as the Codex adapter.
 Mode: persist
-Task: save
+Task: persist
 Artifact: note
 Status: inbox
 Intent: exploration
 Depth: compact | standard
 Target: notes/<topic>.md
 Request:
-Save this as a disposable exploration note. Do not treat it as project docs or an approved source.
+Persist this as a disposable exploration note. Do not treat it as project docs or an approved source.
 ```
 
 ### Native Plan

@@ -1,6 +1,6 @@
 # Shape
 
-## Save Metadata
+## Persist Metadata
 
 - Artifact: shape
 - Topic: {{topic}}
@@ -135,4 +135,4 @@ flowchart TD
 
 ## Next Use
 
-{{save draft, review, plan, save accepted, sync, or none}}
+{{persist draft, review, plan, persist accepted, sync, or none}}

@@ -11,7 +11,7 @@ docs/        # code-aligned project docs, when the host project uses it
 
 The workflow system belongs in `.workflow/`. Session artifacts belong in `.session/`. Code-aligned long-term project docs belong in `docs/**`. Code-adjacent reading notes may live in `src/**/README.md` when useful.
 
-Use `save` for high-fidelity session artifacts from `Save Packet`, `sync` for code-aligned project docs / code-adjacent README, and `build` for approved repository changes.
+Use `persist` for high-fidelity session artifacts from `Persist Packet`, `sync` for code-aligned project docs / code-adjacent README, and `build` for approved repository changes.
 
 Exploration repos may use explicit `notes/**` targets for disposable exploration notes. Code-aligned project docs remain `docs/**`.
 
@@ -49,8 +49,8 @@ Reusable lessons from this project:
 
 Features worth preserving in a future experiment workflow:
 
-- `discuss -> save -> review -> execute/sync` as a general control loop.
-- High-fidelity artifact saving, especially for evidence, assumptions, rejected options, and next use.
+- `discuss -> persist -> review -> execute/sync` as a general control loop.
+- High-fidelity artifact persisting, especially for evidence, assumptions, rejected options, and next use.
 - Explicit status boundaries such as disposable, draft, accepted, and project docs.
 - External-agent plan audit and diff review for weak or context-limited agents.
 - Lightweight exploration notes for throwaway trials.

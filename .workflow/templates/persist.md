@@ -1,6 +1,6 @@
-# Save Operation
+# Persist Operation
 
-Use this as the `save` task operation checklist. It is not the saved artifact body.
+Use this as the `persist` task operation checklist. It is not the persisted artifact body.
 
 ## Inputs
 
@@ -9,7 +9,7 @@ Use this as the `save` task operation checklist. It is not the saved artifact bo
 - Intent: {{summary | exploration | decision | audit | handoff | constraint | reference}}
 - Depth: {{compact | standard | detailed}}
 - Topic: {{file-safe topic}}
-- Source: {{Save Packet | recent discussion | existing artifact | file path | user input}}
+- Source: {{Persist Packet | recent discussion | existing artifact | file path | user input}}
 - Target: {{explicit target or inferred target}}
 
 ## Rules
@@ -19,10 +19,17 @@ Use this as the `save` task operation checklist. It is not the saved artifact bo
 - Separate confirmed facts from assumptions.
 - Do not compress detailed discussion into unsupported conclusions.
 - Use the artifact template that matches `Artifact`.
+- Apply explicit accepted review edits only; do not invent a new direction, plan, or verdict.
 - Infer targets only for `.session/inbox/**` and `.session/drafts/**`.
 - Require explicit accepted intent before writing `.session/accepted/**`.
 - Route `docs/**` and `src/**/README.md` to `sync`.
 - Route code, `.workflow/**`, and `.github/**` to `build` or external-agent.
+
+## Revision Boundary
+
+- Allowed: restructure, clarify wording, merge explicit review edits, and preserve rejected options or unresolved risks.
+- Not allowed: choose a new shape, re-plan execution, judge whether review feedback is correct, or promote unclear `needs changes` content.
+- If revision requires new judgment, route to `shape`, `plan`, or `review` before persisting.
 
 ## Depth
 
@@ -34,4 +41,4 @@ Use this as the `save` task operation checklist. It is not the saved artifact bo
 
 - Target: {{resolved target}}
 - Naming Note: {{only if explicit target differs from recommended prefix}}
-- Saved Artifact: {{summary of what was written}}
+- Persisted Artifact: {{summary of what was written}}

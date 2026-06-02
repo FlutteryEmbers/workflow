@@ -1,6 +1,6 @@
 # Decision
 
-## Save Metadata
+## Persist Metadata
 
 - Artifact: decision
 - Topic: {{topic}}

@@ -24,6 +24,6 @@ Do not use this lens by default for discovery questions. If the user asks what e
 
 ## Output Hints
 
-- Reviews can be saved with `save` as `.session/drafts/review_{topic}.md`.
+- Reviews can be persisted with `persist` as `.session/drafts/review_{topic}.md`.
 - `sync` may write only `docs/**` or `src/**/README.md`.
 - Do not silently rewrite project docs to match code when code may be wrong.

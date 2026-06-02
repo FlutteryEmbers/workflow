@@ -44,7 +44,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 
 ## Do Not Use When
 
-- Do not use to perform analysis, planning, review, save, sync, or implementation itself.
+- Do not use to perform analysis, planning, review, persist, sync, or implementation itself.
 - Do not use to apply lenses; only recommend them.
 
 ## Expected Output
@@ -79,15 +79,15 @@ Recommend the smallest path:
 - Existence and discovery questions such as "does this repo have X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
 - Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
 - Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
-- Typical session state flow: `discuss loop -> Save Packet -> save draft -> review -> Save Packet -> save accepted -> build/external-agent -> review -> sync`.
-- New background or staged requirements: `clarify` or `explore` -> `save` to `.session/inbox/**`.
-- Target direction, option, architecture, or concept: `shape` -> `save` to `.session/drafts/**` or `.session/accepted/**`.
-- Repo-aware implementation sequence or handoff: `plan` -> `save` to `.session/drafts/**` or `.session/accepted/**`.
-- Session artifact write: `save` -> `.session/**`.
+- Typical session state flow: `discuss loop -> Persist Packet -> persist draft -> review -> Persist Packet -> persist accepted -> build/external-agent -> review -> sync`.
+- New background or staged requirements: `clarify` or `explore` -> `persist` to `.session/inbox/**`.
+- Target direction, option, architecture, or concept: `shape` -> `persist` to `.session/drafts/**` or `.session/accepted/**`.
+- Repo-aware implementation sequence or handoff: `plan` -> `persist` to `.session/drafts/**` or `.session/accepted/**`.
+- Session artifact write: `persist` -> `.session/**`.
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
 - Project docs alignment: `sync` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute` and an approved plan.
-- Discussion chains should end with `Save Packet` when the result is worth preserving. `save` consumes the packet; the original discussion task does not write files.
+- Discussion chains should end with `Persist Packet` when the result is worth preserving. `persist` consumes the packet; the original discussion task does not write files.
 
 ## Lens Suggestions
 
@@ -118,7 +118,7 @@ Target: <only when writing>
 Add Context:
 - .workflow/tasks/<task>.md
 - .workflow/lenses/<lens>.md only when selected
-- .workflow/templates/<template>.md only for `save` or `sync` in Mode: persist
+- .workflow/templates/<template>.md only for `persist` or `sync` when persisting
 - .session/goal/*, relevant .session/inbox/**, relevant .session/drafts/**, relevant .session/accepted/**, docs/**, or source files as needed
 Next prompt: <copyable prompt>
 ```

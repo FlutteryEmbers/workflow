@@ -9,7 +9,7 @@
 > promoted_to: {{path or none}}
 > ```
 
-## Save Metadata
+## Persist Metadata
 
 - Artifact: note
 - Topic: {{topic}}
@@ -26,7 +26,7 @@
 
 ## Why This Matters
 
-{{why this note should be saved instead of remaining only in chat}}
+{{why this note should be persisted instead of remaining only in chat}}
 
 ## Source
 

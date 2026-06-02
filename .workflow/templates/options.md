@@ -1,6 +1,6 @@
 # Options
 
-## Save Metadata
+## Persist Metadata
 
 - Artifact: option
 - Status: {{draft | accepted}}
@@ -89,4 +89,4 @@ flowchart TD
 
 ## Next Use
 
-{{shape, plan, review, save accepted, sync, or none}}
+{{shape, plan, review, persist accepted, sync, or none}}

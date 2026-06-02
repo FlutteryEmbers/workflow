@@ -1,6 +1,6 @@
 # Expanded
 
-## Save Metadata
+## Persist Metadata
 
 - Artifact: expanded
 - Topic: {{topic}}
@@ -97,4 +97,4 @@
 
 ## Next Use
 
-{{review, plan, build, sync, save accepted, or none}}
+{{review, plan, build, sync, persist accepted, or none}}

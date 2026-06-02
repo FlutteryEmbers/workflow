@@ -12,11 +12,12 @@ This repo uses Workflow Lite.
 - In `Mode: discuss`, do not load templates and do not create or update files.
 - In `Mode: discuss`, multiple lenses are allowed only when explicitly listed; keep `Lens: none` by default.
 - Implicit preflight is automatic in discuss for `shape`, `plan`, and `sync`; see `.workflow/copilot.md` for the full matrix.
-- In `Mode: persist`, use `Task: save` for session artifacts under `.session/**`.
-- Explicit `notes/**` targets may be saved as disposable exploration memory; never infer `notes/**`.
+- In `Mode: persist`, use `Task: persist` for session artifacts under `.session/**`.
+- Explicit `notes/**` targets may be persisted as disposable exploration memory; never infer `notes/**`.
 - Do not treat `notes/**` as project docs or approved execution source.
-- Discussion tasks do not write files; they should produce `Save Packet` when useful.
-- When saving session artifacts, preserve decision-relevant reasoning; do not save full transcript by default.
+- Discussion tasks do not write files; they should produce `Persist Packet` when useful.
+- When persisting session artifacts, preserve decision-relevant reasoning; do not persist full transcript by default.
+- `persist` may apply explicit accepted edits, but must not make new shape, plan, or review judgments.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
 - `docs/**` is code-aligned project docs and must follow Project Docs Rules.
 - In `Mode: execute`, require `Task: build` and an approved plan before modifying repository artifacts.

@@ -30,8 +30,8 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default: recommend sync targets in chat, do not load templates, and do not write files.
 - `Mode: persist`: write only `docs/**` or explicit `src/**/README.md` targets.
-- Reject `.session/**` targets; session files are maintained by `save`.
-- Reject `notes/**` targets; disposable exploration notes are maintained by `save`.
+- Reject `.session/**` targets; session files are maintained by `persist`.
+- Reject `notes/**` targets; disposable exploration notes are maintained by `persist`.
 - `Mode: execute`: not valid for this task.
 
 ## When To Use
@@ -41,8 +41,8 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 ## Do Not Use When
 
-- Do not use to maintain `.session/**`; use `save`.
-- Do not use to maintain `notes/**`; use `save`.
+- Do not use to maintain `.session/**`; use `persist`.
+- Do not use to maintain `notes/**`; use `persist`.
 - Do not use to decide whether code or docs are correct, acceptable, or source of truth; use `review`.
 - Do not use to change source code; use `plan -> build` or the external-agent path.
 
@@ -57,10 +57,10 @@ Before syncing, classify the request:
 
 - `fits`: user asks to align code-aligned project docs or code-adjacent README with confirmed source.
 - `fits_with_preflight`: sync depends on checking source, existing docs, code, diff, consistency, future-use success criteria, or Project Docs Rules. In `Mode: discuss`, run default implicit preflight first.
-- `wrong_task`: user asks to save any session artifact; recommend `save`.
+- `wrong_task`: user asks to persist any session artifact; recommend `persist`.
 - `wrong_task`: user asks to change code; recommend `plan -> build` or external-agent.
 - `missing_prerequisite`: `Mode: persist` target is missing or is not `docs/**` or `src/**/README.md`.
-- `wrong_task`: target is `notes/**`; recommend `save` because exploration notes are not project docs.
+- `wrong_task`: target is `notes/**`; recommend `persist` because exploration notes are not project docs.
 - `missing_prerequisite`: source, future use, source of truth, or Project Docs Rules safety is unclear for `docs/**`.
 - `missing_prerequisite`: source is only `.session/drafts/**` and the user has not explicitly confirmed it as source of truth.
 
@@ -118,13 +118,13 @@ Create a new `docs/**` file only when it would reduce future human or agent exec
 - The same confusion, drift, or planning discussion has appeared more than once.
 - The source is `.session/accepted/**` or a clear code/diff/test fact.
 
-If the content is temporary, exploratory, not accepted, already obvious from code, or unlikely to affect future execution, output `docs blocked` and recommend `save` to `.session/**` or explicit `notes/**`.
+If the content is temporary, exploratory, not accepted, already obvious from code, or unlikely to affect future execution, output `docs blocked` and recommend `persist` to `.session/**` or explicit `notes/**`.
 
 ## Instructions
 
 Use `sync` only for code-aligned project docs and code-adjacent README projection. Inputs may come from `.session/**`, source code, diffs, tests, or existing docs, but outputs are limited to `docs/**` and `src/**/README.md`.
 
-Prefer `.session/accepted/**` as the session-level input source. If the only available source is `.session/drafts/**`, `.session/inbox/**`, or `notes/**`, block until the user explicitly confirms that source of truth or routes it through `review` and `save` into `.session/accepted/**`.
+Prefer `.session/accepted/**` as the session-level input source. If the only available source is `.session/drafts/**`, `.session/inbox/**`, or `notes/**`, block until the user explicitly confirms that source of truth or routes it through `review` and `persist` into `.session/accepted/**`.
 
 `review` makes the judgment; `sync` performs the projection. If the request asks which source is correct, whether the design is good, whether code should change, or whether docs should override code, route to `review` or `shape` instead of deciding inside `sync`.
 

@@ -16,4 +16,4 @@ Default to `Lens: none`. Add a lens only when the user explicitly names it or ad
 - `debug`: diagnose defects or uncertain runtime behavior.
 - `consistency`: compare code, project docs, session decisions, tests, and code-adjacent README files for drift.
 
-Use `save` for session outputs: `.session/inbox/**` for staged inputs, `.session/drafts/**` for unapproved working artifacts, and `.session/accepted/**` for accepted session-level sources. Code-aligned project knowledge goes to `docs/**` through `sync`. Code-adjacent reading notes go to `src/**/README.md`.
+Use `persist` for session outputs: `.session/inbox/**` for staged inputs, `.session/drafts/**` for unapproved working artifacts, and `.session/accepted/**` for accepted session-level sources. Code-aligned project knowledge goes to `docs/**` through `sync`. Code-adjacent reading notes go to `src/**/README.md`.

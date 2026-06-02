@@ -1,6 +1,6 @@
 ---
 description: Use Workflow Lite with explicit user-selected lenses.
-argument-hint: "Mode=<discuss|persist|execute>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|save|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference>; Depth=<compact|standard|detailed>; Target=<required for sync/accepted/docs/code; optional for save inbox/drafts>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|persist|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference>; Depth=<compact|standard|detailed>; Target=<required for sync/accepted/docs/code; optional for persist inbox/drafts>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Prompt
@@ -12,11 +12,11 @@ Use Workflow Lite with progressive context.
 ```text
 Mode: ${input:mode:discuss}
 Write Path: ${input:write_path:workflow-managed|external-agent}
-Task: ${input:task:route|clarify|explore|shape|plan|save|build|review|sync}
+Task: ${input:task:route|clarify|explore|shape|plan|persist|build|review|sync}
 Lens: ${input:lens:none; comma-separated lenses allowed only when explicitly selected}
-Intent: ${input:intent:required for save; otherwise none}
-Depth: ${input:depth:compact|standard|detailed; optional for save}
-Target: ${input:target:required for sync/accepted/docs/code; optional for save inbox/drafts; otherwise none}
+Intent: ${input:intent:required for persist; otherwise none}
+Depth: ${input:depth:compact|standard|detailed; optional for persist}
+Target: ${input:target:required for sync/accepted/docs/code; optional for persist inbox/drafts; otherwise none}
 Plan: ${input:plan:required for execute; otherwise none}
 Request: ${input:request:describe the work}
 ```
@@ -40,13 +40,14 @@ Request: ${input:request:describe the work}
 - Multiple lenses are allowed in `Mode: discuss` only when explicitly listed; follow the user's lens order.
 - Do not infer, auto-apply, or load all lenses.
 - In `Mode: discuss`, do not load templates and do not create or update files.
-- Discussion tasks should produce `Save Packet` when the result is worth preserving; output `Save Packet: none` when it is not.
-- In `Mode: persist`, use `Task: save` for `.session/**` artifacts or `Task: sync` for `docs/**` / `src/**/README.md`.
-- For `save`, `.session/inbox/**` and `.session/drafts/**` targets may be inferred from `Artifact + Status + Topic`.
-- For `save`, `.session/accepted/**` requires explicit accepted, approved, or promote intent.
-- For `save`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
+- Discussion tasks should produce `Persist Packet` when the result is worth preserving; output `Persist Packet: none` when it is not.
+- In `Mode: persist`, use `Task: persist` for `.session/**` artifacts or `Task: sync` for `docs/**` / `src/**/README.md`.
+- For `persist`, `.session/inbox/**` and `.session/drafts/**` targets may be inferred from `Artifact + Status + Topic`.
+- For `persist`, `.session/accepted/**` requires explicit accepted, approved, or promote intent.
+- For `persist`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
 - `notes/**` is not project docs and is not an approved execution source.
-- For `save`, preserve decision-relevant reasoning, not full transcript. Use `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact output.
+- For `persist`, preserve decision-relevant reasoning, not full transcript. Use `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact output.
+- `persist` may apply explicit accepted review edits, but must not choose a new direction, re-plan execution, or judge whether review feedback is correct.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
 - In `Mode: execute`, require `Task: build` and an approved plan.
 - If using Codex/Copilot native Plan -> Implement, set `Write Path: external-agent`; external-agent is not a Mode.
@@ -67,7 +68,7 @@ Request: ${input:request:describe the work}
 ## Context Format
 
 Add the selected task file from `.workflow/tasks/`.
-Add the matching template from `.workflow/templates/` only for `save` or `sync` in `Mode: persist`.
+Add the matching template from `.workflow/templates/` only for `persist` or `sync` in `Mode: persist`.
 For new `docs/**` targets, add `project_doc.md` or `architecture_note.md`; for existing docs, preserve the target structure.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
 Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, `docs/**`, and source files.

@@ -6,7 +6,7 @@ inputs:
   - decision_or_target
 outputs:
   - chat_plan
-  - save_packet
+  - persist_packet
 user_selectable_lenses:
   - iteration
   - expand
@@ -32,7 +32,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
-- If the user asks to save or provides a target, return `Save Packet` and route the write to `save`.
+- If the user asks to persist or provides a target, return `Persist Packet` and route the write to `persist`.
 - `Mode: execute` is not valid for this task; use `build` with an approved plan.
 - For native Plan/Implement, use the external-agent path.
 
@@ -46,13 +46,13 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to invent the target direction; use `shape`.
 - Do not use to judge whether a plan, target, code, or diff is good; use `review`.
 - Do not use to implement the plan; use `build` or the external-agent path after review.
-- Do not use to write session artifacts; use `save`.
+- Do not use to write session artifacts; use `persist`.
 - Do not use to update project docs; use `sync`.
 
 ## Expected Output
 
 - A repo-aware plan with `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
-- `Save Packet` when the plan should become a draft handoff or accepted plan.
+- `Persist Packet` when the plan should become a draft handoff or accepted plan.
 
 ## Task Boundary Check
 
@@ -60,7 +60,7 @@ Before planning, classify the request:
 
 - `fits`: target direction is chosen and the user needs repo-aware implementation steps or handoff.
 - `fits_with_preflight`: plan depends on current code, project docs, session context, target-to-repo fit, target files, or verification readiness. In `Mode: discuss`, run default implicit preflight first.
-- `composite`: user asks to plan and save; plan first, then route to `save`.
+- `composite`: user asks to plan and persist; plan first, then route to `persist`.
 - `wrong_task`: target direction is not chosen; recommend `shape`.
 - `wrong_task`: user asks whether current implementation or target is reasonable; recommend `review`.
 - `composite`: user asks to implement from target docs and current code; recommend `plan -> review -> external-agent/build -> review`.
@@ -89,12 +89,12 @@ Include `Docs Follow-up` only when the planned change clearly affects architectu
 
 If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend plan audit with `review --lens redteam,test`. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
 
-## Save Packet
+## Persist Packet
 
 When useful, end with:
 
 ```text
-Save Packet:
+Persist Packet:
 Artifact: plan
 Status: draft | accepted
 Intent: handoff | decision | audit
@@ -128,11 +128,11 @@ Handoff Notes:
 Docs Follow-up:
 - <none | suggested | required; include target and reason only when future human/agent execution could be misled>
 Next Use:
-- <save draft | review | save accepted | build | external-agent>
+- <persist draft | review | persist accepted | build | external-agent>
 ```
 
 Accepted plans require explicit accepted, approved, or promote intent.
-If the plan is not worth preserving, output `Save Packet: none`.
+If the plan is not worth preserving, output `Persist Packet: none`.
 
 ## User Input
 

@@ -6,7 +6,7 @@ inputs:
   - target_or_claim
 outputs:
   - chat_review
-  - save_packet
+  - persist_packet
 user_selectable_lenses:
   - redteam
   - consistency
@@ -33,7 +33,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in user-provided order, then give actionable findings.
 - Do not load templates and do not write files.
-- If the user asks to save or provides a target, return `Save Packet` and route the write to `save`.
+- If the user asks to persist or provides a target, return `Persist Packet` and route the write to `persist`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -47,13 +47,13 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - Do not use for ambiguous what-if, strategy, conceptual, or direction-setting requests unless there is an existing target to judge.
 - Do not use to create implementation steps from an accepted direction; use `plan`.
 - Do not use to perform repository edits; use `build` or the external-agent path after approval.
-- Do not use to write session artifacts; use `save`.
+- Do not use to write session artifacts; use `persist`.
 - Do not use to update project docs; use `sync`.
 
 ## Expected Output
 
 - Findings first, then `Decision`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
-- `Save Packet` when the review should become a draft review or accepted verdict.
+- `Persist Packet` when the review should become a draft review or accepted verdict.
 
 ## Task Boundary Check
 
@@ -61,7 +61,7 @@ Before reviewing, classify the request:
 
 - `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, readiness, acceptability, consistency, safety, or reasonableness.
 - `fits_with_preflight`: review verdict depends on code, docs, diff, session evidence, or external plan context. In `Mode: discuss`, run conditional implicit preflight first.
-- `composite`: user asks to review and save; review first, then route to `save`.
+- `composite`: user asks to review and persist; review first, then route to `persist`.
 - `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
 - `wrong_task`: user asks to implement steps from an approved direction; recommend `plan` or `build`.
 - `wrong_task`: user asks to update project docs; recommend `sync`.
@@ -70,7 +70,7 @@ Conditional implicit preflight for `review` only checks review target, review qu
 
 If evidence is insufficient for a verdict, output `Decision: needs more evidence`, name the missing evidence, and recommend `explore` instead of inventing approval or blocking conclusions.
 
-Review acts as a gateway. Verdicts should recommend next task: `none`, `save`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
+Review acts as a gateway. Verdicts should recommend next task: `none`, `persist`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 
 ## Copilot Add Context
 
@@ -101,7 +101,7 @@ For non-trivial reviews, include a readiness dashboard:
 - `Readiness`: `0-10`
 - `Blocking Gaps`: issues that must be resolved before the next write or implementation step.
 - `Non-blocking Gaps`: issues that can be tracked without blocking.
-- `Recommended Action`: `none | save | sync | shape | plan | build | external-agent`.
+- `Recommended Action`: `none | persist | sync | shape | plan | build | external-agent`.
 - `Suggested Lens`: `redteam` or `none`.
 
 ## External Plan Audit
@@ -127,12 +127,12 @@ Check for scope drift, unrelated edits, missing edits, missing verification, cha
 
 Treat drive-by refactors and unapproved scope expansion as blocking unless the approved plan explicitly allowed them.
 
-## Save Packet
+## Persist Packet
 
 When useful, end with:
 
 ```text
-Save Packet:
+Persist Packet:
 Artifact: review | decision
 Status: draft | accepted
 Intent: audit | decision
@@ -164,13 +164,13 @@ Risks / Unknowns:
 Examples / Pseudocode:
 - <example failure path or reproduction if useful>
 Recommended Next Task:
-- <shape | plan | build | sync | save | none>
+- <shape | plan | build | sync | persist | none>
 Next Use:
-- <save draft | save accepted | plan | build | sync>
+- <persist draft | persist accepted | plan | build | sync>
 ```
 
 Accepted review verdicts require explicit accepted, approved, or promote intent.
-If the review is not worth preserving, output `Save Packet: none`.
+If the review is not worth preserving, output `Persist Packet: none`.
 
 ## User Input
 

@@ -24,7 +24,7 @@ Discovery vs judgment rule:
 
 Exploration notes:
 
-- Explicit `notes/**` targets may be saved as disposable exploration notes through `Task: save`.
+- Explicit `notes/**` targets may be persisted as disposable exploration notes through `Task: persist`.
 - Do not treat `notes/**` as project docs or approved implementation plans.
 - Do not use OpenCode bounded implement from `notes/**`; promote useful conclusions into `.session/**` or create an approved external plan first.
 
@@ -46,7 +46,7 @@ Use this when OpenCode native Plan can draft an implementation plan.
 - Treat the result as a draft external plan.
 - Do not edit files during native Plan.
 - Audit the draft with `review` before implementation.
-- Use `save` to persist draft handoff plans to `.session/drafts/**` or accepted handoff plans to `.session/accepted/**`.
+- Use `persist` to persist draft handoff plans to `.session/drafts/**` or accepted handoff plans to `.session/accepted/**`.
 
 ### Level 3: Bounded Implementer
 
@@ -62,7 +62,7 @@ Use this only after an approved narrow plan exists.
 ```text
 OpenCode context summary
 -> workflow review / shape / plan
--> Save Packet -> save draft or accepted handoff when useful
+-> Persist Packet -> persist draft or accepted handoff when useful
 -> OpenCode bounded implement
 -> workflow diff review
 -> sync project docs when stable
@@ -77,11 +77,11 @@ Use only the files needed for the current step.
 - `.workflow/tasks/route.md` for choosing a path.
 - `.workflow/tasks/review.md` for plan audit or diff review.
 - `.workflow/tasks/plan.md` for a repo-aware handoff.
-- `.workflow/tasks/save.md` for session artifact persistence.
+- `.workflow/tasks/persist.md` for session artifact persistence.
 - `.workflow/tasks/sync.md` for project docs or code-adjacent README alignment.
 - `.workflow/lenses/<lens>.md` only when explicitly selected.
 - `.session/goal/*`, relevant `.session/inbox/**`, relevant `.session/drafts/**`, relevant `.session/accepted/**`, `docs/**`, and source files as needed.
-- explicit `notes/**` only when saving disposable exploration notes.
+- explicit `notes/**` only when persisting disposable exploration notes.
 
 Do not load all tasks or all lenses by default.
 
@@ -139,32 +139,34 @@ Plan requirements:
 - Open questions
 ```
 
-### Save Draft Or Accepted Handoff
+### Persist Draft Or Accepted Handoff
 
 ```text
 Mode: persist
-Task: save
+Task: persist
 Artifact: plan
 Status: draft | accepted
 Intent: handoff
 Depth: detailed
 Topic: <topic>
 Request:
-Save the OpenCode handoff plan. Preserve decision-relevant reasoning, not full transcript.
+Persist the OpenCode handoff plan. Preserve decision-relevant reasoning, not full transcript.
 ```
 
-### Save Exploration Note
+`persist` can apply explicit accepted edits, but it must not invent a new direction, re-plan work, or promote unclear `needs changes` content. Route those cases back to `shape`, `plan`, or `review`.
+
+### Persist Exploration Note
 
 ```text
 Mode: persist
-Task: save
+Task: persist
 Artifact: note
 Status: inbox
 Intent: exploration
 Depth: compact | standard
 Target: notes/<topic>.md
 Request:
-Save this as a disposable exploration note. Do not treat it as project docs or an approved source.
+Persist this as a disposable exploration note. Do not treat it as project docs or an approved source.
 ```
 
 ### Plan Audit
