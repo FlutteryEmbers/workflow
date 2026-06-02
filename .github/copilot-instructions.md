@@ -20,6 +20,7 @@ This repo uses Workflow Lite.
 - `persist` may apply explicit accepted edits, but must not make new shape, plan, or review judgments.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
 - `docs/**` is code-aligned project docs and must follow Project Docs Rules.
+- Default to `Compatibility: preserve` and `Constraint Mode: respect`; breaking compatibility or constraint exceptions require explicit user intent or an accepted source.
 - In `Mode: execute`, require `Task: build` and an approved plan before modifying repository artifacts.
 - Native Plan/Implement may be used as an `external-agent` write path; do not treat it as workflow-managed execution.
 - External-agent is a write path, not a Mode.

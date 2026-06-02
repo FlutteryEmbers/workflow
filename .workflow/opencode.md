@@ -8,6 +8,8 @@ OpenCode may suggest `redteam` when risk triggers match, but must not auto-load 
 
 When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility.
 
+Default to `Compatibility: preserve` and `Constraint Mode: respect`. Breaking compatibility or constraint exceptions require explicit user or accepted-source intent.
+
 Task shortcut:
 
 - `shape = synthesis`: ambiguous, what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests.
@@ -21,6 +23,13 @@ Discovery vs judgment rule:
 - Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
 - Use `review` for whether something is correct, acceptable, ready, worth changing, or which source should be treated as truth.
 - Do not add the `consistency` lens for discovery questions.
+
+Compatibility / constraint rule:
+
+- `shape` may suggest breaking or override pressure, but cannot activate it automatically.
+- `plan` must encode selected breaking or exception scope explicitly.
+- `build` and bounded implement must stop on unapproved compatibility removal, alias removal, migration removal, fallback removal, or constraint bypass.
+- `prototype_exception` is temporary PoC scope, not a durable project constraint.
 
 Exploration notes:
 
@@ -128,9 +137,12 @@ Context:
 
 Plan requirements:
 - Success criteria
+- Compatibility: preserve | breaking
+- Constraint Mode: respect | propose_override | prototype_exception
 - Target files
 - Allowed changes
 - Do-not-touch areas
+- Removed compatibility, migration/alias, and constraint exceptions when selected
 - Assumptions
 - Step-by-step verification
 - Stop conditions
@@ -203,7 +215,7 @@ Approved segment:
 
 Do not modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved segment.
 Do not use notes/** as the approved segment; notes are disposable exploration memory.
-Stop and return to plan/review if implementation requires expanding scope.
+Stop and return to plan/review if implementation requires expanding scope, removing unapproved compatibility, or overriding unapproved constraints.
 
 Report:
 - Changed files

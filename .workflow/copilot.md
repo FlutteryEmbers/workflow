@@ -67,6 +67,14 @@ Discovery vs judgment rule:
 - `execute`: may modify broader repository artifacts only when the approved plan says so.
 - `external-agent`: native Plan/Implement may write files directly, but the native plan must be audited before implementation and the diff must be reviewed afterward.
 
+## Compatibility / Constraint Policy
+
+- Default to `Compatibility: preserve` and `Constraint Mode: respect`.
+- `shape` may suggest `consider breaking` or `consider override`, but must not activate it unless the user explicitly requested it.
+- `plan` must encode any explicit breaking or constraint exception into removed compatibility, migration/alias, do-not-preserve, cleanup, and stop conditions.
+- `build` may execute breaking changes or constraint exceptions only when the approved plan explicitly allows them.
+- Use `Constraint Mode: prototype_exception` only for temporary PoC scope; do not treat it as durable project docs content until accepted.
+
 ## Persist Context
 
 Use this when the user says persist, write, generate, update, land, or record a session artifact.
@@ -224,5 +232,7 @@ Plan: .session/accepted/plan_{topic}.md
 ```
 
 Add #.workflow/tasks/build.md, the approved plan, and target artifacts named by the plan.
+
+The approved plan must state `Compatibility: preserve | breaking` and `Constraint Mode: respect | propose_override | prototype_exception` when compatibility removal or constraint exceptions are involved. `build` must stop on unapproved breaking changes or constraint overrides.
 
 In chat, summarize decisions and next steps. Do not paste full artifact contents unless the user asks for a preview.

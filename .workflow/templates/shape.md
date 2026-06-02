@@ -70,6 +70,18 @@ flowchart TD
 
 - {{constraint, pressure, tradeoff, or preference affecting the decision}}
 
+## Compatibility / Constraint Check
+
+- Compatibility: {{preserve | breaking}}
+- Constraint Mode: {{respect | propose_override | prototype_exception}}
+- Compatibility Pressure: {{low | medium | high}}
+- Breaking Option Available: {{yes/no}}
+- Constraint Tension: {{none | mild | strong}}
+- Suggested Policy: {{preserve | consider breaking | consider override | prototype exception}}
+- Human Decision Needed: {{yes/no}}
+
+> Use `Compatibility: breaking` or `Constraint Mode != respect` only when explicitly requested by the user or accepted source.
+
 ## Reframed Goal
 
 {{clearer version of the user's goal}}

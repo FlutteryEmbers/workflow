@@ -52,6 +52,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - A repo-aware plan with `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
+- `Compatibility / Constraint Plan` that records the selected compatibility and constraint policy before execution.
 - `Persist Packet` when the plan should become a draft handoff or accepted plan.
 
 ## Task Boundary Check
@@ -89,6 +90,35 @@ Include `Docs Follow-up` only when the planned change clearly affects architectu
 
 If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend plan audit with `review --lens redteam,test`. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
 
+## Compatibility / Constraint Policy
+
+Default policy:
+
+- `Compatibility: preserve`
+- `Constraint Mode: respect`
+
+`plan` must encode the selected policy into executable steps. It must not silently switch from `preserve` to `breaking`, remove migration/alias/fallback work, or introduce constraint exceptions unless the user explicitly requested them or the source decision already states them.
+
+Use `Compatibility: breaking` only when explicitly requested by the user or accepted source. In that case, name removed compatibility, migration/alias decisions, cleanup, and stop conditions.
+
+Use `Constraint Mode: propose_override` or `prototype_exception` only when explicitly requested by the user or accepted source. In that case, name the exception scope, reason, cleanup or review trigger, and whether it must stay out of long-term `docs/**` until accepted.
+
+If preserving compatibility makes the plan materially more complex, output a planning blocker or tradeoff instead of switching policy automatically.
+
+Include:
+
+```text
+Compatibility / Constraint Plan
+- Compatibility: preserve | breaking
+- Constraint Mode: respect | propose_override | prototype_exception
+- Removed Compatibility: <old paths, aliases, behavior, schema, prompts, or none>
+- Migration / Alias: <kept | removed | none | explicitly not provided>
+- Constraint Exceptions: <constraint and reason, or none>
+- Do Not Preserve: <legacy behavior intentionally dropped, or none>
+- Cleanup Required: <old files, docs, prompts, tests, or none>
+- Stop Conditions: <when breaking scope or exceptions exceed approval>
+```
+
 ## Persist Packet
 
 When useful, end with:
@@ -115,6 +145,20 @@ Allowed Changes:
 - <paths, behavior, docs, tests, or prompts allowed to change>
 Do Not Touch:
 - <areas excluded from the plan>
+Compatibility:
+- <preserve | breaking>
+Constraint Mode:
+- <respect | propose_override | prototype_exception>
+Removed Compatibility:
+- <old path, alias, behavior, schema, prompt, or none>
+Migration / Alias:
+- <kept | removed | none | explicitly not provided>
+Constraint Exceptions:
+- <exception scope and reason, or none>
+Do Not Preserve:
+- <legacy behavior intentionally dropped, or none>
+Cleanup Required:
+- <old files, docs, prompts, tests, or none>
 Step -> Verify:
 - <step> -> <verification>
 Stop Conditions:

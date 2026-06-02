@@ -220,6 +220,25 @@ These rules are core protocol, not optional lenses:
 
 This project borrows prompt discipline from agent prompt repositories, but it does not copy role-command systems and does not add a root Claude-specific instruction file by default.
 
+## Compatibility / Constraint Policy
+
+Default policy is conservative:
+
+- `Compatibility: preserve`
+- `Constraint Mode: respect`
+
+Policy fields: `Compatibility: preserve | breaking`; `Constraint Mode: respect | propose_override | prototype_exception`.
+
+Only use `Compatibility: breaking` when the user or accepted source explicitly says `不背兼容`, `breaking`, `no migration`, `no alias`, or equivalent. Breaking means old paths, aliases, migrations, and fallbacks are not preserved unless the plan names them.
+
+Only use `Constraint Mode: propose_override` or `prototype_exception` when explicitly requested. Prototype exceptions are temporary PoC scope and must not become durable project constraints unless accepted and synced to `docs/**`.
+
+Task behavior:
+
+- `shape`: identify compatibility pressure and constraint tension, but do not switch policy automatically.
+- `plan`: encode the selected policy into removed compatibility, migration/alias decisions, constraint exceptions, cleanup, and stop conditions.
+- `build`: enforce the approved policy only; stop on unapproved compatibility removal or constraint override.
+
 ## Project Docs Rules
 
 Any write to `docs/**` must:

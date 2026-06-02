@@ -84,6 +84,14 @@ User-selected lenses:
 
 In `Mode: execute`, implement the approved plan. Read relevant artifacts first, keep edits inside the plan's scope, and stop if the plan requires unapproved interface, config, data, architecture, documentation, or workflow behavior changes.
 
+Before editing, check the approved plan's compatibility and constraint policy:
+
+- If the plan does not state otherwise, assume `Compatibility: preserve` and `Constraint Mode: respect`.
+- Execute breaking changes only when the approved plan explicitly states `Compatibility: breaking` and names the removed compatibility.
+- Execute constraint overrides only when the approved plan explicitly states `Constraint Mode: propose_override` or `Constraint Mode: prototype_exception` and names the exception scope.
+- Treat unapproved legacy entry removal, alias removal, migration removal, fallback removal, or constraint bypass as scope expansion.
+- If breaking/constraint details are missing, stop and route back to `plan` or `review`; do not infer them during build.
+
 Use minimal diff discipline: do not perform drive-by refactors, formatting churn, unrelated cleanup, or opportunistic rewrites. After each major plan step, record the verification evidence requested by the plan. If implementation reveals that scope must expand, stop and return to `plan` or `review` instead of editing beyond the approved scope.
 
 This stop-on-scope-expansion behavior is built-in safety, not the `redteam` lens. Do not perform redteam critique during `build`; route back to `review --lens redteam` when the approved plan appears unsafe or under-specified.
@@ -117,6 +125,7 @@ After implementation, output `Docs Follow-up` only when the change clearly affec
 - `notes/**` is disposable exploration memory and is not executable by default.
 - Code-adjacent README updates live in `src/**/README.md` and require an explicit approved plan.
 - Project docs live in `docs/**` and require approved-plan Project Docs conditions; otherwise output `Docs Follow-up` and route to `sync`.
+- Compatibility removal and constraint exceptions require explicit approved-plan policy; otherwise stop as unapproved scope expansion.
 
 ## User Input
 

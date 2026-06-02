@@ -70,6 +70,19 @@
 
 - {{path, behavior, interface, data, or docs area}}
 
+## Compatibility / Constraint Plan
+
+- Compatibility: {{preserve | breaking}}
+- Constraint Mode: {{respect | propose_override | prototype_exception}}
+- Removed Compatibility: {{old paths, aliases, behavior, schema, prompts, or none}}
+- Migration / Alias: {{kept | removed | none | explicitly not provided}}
+- Constraint Exceptions: {{constraint and reason, or none}}
+- Do Not Preserve: {{legacy behavior intentionally dropped, or none}}
+- Cleanup Required: {{old files, docs, prompts, tests, or none}}
+- Stop Conditions: {{when breaking scope or exceptions exceed approval}}
+
+> Default to `Compatibility: preserve` and `Constraint Mode: respect` unless the user or accepted source explicitly chooses otherwise.
+
 ## Current Repo Fit
 
 - Relevant Files: {{files, packages, docs, or none}}

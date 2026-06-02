@@ -20,6 +20,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Treat explicit `notes/**` targets as disposable exploration notes, not project docs or approved sources.
 - Treat `docs/**` as code-aligned project docs and apply Project Docs Rules before writing.
 - Lenses may strengthen the selected task, but must not change task responsibility.
+- Default to `Compatibility: preserve` and `Constraint Mode: respect`; breaking compatibility or constraint exceptions require explicit user or accepted-source intent.
 
 ## Task Boundary Shortcut
 
@@ -34,6 +35,13 @@ Discovery vs judgment rule:
 - Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
 - Use `review` for whether something is correct, acceptable, ready, worth changing, or which source should be treated as truth.
 - Do not add the `consistency` lens for discovery questions.
+
+## Compatibility / Constraint Policy
+
+- `shape` may identify compatibility pressure and constraint tension, but must not switch to `Compatibility: breaking` or `Constraint Mode != respect` automatically.
+- `plan` must name removed compatibility, migration/alias decisions, constraint exceptions, do-not-preserve items, cleanup, and stop conditions when breaking or exception mode is selected.
+- `build` or native implement must stop if it needs unapproved compatibility removal or constraint override.
+- `prototype_exception` is temporary PoC scope, not a durable project constraint.
 
 ## Common Paths
 
@@ -195,9 +203,12 @@ Goal:
 
 Plan requirements:
 - Success criteria
+- Compatibility: preserve | breaking
+- Constraint Mode: respect | propose_override | prototype_exception
 - Target files
 - Allowed changes
 - Do-not-touch areas
+- Removed compatibility, migration/alias, and constraint exceptions when selected
 - Assumptions
 - Step-by-step verification
 - Stop conditions
@@ -222,7 +233,7 @@ Audit this Codex native plan before implementation. Return approved, needs chang
 ```text
 Implement only the approved external plan segment below. Do not broaden scope.
 Use minimal diff. Do not perform drive-by refactors, formatting churn, unrelated cleanup, or opportunistic rewrites.
-Stop and return to plan/review if implementation requires expanding scope.
+Stop and return to plan/review if implementation requires expanding scope, removing unapproved compatibility, or overriding unapproved constraints.
 ```
 
 ### Diff Review

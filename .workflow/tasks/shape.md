@@ -55,6 +55,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - `Reframed Goal`, `Narrowest Useful Wedge`, `Success Criteria`, `Rejected Larger Scope`, tradeoffs, and recommended next step.
+- `Compatibility / Constraint Check` with compatibility pressure, breaking option availability, constraint tension, suggested policy, and whether a human decision is needed.
 - `Persist Packet` when the current shape should become a draft, accepted decision, or explicit goal update.
 - `Triage` when the request may actually need evidence, verdict, or executable planning first.
 
@@ -89,6 +90,36 @@ If missing evidence could change the recommendation, stop and output `Recommende
 `Risk Check` is built-in safety, not the `redteam` lens. Use it to name risky assumptions, likely failure modes, and whether a follow-up `review --lens redteam` is recommended. Do not load `.workflow/lenses/redteam.md` unless the user explicitly selected it.
 
 Lens use must not change task responsibility. `strategy`, `domain`, `architecture`, `iteration`, `expand`, `distill`, and `language` may help synthesize direction, but `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`.
+
+## Compatibility / Constraint Policy
+
+Default policy:
+
+- `Compatibility: preserve`
+- `Constraint Mode: respect`
+
+`shape` may automatically identify compatibility pressure and constraint tension, but it must not switch to `Compatibility: breaking` or `Constraint Mode: propose_override | prototype_exception` unless the user explicitly asks for it.
+
+Explicit user triggers:
+
+- Use `Compatibility: breaking` only when the user says `不背兼容`, `breaking`, `no migration`, `no alias`, `do not preserve compatibility`, or equivalent.
+- Use `Constraint Mode: propose_override` only when the user asks to challenge, override, or replace current architecture constraints.
+- Use `Constraint Mode: prototype_exception` only when the user says this is a temporary PoC, exploration exception, or "先跑通" style exception.
+
+When relevant, output:
+
+```text
+Compatibility / Constraint Check
+- Compatibility: preserve | breaking
+- Constraint Mode: respect | propose_override | prototype_exception
+- Compatibility Pressure: low | medium | high
+- Breaking Option Available: yes/no
+- Constraint Tension: none | mild | strong
+- Suggested Policy: preserve | consider breaking | consider override | prototype exception
+- Human Decision Needed: yes/no
+```
+
+If `Compatibility: breaking` or `Constraint Mode != respect` is explicitly requested, label it as user-requested. If it is only suggested, keep the active policy as `preserve` and `respect`.
 
 ## Copilot Add Context
 
@@ -140,6 +171,12 @@ Rejected Options:
 - <larger scopes or directions intentionally not chosen>
 Risks / Unknowns:
 - <risky assumptions, missing evidence, or follow-up review needs>
+Compatibility:
+- <preserve | breaking; note if explicitly requested>
+Constraint Mode:
+- <respect | propose_override | prototype_exception; note if explicitly requested>
+Compatibility / Constraint Notes:
+- <pressure, breaking option, constraint tension, human decision needed>
 Examples / Pseudocode:
 - <example scenario, conceptual flow, or pseudocode if useful>
 Validation Approach:

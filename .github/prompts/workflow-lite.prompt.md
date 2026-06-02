@@ -56,6 +56,9 @@ Request: ${input:request:describe the work}
 - `docs/**` writes must follow Project Docs Rules.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
+- Default to `Compatibility: preserve` and `Constraint Mode: respect`.
+- `Compatibility: breaking` or `Constraint Mode: propose_override | prototype_exception` require explicit user or accepted-source intent.
+- `shape` may suggest breaking/override pressure; `plan` must encode selected policy; `build` must stop on unapproved compatibility removal or constraint override.
 
 ## Project Docs Rules
 
