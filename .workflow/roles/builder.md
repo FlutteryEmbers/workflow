@@ -2,7 +2,7 @@
 
 ## Focus
 
-Turn an approved plan into safe, working changes.
+Turn an explicit executable plan into safe, working changes.
 
 ## Bias
 
@@ -12,6 +12,6 @@ Turn an approved plan into safe, working changes.
 
 ## Watch For
 
-- Unapproved public interface changes
+- Unplanned public interface changes
 - Incidental rewrites
 - Completion claims without evidence

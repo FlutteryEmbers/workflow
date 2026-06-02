@@ -9,17 +9,18 @@ Mode: <discuss|persist|execute>
 Task: <route|clarify|explore|shape|plan|persist|build|review|sync>
 Lens: <none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>
 Artifact: <required for persist unless target is explicit>
-Status: <inbox|draft|accepted; for persist>
+Status: <inbox|working|stable|superseded; for persist metadata>
+Thread: <thread-name; for persist thread target inference>
 Intent: <summary|exploration|decision|audit|handoff|constraint|reference; for persist>
 Depth: <compact|standard|detailed; optional for persist>
 Topic: <file-safe topic; for inferred persist target>
-Target: <optional for persist inbox/drafts; required for sync and explicit writes>
+Target: <optional for persist; required for sync and explicit writes>
 Plan: <required for execute; otherwise none>
 Context:
 - #.workflow/tasks/<task>.md
 - #.workflow/lenses/<lens>.md only when selected
 - #.workflow/templates/<template>.md only for persist or sync in Mode: persist
-- #.session/goal/*, relevant .session/inbox/**, relevant .session/drafts/**, relevant .session/accepted/**, docs/**, or source files
+- #.session/goal/*, relevant .session/inbox/**, relevant .session/threads/**, docs/**, or source files
 Request:
 <what you want>
 ```
@@ -29,7 +30,7 @@ Request:
 - `Mode: discuss` is the default. Add the task, selected lenses, and relevant context. Do not add templates. Do not create or update files.
 - `Task: persist` in `Mode: persist` writes session artifacts to `.session/**`.
 - `Task: sync` in `Mode: persist` writes only `docs/**` or explicit `src/**/README.md`.
-- `Mode: execute` applies an approved workflow-managed plan through `Task: build`.
+- `Mode: execute` applies an explicit workflow-managed plan through `Task: build`.
 - Native Codex/Copilot Plan -> Implement is the `external-agent` write path. It is not a Workflow Mode and does not use `Task: build`.
 
 ## Task Boundary Shortcut
@@ -64,7 +65,7 @@ Discovery vs judgment rule:
 - `discuss`: no writes.
 - `persist` persist: write `.session/**` or explicit `notes/**` disposable exploration notes.
 - `sync` persist: write only `docs/**` or `src/**/README.md`.
-- `execute`: may modify broader repository artifacts only when the approved plan says so.
+- `execute`: may modify broader repository artifacts only when the explicit plan says so.
 - `external-agent`: native Plan/Implement may write files directly, but the native plan must be audited before implementation and the diff must be reviewed afterward.
 
 ## Compatibility / Constraint Policy
@@ -72,8 +73,8 @@ Discovery vs judgment rule:
 - Default to `Compatibility: preserve` and `Constraint Mode: respect`.
 - `shape` may suggest `consider breaking` or `consider override`, but must not activate it unless the user explicitly requested it.
 - `plan` must encode any explicit breaking or constraint exception into removed compatibility, migration/alias, do-not-preserve, cleanup, and stop conditions.
-- `build` may execute breaking changes or constraint exceptions only when the approved plan explicitly allows them.
-- Use `Constraint Mode: prototype_exception` only for temporary PoC scope; do not treat it as durable project docs content until accepted.
+- `build` may execute breaking changes or constraint exceptions only when the plan explicitly allows them.
+- Use `Constraint Mode: prototype_exception` only for temporary PoC scope; do not treat it as durable project docs content until confirmed.
 
 ## Persist Context
 
@@ -88,8 +89,8 @@ Add:
 
 Target rules:
 
-- `.session/inbox/**` and `.session/drafts/**` may be inferred from `Artifact + Status + Topic`.
-- `.session/accepted/**` requires explicit accepted, approved, or promote intent.
+- `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md` may be inferred from `Artifact + Thread + Topic`.
+- `Target Directory` may be used to choose a specific thread folder.
 - `.session/goal/**` requires an explicit target.
 - Explicit `.session/**` targets should be respected even if naming differs from the recommended prefix.
 - Explicit `notes/**` targets are allowed for disposable exploration notes. Never infer `notes/**`.
@@ -108,14 +109,14 @@ Content fidelity:
 
 Revision boundary:
 
-- `persist` may restructure an artifact and apply explicit accepted review edits.
+- `persist` may restructure an artifact and apply explicit review edits.
 - `persist` must not choose a new direction, re-plan execution, judge whether review feedback is correct, or promote unclear `needs changes` content.
 - If revision needs new judgment, route back to `shape`, `plan`, or `review`.
 
 Exploration notes:
 
 - `notes/**` is disposable exploration memory, not project docs.
-- `notes/**` is not an approved source for build or external-agent implementation.
+- `notes/**` is not an execution source for build or external-agent implementation.
 - Stable conclusions should later be persisted to `.session/**` or synced to `docs/**`.
 - If `notes/**` grows beyond five active notes, suggest an optional `notes/INDEX.md`.
 
@@ -127,7 +128,7 @@ Before acting, classify the request when it is not obviously a fit:
 - `fits_with_preflight`: the current task can handle it after a read-only preflight.
 - `composite`: the request needs multiple tasks.
 - `wrong_task`: another task is the proper entrypoint.
-- `missing_prerequisite`: required target, approved plan, source of truth, or project docs safety is missing.
+- `missing_prerequisite`: required target, explicit plan, source of truth, or project docs safety is missing.
 
 If not `fits`, do not force-fit the request.
 
@@ -136,13 +137,13 @@ If not `fits`, do not force-fit the request.
 Common segmentations:
 
 - Judge current code/docs and decide what to do: `review -> Persist Packet -> shape/plan -> Persist Packet -> persist`.
-- Implement a feature from target docs and current code: `plan -> Persist Packet -> persist draft plan -> review -> Persist Packet -> persist accepted plan -> external-agent/build -> review`.
-- Move accepted conclusions into project docs: `shape/plan/review -> Persist Packet -> persist accepted -> sync`.
-- Distill a reference and improve workflow: `explore --lens distill -> Persist Packet -> shape -> Persist Packet -> persist draft -> plan -> build`.
+- Implement a feature from target docs and current code: `plan -> Persist Packet -> persist thread plan -> review -> external-agent/build -> review`.
+- Move stable thread conclusions into project docs: `shape/plan/review -> Persist Packet -> persist thread artifact -> sync`.
+- Distill a reference and improve workflow: `explore --lens distill -> Persist Packet -> shape -> Persist Packet -> persist thread artifact -> plan -> build`.
 - Ambiguous what-if or entrypoint selection: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 - Understand code/docs mismatches as discovery: `explore -> Persist Packet -> persist note`, with `Reliability Notes`; use `review --lens consistency` only for source-of-truth judgments.
 
-Use stop points before accepted promotion, implementation, and project docs sync.
+Use stop points before implementation and project docs sync.
 
 ## Template Map For Persist
 
@@ -169,19 +170,20 @@ Lens: none or selected lenses
 
 Add #.workflow/tasks/shape.md, selected lenses, and relevant context. Do not add templates.
 
-### Persist Draft Shape
+### Persist Thread Shape
 
 ```text
 Mode: persist
 Task: persist
 Artifact: shape
-Status: draft
+Status: working
 Intent: exploration
 Depth: detailed
+Thread: graph10x
 Topic: graph10x_entrypoints
 ```
 
-Add #.workflow/tasks/persist.md and #.workflow/templates/shape.md. Target may be inferred as `.session/drafts/shape_graph10x_entrypoints.md`.
+Add #.workflow/tasks/persist.md and #.workflow/templates/shape.md. Target may be inferred as `.session/threads/graph10x/shape_graph10x_entrypoints.md`.
 You may also say `persist shape_graph10x_entrypoints` to anchor the persist request to the shape artifact instead of the latest discussion topic.
 
 ### Persist Exploration Note
@@ -198,19 +200,20 @@ Target: notes/graph10x.md
 
 Add #.workflow/tasks/persist.md and #.workflow/templates/note.md. `notes/**` must be explicit and remains disposable exploration memory.
 
-### Persist Accepted Decision
+### Persist Thread Decision
 
 ```text
 Mode: persist
 Task: persist
 Artifact: decision
-Status: accepted
+Status: stable
 Intent: constraint
 Depth: detailed
+Thread: auth
 Topic: auth_boundary
 ```
 
-Add #.workflow/tasks/persist.md and #.workflow/templates/decision.md. Accepted intent is explicit.
+Add #.workflow/tasks/persist.md and #.workflow/templates/decision.md.
 
 ### Sync Project Docs
 
@@ -219,10 +222,10 @@ Mode: persist
 Task: sync
 Target: docs/{area}/{topic}.md
 Source:
-- .session/accepted/decision_{topic}.md
+- .session/threads/{thread}/decision_{topic}.md
 ```
 
-Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant accepted session artifacts, existing docs, and source files. Apply Project Docs Rules.
+Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant thread artifacts, existing docs, and source files. Apply Project Docs Rules.
 
 When creating a new `docs/**` target, also add #.workflow/templates/project_doc.md or #.workflow/templates/architecture_note.md. When updating existing docs, preserve the target file's existing structure.
 
@@ -231,11 +234,11 @@ When creating a new `docs/**` target, also add #.workflow/templates/project_doc.
 ```text
 Mode: execute
 Task: build
-Plan: .session/accepted/plan_{topic}.md
+Plan: .session/threads/{thread}/plan_{topic}.md
 ```
 
-Add #.workflow/tasks/build.md, the approved plan, and target artifacts named by the plan.
+Add #.workflow/tasks/build.md, the explicit plan, and target artifacts named by the plan.
 
-The approved plan must state `Compatibility: preserve | breaking` and `Constraint Mode: respect | propose_override | prototype_exception` when compatibility removal or constraint exceptions are involved. `build` must stop on unapproved breaking changes or constraint overrides.
+The plan must state `Compatibility: preserve | breaking` and `Constraint Mode: respect | propose_override | prototype_exception` when compatibility removal or constraint exceptions are involved. `build` must stop on unplanned breaking changes or constraint overrides.
 
 In chat, summarize decisions and next steps. Do not paste full artifact contents unless the user asks for a preview.

@@ -4,7 +4,8 @@
 
 - Artifact: plan
 - Topic: {{topic}}
-- Status: {{draft | accepted}}
+- Status: {{working | stable | superseded}}
+- Thread: {{thread-name}}
 - Intent: {{handoff | decision | audit}}
 - Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | file path}}
@@ -17,8 +18,7 @@
 
 ## Decision Link
 
-- Draft plan: `.session/drafts/plan_<topic>.md`
-- Accepted plan: `.session/accepted/plan_<topic>.md`
+- Thread plan: `.session/threads/<thread>/plan_<topic>.md`
 
 ## Target Direction
 
@@ -26,7 +26,7 @@
 
 ## Source Context
 
-- {{accepted decision, draft shape, goal file, project doc, code path, or user correction}}
+- {{thread decision, shape artifact, goal file, project doc, code path, or user correction}}
 
 ## Inputs
 
@@ -53,10 +53,10 @@
 
 ## Execution Readiness
 
-- Approved For Build: {{yes/no}}
-- Approved For External Agent: {{yes/no}}
+- Ready For Build: {{yes/no}}
+- Ready For External Agent: {{yes/no}}
 - Blocking Gaps: {{gap or none}}
-- Draft Warning: {{draft plans are not executable by default}}
+- Execution Readiness: {{ready for build | needs review | needs more detail}}
 
 ## Success Criteria
 
@@ -81,7 +81,7 @@
 - Cleanup Required: {{old files, docs, prompts, tests, or none}}
 - Stop Conditions: {{when breaking scope or exceptions exceed approval}}
 
-> Default to `Compatibility: preserve` and `Constraint Mode: respect` unless the user or accepted source explicitly chooses otherwise.
+> Default to `Compatibility: preserve` and `Constraint Mode: respect` unless the user or explicit source chooses otherwise.
 
 ## Current Repo Fit
 
@@ -138,7 +138,7 @@ flowchart TD
 
 ## External-Agent Handoff
 
-{{success criteria, approved scope, allowed changes, do-not-touch areas, step verification, and minimal diff constraints for native Plan/Implement, if relevant}}
+{{success criteria, plan scope, allowed changes, do-not-touch areas, step verification, and minimal diff constraints for native Plan/Implement, if relevant}}
 
 ## Handoff Notes
 
@@ -159,7 +159,7 @@ flowchart TD
 
 ## Project Docs Conditions
 
-{{required only when the approved plan allows direct docs/** edits; otherwise use sync}}
+{{required only when the plan allows direct docs/** edits; otherwise use sync}}
 
 - Source: {{source material}}
 - Future Use: {{how the doc guides future human/agent work}}
@@ -170,4 +170,4 @@ flowchart TD
 
 ## Next Use
 
-{{review, persist accepted, build, external-agent, sync, or none}}
+{{review, persist, build, external-agent, sync, or none}}

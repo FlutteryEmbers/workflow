@@ -4,7 +4,8 @@
 
 - Artifact: expanded
 - Topic: {{topic}}
-- Status: {{draft | accepted}}
+- Status: {{working | stable | superseded}}
+- Thread: {{thread-name}}
 - Intent: {{summary | handoff | audit | reference}}
 - Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | file path}}
@@ -97,4 +98,4 @@
 
 ## Next Use
 
-{{review, plan, build, sync, persist accepted, or none}}
+{{review, plan, build, sync, persist, or none}}

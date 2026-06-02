@@ -20,15 +20,14 @@ Use this lens when structure, boundaries, dependencies, interfaces, or durable t
 ## Compatibility / Constraint Policy
 
 - Default to `Compatibility: preserve` and `Constraint Mode: respect`.
-- `Compatibility: breaking` requires explicit user or accepted-source intent; it means old paths, aliases, migrations, and fallbacks are not preserved unless the plan names them.
+- `Compatibility: breaking` requires explicit user or explicit-source intent; it means old paths, aliases, migrations, and fallbacks are not preserved unless the plan names them.
 - `Constraint Mode: propose_override` means the current constraint may be challenged, but the cost, fallout, and review need must be visible.
 - `Constraint Mode: prototype_exception` is temporary PoC scope. It is not a durable architecture rule.
-- Do not turn prototype exceptions into project constraints unless explicitly accepted and later synced to `docs/**`.
+- Do not turn prototype exceptions into project constraints unless explicitly confirmed and later synced to `docs/**`.
 
 ## Output Hints
 
-- Draft architecture decisions can be persisted to `.session/drafts/**`.
-- Accepted architecture decisions can be persisted to `.session/accepted/**` when accepted intent is explicit.
+- Architecture decisions can be persisted to `.session/threads/{thread}/decision_{topic}.md`.
 - Goal-level architecture direction may update `.session/goal/vision.md` or `.session/goal/roadmap.md`.
-- Accepted project constraints belong in `docs/architecture/boundaries.md` or another user-specified `docs/**` target through `sync`.
-- Do not turn prototype exceptions into durable project constraints unless explicitly accepted.
+- Stable project constraints belong in `docs/architecture/boundaries.md` or another user-specified `docs/**` target through `sync`.
+- Do not turn prototype exceptions into durable project constraints unless explicitly confirmed.

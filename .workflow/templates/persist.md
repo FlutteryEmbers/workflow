@@ -5,7 +5,8 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 ## Inputs
 
 - Artifact: {{brief | note | shape | option | plan | review | decision | distillation | expanded | goal}}
-- Status: {{inbox | draft | accepted}}
+- Status: {{inbox | working | stable | superseded}}
+- Thread: {{thread-name or none}}
 - Intent: {{summary | exploration | decision | audit | handoff | constraint | reference}}
 - Depth: {{compact | standard | detailed}}
 - Topic: {{file-safe topic}}
@@ -19,9 +20,9 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 - Separate confirmed facts from assumptions.
 - Do not compress detailed discussion into unsupported conclusions.
 - Use the artifact template that matches `Artifact`.
-- Apply explicit accepted review edits only; do not invent a new direction, plan, or verdict.
-- Infer targets only for `.session/inbox/**` and `.session/drafts/**`.
-- Require explicit accepted intent before writing `.session/accepted/**`.
+- Apply explicit review edits only; do not invent a new direction, plan, or verdict.
+- Infer targets for `.session/inbox/**` or `.session/threads/{thread}/{artifact}_{topic}.md`.
+- Use `Target Directory` when the user wants a specific thread folder.
 - Route `docs/**` and `src/**/README.md` to `sync`.
 - Route code, `.workflow/**`, and `.github/**` to `build` or external-agent.
 

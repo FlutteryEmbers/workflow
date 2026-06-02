@@ -26,11 +26,11 @@
 
 ## Do Not Change Without
 
-- {{review, accepted decision, migration plan, test evidence, owner input, or none}}
+- {{review, thread decision, migration plan, test evidence, owner input, or none}}
 
 ## Evidence
 
-- {{accepted session source, code path, test, diff, or existing doc supporting this note}}
+- {{explicit session source, code path, test, diff, or existing doc supporting this note}}
 
 ## Review Trigger
 

@@ -4,7 +4,8 @@
 
 - Artifact: distillation
 - Topic: {{source}}
-- Status: {{inbox | draft | accepted}}
+- Status: {{inbox | working | stable | superseded}}
+- Thread: {{thread-name or none}}
 - Intent: {{exploration | audit | reference}}
 - Depth: {{detailed}}
 - Source: {{reference document | folder | discussion}}
@@ -76,8 +77,7 @@
 ## Apply To Workflow Lite
 
 - Inbox material: {{suggested `.session/inbox/**` use or none}}
-- Draft artifacts: {{suggested `.session/drafts/**` use or none}}
-- Accepted artifacts: {{suggested `.session/accepted/**` use or none}}
+- Thread artifacts: {{suggested `.session/threads/{thread}/**` use or none}}
 - Project docs: {{suggested use or none}}
 - Workflow prompts: {{suggested change or none}}
 
@@ -91,4 +91,4 @@
 
 ## Next Use
 
-{{shape, plan, persist accepted, sync, build, or none}}
+{{shape, plan, persist, sync, build, or none}}

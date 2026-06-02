@@ -45,7 +45,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 - Do not use to create a new direction without evaluation; use `shape`.
 - Do not use for ambiguous what-if, strategy, conceptual, or direction-setting requests unless there is an existing target to judge.
-- Do not use to create implementation steps from an accepted direction; use `plan`.
+- Do not use to create implementation steps from a chosen direction; use `plan`.
 - Do not use to perform repository edits; use `build` or the external-agent path after approval.
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update project docs; use `sync`.
@@ -53,7 +53,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 ## Expected Output
 
 - Findings first, then `Decision`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
-- `Persist Packet` when the review should become a draft review or accepted verdict.
+- `Persist Packet` when the review should become a thread review or decision artifact.
 
 ## Task Boundary Check
 
@@ -63,7 +63,7 @@ Before reviewing, classify the request:
 - `fits_with_preflight`: review verdict depends on code, docs, diff, session evidence, or external plan context. In `Mode: discuss`, run conditional implicit preflight first.
 - `composite`: user asks to review and persist; review first, then route to `persist`.
 - `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
-- `wrong_task`: user asks to implement steps from an approved direction; recommend `plan` or `build`.
+- `wrong_task`: user asks to implement steps from a chosen direction; recommend `plan` or `build`.
 - `wrong_task`: user asks to update project docs; recommend `sync`.
 
 Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become a second full review before the review, must not load templates, and must not write files.
@@ -86,7 +86,7 @@ User-selected lenses:
 
 ## Instructions
 
-Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session artifact is accepted, needs revision, blocked, or should be synced to code-aligned project docs.
+Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session artifact is stable, needs revision, blocked, or should be synced to code-aligned project docs.
 
 Do not invent a replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions and next task, but it should not become a design synthesis task.
 
@@ -96,7 +96,7 @@ Lens use must not change task responsibility. `redteam`, `consistency`, `debug`,
 
 For non-trivial reviews, include a readiness dashboard:
 
-- `Decision`: `approved | needs changes | needs more evidence | blocked | docs blocked | accepted | revise`
+- `Decision`: `ready | needs changes | needs more evidence | blocked | docs blocked | stable | revise`
 - `Confidence`: `high | medium | low`
 - `Readiness`: `0-10`
 - `Blocking Gaps`: issues that must be resolved before the next write or implementation step.
@@ -110,7 +110,7 @@ Use this in discuss mode to audit a native external-agent Plan before implementa
 
 Decision values:
 
-- `approved`: safe to implement as written.
+- `ready`: safe to implement as written.
 - `needs changes`: direction is valid but the plan needs edits.
 - `blocked`: critical scope, safety, verification, or source-of-truth information is missing.
 - `docs blocked`: the target touches project docs and source, future use, source of truth, or Project Docs Rules are unclear.
@@ -121,11 +121,11 @@ Also check that success criteria are explicit, every major step has a verificati
 
 ## External Diff Review
 
-Use this in discuss mode after native external-agent implementation. Compare the diff against the approved external plan and Project Docs Rules.
+Use this in discuss mode after native external-agent implementation. Compare the diff against the explicit external plan and Project Docs Rules.
 
-Check for scope drift, unrelated edits, missing edits, missing verification, changed files outside the approved target list, and unsafe or misleading project docs content.
+Check for scope drift, unrelated edits, missing edits, missing verification, changed files outside the plan target list, and unsafe or misleading project docs content.
 
-Treat drive-by refactors and unapproved scope expansion as blocking unless the approved plan explicitly allowed them.
+Treat drive-by refactors and unplanned scope expansion as blocking unless the plan explicitly allowed them.
 
 ## Persist Packet
 
@@ -134,11 +134,12 @@ When useful, end with:
 ```text
 Persist Packet:
 Artifact: review | decision
-Status: draft | accepted
+Status: working | stable | superseded
 Intent: audit | decision
 Depth: detailed
+Thread: <thread>
 Topic: <topic>
-Suggested Target: .session/drafts/review_<topic>.md or .session/accepted/review_<topic>.md
+Suggested Target: .session/threads/<thread>/review_<topic>.md
 Source Context:
 - <plan, diff, code, docs, session artifact, or claim reviewed>
 Review Question:
@@ -148,7 +149,7 @@ Evidence Checked:
 Key Points:
 - <verdict and main reasons>
 Decision-Relevant Facts:
-- <facts that affect approval, revision, or blocking>
+- <facts that affect readiness, revision, or blocking>
 Reasoning Trail:
 - <concern -> evidence -> verdict>
 Findings:
@@ -166,10 +167,9 @@ Examples / Pseudocode:
 Recommended Next Task:
 - <shape | plan | build | sync | persist | none>
 Next Use:
-- <persist draft | persist accepted | plan | build | sync>
+- <persist | plan | build | sync>
 ```
 
-Accepted review verdicts require explicit accepted, approved, or promote intent.
 If the review is not worth preserving, output `Persist Packet: none`.
 
 ## User Input

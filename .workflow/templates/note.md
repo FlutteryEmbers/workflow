@@ -13,7 +13,8 @@
 
 - Artifact: note
 - Topic: {{topic}}
-- Status: {{inbox | draft | accepted}}
+- Status: {{inbox | working | stable | superseded}}
+- Thread: {{thread-name or none}}
 - Intent: {{summary | exploration | audit | reference}}
 - Depth: {{compact | standard}}
 - Source: {{recent discussion | user input | file path}}

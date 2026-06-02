@@ -1,20 +1,21 @@
 ---
 id: persist
 role: steward
-purpose: Persist high-fidelity structured session artifacts from discussion, drafts, Persist Packets, or user-provided sources.
+purpose: Persist high-fidelity structured session artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources.
 inputs:
   - artifact
   - status
   - intent
   - depth
+  - thread
   - topic
   - source
+  - target_directory
   - target
   - request
 outputs:
   - .session/inbox/{artifact}_{topic}.md
-  - .session/drafts/{artifact}_{topic}.md
-  - .session/accepted/{artifact}_{topic}.md
+  - .session/threads/{thread}/{artifact}_{topic}.md
   - notes/{topic}.md
 user_selectable_lenses:
   - iteration
@@ -43,7 +44,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 - Use after `clarify`, `explore`, `shape`, `plan`, or `review` discussion when the user wants to persist a session artifact.
 - Use to update an existing `.session/**` artifact with newer discussion, review feedback, or user corrections.
-- Use to promote a draft to `.session/accepted/**` only when the user explicitly says accepted, approved, promote, or equivalent.
+- Use to persist structured artifacts into `.session/threads/{thread}/**` so related shape, plan, review, and decision files stay together.
 - Use to write disposable exploration notes only when the user explicitly provides `Target: notes/**`.
 
 ## Do Not Use When
@@ -55,12 +56,14 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 ## Persist Inputs
 
 - `Artifact`: `brief | note | shape | option | plan | review | decision | distillation | expanded | goal`.
-- `Status`: `inbox | draft | accepted`.
+- `Status`: `inbox | working | stable | superseded`.
 - `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
 - `Depth`: `compact | standard | detailed`.
+- `Thread`: kebab-case discussion or work-thread directory name.
 - `Topic`: short file-safe topic.
 - `Source`: `Persist Packet`, recent discussion, existing artifact, user input, file path, or selected context.
-- `Target`: optional for `.session/inbox/**` and `.session/drafts/**`; explicit for `.session/accepted/**` unless accepted intent is already clear.
+- `Target Directory`: optional directory such as `.session/threads/auth-backend/`; when present, generate `{artifact}_{topic}.md` under it.
+- `Target`: optional explicit path. Explicit target wins over inferred path.
 - `Target: notes/**`: explicit only; used for disposable exploration notes.
 
 Canonical fields:
@@ -109,13 +112,13 @@ When persisting from a multi-topic discussion, prefer the original or recurring 
 
 ## Persist Revision Rule
 
-`persist` may revise artifact form and apply explicit accepted edits, but it must not make new design, planning, or source-of-truth judgments.
+`persist` may revise artifact form and apply explicit review or user edits, but it must not make new design, planning, or source-of-truth judgments.
 
 Allowed:
 
 - Restructure an artifact using the matching template.
 - Improve wording, metadata, reasoning trail, examples, and traceability.
-- Merge an existing artifact with explicit review findings or user-approved edits.
+- Merge an existing artifact with explicit review findings or user-confirmed edits.
 - Move rejected or invalidated content into rejected options, risks, or open questions.
 
 Not allowed:
@@ -123,18 +126,20 @@ Not allowed:
 - Choose a new direction, boundary, or architecture.
 - Reorder an implementation plan based on new judgment.
 - Decide whether a review finding is correct.
-- Turn an unclear `needs changes` review into an accepted artifact.
+- Turn an unclear `needs changes` review into a stable artifact.
 
 If review feedback is not explicit enough to apply mechanically, route back to `shape`, `plan`, or `review` before persisting.
 
 ## Target Rules
 
 - Infer `.session/inbox/{artifact}_{topic}.md` for `Status: inbox`.
-- Infer `.session/drafts/{artifact}_{topic}.md` for `Status: draft`.
-- Infer `.session/accepted/{artifact}_{topic}.md` only when accepted intent is explicit.
+- Infer `.session/threads/{thread}/{artifact}_{topic}.md` when `Thread`, `Artifact`, and `Topic` are available.
+- If `Target Directory` is provided, infer `{target_directory}/{artifact}_{topic}.md`.
+- If the user references `Artifact ID: shape_<topic>` without an explicit thread, infer `.session/threads/<topic-kebab>/shape_<topic>.md`.
 - Never infer `notes/**`. Write `notes/**` only when the user explicitly provides that target.
 - Write `.session/goal/**` only when the user explicitly provides that target.
 - Respect explicit `.session/**` targets even when the file name does not follow the recommended prefix; include a naming note instead of blocking.
+- If `Artifact`, `Thread`, `Topic`, `Target Directory`, `Target`, and `Artifact ID` are insufficient to infer a target, return `missing_prerequisite` and ask for one anchor.
 
 ## Exploration Notes Rule
 
@@ -142,11 +147,11 @@ If review feedback is not explicit enough to apply mechanically, route back to `
 
 - `persist` may write `notes/**` only when `Target: notes/**` is explicit.
 - `notes/**` is not project docs and does not use Project Docs Rules.
-- `notes/**` is not an approved execution source and must not be treated as an accepted plan.
+- `notes/**` is not an execution source and must not be treated as an implementation plan.
 - `notes/**` may be overwritten, deleted, parked, discarded, or promoted later.
-- Useful conclusions from `notes/**` should be promoted through normal workflow: persist to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed project context to `docs/**`.
+- Useful conclusions from `notes/**` should be promoted through normal workflow: persist to `.session/threads/**`, or sync confirmed project context to `docs/**`.
 - Optional note metadata may be used when helpful: `status`, `source`, `updated`, `promoted_to`.
-- `notes/**` is suitable for `Artifact: brief | note | shape | option | review | distillation | expanded`; do not use it for accepted plans or project docs.
+- `notes/**` is suitable for `Artifact: brief | note | shape | option | review | distillation | expanded`; do not use it for implementation plans or project docs.
 
 ## Explicit Target Override
 
@@ -155,7 +160,7 @@ If the user explicitly provides a target path, respect it unless it violates wri
 - `.session/**`: `persist` may write it when the request is a session artifact.
 - `notes/**`: `persist` may write it only as an explicit disposable exploration note target.
 - `docs/**` or `src/**/README.md`: route to `sync` and require Project Docs Rules.
-- Source code, `.workflow/**`, `.github/**`, or other repository artifacts: route to `build` or external-agent with an approved plan.
+- Source code, `.workflow/**`, `.github/**`, or other repository artifacts: route to `build` or external-agent with an explicit executable plan.
 
 ## Conversation Handling
 
@@ -180,11 +185,11 @@ If the user explicitly provides a target path, respect it unless it violates wri
 - Write only the target session artifact or explicit `notes/**` exploration note.
 - Add `Persist Metadata` to the artifact.
 - Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
-- Draft artifacts are not approved execution sources.
-- Accepted artifacts are session-level accepted sources, but code-aligned project docs still go through `sync`.
+- `Status` is metadata only. It does not authorize execution and does not choose directories.
+- Thread artifacts are session working memory; code-aligned project docs still go through `sync`.
 - The persisted artifact should be denser and more durable than chat. It must not be a low-context bullet summary when detailed reasoning is available.
-- For `notes/**`, compact or standard depth is acceptable. Preserve useful conclusion, evidence, and next use, but do not treat the note as an accepted artifact.
+- For `notes/**`, compact or standard depth is acceptable. Preserve useful conclusion, evidence, and next use, but do not treat the note as an implementation source.
 
 ## User Input
 
-{{artifact, status, intent, depth, topic, source, target, and persist request}}
+{{artifact, status, intent, depth, thread, topic, source, target directory, target, and persist request}}

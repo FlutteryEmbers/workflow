@@ -7,7 +7,7 @@ Do not use this lens by default for discovery questions. If the user asks what e
 ## Conflict Types
 
 - `doc_stale`: project docs or README are outdated.
-- `code_drift`: code diverged from accepted intent.
+- `code_drift`: code diverged from explicit project intent.
 - `docs_conflict`: project docs disagree with each other.
 - `session_conflict`: session decisions disagree or supersede each other.
 - `ambiguous_intent`: source of truth is unclear.
@@ -18,12 +18,12 @@ Do not use this lens by default for discovery questions. If the user asks what e
 
 - `sync`: confirmed project docs or code-adjacent README drift.
 - `shape`: unclear product, design, or architecture intent.
-- `plan -> build`: code likely diverged from accepted behavior.
+- `plan -> build`: code likely diverged from intended behavior.
 - `external-agent`: native Plan/Implement is appropriate for the fix.
-- `none`: accepted exception or low-value difference.
+- `none`: explicit exception or low-value difference.
 
 ## Output Hints
 
-- Reviews can be persisted with `persist` as `.session/drafts/review_{topic}.md`.
+- Reviews can be persisted with `persist` as `.session/threads/{thread}/review_{topic}.md`.
 - `sync` may write only `docs/**` or `src/**/README.md`.
 - Do not silently rewrite project docs to match code when code may be wrong.

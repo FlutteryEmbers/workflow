@@ -16,8 +16,7 @@ graph TD
     V --> Y["sync project docs"]
 
     C -. "input" .-> N[".session/inbox"]
-    W -. "drafts" .-> D[".session/drafts"]
-    W -. "accepted" .-> A[".session/accepted"]
+    W -. "thread artifacts" .-> D[".session/threads"]
     S -. "goal" .-> G[".session/goal"]
     Y -. "project docs" .-> F["docs"]
 ```
@@ -30,8 +29,7 @@ graph TD
 - `.session`: AI session working memory, not project source of truth.
 - `.session/goal`: evolving goal space and target docs map.
 - `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, and reference material.
-- `.session/drafts`: work-in-progress shapes, options, plans, and reviews; not approved for execution by default.
-- `.session/accepted`: accepted session-level conclusions such as decisions, approved plans, and accepted review verdicts.
+- `.session/threads`: related shape, option, plan, review, decision, and reference artifacts grouped by discussion/work thread.
 - `persist`: the only task that writes session artifacts.
 - `docs`: code-aligned project docs maintained by the host project.
 - `notes`: optional disposable exploration notes for lightweight exploration repos when explicitly targeted.
@@ -47,8 +45,8 @@ graph TD
     assumptions.md
     roadmap.md
   inbox/
-  drafts/
-  accepted/
+  threads/
+    {thread}/
   archive/
 ```
 
@@ -56,15 +54,14 @@ Use `.session/**` for work that may change during AI collaboration. Stable long-
 
 ## Session Naming
 
-Session directories express state; file prefixes express artifact kind.
+Session directories express role; file prefixes express artifact kind.
 
 - `inbox`: `note_{topic}.md`, `brief_{topic}.md`
-- `drafts`: `brief_`, `shape_`, `option_`, `plan_`, `review_`
-- `accepted`: `brief_`, `decision_`, `plan_`, `review_`
+- `threads/{thread}`: `brief_`, `note_`, `shape_`, `option_`, `plan_`, `review_`, `decision_`, `distillation_`, `expanded_`
 
 Do not use task names as mandatory file prefixes. `docs/**` follows the host project's project docs naming. `src/**/README.md` is fixed.
 
-Drafts are not approved execution sources. `build` and external-agent implementation should prefer `.session/accepted/**`; using `.session/drafts/**` requires explicit user approval and should usually pass through `review`.
+`thread` is a kebab-case discussion or work topic. File `{topic}` remains snake_case. Path location does not authorize execution; user-invoked `build` with an explicit executable plan is the authorization boundary.
 
 ## Tasks
 
@@ -75,8 +72,8 @@ Drafts are not approved execution sources. `build` and external-agent implementa
 | `explore` | `designer` | chat | Understand code, materials, behavior, feasibility, or reference structure. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, goal update, or session decision. |
 | `plan` | `designer` | chat | Turn a chosen direction into a repo-aware plan or external-agent handoff. |
-| `persist` | `steward` | `.session/**` | Persist high-fidelity structured session artifacts from discussion, drafts, Persist Packets, or user-provided sources. |
-| `build` | `builder` | repository changes | Apply an approved workflow-managed plan. |
+| `persist` | `steward` | `.session/**` | Persist high-fidelity structured session artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
+| `build` | `builder` | repository changes | Apply an explicit workflow-managed plan. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
 | `sync` | `steward` | `docs/**` or `src/**/README.md` | Project confirmed facts into code-aligned project docs and code-adjacent README files. |
 
@@ -86,7 +83,7 @@ When unsure, start with `shape`. Use `explore` for evidence and `review` for ver
 
 - `shape = synthesis`: default for ambiguous, what-if, strategy, conceptual, direction-setting, entrypoint-selection, or "how should I think about this" requests.
 - `explore = evidence`: use only when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, or dependencies.
-- `review = verdict`: use only when there is an existing target to judge, such as code, docs, plan, diff, decision, behavior claim, or accepted artifact.
+- `review = verdict`: use only when there is an existing target to judge, such as code, docs, plan, diff, decision, behavior claim, or thread artifact.
 - `plan = executable sequence`: use when the direction is chosen and the user needs implementable steps.
 
 `shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` must not choose final direction. `review` must not invent replacement design.
@@ -125,7 +122,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 - `Mode: discuss`: chat only; no templates and no writes.
 - `Task: persist` in `Mode: persist`: writes session artifacts to `.session/**`.
 - `Task: sync` in `Mode: persist`: writes only `docs/**` or explicit `src/**/README.md`.
-- `Mode: execute`: uses `Task: build` with an approved plan.
+- `Mode: execute`: uses `Task: build` with an explicit executable plan.
 - External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan audit before implementation and diff review afterward.
 
 `Mode: execute` is workflow-managed execution only.
@@ -140,7 +137,7 @@ Before acting, classify whether the request fits the selected task:
 - `fits_with_preflight`: the task can handle it after a read-only preflight.
 - `composite`: multiple tasks are needed.
 - `wrong_task`: another task is the proper entrypoint.
-- `missing_prerequisite`: required target, approved plan, source of truth, or project docs safety is missing.
+- `missing_prerequisite`: required target, explicit plan, source of truth, or project docs safety is missing.
 
 Composite requests should return segmented prompts with stop points. Do not silently switch tasks or automatically run later write/implementation segments.
 
@@ -151,15 +148,15 @@ Discussion tasks do not write files. They should end with `Persist Packet` when 
 - `persist` writes `.session/**`.
 - `persist` may also write explicit `notes/**` disposable exploration notes.
 - `persist` consumes `Persist Packet`, recent discussion, existing artifacts, or source files.
-- `persist` can infer targets for `.session/inbox/**` and `.session/drafts/**`.
-- `.session/accepted/**` requires explicit accepted, approved, or promote intent.
+- `persist` can infer targets for `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`.
+- `Thread` or `Target Directory` may guide where related artifacts are grouped.
 - Explicit `.session/**` targets are respected even when the file name does not follow the recommended prefix.
 - `notes/**` must be explicit and is never inferred.
 - Targets outside `.session/**` and `notes/**` are routed instead of rejected: `docs/**` and `src/**/README.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
 
 Persisted artifacts preserve decision-relevant reasoning, not full transcript. They should be more structured than chat without dropping useful context, evidence, tradeoffs, rejected options, examples, risks, open questions, or next use.
 
-`persist` may apply explicit accepted revisions, but it must not make new design, planning, or review judgments. If review feedback requires choosing a new direction, reordering a plan, or deciding whether a finding is correct, return to `shape`, `plan`, or `review` before persisting.
+`persist` may apply explicit revisions, but it must not make new design, planning, or review judgments. If review feedback requires choosing a new direction, reordering a plan, or deciding whether a finding is correct, return to `shape`, `plan`, or `review` before persisting.
 
 `shape` emits `Artifact ID: shape_<topic>` when it is worth persisting. Use `persist shape_<topic>` to anchor persistence to that shape. In multi-topic discussions, `persist` should preserve the original/main goal by default and treat later topics as supporting context unless explicitly targeted.
 
@@ -176,9 +173,9 @@ Default depth is `standard` for `brief` and `note`, and `detailed` for `shape`, 
 
 - Use `Target: notes/{topic}.md` only when the user explicitly wants a disposable exploration note.
 - `notes/**` is not project docs and does not use Project Docs Rules.
-- `notes/**` is not an approved source for `build` or external-agent implementation.
-- `persist` must not infer `notes/**`; default persist inference remains `.session/inbox/**` or `.session/drafts/**`.
-- Useful conclusions from `notes/**` should be promoted through normal workflow: persist to `.session/drafts/**` or `.session/accepted/**`, or sync confirmed project context to `docs/**`.
+- `notes/**` is not an execution source for `build` or external-agent implementation.
+- `persist` must not infer `notes/**`; default persist inference remains `.session/inbox/**` or `.session/threads/**`.
+- Useful conclusions from `notes/**` should be promoted through normal workflow: persist to `.session/threads/**`, or sync confirmed project context to `docs/**`.
 - `notes/INDEX.md` is optional. Consider it only when there are more than five active notes.
 - Optional note metadata can track `status`, `source`, `updated`, and `promoted_to`.
 
@@ -204,7 +201,7 @@ Built-in safety checks are core protocol, not a lens. They do not load `.workflo
 
 - `shape`: name key unknowns, risky assumptions, and whether a separate `review --lens redteam` is recommended.
 - `plan`: include `Step / Change / Verify / Risk / Stop Condition` for major steps.
-- `build`: stop on unapproved scope expansion instead of editing beyond the approved plan.
+- `build`: stop on unplanned scope expansion instead of editing beyond the explicit plan.
 - `sync`: use Project Docs Rules and output `docs blocked` when project-doc safety is unclear.
 - `review`: recommend `redteam` when the target is costly, ambiguous, or about to enter execution.
 
@@ -216,7 +213,7 @@ These rules are core protocol, not optional lenses:
 
 - `Success Criteria First`: before `plan`, `build`, or `sync` writes, name what must be true when the work is done.
 - `Step -> Verify`: every major plan step needs a matching verification method.
-- `Minimal Diff`: implementation changes only the approved scope; no drive-by refactors, formatting churn, or opportunistic cleanup.
+- `Minimal Diff`: implementation changes only the plan scope; no drive-by refactors, formatting churn, or opportunistic cleanup.
 - `Stop On Scope Expansion`: if execution reveals that scope must expand, stop and return to `plan` or `review`.
 - `Readiness Before Write`: external-agent plans and diffs should be reviewed before further implementation or project docs sync.
 
@@ -231,15 +228,15 @@ Default policy is conservative:
 
 Policy fields: `Compatibility: preserve | breaking`; `Constraint Mode: respect | propose_override | prototype_exception`.
 
-Only use `Compatibility: breaking` when the user or accepted source explicitly says `不背兼容`, `breaking`, `no migration`, `no alias`, or equivalent. Breaking means old paths, aliases, migrations, and fallbacks are not preserved unless the plan names them.
+Only use `Compatibility: breaking` when the user or explicit source says `不背兼容`, `breaking`, `no migration`, `no alias`, or equivalent. Breaking means old paths, aliases, migrations, and fallbacks are not preserved unless the plan names them.
 
-Only use `Constraint Mode: propose_override` or `prototype_exception` when explicitly requested. Prototype exceptions are temporary PoC scope and must not become durable project constraints unless accepted and synced to `docs/**`.
+Only use `Constraint Mode: propose_override` or `prototype_exception` when explicitly requested. Prototype exceptions are temporary PoC scope and must not become durable project constraints unless confirmed and synced to `docs/**`.
 
 Task behavior:
 
 - `shape`: identify compatibility pressure and constraint tension, but do not switch policy automatically.
 - `plan`: encode the selected policy into removed compatibility, migration/alias decisions, constraint exceptions, cleanup, and stop conditions.
-- `build`: enforce the approved policy only; stop on unapproved compatibility removal or constraint override.
+- `build`: enforce the explicit plan policy only; stop on unplanned compatibility removal or constraint override.
 
 ## Project Docs Rules
 
@@ -258,13 +255,13 @@ Any write to `docs/**` must:
 
 - Usage guidance: `route`.
 - Stage requirements or background: `clarify -> persist -> .session/inbox/**`.
-- Explore code or reference material: `explore -> persist -> .session/inbox/**` or `.session/drafts/option_*.md`.
+- Explore code or reference material: `explore -> persist -> .session/inbox/**` or `.session/threads/{thread}/option_*.md`.
 - Disposable exploration note: `persist -> notes/{topic}.md` only with explicit target.
-- Shape a direction or goal: `shape -> persist -> .session/drafts/**` or `.session/accepted/**`.
+- Shape a direction or goal: `shape -> persist -> .session/threads/{thread}/shape_*.md`.
 - Ambiguous what-if or strategy: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 - Existing target reasonableness: `review`, then `shape` or `plan` only if revision is needed.
-- Plan work or handoff: `plan -> persist -> .session/drafts/**` or `.session/accepted/**`.
-- Multi-turn design: `shape/review/explore discuss loop -> persist draft -> review -> persist accepted`.
+- Plan work or handoff: `plan -> persist -> .session/threads/{thread}/plan_*.md`.
+- Multi-turn design: `shape/review/explore discuss loop -> persist into one thread`.
 - Native implementation: external-agent native Plan -> `review` audit -> native Implement -> `review` diff.
 - Workflow-managed implementation: `plan -> build`.
 - Project docs sync: `sync -> docs/**`.
@@ -275,7 +272,7 @@ Any write to `docs/**` must:
 - Add one task file from `.workflow/tasks/`.
 - Add selected lenses only when explicitly named.
 - Add templates only for `persist` or `sync` in `Mode: persist`.
-- Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, `docs/**`, and source files.
+- Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.
 - Use `.workflow/copilot.md` as the Add Context menu.
 
 ## Using With OpenCode
@@ -283,10 +280,10 @@ Any write to `docs/**` must:
 - Use `.workflow/opencode.md` as the OpenCode adapter guide.
 - Keep `.workflow/**` as the source of truth; do not create a separate OpenCode workflow.
 - Use OpenCode first as a read-only context helper when its context management or model quality is uncertain.
-- Treat OpenCode native Plan output as an external draft plan, not as approved work.
+- Treat OpenCode native Plan output as an external plan draft until it is reviewed or explicitly chosen for implementation.
 - Audit OpenCode plans with `review` before implementation and review diffs afterward.
-- OpenCode bounded implementation should execute only approved narrow segments.
-- Temporary `.opencode/plans/` files are scratch; use `persist` to persist draft handoffs to `.session/drafts/**` and accepted handoffs to `.session/accepted/**`.
+- OpenCode bounded implementation should execute only explicit narrow segments.
+- Temporary `.opencode/plans/` files are scratch; use `persist` to persist handoffs to `.session/threads/{thread}/plan_{topic}.md`.
 
 ## Using With Codex
 

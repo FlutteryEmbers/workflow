@@ -2,13 +2,13 @@
 
 OpenCode support is a thin adapter. It does not replace `.workflow/tasks/**`, `.workflow/lenses/**`, or `.workflow/templates/**`, and it does not create a separate OpenCode workflow.
 
-Use OpenCode when it helps with context reading, draft planning, or bounded implementation. Keep `.workflow/**` as the source of truth for task semantics, lenses, write boundaries, and Project Docs Rules.
+Use OpenCode when it helps with context reading, plan drafting, or bounded implementation. Keep `.workflow/**` as the source of truth for task semantics, lenses, write boundaries, and Project Docs Rules.
 
 OpenCode may suggest `redteam` when risk triggers match, but must not auto-load or apply it. Use full `redteam` only when the user explicitly selected that lens or the prompt explicitly includes it.
 
 When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility.
 
-Default to `Compatibility: preserve` and `Constraint Mode: respect`. Breaking compatibility or constraint exceptions require explicit user or accepted-source intent.
+Default to `Compatibility: preserve` and `Constraint Mode: respect`. Breaking compatibility or constraint exceptions require explicit user or explicit-source intent.
 
 Task shortcut:
 
@@ -28,14 +28,14 @@ Compatibility / constraint rule:
 
 - `shape` may suggest breaking or override pressure, but cannot activate it automatically.
 - `plan` must encode selected breaking or exception scope explicitly.
-- `build` and bounded implement must stop on unapproved compatibility removal, alias removal, migration removal, fallback removal, or constraint bypass.
+- `build` and bounded implement must stop on unplanned compatibility removal, alias removal, migration removal, fallback removal, or constraint bypass.
 - `prototype_exception` is temporary PoC scope, not a durable project constraint.
 
 Exploration notes:
 
 - Explicit `notes/**` targets may be persisted as disposable exploration notes through `Task: persist`.
-- Do not treat `notes/**` as project docs or approved implementation plans.
-- Do not use OpenCode bounded implement from `notes/**`; promote useful conclusions into `.session/**` or create an approved external plan first.
+- Do not treat `notes/**` as project docs or implementation plans.
+- Do not use OpenCode bounded implement from `notes/**`; promote useful conclusions into `.session/**` or create an explicit external plan first.
 
 ## Usage Levels
 
@@ -55,15 +55,15 @@ Use this when OpenCode native Plan can draft an implementation plan.
 - Treat the result as a draft external plan.
 - Do not edit files during native Plan.
 - Audit the draft with `review` before implementation.
-- Use `persist` to persist draft handoff plans to `.session/drafts/**` or accepted handoff plans to `.session/accepted/**`.
+- Use `persist` to persist handoff plans to `.session/threads/{thread}/plan_{topic}.md`.
 
 ### Level 3: Bounded Implementer
 
-Use this only after an approved narrow plan exists.
+Use this only after an explicit narrow plan exists.
 
-- Implement only the approved segment.
+- Implement only the explicit segment.
 - Do not broaden scope.
-- Do not touch `.session/**`, `.workflow/**`, `docs/**`, or unrelated files unless the approved plan names them.
+- Do not touch `.session/**`, `.workflow/**`, `docs/**`, or unrelated files unless the explicit plan names them.
 - Review the diff after implementation.
 
 ## Recommended Path
@@ -71,7 +71,7 @@ Use this only after an approved narrow plan exists.
 ```text
 OpenCode context summary
 -> workflow review / shape / plan
--> Persist Packet -> persist draft or accepted handoff when useful
+-> Persist Packet -> persist thread handoff when useful
 -> OpenCode bounded implement
 -> workflow diff review
 -> sync project docs when stable
@@ -89,7 +89,7 @@ Use only the files needed for the current step.
 - `.workflow/tasks/persist.md` for session artifact persistence.
 - `.workflow/tasks/sync.md` for project docs or code-adjacent README alignment.
 - `.workflow/lenses/<lens>.md` only when explicitly selected.
-- `.session/goal/*`, relevant `.session/inbox/**`, relevant `.session/drafts/**`, relevant `.session/accepted/**`, `docs/**`, and source files as needed.
+- `.session/goal/*`, relevant `.session/inbox/**`, relevant `.session/threads/**`, `docs/**`, and source files as needed.
 - explicit `notes/**` only when persisting disposable exploration notes.
 
 Do not load all tasks or all lenses by default.
@@ -104,8 +104,7 @@ Use OpenCode as context helper only. Do not edit files and do not create an impl
 Context:
 - .session/goal/*
 - .session/inbox/<relevant>
-- .session/drafts/<relevant>
-- .session/accepted/<relevant>
+- .session/threads/<relevant>
 - docs/<relevant>
 - <source files>
 
@@ -130,8 +129,7 @@ Goal:
 
 Context:
 - .session/goal/*
-- .session/drafts/<relevant>
-- .session/accepted/<relevant>
+- .session/threads/<relevant>
 - docs/<relevant>
 - <source files>
 
@@ -151,13 +149,14 @@ Plan requirements:
 - Open questions
 ```
 
-### Persist Draft Or Accepted Handoff
+### Persist Thread Handoff
 
 ```text
 Mode: persist
 Task: persist
 Artifact: plan
-Status: draft | accepted
+Status: working | stable | superseded
+Thread: <thread-name>
 Intent: handoff
 Depth: detailed
 Topic: <topic>
@@ -165,7 +164,7 @@ Request:
 Persist the OpenCode handoff plan. Preserve decision-relevant reasoning, not full transcript.
 ```
 
-`persist` can apply explicit accepted edits, but it must not invent a new direction, re-plan work, or promote unclear `needs changes` content. Route those cases back to `shape`, `plan`, or `review`.
+`persist` can apply explicit edits, but it must not invent a new direction, re-plan work, or turn unclear `needs changes` content into a stable artifact. Route those cases back to `shape`, `plan`, or `review`.
 
 Use `persist shape_<topic>` to reference a shape by `Artifact ID`. In multi-topic discussion, persist the original/main goal by default and keep later topics as supporting context unless explicitly targeted.
 
@@ -180,7 +179,7 @@ Intent: exploration
 Depth: compact | standard
 Target: notes/<topic>.md
 Request:
-Persist this as a disposable exploration note. Do not treat it as project docs or an approved source.
+Persist this as a disposable exploration note. Do not treat it as project docs or an execution source.
 ```
 
 ### Plan Audit
@@ -190,10 +189,10 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this OpenCode draft plan before implementation.
+Audit this OpenCode plan draft before implementation.
 
 Return:
-Decision: approved | needs changes | blocked | docs blocked
+Decision: ready | needs changes | blocked | docs blocked
 
 Check:
 - Scope and target files
@@ -209,15 +208,15 @@ Check:
 ### Bounded Implement
 
 ```text
-Implement only the approved external plan segment below. Do not broaden scope.
+Implement only the explicit external plan segment below. Do not broaden scope.
 Use minimal diff. Do not perform drive-by refactors, formatting churn, unrelated cleanup, or opportunistic rewrites.
 
-Approved segment:
-<approved segment>
+Explicit segment:
+<explicit segment>
 
-Do not modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the approved segment.
-Do not use notes/** as the approved segment; notes are disposable exploration memory.
-Stop and return to plan/review if implementation requires expanding scope, removing unapproved compatibility, or overriding unapproved constraints.
+Do not modify .session/**, .workflow/**, docs/**, or unrelated files unless explicitly listed in the explicit segment.
+Do not use notes/** as the explicit segment; notes are disposable exploration memory.
+Stop and return to plan/review if implementation requires expanding scope, removing unplanned compatibility, or overriding unplanned constraints.
 
 Report:
 - Changed files
@@ -232,7 +231,7 @@ Mode: discuss
 Task: review
 Lens: consistency, test
 Request:
-Review the OpenCode diff against the approved external plan.
+Review the OpenCode diff against the explicit external plan.
 
 Check:
 - Scope drift

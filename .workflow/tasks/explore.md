@@ -132,11 +132,12 @@ When useful, end with:
 ```text
 Persist Packet:
 Artifact: note | option | distillation
-Status: inbox | draft
+Status: inbox | working | stable | superseded
 Intent: exploration | audit | reference
 Depth: standard | detailed
+Thread: <thread or none>
 Topic: <topic>
-Suggested Target: .session/<inbox|drafts>/<artifact>_<topic>.md
+Suggested Target: .session/inbox/<artifact>_<topic>.md or .session/threads/<thread>/<artifact>_<topic>.md
 Source Context:
 - <code paths, docs, references, or discussion sources checked>
 Key Points:

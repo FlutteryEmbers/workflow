@@ -4,14 +4,14 @@ Workflow Lite is an embeddable prompt workspace for AI-assisted development.
 
 ```text
 .workflow/   # workflow system: tasks, lenses, roles, templates, guidance
-.session/    # AI session working memory: goal, inbox, drafts, accepted, archive
+.session/    # AI session working memory: goal, inbox, threads, archive
 docs/        # code-aligned project docs, when the host project uses it
 .opencode/   # optional OpenCode adapter agents
 ```
 
 The workflow system belongs in `.workflow/`. Session artifacts belong in `.session/`. Code-aligned long-term project docs belong in `docs/**`. Code-adjacent reading notes may live in `src/**/README.md` when useful.
 
-Use `persist` for high-fidelity session artifacts from `Persist Packet`, `sync` for code-aligned project docs / code-adjacent README, and `build` for approved repository changes.
+Use `persist` for high-fidelity session artifacts from `Persist Packet`, `sync` for code-aligned project docs / code-adjacent README, and `build` for explicit repository changes.
 
 Exploration repos may use explicit `notes/**` targets for disposable exploration notes. Code-aligned project docs remain `docs/**`.
 
@@ -35,13 +35,13 @@ An ideal experiment workflow should focus on matrix-style validation, comparison
 - Generate a small test or dependency matrix.
 - Run or record experiment attempts.
 - Compare results with explicit evidence.
-- Produce conclusions that can feed back into Workflow Lite as `.session/accepted/**`, `docs/**`, or an approved implementation plan.
+- Produce conclusions that can feed back into Workflow Lite as `.session/threads/**`, `docs/**`, or an explicit implementation plan.
 
 Reusable lessons from this project:
 
 - Keep the workflow source separate from project artifacts.
 - Prefer explicit write paths over implicit file edits.
-- Separate disposable notes, draft conclusions, accepted conclusions, and project docs.
+- Separate disposable notes, thread conclusions, and project docs.
 - Treat review as a gate, not as a redesign task.
 - Keep lenses optional; do not turn every useful method into a default branch.
 - Preserve reasoning that affects future decisions, but do not store full chat transcripts by default.
@@ -51,7 +51,7 @@ Features worth preserving in a future experiment workflow:
 
 - `discuss -> persist -> review -> execute/sync` as a general control loop.
 - High-fidelity artifact persisting, especially for evidence, assumptions, rejected options, and next use.
-- Explicit status boundaries such as disposable, draft, accepted, and project docs.
+- Explicit storage boundaries such as disposable notes, session threads, and project docs.
 - External-agent plan audit and diff review for weak or context-limited agents.
 - Lightweight exploration notes for throwaway trials.
 

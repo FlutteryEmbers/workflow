@@ -22,6 +22,5 @@ Use this lens when work evolves through multi-turn conversation and changing bac
 
 - Keep current goal visible from `.session/goal/**`.
 - Use `persist` for staged context in `.session/inbox/**`.
-- Use `persist` for work-in-progress judgments in `.session/drafts/**`.
-- Use `persist` for accepted session judgments in `.session/accepted/**` when accepted intent is explicit.
+- Use `persist` for work-in-progress and stable judgments in `.session/threads/{thread}/**`.
 - Do not sync every iteration; sync project docs only after a decision is stable enough for `docs/**`.

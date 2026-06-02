@@ -48,7 +48,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use only to collect raw context; use `clarify` or `explore`.
 - Do not use to judge whether existing code/docs/plan are reasonable; use `review`.
 - Do not use when the direction is fixed and the user needs executable steps; use `plan`.
-- Do not use to approve a plan, code change, diff, project docs update, or accepted artifact; use `review`.
+- Do not use to approve a plan, code change, diff, project docs update, or existing artifact; use `review`.
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update project docs directly; use `sync`.
 
@@ -56,7 +56,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - `Reframed Goal`, `Narrowest Useful Wedge`, `Success Criteria`, `Rejected Larger Scope`, tradeoffs, and recommended next step.
 - `Compatibility / Constraint Check` with compatibility pressure, breaking option availability, constraint tension, suggested policy, and whether a human decision is needed.
-- `Persist Packet` when the current shape should become a draft, accepted decision, or explicit goal update.
+- `Persist Packet` when the current shape should become a thread artifact, decision, or explicit goal update.
 - `Triage` when the request may actually need evidence, verdict, or executable planning first.
 
 ## Task Boundary Check
@@ -139,7 +139,7 @@ Convert notes, goals, what-if prompts, strategy questions, and discussion into a
 
 You may provide a hypothesis-based recommendation when evidence is incomplete, but label it as provisional and name what `explore` or `review` would need to confirm. Do not output approval, acceptance, or implementation readiness verdicts; route those to `review`.
 
-When a shape is likely to become `.session/accepted/**`, involves costly reversal, or depends on unverified assumptions, include `Suggested Lens: redteam` as a recommendation rather than applying it automatically.
+When a shape is likely to drive execution, involves costly reversal, or depends on unverified assumptions, include `Suggested Lens: redteam` as a recommendation rather than applying it automatically.
 
 ## Persist Packet
 
@@ -149,11 +149,12 @@ When useful, end with:
 Persist Packet:
 Artifact: shape | decision | goal
 Artifact ID: shape_<topic>
-Status: draft | accepted
+Status: working | stable | superseded
 Intent: exploration | decision | constraint
 Depth: detailed
+Thread: <thread>
 Topic: <topic>
-Suggested Target: .session/drafts/shape_<topic>.md or .session/accepted/decision_<topic>.md
+Suggested Target: .session/threads/<thread>/shape_<topic>.md or .session/threads/<thread>/decision_<topic>.md
 Source Context:
 - <goal, session artifact, code/docs evidence, or user correction>
 Key Points:
@@ -183,7 +184,7 @@ Examples / Pseudocode:
 Validation Approach:
 - <how this shape can be tested or falsified>
 Next Use:
-- <persist draft | review | plan | sync>
+- <persist | review | plan | sync>
 ```
 
 `Artifact ID` is a lightweight reference anchor for later `persist` requests. It is not a file path and does not change artifact kind or directory rules.

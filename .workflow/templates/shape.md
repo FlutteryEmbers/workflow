@@ -5,7 +5,8 @@
 - Artifact: shape
 - Artifact ID: {{shape_<topic>}}
 - Topic: {{topic}}
-- Status: {{draft | accepted}}
+- Status: {{working | stable | superseded}}
+- Thread: {{thread-name}}
 - Intent: {{exploration | decision | constraint}}
 - Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | file path}}
@@ -18,8 +19,8 @@
 
 ## Decision Link
 
-- Draft shape: `.session/drafts/shape_<topic>.md`
-- Accepted decision: `.session/accepted/decision_<topic>.md`
+- Thread shape: `.session/threads/<thread>/shape_<topic>.md`
+- Thread decision: `.session/threads/<thread>/decision_<topic>.md`
 - Goal file: `.session/goal/<file>.md`
 
 ## Visual Overview
@@ -81,7 +82,7 @@ flowchart TD
 - Suggested Policy: {{preserve | consider breaking | consider override | prototype exception}}
 - Human Decision Needed: {{yes/no}}
 
-> Use `Compatibility: breaking` or `Constraint Mode != respect` only when explicitly requested by the user or accepted source.
+> Use `Compatibility: breaking` or `Constraint Mode != respect` only when explicitly requested by the user or explicit source.
 
 ## Reframed Goal
 
@@ -148,4 +149,4 @@ flowchart TD
 
 ## Next Use
 
-{{persist draft, review, plan, persist accepted, sync, or none}}
+{{persist, review, plan, sync, or none}}

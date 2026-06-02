@@ -49,4 +49,4 @@ flowchart TD
 
 ## Acceptable Risks
 
-- {{risk accepted for now and why}}
+- {{risk kept for now and why}}

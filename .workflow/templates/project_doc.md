@@ -22,12 +22,12 @@
 
 ## Important Decisions
 
-- {{accepted decision or current project fact that affects future changes}}
+- {{explicit decision or current project fact that affects future changes}}
 
 ## How To Work With This Area
 
 - Relevant Files: {{paths or areas}}
-- Do Not Change Without: {{review, tests, owner input, accepted decision, or none}}
+- Do Not Change Without: {{review, tests, owner input, explicit decision, or none}}
 - Common Pitfalls: {{pitfall or none}}
 - Agent Notes: {{execution guidance for future AI-assisted work}}
 

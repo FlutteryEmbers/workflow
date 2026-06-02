@@ -4,7 +4,8 @@
 
 - Artifact: decision
 - Topic: {{topic}}
-- Status: accepted
+- Status: {{working | stable | superseded}}
+- Thread: {{thread-name}}
 - Intent: {{decision | constraint | handoff | audit}}
 - Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | file path}}
@@ -25,8 +26,8 @@
 
 ## Acceptance
 
-- Accepted By: {{user | review | explicit approval}}
-- Accepted From: {{draft artifact or discussion}}
+- Confirmed By: {{user | review | explicit instruction | none}}
+- Source Artifact: {{thread artifact or discussion}}
 - Effective Scope: {{where this decision applies}}
 
 ## Context
@@ -58,13 +59,13 @@
 
 - Trigger: {{why this decision exists}}
 - Context Added: {{background that changed the decision}}
-- Decision Trail: {{initial direction -> revision -> accepted decision}}
+- Decision Trail: {{initial direction -> revision -> current decision}}
 - Rejected Options: {{compressed list}}
 - Open Questions: {{remaining uncertainty}}
 
 ## Reasoning Trail
 
-{{how the accepted decision emerged from discussion, evidence, review, or user approval}}
+{{how the decision emerged from discussion, evidence, review, or user instruction}}
 
 ## Rationale
 

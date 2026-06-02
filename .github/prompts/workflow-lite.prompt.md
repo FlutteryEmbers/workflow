@@ -1,6 +1,6 @@
 ---
 description: Use Workflow Lite with explicit user-selected lenses.
-argument-hint: "Mode=<discuss|persist|execute>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|persist|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference>; Depth=<compact|standard|detailed>; Target=<required for sync/accepted/docs/code; optional for persist inbox/drafts>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|persist|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference>; Depth=<compact|standard|detailed>; Thread=<thread-name>; Target=<required for sync/docs/code; optional for persist>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Prompt
@@ -16,7 +16,8 @@ Task: ${input:task:route|clarify|explore|shape|plan|persist|build|review|sync}
 Lens: ${input:lens:none; comma-separated lenses allowed only when explicitly selected}
 Intent: ${input:intent:required for persist; otherwise none}
 Depth: ${input:depth:compact|standard|detailed; optional for persist}
-Target: ${input:target:required for sync/accepted/docs/code; optional for persist inbox/drafts; otherwise none}
+Target: ${input:target:required for sync/docs/code; optional for persist; otherwise none}
+Thread: ${input:thread:optional for persist thread target inference}
 Plan: ${input:plan:required for execute; otherwise none}
 Request: ${input:request:describe the work}
 ```
@@ -42,15 +43,14 @@ Request: ${input:request:describe the work}
 - In `Mode: discuss`, do not load templates and do not create or update files.
 - Discussion tasks should produce `Persist Packet` when the result is worth preserving; output `Persist Packet: none` when it is not.
 - In `Mode: persist`, use `Task: persist` for `.session/**` artifacts or `Task: sync` for `docs/**` / `src/**/README.md`.
-- For `persist`, `.session/inbox/**` and `.session/drafts/**` targets may be inferred from `Artifact + Status + Topic`.
-- For `persist`, `.session/accepted/**` requires explicit accepted, approved, or promote intent.
+- For `persist`, `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md` targets may be inferred from `Artifact + Thread + Topic`.
 - For `persist`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
 - Use `persist shape_<topic>` to reference a shape by `Artifact ID`; in multi-topic discussion, persist the main goal over the latest topic unless explicitly targeted.
-- `notes/**` is not project docs and is not an approved execution source.
+- `notes/**` is not project docs and is not an execution source.
 - For `persist`, preserve decision-relevant reasoning, not full transcript. Use `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact output.
-- `persist` may apply explicit accepted review edits, but must not choose a new direction, re-plan execution, or judge whether review feedback is correct.
+- `persist` may apply explicit review edits, but must not choose a new direction, re-plan execution, or judge whether review feedback is correct.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
-- In `Mode: execute`, require `Task: build` and an approved plan.
+- In `Mode: execute`, require `Task: build` and an explicit executable plan.
 - If using Codex/Copilot native Plan -> Implement, set `Write Path: external-agent`; external-agent is not a Mode.
 - For `Write Path: external-agent`, audit the native plan before implementation and review the diff after implementation.
 - Block instead of writing when `Mode: execute` lacks `Plan`, the target is outside the mode boundary, or instructions conflict.
@@ -58,8 +58,8 @@ Request: ${input:request:describe the work}
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
 - Default to `Compatibility: preserve` and `Constraint Mode: respect`.
-- `Compatibility: breaking` or `Constraint Mode: propose_override | prototype_exception` require explicit user or accepted-source intent.
-- `shape` may suggest breaking/override pressure; `plan` must encode selected policy; `build` must stop on unapproved compatibility removal or constraint override.
+- `Compatibility: breaking` or `Constraint Mode: propose_override | prototype_exception` require explicit user or explicit-source intent.
+- `shape` may suggest breaking/override pressure; `plan` must encode selected policy; `build` must stop on unplanned compatibility removal or constraint override.
 
 ## Project Docs Rules
 
@@ -75,7 +75,7 @@ Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only for `persist` or `sync` in `Mode: persist`.
 For new `docs/**` targets, add `project_doc.md` or `architecture_note.md`; for existing docs, preserve the target structure.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
-Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, `docs/**`, and source files.
+Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.
 
 ## Boundary Output
 
@@ -112,7 +112,7 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this external plan before native implementation. Return approved, needs changes, blocked, or docs blocked.
+Audit this external plan before native implementation. Return ready, needs changes, blocked, or docs blocked.
 ```
 
 Diff review:
@@ -122,5 +122,5 @@ Mode: discuss
 Task: review
 Lens: consistency, test
 Request:
-Review the diff against the approved external plan. Identify scope drift, missing verification, and follow-up.
+Review the diff against the explicit external plan. Identify scope drift, missing verification, and follow-up.
 ```

@@ -62,7 +62,7 @@ Before syncing, classify the request:
 - `missing_prerequisite`: `Mode: persist` target is missing or is not `docs/**` or `src/**/README.md`.
 - `wrong_task`: target is `notes/**`; recommend `persist` because exploration notes are not project docs.
 - `missing_prerequisite`: source, future use, source of truth, or Project Docs Rules safety is unclear for `docs/**`.
-- `missing_prerequisite`: source is only `.session/drafts/**` and the user has not explicitly confirmed it as source of truth.
+- `missing_prerequisite`: session source is not explicitly named or source of truth is unclear.
 
 Default implicit preflight runs only in `Mode: discuss` and checks source, target, future use, source of truth, existing docs structure, and Project Docs Rules. In `Mode: persist`, do not preflight; block with `docs blocked` when any project docs prerequisite is missing.
 
@@ -80,8 +80,8 @@ If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, an
 Required:
 
 - #.workflow/tasks/sync.md
-- source `.session/accepted/**` decision, plan, or review by default; existing `docs/**`, code, diff, tests, or code-adjacent README as needed
-- `.session/drafts/**` only when the user explicitly confirms it as source of truth
+- explicit `.session/threads/**` artifact, existing `docs/**`, code, diff, tests, or code-adjacent README as needed
+- `.session/inbox/**` or `notes/**` only when the user explicitly confirms source of truth
 
 For `Mode: persist`:
 
@@ -116,15 +116,15 @@ Create a new `docs/**` file only when it would reduce future human or agent exec
 - The boundary or design intent is not obvious from code.
 - The area is a stable public surface, architecture boundary, or repeated execution context.
 - The same confusion, drift, or planning discussion has appeared more than once.
-- The source is `.session/accepted/**` or a clear code/diff/test fact.
+- The source is an explicit `.session/threads/**` artifact or a clear code/diff/test fact.
 
-If the content is temporary, exploratory, not accepted, already obvious from code, or unlikely to affect future execution, output `docs blocked` and recommend `persist` to `.session/**` or explicit `notes/**`.
+If the content is temporary, exploratory, unconfirmed, already obvious from code, or unlikely to affect future execution, output `docs blocked` and recommend `persist` to `.session/**` or explicit `notes/**`.
 
 ## Instructions
 
 Use `sync` only for code-aligned project docs and code-adjacent README projection. Inputs may come from `.session/**`, source code, diffs, tests, or existing docs, but outputs are limited to `docs/**` and `src/**/README.md`.
 
-Prefer `.session/accepted/**` as the session-level input source. If the only available source is `.session/drafts/**`, `.session/inbox/**`, or `notes/**`, block until the user explicitly confirms that source of truth or routes it through `review` and `persist` into `.session/accepted/**`.
+Use session artifacts only when the user explicitly names the `.session/threads/**` source or otherwise confirms it as source of truth. If the only available source is `.session/inbox/**` or `notes/**`, block until the user confirms source of truth or routes the material through `review`, `shape`, or `persist` into a thread artifact.
 
 `review` makes the judgment; `sync` performs the projection. If the request asks which source is correct, whether the design is good, whether code should change, or whether docs should override code, route to `review` or `shape` instead of deciding inside `sync`.
 
@@ -134,11 +134,11 @@ Prefer `.session/accepted/**` as the session-level input source. If the only ava
 - Code-adjacent README files go to `src/**/README.md`.
 - Do not write `.session/**`.
 - Do not write `notes/**`.
-- Default project docs source from session is `.session/accepted/**`; drafts, inbox notes, and exploration notes require explicit source-of-truth confirmation.
+- Project docs source from session must be explicit, usually `.session/threads/**`; inbox notes and exploration notes require explicit source-of-truth confirmation.
 - With `consistency`, sync only confirmed drift. If code may be wrong, route to `plan -> build` or external-agent implementation; if intent is unclear, route to `shape`.
 - With `architecture`, project constraints go to `docs/architecture/boundaries.md` or a user-specified docs target.
 - With `language`, stable terminology goes to `docs/glossary.md` or a user-specified docs target.
-- With `distill`, stable reference-derived structures go to project docs only after they are accepted as project knowledge.
+- With `distill`, stable reference-derived structures go to project docs only after they are confirmed as project knowledge.
 
 ## User Input
 

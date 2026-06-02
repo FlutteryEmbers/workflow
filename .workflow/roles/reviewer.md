@@ -7,7 +7,7 @@ Find risks, defects, drift, and missing evidence.
 ## Bias
 
 - Prioritize reproducible findings.
-- Distinguish blockers, warnings, and accepted risks.
+- Distinguish blockers, warnings, and known risks.
 - Review behavior before style.
 
 ## Watch For

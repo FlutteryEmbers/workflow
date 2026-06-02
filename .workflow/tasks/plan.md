@@ -33,7 +33,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
 - If the user asks to persist or provides a target, return `Persist Packet` and route the write to `persist`.
-- `Mode: execute` is not valid for this task; use `build` with an approved plan.
+- `Mode: execute` is not valid for this task; use `build` with an explicit executable plan.
 - For native Plan/Implement, use the external-agent path.
 
 ## When To Use
@@ -53,7 +53,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - A repo-aware plan with `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
 - `Compatibility / Constraint Plan` that records the selected compatibility and constraint policy before execution.
-- `Persist Packet` when the plan should become a draft handoff or accepted plan.
+- `Persist Packet` when the plan should become a thread handoff or executable plan source.
 
 ## Task Boundary Check
 
@@ -73,7 +73,7 @@ Default implicit preflight runs only in `Mode: discuss` and checks target stabil
 Required:
 
 - #.workflow/tasks/plan.md
-- relevant `.session/goal/*`, `.session/inbox/**`, `.session/drafts/**`, `.session/accepted/**`, docs, and target source files
+- relevant `.session/goal/*`, `.session/inbox/**`, `.session/threads/**`, docs, and target source files
 
 User-selected lenses:
 
@@ -84,7 +84,7 @@ User-selected lenses:
 
 Write the smallest repo-aware plan or handoff another engineer, Codex, Copilot, OpenCode, or similar agent can execute without making product decisions. Include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected when they matter.
 
-Every major step must use `Step / Change / Verify / Risk / Stop Condition`. If the verification method is unclear, mark the plan as not ready and recommend `review` or `shape` instead of treating it as approved.
+Every major step must use `Step / Change / Verify / Risk / Stop Condition`. If the verification method is unclear, mark the plan as not executable enough and recommend `review` or `shape` instead of treating it as ready for `build`.
 
 Include `Docs Follow-up` only when the planned change clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context. Do not force docs impact analysis for small or temporary changes.
 
@@ -99,9 +99,9 @@ Default policy:
 
 `plan` must encode the selected policy into executable steps. It must not silently switch from `preserve` to `breaking`, remove migration/alias/fallback work, or introduce constraint exceptions unless the user explicitly requested them or the source decision already states them.
 
-Use `Compatibility: breaking` only when explicitly requested by the user or accepted source. In that case, name removed compatibility, migration/alias decisions, cleanup, and stop conditions.
+Use `Compatibility: breaking` only when explicitly requested by the user or explicit source. In that case, name removed compatibility, migration/alias decisions, cleanup, and stop conditions.
 
-Use `Constraint Mode: propose_override` or `prototype_exception` only when explicitly requested by the user or accepted source. In that case, name the exception scope, reason, cleanup or review trigger, and whether it must stay out of long-term `docs/**` until accepted.
+Use `Constraint Mode: propose_override` or `prototype_exception` only when explicitly requested by the user or explicit source. In that case, name the exception scope, reason, cleanup or review trigger, and whether it must stay out of long-term `docs/**` until confirmed.
 
 If preserving compatibility makes the plan materially more complex, output a planning blocker or tradeoff instead of switching policy automatically.
 
@@ -126,13 +126,14 @@ When useful, end with:
 ```text
 Persist Packet:
 Artifact: plan
-Status: draft | accepted
+Status: working | stable | superseded
 Intent: handoff | decision | audit
 Depth: detailed
+Thread: <thread>
 Topic: <topic>
-Suggested Target: .session/drafts/plan_<topic>.md or .session/accepted/plan_<topic>.md
+Suggested Target: .session/threads/<thread>/plan_<topic>.md
 Source Context:
-- <accepted decision, target design, code/docs evidence, or planning discussion>
+- <thread decision, target design, code/docs evidence, or planning discussion>
 Target Outcome:
 - <what should be true after execution>
 Key Points:
@@ -172,10 +173,9 @@ Handoff Notes:
 Docs Follow-up:
 - <none | suggested | required; include target and reason only when future human/agent execution could be misled>
 Next Use:
-- <persist draft | review | persist accepted | build | external-agent>
+- <persist | review | build | external-agent>
 ```
 
-Accepted plans require explicit accepted, approved, or promote intent.
 If the plan is not worth preserving, output `Persist Packet: none`.
 
 ## User Input

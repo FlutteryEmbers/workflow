@@ -3,7 +3,8 @@
 ## Persist Metadata
 
 - Artifact: option
-- Status: {{draft | accepted}}
+- Status: {{working | stable | superseded}}
+- Thread: {{thread-name}}
 - Intent: {{exploration | decision | audit}}
 - Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | file path}}
@@ -89,4 +90,4 @@ flowchart TD
 
 ## Next Use
 
-{{shape, plan, review, persist accepted, sync, or none}}
+{{shape, plan, review, persist, sync, or none}}

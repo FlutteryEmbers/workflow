@@ -28,7 +28,7 @@
 
 {{persist | sync | shape | plan -> build | none}}
 
-## Ignored Or Accepted Differences
+## Ignored Or Kept Differences
 
 - {{difference, reason, and risk}}
 

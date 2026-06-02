@@ -67,7 +67,7 @@ Boundary classes:
 - `fits_with_preflight`: the selected task can handle it after read-only preflight in `Mode: discuss`.
 - `composite`: multiple tasks are needed.
 - `wrong_task`: another task is the proper entrypoint.
-- `missing_prerequisite`: target, approved plan, source of truth, or Project Docs Rules safety is missing.
+- `missing_prerequisite`: target, explicit plan, source of truth, or Project Docs Rules safety is missing.
 
 ## Routing Model
 
@@ -79,14 +79,14 @@ Recommend the smallest path:
 - Existence and discovery questions such as "does this repo have X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
 - Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
 - Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
-- Typical session state flow: `discuss loop -> Persist Packet -> persist draft -> review -> Persist Packet -> persist accepted -> build/external-agent -> review -> sync`.
+- Typical session flow: `goal -> inbox -> threads -> build/external-agent -> review -> sync`.
 - New background or staged requirements: `clarify` or `explore` -> `persist` to `.session/inbox/**`.
-- Target direction, option, architecture, or concept: `shape` -> `persist` to `.session/drafts/**` or `.session/accepted/**`.
-- Repo-aware implementation sequence or handoff: `plan` -> `persist` to `.session/drafts/**` or `.session/accepted/**`.
+- Target direction, option, architecture, or concept: `shape` -> `persist` to `.session/threads/{thread}/shape_{topic}.md`.
+- Repo-aware implementation sequence or handoff: `plan` -> `persist` to `.session/threads/{thread}/plan_{topic}.md`.
 - Session artifact write: `persist` -> `.session/**`.
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
 - Project docs alignment: `sync` -> `docs/**` or `src/**/README.md`.
-- Code or repository change through workflow: `build` with `Mode: execute` and an approved plan.
+- Code or repository change through workflow: `build` with `Mode: execute` and an explicit executable plan.
 - Discussion chains should end with `Persist Packet` when the result is worth preserving. `persist` consumes the packet; the original discussion task does not write files.
 
 ## Lens Suggestions
@@ -95,11 +95,11 @@ Recommend the smallest path:
 - Suggest `architecture` for boundaries, dependency direction, public surfaces, or constraints.
 - Suggest `domain` for terminology, rules, ownership, and conceptual model questions.
 - Suggest `iteration` for multi-turn work with changing background.
-- Suggest `redteam` when a draft will become `.session/accepted/**`, a plan will enter `build` or external-agent Implement, the work touches architecture boundaries, permissions, security, data migration, irreversible changes, project docs, high-cost tradeoffs, or the user asks to find problems, critique, identify pitfalls, or judge reasonableness.
+- Suggest `redteam` when a thread artifact will drive implementation, a plan will enter `build` or external-agent Implement, the work touches architecture boundaries, permissions, security, data migration, irreversible changes, project docs, high-cost tradeoffs, or the user asks to find problems, critique, identify pitfalls, or judge reasonableness.
 - Do not enable `redteam` automatically; output it only as a suggested lens unless the user explicitly selected it.
 - Suggest `test` for verification planning.
 - Suggest `debug` for defects or uncertain runtime behavior.
-- Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across session accepted sources, project docs, code, tests, or code-adjacent README files.
+- Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across explicit session sources, project docs, code, tests, or code-adjacent README files.
 - Do not suggest `consistency` for discovery questions like whether a capability exists, where it is implemented, or how reliable the evidence is.
 - Suggest `language` for terminology or output language.
 - Suggest `distill` for learning structure from strong reference material.
@@ -119,7 +119,7 @@ Add Context:
 - .workflow/tasks/<task>.md
 - .workflow/lenses/<lens>.md only when selected
 - .workflow/templates/<template>.md only for `persist` or `sync` when persisting
-- .session/goal/*, relevant .session/inbox/**, relevant .session/drafts/**, relevant .session/accepted/**, docs/**, or source files as needed
+- .session/goal/*, relevant .session/inbox/**, relevant .session/threads/**, docs/**, or source files as needed
 Next prompt: <copyable prompt>
 ```
 

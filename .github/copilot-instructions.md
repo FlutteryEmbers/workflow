@@ -14,14 +14,14 @@ This repo uses Workflow Lite.
 - Implicit preflight is automatic in discuss for `shape`, `plan`, and `sync`; see `.workflow/copilot.md` for the full matrix.
 - In `Mode: persist`, use `Task: persist` for session artifacts under `.session/**`.
 - Explicit `notes/**` targets may be persisted as disposable exploration memory; never infer `notes/**`.
-- Do not treat `notes/**` as project docs or approved execution source.
+- Do not treat `notes/**` as project docs or execution source.
 - Discussion tasks do not write files; they should produce `Persist Packet` when useful.
 - When persisting session artifacts, preserve decision-relevant reasoning; do not persist full transcript by default.
-- `persist` may apply explicit accepted edits, but must not make new shape, plan, or review judgments.
+- `persist` may apply explicit edits, but must not make new shape, plan, or review judgments.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
 - `docs/**` is code-aligned project docs and must follow Project Docs Rules.
-- Default to `Compatibility: preserve` and `Constraint Mode: respect`; breaking compatibility or constraint exceptions require explicit user intent or an accepted source.
-- In `Mode: execute`, require `Task: build` and an approved plan before modifying repository artifacts.
+- Default to `Compatibility: preserve` and `Constraint Mode: respect`; breaking compatibility or constraint exceptions require explicit user intent or an explicit source.
+- In `Mode: execute`, require `Task: build` and an explicit executable plan before modifying repository artifacts.
 - Native Plan/Implement may be used as an `external-agent` write path; do not treat it as workflow-managed execution.
 - External-agent is a write path, not a Mode.
 - Audit external plans before native implementation, and review external diffs afterward.
@@ -31,6 +31,6 @@ This repo uses Workflow Lite.
 - Use `.workflow/copilot.md` as the context menu when guidance is needed.
 - Default artifact language is Chinese explanations with English technical terms preserved.
 - Use full English only when explicitly requested.
-- Use `.session/goal/**` for session goals, `.session/inbox/**` for staged inputs, `.session/drafts/**` for unapproved session artifacts, and `.session/accepted/**` for accepted session artifacts.
+- Use `.session/goal/**` for session goals, `.session/inbox/**` for staged inputs, and `.session/threads/**` for related session artifacts.
 - Treat `.session/**` as working memory, not project docs source of truth.
 - Use `src/**/README.md` only when a code area needs a local reading entrypoint.

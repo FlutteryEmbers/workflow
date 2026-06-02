@@ -4,7 +4,8 @@
 
 - Artifact: review
 - Topic: {{topic}}
-- Status: {{draft | accepted}}
+- Status: {{working | stable | superseded}}
+- Thread: {{thread-name}}
 - Intent: {{audit | decision}}
 - Depth: {{detailed}}
 - Source: {{recent discussion | existing artifact | diff | file path}}
@@ -54,7 +55,7 @@
 
 ## Decision
 
-{{approved | needs changes | blocked | docs blocked | accepted | revise}}
+{{ready | needs changes | blocked | docs blocked | stable | revise}}
 
 ## Readiness
 
@@ -126,4 +127,4 @@ flowchart TD
 
 ## Next Use
 
-{{persist draft, persist accepted, plan, build, sync, or none}}
+{{persist, plan, build, sync, or none}}
