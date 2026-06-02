@@ -22,7 +22,7 @@ Review external plans, implementation diffs, project docs changes, and consisten
 For external plan audit, output this first:
 
 ```text
-Decision: approved | needs changes | blocked | docs blocked
+Decision: ready | needs changes | blocked | docs blocked
 ```
 
 Check:
@@ -37,7 +37,7 @@ Check:
 - Open questions
 - Project Docs Rules when `docs/**` is touched
 
-For diff review, compare the diff against the approved external plan before broader recommendations. Check scope drift, unrelated edits, drive-by refactors, missing edits, missing verification, and unsafe or misleading project docs content.
+For diff review, compare the diff against the explicit external plan before broader recommendations. Check scope drift, unrelated edits, drive-by refactors, missing edits, missing verification, and unsafe or misleading project docs content.
 
 Include readiness:
 

@@ -6,7 +6,7 @@ Workflow Lite is an embeddable prompt workspace for AI-assisted development.
 .workflow/   # workflow system: tasks, lenses, roles, templates, guidance
 .session/    # AI session working memory: goal, inbox, threads, archive
 docs/        # code-aligned project docs, when the host project uses it
-.opencode/   # optional OpenCode adapter agents
+.opencode/   # optional OpenCode adapter agents and slash commands
 ```
 
 The workflow system belongs in `.workflow/`. Session artifacts belong in `.session/`. Code-aligned long-term project docs belong in `docs/**`. Code-adjacent reading notes may live in `src/**/README.md` when useful.
@@ -23,7 +23,7 @@ Read [.workflow/opencode.md](.workflow/opencode.md) when using OpenCode.
 
 Do not put workflow system files under `.session/` or `docs/`. Do not treat `.session/**` as project source of truth. Stable project knowledge, architecture constraints, terminology, and design docs belong in the host project's `docs/**`.
 
-OpenCode support is an adapter, not a second workflow. Keep task, lens, role, and template semantics in `.workflow/**`; use `.opencode/agents/**` only for OpenCode-specific context helper, review, and docs sync behavior.
+OpenCode support is an adapter, not a second workflow. Keep task, lens, role, and template semantics in `.workflow/**`; use `.opencode/commands/**` as thin slash-command shortcuts and `.opencode/agents/**` only for OpenCode-specific context helper, review, and docs sync behavior.
 
 ## Experiment Workflow Direction
 

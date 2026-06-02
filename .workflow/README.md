@@ -296,6 +296,7 @@ Any write to `docs/**` must:
 ## Using With OpenCode
 
 - Use `.workflow/opencode.md` as the OpenCode adapter guide.
+- Use `/wf`, `/wf-shape`, `/wf-review`, `/wf-plan`, `/wf-persist`, and `/wf-sync` as thin OpenCode slash commands.
 - Keep `.workflow/**` as the source of truth; do not create a separate OpenCode workflow.
 - Use OpenCode first as a read-only context helper when its context management or model quality is uncertain.
 - Treat OpenCode native Plan output as an external plan draft until it is reviewed or explicitly chosen for implementation.

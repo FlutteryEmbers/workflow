@@ -79,6 +79,36 @@ OpenCode context summary
 
 OpenCode native Plan belongs to the `external-agent` path. It is not `Mode: execute`. `Mode: execute` remains workflow-managed execution through `Task: build`.
 
+## Slash Commands
+
+OpenCode project commands live in `.opencode/commands/**`. They are thin prompt shortcuts, not a separate workflow. Keep task, lens, role, and template semantics in `.workflow/**`.
+
+Default commands:
+
+- `/wf`: route a request and recommend the smallest path.
+- `/wf-shape`: discuss direction, what-if, strategy, or conceptual design.
+- `/wf-review`: review a plan, diff, code/docs claim, or readiness question.
+- `/wf-plan`: draft a repo-aware plan or external-agent handoff.
+- `/wf-persist`: persist `.session/**` or explicit `notes/**`.
+- `/wf-sync`: sync `docs/**` or explicit `src/**/README.md`.
+
+Command rules:
+
+- Commands default to `Output: compact` unless persistence, sync, audit, diff review, or handoff detail is required.
+- Commands must not load all tasks or all lenses.
+- `/wf-review` uses the read-only `workflow-review` agent.
+- `/wf-sync` uses the permission-gated `workflow-docs-sync` agent.
+- Do not add `AGENTS.md` for this adapter; use commands and `.workflow/opencode.md` explicitly.
+
+Examples:
+
+```text
+/wf-shape 如果我要结合 graph10x 调用链分析来构建项目，起始入口怎么选？
+/wf-review Audit this plan before implementation: <plan>
+/wf-persist Artifact: shape Thread: graph10x Topic: entrypoints Source: last discussion
+/wf-sync Source: .session/threads/auth/decision_auth_boundary.md Target: docs/architecture/auth.md Future Use: guide future auth changes
+```
+
 ## Add Context
 
 Use only the files needed for the current step.
