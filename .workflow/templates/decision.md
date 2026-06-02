@@ -36,7 +36,7 @@
 
 ## Source Context
 
-- {{discussion, draft, review, code path, project doc, or user approval source}}
+- {{discussion, thread artifact, review, code path, project doc, or user decision source}}
 
 ## Decision-Relevant Facts
 

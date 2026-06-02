@@ -6,7 +6,8 @@ inputs:
   - user_goal_or_context
 outputs:
   - chat_clarification
-  - persist_packet
+  - persist_hint
+  - full_persist_packet
 user_selectable_lenses:
   - iteration
   - language
@@ -28,7 +29,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Do not load templates and do not write files.
-- If the user asks to persist or provides a target, return `Persist Packet` and route the write to `persist`.
+- If the user asks to persist, provides a target, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -47,7 +48,8 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 ## Expected Output
 
 - Concise clarified goal, scope, acceptance signals, assumptions, and open questions.
-- `Persist Packet` when the clarification should become an inbox artifact.
+- `Output: compact` default: short answer and optional `Persist Hint`.
+- `Full Persist Packet` only when the clarification should be persisted now or `Output: full` is requested.
 
 ## Task Boundary Check
 
@@ -82,9 +84,24 @@ User-selected lenses:
 
 Capture the user's goal, staged requirements, background, constraints, non-goals, acceptance signals, and open questions. Keep this as chat output until the user chooses `persist`.
 
-## Persist Packet
+## Persist Hint By Default
 
-When useful, end with:
+In `Mode: discuss`, default to:
+
+```text
+Understanding: <one line>
+Answer:
+- <3-6 bullets>
+Risks/Unknowns:
+- <0-3 bullets>
+Persist Hint: Artifact=<brief|note>; Status=inbox; Topic=<topic>; Suggested Target=.session/inbox/<artifact>_<topic>.md
+```
+
+Use `Persist Hint: none` when the clarification is not worth preserving.
+
+## Full Persist Packet
+
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a handoff artifact:
 
 ```text
 Persist Packet:
@@ -112,7 +129,7 @@ Next Use:
 - <explore | shape | plan | persist | sync>
 ```
 
-If the clarification is not worth preserving, output `Persist Packet: none`.
+If the clarification is not worth preserving, output `Persist Hint: none`.
 
 ## User Input
 

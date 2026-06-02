@@ -79,7 +79,7 @@
 - Constraint Exceptions: {{constraint and reason, or none}}
 - Do Not Preserve: {{legacy behavior intentionally dropped, or none}}
 - Cleanup Required: {{old files, docs, prompts, tests, or none}}
-- Stop Conditions: {{when breaking scope or exceptions exceed approval}}
+- Stop Conditions: {{when breaking scope or exceptions exceed the explicit plan}}
 
 > Default to `Compatibility: preserve` and `Constraint Mode: respect` unless the user or explicit source chooses otherwise.
 
@@ -130,7 +130,7 @@ flowchart TD
 
 ## Open Questions
 
-- {{question that blocks approval, execution, or docs sync}}
+- {{question that blocks readiness, execution, or docs sync}}
 
 ## Rollback / Recovery
 

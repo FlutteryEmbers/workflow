@@ -6,7 +6,8 @@ inputs:
   - target_or_claim
 outputs:
   - chat_review
-  - persist_packet
+  - persist_hint
+  - full_persist_packet
 user_selectable_lenses:
   - redteam
   - consistency
@@ -33,7 +34,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in user-provided order, then give actionable findings.
 - Do not load templates and do not write files.
-- If the user asks to persist or provides a target, return `Persist Packet` and route the write to `persist`.
+- If the user asks to persist, provides a target, requests an audit artifact, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -46,14 +47,15 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - Do not use to create a new direction without evaluation; use `shape`.
 - Do not use for ambiguous what-if, strategy, conceptual, or direction-setting requests unless there is an existing target to judge.
 - Do not use to create implementation steps from a chosen direction; use `plan`.
-- Do not use to perform repository edits; use `build` or the external-agent path after approval.
+- Do not use to perform repository edits; use `build` or the external-agent path after an explicit plan.
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update project docs; use `sync`.
 
 ## Expected Output
 
 - Findings first, then `Decision`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
-- `Persist Packet` when the review should become a thread review or decision artifact.
+- `Output: compact` default: short verdict, key findings, and optional `Persist Hint`.
+- `Full Persist Packet` only when the review should be persisted now, used as an audit handoff, or `Output: full` is requested.
 
 ## Task Boundary Check
 
@@ -68,7 +70,7 @@ Before reviewing, classify the request:
 
 Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become a second full review before the review, must not load templates, and must not write files.
 
-If evidence is insufficient for a verdict, output `Decision: needs more evidence`, name the missing evidence, and recommend `explore` instead of inventing approval or blocking conclusions.
+If evidence is insufficient for a verdict, output `Decision: needs more evidence`, name the missing evidence, and recommend `explore` instead of inventing readiness or blocking conclusions.
 
 Review acts as a gateway. Verdicts should recommend next task: `none`, `persist`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 
@@ -127,9 +129,24 @@ Check for scope drift, unrelated edits, missing edits, missing verification, cha
 
 Treat drive-by refactors and unplanned scope expansion as blocking unless the plan explicitly allowed them.
 
-## Persist Packet
+## Persist Hint By Default
 
-When useful, end with:
+In `Mode: discuss`, default to:
+
+```text
+Understanding: <one line>
+Answer:
+- <3-6 bullets>
+Risks/Unknowns:
+- <0-3 bullets>
+Persist Hint: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
+```
+
+Use `Persist Hint: none` when the review is not worth preserving.
+
+## Full Persist Packet
+
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an audit/diff-review artifact:
 
 ```text
 Persist Packet:
@@ -170,7 +187,7 @@ Next Use:
 - <persist | plan | build | sync>
 ```
 
-If the review is not worth preserving, output `Persist Packet: none`.
+If the review is not worth preserving, output `Persist Hint: none`.
 
 ## User Input
 

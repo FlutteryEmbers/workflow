@@ -95,9 +95,10 @@ Persisted artifacts must be more structured than chat without losing the reasoni
 
 ## Source Handling
 
-- Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Packet`; main goal from recent discussion; latest topic only when explicitly targeted.
+- Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Packet`; explicit `Persist Hint`; main goal from recent discussion; latest topic only when explicitly targeted.
 - Prefer an explicit `Persist Packet` when present.
-- If no `Persist Packet` exists, synthesize one from recent discussion, source artifacts, user corrections, and selected files.
+- If no `Persist Packet` exists, synthesize one from `Persist Hint`, recent discussion, source artifacts, user corrections, and selected files.
+- Discuss output budget does not reduce artifact fidelity. Even if the prior answer used `Output: compact`, generate the persisted artifact at the requested or default `Depth`.
 - If source material conflicts, preserve the conflict and mark the source of truth as unresolved.
 - Do not use `persist` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
 

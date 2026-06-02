@@ -6,7 +6,8 @@ inputs:
   - question_or_source
 outputs:
   - chat_findings
-  - persist_packet
+  - persist_hint
+  - full_persist_packet
 user_selectable_lenses:
   - distill
   - architecture
@@ -30,7 +31,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Start with an inline `Understanding` unless the request is trivial.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Do not load templates and do not write files.
-- If the user asks to persist or provides a target, return `Persist Packet` and route the write to `persist`.
+- If the user asks to persist, provides a target, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -54,7 +55,8 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - `Sources Checked`, `Observed Facts`, `Evidence Map`, `Reliability Notes`, `Unknowns`, `Constraints Found`, `Potential Options`, and `Recommended Next Task`.
-- `Persist Packet` when findings should become an inbox note, option draft, or distillation artifact.
+- `Output: compact` default: short findings, key reliability notes, and optional `Persist Hint`.
+- `Full Persist Packet` only when findings should be persisted now or `Output: full` is requested.
 
 ## Task Boundary Check
 
@@ -125,9 +127,24 @@ Reliability Notes:
 - Suggested Follow-up: <inspect runtime behavior | check tests | ask owner | compare versions | treat as hypothesis>
 ```
 
-## Persist Packet
+## Persist Hint By Default
 
-When useful, end with:
+In `Mode: discuss`, default to:
+
+```text
+Understanding: <one line>
+Answer:
+- <3-6 bullets>
+Risks/Unknowns:
+- <0-3 bullets>
+Persist Hint: Artifact=<note|option|distillation>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+```
+
+Use `Persist Hint: none` when the exploration is not worth preserving.
+
+## Full Persist Packet
+
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a handoff artifact:
 
 ```text
 Persist Packet:
@@ -168,7 +185,7 @@ Next Use:
 - <shape | plan | review | persist | sync>
 ```
 
-If the exploration is not worth preserving, output `Persist Packet: none`.
+If the exploration is not worth preserving, output `Persist Hint: none`.
 
 ## User Input
 

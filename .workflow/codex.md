@@ -163,7 +163,7 @@ Mode: discuss
 Task: shape
 Lens: <none or selected lenses>
 Request:
-Discuss the target direction. Include evidence, unknowns, tradeoffs, and a Persist Packet when worth preserving. Do not write files.
+Discuss the target direction. Include evidence, unknowns, tradeoffs, and a short Persist Hint when worth preserving. Do not write files.
 ```
 
 ### Persist Artifact

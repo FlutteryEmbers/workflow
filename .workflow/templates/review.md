@@ -79,11 +79,11 @@
 
 ## Required Revisions
 
-- {{required change before approval or next write}}
+- {{required change before readiness or next write}}
 
 ## Open Questions
 
-- {{question that prevents approval, execution, or sync}}
+- {{question that prevents readiness, execution, or sync}}
 
 ## Failure Or Risk Path
 

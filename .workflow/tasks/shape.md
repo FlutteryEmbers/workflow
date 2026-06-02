@@ -6,7 +6,8 @@ inputs:
   - clarified_context
 outputs:
   - chat_shape
-  - persist_packet
+  - persist_hint
+  - full_persist_packet
 user_selectable_lenses:
   - iteration
   - expand
@@ -34,7 +35,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
-- If the user asks to persist or provides a target, return `Persist Packet` and route the write to `persist`.
+- If the user asks to persist, provides a target, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -56,7 +57,8 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - `Reframed Goal`, `Narrowest Useful Wedge`, `Success Criteria`, `Rejected Larger Scope`, tradeoffs, and recommended next step.
 - `Compatibility / Constraint Check` with compatibility pressure, breaking option availability, constraint tension, suggested policy, and whether a human decision is needed.
-- `Persist Packet` when the current shape should become a thread artifact, decision, or explicit goal update.
+- `Output: compact` default: short recommendation, risks, and optional `Persist Hint`.
+- `Full Persist Packet` only when the shape should be persisted now or `Output: full` is requested.
 - `Triage` when the request may actually need evidence, verdict, or executable planning first.
 
 ## Task Boundary Check
@@ -141,9 +143,24 @@ You may provide a hypothesis-based recommendation when evidence is incomplete, b
 
 When a shape is likely to drive execution, involves costly reversal, or depends on unverified assumptions, include `Suggested Lens: redteam` as a recommendation rather than applying it automatically.
 
-## Persist Packet
+## Persist Hint By Default
 
-When useful, end with:
+In `Mode: discuss`, default to:
+
+```text
+Understanding: <one line>
+Answer:
+- <3-6 bullets>
+Risks/Unknowns:
+- <0-3 bullets>
+Persist Hint: Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
+```
+
+Use `Persist Hint: none` when the shape is not worth preserving.
+
+## Full Persist Packet
+
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a handoff artifact:
 
 ```text
 Persist Packet:
@@ -190,7 +207,7 @@ Next Use:
 `Artifact ID` is a lightweight reference anchor for later `persist` requests. It is not a file path and does not change artifact kind or directory rules.
 
 Use `.session/goal/**` only when the user explicitly provides that target.
-If the shape is not worth preserving, output `Persist Packet: none`.
+If the shape is not worth preserving, output `Persist Hint: none`.
 
 ## User Input
 

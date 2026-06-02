@@ -1,6 +1,6 @@
 ---
 description: Use Workflow Lite with explicit user-selected lenses.
-argument-hint: "Mode=<discuss|persist|execute>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|persist|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference>; Depth=<compact|standard|detailed>; Thread=<thread-name>; Target=<required for sync/docs/code; optional for persist>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|persist|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference>; Depth=<compact|standard|detailed>; Thread=<thread-name>; Target=<required for sync/docs/code; optional for persist>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Prompt
@@ -11,6 +11,7 @@ Use Workflow Lite with progressive context.
 
 ```text
 Mode: ${input:mode:discuss}
+Output: ${input:output:compact|normal|full}
 Write Path: ${input:write_path:workflow-managed|external-agent}
 Task: ${input:task:route|clarify|explore|shape|plan|persist|build|review|sync}
 Lens: ${input:lens:none; comma-separated lenses allowed only when explicitly selected}
@@ -26,6 +27,7 @@ Request: ${input:request:describe the work}
 
 - Use exactly one task as the main workflow context.
 - Default to `Mode: discuss`.
+- Default to `Output: compact`.
 - Start with an inline `Understanding Check` unless the request is trivial.
 - Run a lightweight Task Boundary Check before acting.
 - Classify boundary as `fits`, `fits_with_preflight`, `composite`, `wrong_task`, or `missing_prerequisite` when the request is not straightforward.
@@ -41,13 +43,13 @@ Request: ${input:request:describe the work}
 - Multiple lenses are allowed in `Mode: discuss` only when explicitly listed; follow the user's lens order.
 - Do not infer, auto-apply, or load all lenses.
 - In `Mode: discuss`, do not load templates and do not create or update files.
-- Discussion tasks should produce `Persist Packet` when the result is worth preserving; output `Persist Packet: none` when it is not.
+- Discussion tasks should produce a short `Persist Hint` when the result is worth preserving; output full `Persist Packet` only when `Output: full`, the user asks to persist, or a handoff/audit requires it.
 - In `Mode: persist`, use `Task: persist` for `.session/**` artifacts or `Task: sync` for `docs/**` / `src/**/README.md`.
 - For `persist`, `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md` targets may be inferred from `Artifact + Thread + Topic`.
 - For `persist`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
 - Use `persist shape_<topic>` to reference a shape by `Artifact ID`; in multi-topic discussion, persist the main goal over the latest topic unless explicitly targeted.
 - `notes/**` is not project docs and is not an execution source.
-- For `persist`, preserve decision-relevant reasoning, not full transcript. Use `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact output.
+- For `persist`, preserve decision-relevant reasoning, not full transcript. Discuss output budget does not reduce artifact depth.
 - `persist` may apply explicit review edits, but must not choose a new direction, re-plan execution, or judge whether review feedback is correct.
 - `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
 - In `Mode: execute`, require `Task: build` and an explicit executable plan.
@@ -79,6 +81,19 @@ Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/threads/**`, `doc
 
 ## Boundary Output
 
+For `Output: compact`, prefer:
+
+```text
+Understanding: <one line>
+Answer:
+- <3-6 bullets>
+Risks/Unknowns:
+- <0-3 bullets>
+Persist Hint: <optional one-liner>
+```
+
+Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
+
 ```text
 Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
 Reason: <one sentence>
@@ -100,7 +115,7 @@ Recommended Segments:
    Expected Output:
    Continue Condition:
 Stop Points:
-- <where approval, audit, or source-of-truth confirmation is required>
+- <where user decision, audit, or source-of-truth confirmation is required>
 ```
 
 ## External-Agent Review Formats

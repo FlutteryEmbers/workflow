@@ -6,6 +6,7 @@ Use this file as a manual Add Context menu. Prefer one mode, one task, selected 
 
 ```text
 Mode: <discuss|persist|execute>
+Output: <compact|normal|full>
 Task: <route|clarify|explore|shape|plan|persist|build|review|sync>
 Lens: <none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>
 Artifact: <required for persist unless target is explicit>
@@ -33,6 +34,24 @@ Request:
 - `Mode: execute` applies an explicit workflow-managed plan through `Task: build`.
 - Native Codex/Copilot Plan -> Implement is the `external-agent` write path. It is not a Workflow Mode and does not use `Task: build`.
 
+## Output Budget
+
+Default to `Output: compact`.
+
+Protocol: `Output: compact | normal | full`.
+
+- `compact`: use `Understanding`, 3-6 answer bullets, 0-3 risk/unknown bullets, and optional one-line `Persist Hint`.
+- `normal`: add short rationale or evidence when it materially improves the answer.
+- `full`: use only for explicit persist requests, artifact previews, plan handoff, external-agent audit, diff review, or complex composite routing.
+
+In `Mode: discuss`, do not output a full `Persist Packet` by default. Use `Persist Hint` instead:
+
+```text
+Persist Hint: Artifact=<artifact>; Thread=<thread>; Topic=<topic>; Suggested Target=<path>
+```
+
+Full `Persist Packet` is allowed only when the user asks to persist, says `Output: full`, asks for a handoff/audit, or the current response is the source for a following `Task: persist`.
+
 ## Task Boundary Shortcut
 
 When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
@@ -57,7 +76,7 @@ Discovery vs judgment rule:
 - Multiple lenses are allowed in `Mode: discuss` only when the user explicitly lists them.
 - Copilot may recommend lenses, but must not load or apply them automatically.
 - Copilot may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
-- In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Packet` when worth preserving.
+- In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Hint` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
 ## Write Boundaries
@@ -85,7 +104,7 @@ Add:
 - #.workflow/tasks/persist.md
 - the matching artifact template from #.workflow/templates/
 - selected #.workflow/lenses/<lens>.md only when named
-- `Persist Packet`, source discussion, source artifact, or relevant context
+- `Persist Hint`, `Persist Packet`, source discussion, source artifact, or relevant context
 
 Target rules:
 
@@ -99,12 +118,12 @@ Target rules:
 
 Content fidelity:
 
-- `persist` should consume `Persist Packet` when available.
+- `persist` should consume `Persist Packet` when available, but it may also consume `Persist Hint` plus recent discussion.
 - Use `persist shape_<topic>` to reference a shape by `Artifact ID`.
 - In multi-topic discussion, persist the original/main goal by default; treat later topics as supporting context unless explicitly targeted.
 - Preserve decision-relevant reasoning, not full transcript.
 - Keep context, key facts, reasoning trail, rejected options, risks, examples, and next use when they affect later work.
-- Use `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact output.
+- Use artifact `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact artifact output.
 - For `notes/**`, compact or standard depth is enough unless the user asks for more detail.
 
 Revision boundary:
@@ -136,12 +155,12 @@ If not `fits`, do not force-fit the request.
 
 Common segmentations:
 
-- Judge current code/docs and decide what to do: `review -> Persist Packet -> shape/plan -> Persist Packet -> persist`.
-- Implement a feature from target docs and current code: `plan -> Persist Packet -> persist thread plan -> review -> external-agent/build -> review`.
-- Move stable thread conclusions into project docs: `shape/plan/review -> Persist Packet -> persist thread artifact -> sync`.
-- Distill a reference and improve workflow: `explore --lens distill -> Persist Packet -> shape -> Persist Packet -> persist thread artifact -> plan -> build`.
+- Judge current code/docs and decide what to do: `review -> Persist Hint -> shape/plan -> persist`.
+- Implement a feature from target docs and current code: `plan -> Persist Hint -> persist thread plan -> review -> external-agent/build -> review`.
+- Move stable thread conclusions into project docs: `shape/plan/review -> Persist Hint -> persist thread artifact -> sync`.
+- Distill a reference and improve workflow: `explore --lens distill -> Persist Hint -> shape -> persist thread artifact -> plan -> build`.
 - Ambiguous what-if or entrypoint selection: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
-- Understand code/docs mismatches as discovery: `explore -> Persist Packet -> persist note`, with `Reliability Notes`; use `review --lens consistency` only for source-of-truth judgments.
+- Understand code/docs mismatches as discovery: `explore -> Persist Hint -> persist note`, with `Reliability Notes`; use `review --lens consistency` only for source-of-truth judgments.
 
 Use stop points before implementation and project docs sync.
 

@@ -6,7 +6,8 @@ inputs:
   - decision_or_target
 outputs:
   - chat_plan
-  - persist_packet
+  - persist_hint
+  - full_persist_packet
 user_selectable_lenses:
   - iteration
   - expand
@@ -32,7 +33,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
-- If the user asks to persist or provides a target, return `Persist Packet` and route the write to `persist`.
+- If the user asks to persist, provides a target, requests a handoff, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
 - `Mode: execute` is not valid for this task; use `build` with an explicit executable plan.
 - For native Plan/Implement, use the external-agent path.
 
@@ -53,7 +54,8 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - A repo-aware plan with `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
 - `Compatibility / Constraint Plan` that records the selected compatibility and constraint policy before execution.
-- `Persist Packet` when the plan should become a thread handoff or executable plan source.
+- `Output: compact` default: short plan summary, critical risks, and optional `Persist Hint`.
+- `Full Persist Packet` only when the plan should be persisted now, used as a handoff, or `Output: full` is requested.
 
 ## Task Boundary Check
 
@@ -116,12 +118,27 @@ Compatibility / Constraint Plan
 - Constraint Exceptions: <constraint and reason, or none>
 - Do Not Preserve: <legacy behavior intentionally dropped, or none>
 - Cleanup Required: <old files, docs, prompts, tests, or none>
-- Stop Conditions: <when breaking scope or exceptions exceed approval>
+- Stop Conditions: <when breaking scope or exceptions exceed the explicit plan>
 ```
 
-## Persist Packet
+## Persist Hint By Default
 
-When useful, end with:
+In `Mode: discuss`, default to:
+
+```text
+Understanding: <one line>
+Answer:
+- <3-6 bullets>
+Risks/Unknowns:
+- <0-3 bullets>
+Persist Hint: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
+```
+
+Use `Persist Hint: none` when the plan is not worth preserving.
+
+## Full Persist Packet
+
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an implementation/external-agent handoff:
 
 ```text
 Persist Packet:
@@ -176,7 +193,7 @@ Next Use:
 - <persist | review | build | external-agent>
 ```
 
-If the plan is not worth preserving, output `Persist Packet: none`.
+If the plan is not worth preserving, output `Persist Hint: none`.
 
 ## User Input
 

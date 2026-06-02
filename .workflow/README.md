@@ -129,6 +129,24 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 
 Native Plan/Implement is a separate external-agent write path.
 
+## Token-Aware Copilot Usage
+
+Default to `Output: compact`.
+
+Protocol: `Output: compact | normal | full`.
+
+- `compact`: short answer plus optional `Persist Hint`.
+- `normal`: add concise rationale or evidence when needed.
+- `full`: use only for explicit persist requests, artifact previews, plan handoff, external-agent audit, diff review, or complex composite routing.
+
+Daily Copilot path:
+
+```text
+discuss compact -> persist full artifact only when needed
+```
+
+Discussion tasks should not output full `Persist Packet` by default. Use `Persist Hint` unless the user asks to persist, asks for `Output: full`, or needs a handoff/audit.
+
 ## Task Boundary Router
 
 Before acting, classify whether the request fits the selected task:
@@ -143,11 +161,11 @@ Composite requests should return segmented prompts with stop points. Do not sile
 
 ## Persist-Centered Session Writes
 
-Discussion tasks do not write files. They should end with `Persist Packet` when the current output is worth preserving, or `Persist Packet: none` when it is not.
+Discussion tasks do not write files. They should end with short `Persist Hint` when the current output is worth preserving. Full `Persist Packet` is only for `Output: full`, explicit persist requests, or handoff/audit responses.
 
 - `persist` writes `.session/**`.
 - `persist` may also write explicit `notes/**` disposable exploration notes.
-- `persist` consumes `Persist Packet`, recent discussion, existing artifacts, or source files.
+- `persist` consumes `Persist Hint`, `Persist Packet`, recent discussion, existing artifacts, or source files.
 - `persist` can infer targets for `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`.
 - `Thread` or `Target Directory` may guide where related artifacts are grouped.
 - Explicit `.session/**` targets are respected even when the file name does not follow the recommended prefix.

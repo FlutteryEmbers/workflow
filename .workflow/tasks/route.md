@@ -50,14 +50,15 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 ## Expected Output
 
 - Always chat-only.
-- Return interpreted goal, boundary, recommended path, mode, lens, target when needed, Add Context, next prompt, and stop points for composite work.
+- `Output: compact` default: interpreted goal, recommended path, selected task/lens, and next prompt.
+- Full Add Context and stop points only for composite work or `Output: full`.
 
 ## Task Boundary Check
 
 `route` handles both active guidance and correction routing.
 
 - Use `Boundary Assessment` when the user has selected a task but the request appears composite, wrong-task, or missing prerequisites.
-- Output `Recommended Segments` for composite requests.
+- Output `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 - Do not silently switch tasks or execute later segments.
 - No implicit preflight runs in `route`. Do not scan evidence; only recommend which later task should run implicit preflight.
 
@@ -87,7 +88,7 @@ Recommend the smallest path:
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
 - Project docs alignment: `sync` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute` and an explicit executable plan.
-- Discussion chains should end with `Persist Packet` when the result is worth preserving. `persist` consumes the packet; the original discussion task does not write files.
+- Discussion chains should end with `Persist Hint` when the result is worth preserving. `persist` consumes the hint, recent discussion, or full packet; the original discussion task does not write files.
 
 ## Lens Suggestions
 
@@ -106,6 +107,17 @@ Recommend the smallest path:
 - Suggest `expand` when a compact decision or plan needs examples, pseudocode, or split parts.
 
 ## Output Format
+
+For normal requests, keep the route compact:
+
+```text
+Interpreted goal: <one sentence>
+Recommended path: <task -> task>
+Lens: <none or explicit lenses>
+Next prompt: <copyable prompt>
+```
+
+Use the full format only for `Output: full`, composite routing, wrong-task correction, or missing prerequisites:
 
 ```text
 Interpreted goal: <one sentence>
@@ -137,7 +149,7 @@ Recommended Segments:
    Expected Output:
    Continue Condition:
 Stop Points:
-- <approval, audit, source-of-truth, Project Docs Rules, or diff review point>
+- <user decision, audit, source-of-truth, Project Docs Rules, or diff review point>
 ```
 
 ## User Input
