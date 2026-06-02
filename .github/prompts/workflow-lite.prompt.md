@@ -45,6 +45,7 @@ Request: ${input:request:describe the work}
 - For `persist`, `.session/inbox/**` and `.session/drafts/**` targets may be inferred from `Artifact + Status + Topic`.
 - For `persist`, `.session/accepted/**` requires explicit accepted, approved, or promote intent.
 - For `persist`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
+- Use `persist shape_<topic>` to reference a shape by `Artifact ID`; in multi-topic discussion, persist the main goal over the latest topic unless explicitly targeted.
 - `notes/**` is not project docs and is not an approved execution source.
 - For `persist`, preserve decision-relevant reasoning, not full transcript. Use `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact output.
 - `persist` may apply explicit accepted review edits, but must not choose a new direction, re-plan execution, or judge whether review feedback is correct.

@@ -3,6 +3,7 @@
 ## Persist Metadata
 
 - Artifact: shape
+- Artifact ID: {{shape_<topic>}}
 - Topic: {{topic}}
 - Status: {{draft | accepted}}
 - Intent: {{exploration | decision | constraint}}

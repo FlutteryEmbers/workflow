@@ -167,6 +167,8 @@ Persist the OpenCode handoff plan. Preserve decision-relevant reasoning, not ful
 
 `persist` can apply explicit accepted edits, but it must not invent a new direction, re-plan work, or promote unclear `needs changes` content. Route those cases back to `shape`, `plan`, or `review`.
 
+Use `persist shape_<topic>` to reference a shape by `Artifact ID`. In multi-topic discussion, persist the original/main goal by default and keep later topics as supporting context unless explicitly targeted.
+
 ### Persist Exploration Note
 
 ```text

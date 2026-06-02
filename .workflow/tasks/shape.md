@@ -148,6 +148,7 @@ When useful, end with:
 ```text
 Persist Packet:
 Artifact: shape | decision | goal
+Artifact ID: shape_<topic>
 Status: draft | accepted
 Intent: exploration | decision | constraint
 Depth: detailed
@@ -184,6 +185,8 @@ Validation Approach:
 Next Use:
 - <persist draft | review | plan | sync>
 ```
+
+`Artifact ID` is a lightweight reference anchor for later `persist` requests. It is not a file path and does not change artifact kind or directory rules.
 
 Use `.session/goal/**` only when the user explicitly provides that target.
 If the shape is not worth preserving, output `Persist Packet: none`.

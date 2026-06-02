@@ -90,6 +90,8 @@ Persist the high-fidelity structured artifact only.
 
 Use `Persist Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, reasoning trail, rejected options, risks, examples, and next use when they affect later work.
 
+Use `persist shape_<topic>` to reference a shape by `Artifact ID`. In multi-topic discussion, persist the original/main goal by default and keep later topics as supporting context unless explicitly targeted.
+
 `persist` may restructure artifacts and apply explicit accepted review edits. It must not choose a new direction, re-plan execution, judge whether review feedback is correct, or promote unclear `needs changes` content; route those cases back to `shape`, `plan`, or `review`.
 
 `notes/**` is not an approved execution source. Stable conclusions should be promoted through normal workflow into `.session/**` or `docs/**`.
@@ -177,6 +179,8 @@ Topic: <topic>
 Request:
 Persist the current converged session state. Preserve decision-relevant reasoning, not full transcript.
 ```
+
+For a shape, you can also request `persist shape_<topic>` to avoid latest-topic drift.
 
 ### Persist Exploration Note
 

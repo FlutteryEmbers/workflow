@@ -92,10 +92,20 @@ Persisted artifacts must be more structured than chat without losing the reasoni
 
 ## Source Handling
 
+- Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Packet`; main goal from recent discussion; latest topic only when explicitly targeted.
 - Prefer an explicit `Persist Packet` when present.
 - If no `Persist Packet` exists, synthesize one from recent discussion, source artifacts, user corrections, and selected files.
 - If source material conflicts, preserve the conflict and mark the source of truth as unresolved.
 - Do not use `persist` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
+
+## Main Goal Bias
+
+When persisting from a multi-topic discussion, prefer the original or recurring main goal over the most recent topic.
+
+- If the user references an `Artifact ID` such as `shape_<topic>`, persist that artifact as the primary source.
+- Treat later topics as supporting context unless the user explicitly asks to persist the latest topic.
+- If the discussion includes multiple topics and no main goal can be inferred from `Artifact ID`, `Topic`, `Target`, or explicit request wording, return `missing_prerequisite` and ask for one of those anchors before writing.
+- Example: after discussing backend design and then frontend integration, `persist shape_auth_backend` should persist the backend shape; frontend integration belongs only in supporting context unless explicitly targeted.
 
 ## Persist Revision Rule
 

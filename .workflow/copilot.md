@@ -99,6 +99,8 @@ Target rules:
 Content fidelity:
 
 - `persist` should consume `Persist Packet` when available.
+- Use `persist shape_<topic>` to reference a shape by `Artifact ID`.
+- In multi-topic discussion, persist the original/main goal by default; treat later topics as supporting context unless explicitly targeted.
 - Preserve decision-relevant reasoning, not full transcript.
 - Keep context, key facts, reasoning trail, rejected options, risks, examples, and next use when they affect later work.
 - Use `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact output.
@@ -180,6 +182,7 @@ Topic: graph10x_entrypoints
 ```
 
 Add #.workflow/tasks/persist.md and #.workflow/templates/shape.md. Target may be inferred as `.session/drafts/shape_graph10x_entrypoints.md`.
+You may also say `persist shape_graph10x_entrypoints` to anchor the persist request to the shape artifact instead of the latest discussion topic.
 
 ### Persist Exploration Note
 

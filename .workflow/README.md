@@ -161,6 +161,8 @@ Persisted artifacts preserve decision-relevant reasoning, not full transcript. T
 
 `persist` may apply explicit accepted revisions, but it must not make new design, planning, or review judgments. If review feedback requires choosing a new direction, reordering a plan, or deciding whether a finding is correct, return to `shape`, `plan`, or `review` before persisting.
 
+`shape` emits `Artifact ID: shape_<topic>` when it is worth persisting. Use `persist shape_<topic>` to anchor persistence to that shape. In multi-topic discussions, `persist` should preserve the original/main goal by default and treat later topics as supporting context unless explicitly targeted.
+
 `persist` uses:
 
 - `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
