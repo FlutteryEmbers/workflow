@@ -28,6 +28,10 @@
 
 - {{plan, diff, code path, project doc, session artifact, or user claim}}
 
+## Important Context From Discussion
+
+{{preserve discussion details that clarify the review question, user concern, evidence priority, accepted risk, or why the verdict changed. Do not redesign the target here, and do not preserve full transcript or conversational noise.}}
+
 ## Evidence Checked
 
 - {{file, diff, command output, doc, artifact, or discussion evidence}}

@@ -151,12 +151,17 @@ Output the full packet only when the user asks to persist, provides `Target`, re
 ```text
 Persist Packet:
 Artifact: plan
+Planning Level: <high-level-plan | implementation-plan | none>
 Status: working | stable | superseded
 Intent: handoff | decision | audit
 Depth: detailed
 Thread: <thread>
 Topic: <topic>
 Suggested Target: .session/threads/<thread>/plan_<topic>.md
+Plan Snapshot:
+- <target outcome, execution target, phase count, readiness, key constraint, key stop condition, next use>
+Important Context From Discussion:
+- <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
 Source Context:
 - <thread decision, target design, code/docs evidence, or planning discussion>
 Target Outcome:
@@ -165,6 +170,10 @@ Key Points:
 - <sequence summary and main constraints>
 Decision-Relevant Facts:
 - <facts affecting execution order or scope>
+Phase Plan:
+- <phase> -> <goal, scope, allowed changes, constraints, verify, exit criteria, stop conditions>
+Phase Constraints:
+- <phase-level constraint or ordering rule that must survive persist>
 Reasoning Trail:
 - <why this sequence is preferred>
 Allowed Changes:
@@ -191,6 +200,8 @@ Stop Conditions:
 - <when to stop and return to plan/review>
 Risks / Unknowns:
 - <execution risk or missing information>
+Preserve From Discussion:
+- <phase boundaries, phase constraints, important examples/counterexamples, user corrections, accepted risks, or weak-model handoff details to preserve>
 Examples / Pseudocode:
 - <implementation sketch if useful>
 Handoff Notes:

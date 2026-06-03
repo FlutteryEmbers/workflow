@@ -20,6 +20,27 @@
 
 - Thread plan: `.session/threads/<thread>/plan_<topic>.md`
 
+## Plan Snapshot
+
+- Planning Level: {{high-level-plan | implementation-plan | none}}
+- Target Outcome: {{what should be true after execution}}
+- Execution Target: {{human | strong-agent | weak-agent | OpenCode | Codex | Copilot | none}}
+- Phase Count: {{number of phases or none}}
+- Readiness: {{ready for build | ready for external-agent | needs review | needs more detail}}
+- Key Constraint: {{most important constraint or do-not-touch item}}
+- Key Stop Condition: {{main reason to stop instead of expanding scope}}
+- Next Use: {{review | persist | build | external-agent | sync | none}}
+
+## Important Context From Discussion
+
+{{preserve any discussion detail that would help future readers understand, revise, implement, or audit this plan. This may include user corrections, user preferences, examples, counterexamples, phase boundaries, phase constraints, why the sequence changed, accepted risks, or details a weaker model might otherwise miss. Do not preserve full transcript or conversational noise.}}
+
+## Phase Plan
+
+| Phase | Goal | Scope | Allowed Changes | Constraints | Verify | Exit Criteria | Stop Conditions |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| {{phase}} | {{phase goal}} | {{phase scope}} | {{allowed changes}} | {{phase constraints}} | {{verification}} | {{exit criteria}} | {{when to stop}} |
+
 ## Target Direction
 
 {{source decision, goal, or target design}}
@@ -89,9 +110,9 @@
 - Reusable Parts: {{what can be reused}}
 - Conflicts: {{where current repo shape conflicts with target direction}}
 
-## Dependencies Between Steps
+## Dependencies Between Phases
 
-- {{step dependency, ordering constraint, or parallelizable part}}
+- {{phase dependency, ordering constraint, or parallelizable part}}
 
 ## Impact Map
 
@@ -105,16 +126,16 @@
 
 ```mermaid
 flowchart TD
-    step_one["Step 1"] --> step_two["Step 2"]
-    step_two --> verify_node["Verify"]
+    phase_one["Phase 1"] --> phase_two["Phase 2"]
+    phase_two --> verify_node["Verify"]
     verify_node --> handoff_node["Handoff"]
 ```
 
-## Recommended Sequence
+## Detailed Step Sequence
 
-| Step | Change | Verify | Risk | Stop Condition |
-| :--- | :--- | :--- | :--- | :--- |
-| {{step}} | {{change}} | {{test, check, or manual verification}} | {{risk}} | {{when to stop and return to plan/review}} |
+| Phase | Step | Change | Verify | Risk | Stop Condition |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| {{phase}} | {{step}} | {{change}} | {{test, check, or manual verification}} | {{risk}} | {{when to stop and return to plan/review}} |
 
 ## Reasoning Trail
 
@@ -136,9 +157,9 @@ flowchart TD
 
 - {{how to revert or recover if this plan fails}}
 
-## External-Agent Handoff
+## Handoff Contract
 
-{{success criteria, plan scope, allowed changes, do-not-touch areas, step verification, and minimal diff constraints for native Plan/Implement, if relevant}}
+{{success criteria, phase plan, allowed changes, do-not-touch areas, step verification, minimal diff constraints, and stop conditions for native Plan/Implement, if relevant}}
 
 ## Handoff Notes
 

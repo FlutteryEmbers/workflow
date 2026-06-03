@@ -38,6 +38,10 @@
 
 - {{discussion, thread artifact, review, code path, project doc, or user decision source}}
 
+## Important Context From Discussion
+
+{{preserve discussion details that would help future readers understand, revise, implement, or audit this decision. Include user corrections, preferences, examples, important constraints, accepted risks, or why the decision changed when they matter. Do not preserve full transcript or conversational noise.}}
+
 ## Decision-Relevant Facts
 
 - {{confirmed fact that materially affects this decision}}

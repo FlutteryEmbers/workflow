@@ -15,6 +15,10 @@
 
 - {{discussion, file, reference, or goal that triggered the comparison}}
 
+## Important Context From Discussion
+
+{{preserve discussion details that affect option fit, preference, exclusion, comparison criteria, examples, counterexamples, or what would change the recommendation. Do not preserve full transcript or conversational noise.}}
+
 ## Decision-Relevant Facts
 
 - {{fact that changes option fit, cost, or risk}}

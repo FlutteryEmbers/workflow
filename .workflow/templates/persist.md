@@ -17,6 +17,8 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 
 - Preserve decision-relevant reasoning, not full transcript.
 - Keep source context, key facts, reasoning trail, rejected options, risks, unknowns, examples, and next use when they affect later work.
+- For `shape`, `plan`, `decision`, `review`, and `option` artifacts, preserve selected discussion memory in `Important Context From Discussion` when it affects future understanding, revision, implementation, or audit.
+- Prefer preserving useful nuance over forcing every discussion point into a predefined field.
 - Separate confirmed facts from assumptions.
 - Do not compress detailed discussion into unsupported conclusions.
 - Use the artifact template that matches `Artifact`.

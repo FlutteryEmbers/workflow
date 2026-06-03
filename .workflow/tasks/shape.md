@@ -169,18 +169,25 @@ Output the full packet only when the user asks to persist, provides `Target`, re
 Persist Packet:
 Artifact: shape | decision | goal
 Artifact ID: shape_<topic>
+Planning Level: <concept | high-level-plan | implementation-plan | none>
 Status: working | stable | superseded
 Intent: exploration | decision | constraint
 Depth: detailed
 Thread: <thread>
 Topic: <topic>
 Suggested Target: .session/threads/<thread>/shape_<topic>.md or .session/threads/<thread>/decision_<topic>.md
+Decision Snapshot:
+- <current recommendation, core boundary, narrowest wedge, success criteria, key risk, next use>
+Important Context From Discussion:
+- <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
 Source Context:
 - <goal, session artifact, code/docs evidence, or user correction>
 Key Points:
 - <current recommendation and core boundaries>
 Decision-Relevant Facts:
 - <facts that materially affect the direction>
+Phase / Concept Structure:
+- <phase or concept> -> <purpose, scope, constraints, validation, notes>
 Reasoning Trail:
 - <initial direction -> revisions -> current direction>
 Options Considered:
@@ -199,6 +206,10 @@ Constraint Mode:
 - <respect | propose_override | prototype_exception; note if explicitly requested>
 Compatibility / Constraint Notes:
 - <pressure, breaking option, constraint tension, human decision needed>
+Operating Constraints:
+- <scope, boundary, do-not-assume, compatibility, constraint mode, human decision needed>
+Preserve From Discussion:
+- <phase boundaries, phase constraints, important examples/counterexamples, user corrections, accepted risks, or weak-model handoff details to preserve>
 Examples / Pseudocode:
 - <example scenario, conceptual flow, or pseudocode if useful>
 Validation Approach:
