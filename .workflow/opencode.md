@@ -86,16 +86,23 @@ OpenCode project commands live in `.opencode/commands/**`. They are thin prompt 
 Default commands:
 
 - `/wf`: route a request and recommend the smallest path.
+- `/wf-clarify`: clarify goal, scope, constraints, and success criteria.
+- `/wf-explore`: extract read-only evidence from code, docs, references, or unfamiliar repos.
 - `/wf-shape`: discuss direction, what-if, strategy, or conceptual design.
-- `/wf-review`: review a plan, diff, code/docs claim, or readiness question.
 - `/wf-plan`: draft a repo-aware plan or external-agent handoff.
+- `/wf-review`: review a plan, diff, code/docs claim, or readiness question.
 - `/wf-persist`: persist `.session/**` or explicit `notes/**`.
+- `/wf-build`: execute an explicit plan only.
 - `/wf-sync`: sync `docs/**` or explicit `src/**/README.md`.
 
 Command rules:
 
 - Commands default to `Output: compact` unless persistence, sync, audit, diff review, or handoff detail is required.
 - Commands must not load all tasks or all lenses.
+- `/wf`, `/wf-shape`, and `/wf-plan` may recommend `/wf-build`, but they must not execute implementation.
+- `/wf-build` is a high-risk write command. It requires an explicit `Plan:` and may not use `notes/**` as an execution source.
+- Calling `/wf-build` authorizes only the listed plan scope; it does not authorize scope expansion.
+- `/wf-explore` uses the read-only `workflow-context` agent.
 - `/wf-review` uses the read-only `workflow-review` agent.
 - `/wf-sync` uses the permission-gated `workflow-docs-sync` agent.
 - Do not add `AGENTS.md` for this adapter; use commands and `.workflow/opencode.md` explicitly.
@@ -103,9 +110,12 @@ Command rules:
 Examples:
 
 ```text
+/wf-clarify 我想做一个 graph10x PoC，帮我收敛目标和成功标准
+/wf-explore 帮我看这个第三方 repo 是否有调用链入口
 /wf-shape 如果我要结合 graph10x 调用链分析来构建项目，起始入口怎么选？
 /wf-review Audit this plan before implementation: <plan>
 /wf-persist Artifact: shape Thread: graph10x Topic: entrypoints Source: last discussion
+/wf-build Plan: .session/threads/auth/plan_auth.md
 /wf-sync Source: .session/threads/auth/decision_auth_boundary.md Target: docs/architecture/auth.md Future Use: guide future auth changes
 ```
 
@@ -114,9 +124,13 @@ Examples:
 Use only the files needed for the current step.
 
 - `.workflow/tasks/route.md` for choosing a path.
+- `.workflow/tasks/clarify.md` for goal, scope, constraints, and success criteria.
+- `.workflow/tasks/explore.md` for read-only evidence extraction.
+- `.workflow/tasks/shape.md` for ambiguous, what-if, strategy, conceptual, or direction-setting work.
 - `.workflow/tasks/review.md` for plan audit or diff review.
 - `.workflow/tasks/plan.md` for a repo-aware handoff.
 - `.workflow/tasks/persist.md` for session artifact persistence.
+- `.workflow/tasks/build.md` for explicit-plan execution rules.
 - `.workflow/tasks/sync.md` for project docs or code-adjacent README alignment.
 - `.workflow/lenses/<lens>.md` only when explicitly selected.
 - `.session/goal/*`, relevant `.session/inbox/**`, relevant `.session/threads/**`, `docs/**`, and source files as needed.
@@ -253,6 +267,8 @@ Report:
 - Verification run for each major step
 - Anything skipped and why
 ```
+
+`/wf-build` is the command form of bounded implementation. Use it only when the explicit plan is present in `Plan:` or in the current prompt. If the plan is missing or not executable enough, `/wf-build` must return `missing_prerequisite` and avoid file edits.
 
 ### Diff Review
 

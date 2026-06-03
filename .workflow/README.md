@@ -296,11 +296,12 @@ Any write to `docs/**` must:
 ## Using With OpenCode
 
 - Use `.workflow/opencode.md` as the OpenCode adapter guide.
-- Use `/wf`, `/wf-shape`, `/wf-review`, `/wf-plan`, `/wf-persist`, and `/wf-sync` as thin OpenCode slash commands.
+- Use `/wf`, `/wf-clarify`, `/wf-explore`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync` as thin OpenCode slash commands.
 - Keep `.workflow/**` as the source of truth; do not create a separate OpenCode workflow.
 - Use OpenCode first as a read-only context helper when its context management or model quality is uncertain.
 - Treat OpenCode native Plan output as an external plan draft until it is reviewed or explicitly chosen for implementation.
 - Audit OpenCode plans with `review` before implementation and review diffs afterward.
+- `/wf-build` is a high-risk write command for explicit plans only. It should block when `Plan:` is missing or not executable enough.
 - OpenCode bounded implementation should execute only explicit narrow segments.
 - Temporary `.opencode/plans/` files are scratch; use `persist` to persist handoffs to `.session/threads/{thread}/plan_{topic}.md`.
 

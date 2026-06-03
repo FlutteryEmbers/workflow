@@ -23,7 +23,7 @@ Read [.workflow/opencode.md](.workflow/opencode.md) when using OpenCode.
 
 Do not put workflow system files under `.session/` or `docs/`. Do not treat `.session/**` as project source of truth. Stable project knowledge, architecture constraints, terminology, and design docs belong in the host project's `docs/**`.
 
-OpenCode support is an adapter, not a second workflow. Keep task, lens, role, and template semantics in `.workflow/**`; use `.opencode/commands/**` as thin slash-command shortcuts and `.opencode/agents/**` only for OpenCode-specific context helper, review, and docs sync behavior.
+OpenCode support is an adapter, not a second workflow. Keep task, lens, role, and template semantics in `.workflow/**`; use `.opencode/commands/**` as thin slash-command shortcuts and `.opencode/agents/**` only for OpenCode-specific context helper, review, and docs sync behavior. `/wf-build` is the explicit-plan execution command and should be used only with a concrete `Plan:`.
 
 ## Experiment Workflow Direction
 
