@@ -15,6 +15,7 @@ user_selectable_lenses:
   - language
   - domain
   - strategy
+  - conceptual
   - redteam
   - architecture
 done_check:
@@ -91,7 +92,9 @@ If missing evidence could change the recommendation, stop and output `Recommende
 
 `Risk Check` is built-in safety, not the `redteam` lens. Use it to name risky assumptions, likely failure modes, and whether a follow-up `review --lens redteam` is recommended. Do not load `.workflow/lenses/redteam.md` unless the user explicitly selected it.
 
-Lens use must not change task responsibility. `strategy`, `domain`, `architecture`, `iteration`, `expand`, `distill`, and `language` may help synthesize direction, but `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`.
+Lens use must not change task responsibility. `strategy`, `conceptual`, `domain`, `architecture`, `iteration`, `expand`, `distill`, and `language` may help synthesize direction, but `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`.
+
+When the user explicitly selects `conceptual`, output `Planning Level: concept` unless the user clearly requests a different level. Keep the result at concept level: goal, principles, boundaries, key tradeoffs, success criteria, non-goals, and validation direction. Do not produce target files or executable implementation steps from `shape`.
 
 ## Compatibility / Constraint Policy
 

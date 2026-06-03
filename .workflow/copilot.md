@@ -8,7 +8,7 @@ Use this file as a manual Add Context menu. Prefer one mode, one task, selected 
 Mode: <discuss|persist|execute>
 Output: <compact|normal|full>
 Task: <route|clarify|explore|shape|plan|persist|build|review|sync>
-Lens: <none|iteration|expand|consistency|distill|language|domain|strategy|redteam|test|architecture|debug>
+Lens: <none|iteration|expand|consistency|distill|language|domain|strategy|conceptual|redteam|test|architecture|debug>
 Artifact: <required for persist unless target is explicit>
 Status: <inbox|working|stable|superseded; for persist metadata>
 Thread: <thread-name; for persist thread target inference>
@@ -78,6 +78,8 @@ Discovery vs judgment rule:
 - Copilot may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Hint` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
+
+`conceptual` is useful for strong-model-to-weak-model handoff. When explicitly selected, ask for or infer the current `Planning Level: concept | high-level-plan | implementation-plan`. `strategy` compares routes; `conceptual` controls the abstraction level.
 
 ## Write Boundaries
 

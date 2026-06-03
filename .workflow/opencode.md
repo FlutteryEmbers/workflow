@@ -6,6 +6,8 @@ Use OpenCode when it helps with context reading, plan drafting, or bounded imple
 
 OpenCode may suggest `redteam` when risk triggers match, but must not auto-load or apply it. Use full `redteam` only when the user explicitly selected that lens or the prompt explicitly includes it.
 
+Use `conceptual` only when the user explicitly wants concept-first planning, high-level planning, low-level implementation planning, or strong-model-to-weak-model handoff. It is not loaded by default.
+
 When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility.
 
 Default to `Compatibility: preserve` and `Constraint Mode: respect`. Breaking compatibility or constraint exceptions require explicit user or explicit-source intent.
@@ -30,6 +32,13 @@ Compatibility / constraint rule:
 - `plan` must encode selected breaking or exception scope explicitly.
 - `build` and bounded implement must stop on unplanned compatibility removal, alias removal, migration removal, fallback removal, or constraint bypass.
 - `prototype_exception` is temporary PoC scope, not a durable project constraint.
+
+Conceptual planning rule:
+
+- `shape --lens conceptual` defaults to `Planning Level: concept`.
+- `plan --lens conceptual` can produce `Planning Level: high-level-plan` or `Planning Level: implementation-plan`.
+- `strategy` compares options; `conceptual` controls planning level.
+- `/wf-build` does not require a `Planning Level` label; it still requires an explicit executable plan.
 
 Exploration notes:
 

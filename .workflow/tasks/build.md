@@ -32,6 +32,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 - `Mode: persist`: not valid for this task; use `persist` for session artifacts or `sync` for project docs / code-adjacent README.
 - `Mode: execute`: required for repository changes and must include an explicit `Plan`.
 - For native external-agent Implement, use the external-agent path instead of this task, then run `review` on the resulting diff.
+- `build` does not require or check `Planning Level: implementation-plan`. It only requires an explicit plan that is concrete enough to execute safely.
 
 ## When To Use
 
@@ -101,6 +102,8 @@ If `Mode: execute` or an explicit executable `Plan` is missing, do not modify fi
 Do not treat native Plan/Implement output as workflow-managed execution unless the user explicitly provides it as the `Plan` for `Mode: execute`.
 
 Do not treat path status as approval. A plan under `.session/threads/**` is executable only when the user invokes `build` with it and it is concrete enough to execute safely.
+
+Do not infer execution authorization from the `conceptual` lens or from any `Planning Level` label. The user invoking `build` with an explicit plan is the authorization; the plan still must name scope, target files, allowed changes, verification, and stop conditions.
 
 Do not execute `notes/**`. Exploration notes are disposable working memory and must be converted into a concrete plan under `.session/threads/**` or provided as an explicit executable plan before implementation.
 

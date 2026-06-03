@@ -13,6 +13,7 @@ user_selectable_lenses:
   - expand
   - language
   - strategy
+  - conceptual
   - test
   - architecture
 done_check:
@@ -91,6 +92,13 @@ Every major step must use `Step / Change / Verify / Risk / Stop Condition`. If t
 Include `Docs Follow-up` only when the planned change clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context. Do not force docs impact analysis for small or temporary changes.
 
 If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend plan audit with `review --lens redteam,test`. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
+
+When the user explicitly selects `conceptual`, declare the current `Planning Level`:
+
+- `high-level-plan`: phases, work packages, dependencies, validation direction, sequencing options, and risks.
+- `implementation-plan`: target files, allowed changes, do-not-touch areas, step -> verify, stop conditions, and handoff notes for weak-model or OpenCode execution.
+
+Use `high-level-plan` when the user asks for strategy, phases, or staged planning. Use `implementation-plan` only when the user asks for low-level execution detail, OpenCode handoff, weak-model handoff, or build-ready planning. Do not treat `strategy` as automatically enabling `conceptual`; if both are selected, `strategy` compares routes and `conceptual` controls the planning level.
 
 ## Compatibility / Constraint Policy
 

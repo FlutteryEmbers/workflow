@@ -12,6 +12,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
+- Use `conceptual` only when the user explicitly wants concept-first planning, high-level planning, low-level implementation planning, or strong-model-to-weak-model handoff.
 - Codex may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
 - Load templates only for `persist` or `sync` in `Mode: persist`.
 - Treat `.session/**` as working memory, not project source of truth.
@@ -42,6 +43,15 @@ Discovery vs judgment rule:
 - `plan` must name removed compatibility, migration/alias decisions, constraint exceptions, do-not-preserve items, cleanup, and stop conditions when breaking or exception mode is selected.
 - `build` or native implement must stop if it needs unplanned compatibility removal or constraint override.
 - `prototype_exception` is temporary PoC scope, not a durable project constraint.
+
+## Conceptual Planning
+
+When `Lens: conceptual` is explicitly selected, state `Planning Level: concept | high-level-plan | implementation-plan`.
+
+- `shape` usually produces `concept`.
+- `plan` may produce `high-level-plan` or `implementation-plan`.
+- `strategy` compares options; `conceptual` controls the level.
+- `build` does not require a `Planning Level` label; it requires an explicit plan concrete enough to execute safely.
 
 ## Common Paths
 

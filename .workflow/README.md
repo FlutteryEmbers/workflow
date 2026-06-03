@@ -112,6 +112,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 | `language` | Full English, translation, terminology consistency, or project glossary updates are needed. |
 | `domain` | Terms, rules, ownership, boundaries, or conceptual model are unclear. |
 | `strategy` | Technical routes or design options need comparison. |
+| `conceptual` | Work should stay separated into concept, high-level plan, and implementation-plan handoff levels. |
 | `redteam` | The current recommendation needs deliberate critique. |
 | `test` | Behavior needs stronger verification. |
 | `architecture` | Structure, interfaces, dependencies, constraints, or durable tradeoffs matter. |
@@ -128,6 +129,15 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 `Mode: execute` is workflow-managed execution only.
 
 Native Plan/Implement is a separate external-agent write path.
+
+## Conceptual Planning Lens
+
+Use `Lens: conceptual` only when the user explicitly wants concept-first planning, high-level planning, low-level implementation planning, or a strong-model-to-weak-model handoff.
+
+- `shape --lens conceptual` defaults to `Planning Level: concept`.
+- `plan --lens conceptual` can produce `Planning Level: high-level-plan` or `Planning Level: implementation-plan`.
+- `strategy` compares options; `conceptual` controls the planning level.
+- `build` does not require a `Planning Level` label. It still only needs an explicit plan that is concrete enough to execute safely.
 
 ## Token-Aware Copilot Usage
 
