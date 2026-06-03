@@ -73,6 +73,8 @@ Use this only after an explicit narrow plan exists.
 - Implement only the explicit segment.
 - Do not broaden scope.
 - Do not touch `.session/**`, `.workflow/**`, `docs/**`, or unrelated files unless the explicit plan names them.
+- Return compact `Execution Summary` by default; use full summary only for blocked, partial, failed verification, pitfalls, scope-expansion risk, or user-requested persistence.
+- `Execution Summary` is factual, not a review verdict. Persist useful summaries through `persist` as `Artifact: note` and `Intent: audit`.
 - Review the diff after implementation.
 
 ## Recommended Path
@@ -278,6 +280,8 @@ Report:
 ```
 
 `/wf-build` is the command form of bounded implementation. Use it only when the explicit plan is present in `Plan:` or in the current prompt. If the plan is missing or not executable enough, `/wf-build` must return `missing_prerequisite` and avoid file edits.
+
+`/wf-build` does not write `.session/**`. When execution pitfalls or blocked work should be remembered, persist the build output with `Task: persist`, `Artifact: note`, `Intent: audit`, and `Topic: <topic>_execution_summary`.
 
 ### Diff Review
 

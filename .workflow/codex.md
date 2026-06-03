@@ -127,6 +127,8 @@ Implement only the explicit plan.
 
 If the plan is missing, unclear, or not executable enough, do not edit files.
 
+After build, output compact `Execution Summary` by default. Use full summary only for blocked, partial, failed verification, pitfall, scope-expansion risk, or user-requested persistence. `Execution Summary` is factual, not a review verdict, and `build` must not write `.session/**`; persist useful summaries as `Artifact: note` with `Intent: audit`.
+
 ### External-Agent Native Plan / Implement
 
 Use when Codex native Plan -> Implement should edit files directly.

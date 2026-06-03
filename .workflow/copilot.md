@@ -88,6 +88,7 @@ Discovery vs judgment rule:
 - `sync` persist: write only `docs/**` or `src/**/README.md`.
 - `execute`: may modify broader repository artifacts only when the explicit plan says so.
 - `external-agent`: native Plan/Implement may write files directly, but the native plan must be audited before implementation and the diff must be reviewed afterward.
+- `build` outputs an `Execution Summary`; it does not write `.session/**`. Persist useful summaries with `Task: persist`, `Artifact: note`, and `Intent: audit`.
 
 ## Compatibility / Constraint Policy
 
@@ -261,5 +262,7 @@ Plan: .session/threads/{thread}/plan_{topic}.md
 Add #.workflow/tasks/build.md, the explicit plan, and target artifacts named by the plan.
 
 The plan must state `Compatibility: preserve | breaking` and `Constraint Mode: respect | propose_override | prototype_exception` when compatibility removal or constraint exceptions are involved. `build` must stop on unplanned breaking changes or constraint overrides.
+
+Build output should default to compact `Execution Summary`. Use full summary only for blocked, partial, failed verification, pitfall, scope-expansion risk, or user-requested persistence. The summary is factual, not a review verdict.
 
 In chat, summarize decisions and next steps. Do not paste full artifact contents unless the user asks for a preview.

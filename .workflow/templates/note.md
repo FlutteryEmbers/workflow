@@ -41,6 +41,10 @@
 
 - {{fact that affects a later decision, plan, review, or docs sync}}
 
+## Execution Summary
+
+{{optional: use only when this note persists build output or execution pitfalls. Include result, changed files, verification, pitfalls, likely source, impact, and suggested follow-up. This is a factual summary, not a review verdict, and must not be used as an execution plan.}}
+
 ## Assumptions
 
 - {{assumption or none}}

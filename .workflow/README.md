@@ -292,6 +292,7 @@ Any write to `docs/**` must:
 - Multi-turn design: `shape/review/explore discuss loop -> persist into one thread`.
 - Native implementation: external-agent native Plan -> `review` audit -> native Implement -> `review` diff.
 - Workflow-managed implementation: `plan -> build`.
+- Build result capture: `build -> compact Execution Summary -> optional persist note -> optional review`.
 - Project docs sync: `sync -> docs/**`.
 - Code-adjacent README sync: `sync -> src/**/README.md`.
 
@@ -312,6 +313,7 @@ Any write to `docs/**` must:
 - Treat OpenCode native Plan output as an external plan draft until it is reviewed or explicitly chosen for implementation.
 - Audit OpenCode plans with `review` before implementation and review diffs afterward.
 - `/wf-build` is a high-risk write command for explicit plans only. It should block when `Plan:` is missing or not executable enough.
+- `/wf-build` defaults to compact `Execution Summary`; it does not write `.session/**`. Persist useful build summaries as `Artifact: note` with `Intent: audit`.
 - OpenCode bounded implementation should execute only explicit narrow segments.
 - Temporary `.opencode/plans/` files are scratch; use `persist` to persist handoffs to `.session/threads/{thread}/plan_{topic}.md`.
 
