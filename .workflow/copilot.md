@@ -92,9 +92,21 @@ When unsure, start with `shape`. Use `explore` for evidence and `review` for ver
 - `shape = synthesis`: ambiguous, what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
-- `plan = executable sequence`: chosen direction to implementable steps.
+- `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
 
 Lenses may strengthen the selected task, but must not change task responsibility.
+
+## Discussion Freedom
+
+Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be useful before all evidence is complete.
+
+- `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, and `What Would Change My Mind`.
+- `explore` may output `Candidate Interpretations`, `Likely Entry Points`, and `Borrowable Ideas`.
+- `review` may output `Minimal Revision Sketch` and `Repair Direction`.
+- `plan` may output a non-build-ready `Planning Draft`.
+- Include `Confidence`, `Assumptions`, and `Human Decision Needed` when the output is uncertain or consequential.
+
+Do not treat discussion freedom as write permission. `persist`, `sync`, `build`, and external-agent implementation keep their normal boundaries.
 
 Discovery vs judgment rule:
 

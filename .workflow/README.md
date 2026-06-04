@@ -71,7 +71,7 @@ Do not use task names as mandatory file prefixes. `docs/**` follows the host pro
 | `clarify` | `analyst` | chat | Capture staged requirements, background, scope, and acceptance notes. |
 | `explore` | `designer` | chat | Understand code, materials, behavior, feasibility, or reference structure. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, goal update, or session decision. |
-| `plan` | `designer` | chat | Turn a chosen direction into a repo-aware plan or external-agent handoff. |
+| `plan` | `designer` | chat | Turn a chosen direction into a planning draft, repo-aware plan, or external-agent handoff. |
 | `persist` | `steward` | `.session/**` | Persist high-fidelity structured session artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
 | `build` | `builder` | repository changes | Apply an explicit workflow-managed plan. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
@@ -84,9 +84,21 @@ When unsure, start with `shape`. Use `explore` for evidence and `review` for ver
 - `shape = synthesis`: default for ambiguous, what-if, strategy, conceptual, direction-setting, entrypoint-selection, or "how should I think about this" requests.
 - `explore = evidence`: use only when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, or dependencies.
 - `review = verdict`: use only when there is an existing target to judge, such as code, docs, plan, diff, decision, behavior claim, or thread artifact.
-- `plan = executable sequence`: use when the direction is chosen and the user needs implementable steps.
+- `plan = planning sequence`: use when the direction is chosen and the user needs phases, sequencing, repo-aware steps, or an executable handoff.
 
-`shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` must not choose final direction. `review` must not invent replacement design.
+`shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` may give candidate interpretations and borrowable ideas, but not final direction. `review` may give a minimal revision sketch, but not a full replacement design.
+
+## Discussion Freedom
+
+Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is thinking material for the user, not final authorization.
+
+- `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, and `What Would Change My Mind`.
+- `explore` may provide `Candidate Interpretations`, `Likely Entry Points`, and `Borrowable Ideas`.
+- `review` may provide `Minimal Revision Sketch` and `Repair Direction`.
+- `plan` may provide a non-build-ready `Planning Draft`.
+- Discussion output should include `Confidence`, `Assumptions`, and `Human Decision Needed` when uncertainty or impact is material.
+
+These freedoms do not loosen write or execution boundaries. `persist`, `sync`, and `build` keep their existing target and prerequisite rules.
 
 For repository conflicts:
 

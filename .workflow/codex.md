@@ -29,7 +29,19 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - `shape = synthesis`: ambiguous, what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
-- `plan = executable sequence`: chosen direction to implementable steps.
+- `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
+
+## Discussion Freedom
+
+Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide useful provisional thinking without treating it as approval.
+
+- `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`.
+- `explore`: `Candidate Interpretations`, `Likely Entry Points`, `Borrowable Ideas`.
+- `review`: `Minimal Revision Sketch`, `Repair Direction`.
+- `plan`: non-build-ready `Planning Draft` when execution detail is not requested yet.
+- Add `Confidence`, `Assumptions`, and `Human Decision Needed` when uncertainty or impact is material.
+
+Discussion freedom does not permit file writes, project docs sync, implementation, or source-of-truth decisions.
 
 Discovery vs judgment rule:
 

@@ -90,11 +90,20 @@ User-selected lenses:
 
 Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session artifact is stable, needs revision, blocked, or should be synced to code-aligned project docs.
 
-Do not invent a replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions and next task, but it should not become a design synthesis task.
+Do not create a full replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions, `Repair Direction`, and a `Minimal Revision Sketch`, but it should not become a design synthesis task.
 
 Default review is normal review. Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam`. Otherwise, you may output `Suggested Lens: redteam` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
 
-Lens use must not change task responsibility. `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, and `architecture` may deepen the verdict, but `review` must not become evidence-only `explore`, synthesis-oriented `shape`, or executable `plan`.
+Lens use must not change task responsibility. `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, and `architecture` may deepen the verdict, but `review` must not become evidence-only `explore`, full synthesis-oriented `shape`, or executable `plan`.
+
+## Discussion Freedom
+
+In `Mode: discuss`, review may help the human decide what to do next without taking ownership of the redesign.
+
+- You may output `Minimal Revision Sketch` and `Repair Direction` when they make the verdict actionable.
+- Keep the sketch minimal: name the direction of change, not a full replacement architecture or implementation plan.
+- Include `Confidence`, `Assumptions`, and `Human Decision Needed` when the verdict or repair direction depends on incomplete evidence.
+- Do not treat a sketch as approval to write files or execute work.
 
 For non-trivial reviews, include a readiness dashboard:
 
@@ -139,6 +148,7 @@ Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
+Minimal Revision Sketch: <smallest repair direction or none>
 Persist Hint: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
 ```
 
@@ -152,6 +162,8 @@ Use `Output: normal` when the user asks to整理, refine, or prepare the review 
 Understanding: <one line>
 Refined Direction / Plan:
 - <decision, key findings, required revisions, and recommended next task>
+Repair Direction:
+- <minimal direction of change, not full redesign>
 Important Context To Preserve:
 - <review question clarification, evidence priority, accepted risk, verdict change reason, or user concern>
 Open Questions:
@@ -191,6 +203,8 @@ What Is Still Reasonable:
 - <parts that should be preserved>
 Required Revisions:
 - <must-change items>
+Minimal Revision Sketch:
+- <smallest repair direction; route full redesign to shape and sequencing to plan>
 Rejected Options:
 - <fixes or interpretations rejected>
 Risks / Unknowns:

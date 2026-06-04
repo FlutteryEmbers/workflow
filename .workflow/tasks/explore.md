@@ -88,7 +88,7 @@ User-selected lenses:
 
 ## Instructions
 
-Explore enough to reduce uncertainty for the next decision. Separate observed facts from assumptions and inferences. Do not choose the final direction unless the user explicitly routes back to `shape`; prepare evidence for `shape`, `review`, or `plan`.
+Explore enough to reduce uncertainty for the next decision. Separate observed facts from assumptions and inferences. You may provide candidate interpretations, likely entrypoints, and borrowable ideas, but do not present them as the final direction or a verdict; prepare evidence for `shape`, `review`, or `plan`.
 
 ## Discovery vs Judgment Rule
 
@@ -110,10 +110,13 @@ Use this structure for non-trivial output:
 - `Reliability Notes`: claims that are contradicted, weak, stale-looking, version-sensitive, or unsafe to rely on.
 - `Unknowns`: missing facts or weak evidence.
 - `Constraints Found`: boundaries, existing behavior, dependencies, or doc constraints.
+- `Candidate Interpretations`: plausible explanations or readings of the evidence.
+- `Likely Entry Points`: probable files, APIs, flows, or docs to inspect next.
+- `Borrowable Ideas`: patterns or structures that may be useful later, without recommending adoption.
 - `Potential Options`: candidate materials for `shape`; these are not final recommendations.
 - `Recommended Next Task`: usually `shape`, `review`, `plan`, `persist`, or `sync`.
 
-Lens use must not change task responsibility. `distill`, `architecture`, `debug`, `domain`, and `language` may improve evidence extraction, but `explore` must not become final synthesis or verdict.
+Lens use must not change task responsibility. `distill`, `architecture`, `debug`, `domain`, and `language` may improve evidence extraction, but `explore` must not present candidate interpretations as final synthesis or verdict.
 
 Use this shape for conflict reliability notes:
 
@@ -137,6 +140,8 @@ Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
+Candidate Interpretations:
+- <0-3 plausible interpretations, not final direction>
 Persist Hint: Artifact=<note|option|distillation>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
@@ -150,6 +155,8 @@ Use `Output: normal` when the user asks to整理, refine, or prepare evidence fo
 Understanding: <one line>
 Refined Direction / Plan:
 - <evidence summary, reliability status, and recommended next task>
+Candidate Interpretations:
+- <plausible explanation, borrowable idea, or likely entrypoint to preserve>
 Important Context To Preserve:
 - <source, reliability note, contradiction, example, or constraint worth preserving>
 Open Questions:
@@ -187,6 +194,8 @@ Observed Facts:
 - <source-backed fact>
 Evidence Map:
 - <source -> fact -> implication>
+Candidate Interpretations:
+- <plausible explanation, likely entrypoint, or borrowable idea; not final direction>
 Reliability Notes:
 - <claim, evidence, conflict, reliability, possible explanation, and suggested follow-up>
 Constraints Found:

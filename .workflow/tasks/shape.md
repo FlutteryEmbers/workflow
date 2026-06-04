@@ -88,11 +88,20 @@ Needs Review?: <yes/no and why>
 Can Shape Now?: <yes/no>
 ```
 
-If missing evidence could change the recommendation, stop and output `Recommended Segments: explore -> shape`. If the user actually needs a verdict, stop and recommend `review`. If the target is fixed and the user needs steps, recommend `plan`.
+If missing evidence could change the recommendation, still provide a provisional shape by default. Label it as provisional, name the assumptions, and state `What Would Change My Mind`. Stop and output `Recommended Segments: explore -> shape` only when the missing evidence would affect execution, project docs, source-of-truth judgment, irreversible choices, security, permissions, data migration, or another high-impact decision. If the user actually needs a verdict, stop and recommend `review`. If the target is fixed and the user needs steps, recommend `plan`.
 
 `Risk Check` is built-in safety, not the `redteam` lens. Use it to name risky assumptions, likely failure modes, and whether a follow-up `review --lens redteam` is recommended. Do not load `.workflow/lenses/redteam.md` unless the user explicitly selected it.
 
 Lens use must not change task responsibility. `strategy`, `conceptual`, `domain`, `architecture`, `iteration`, `expand`, `distill`, and `language` may help synthesize direction, but `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`.
+
+## Discussion Freedom
+
+In `Mode: discuss`, the user remains responsible for final judgment. `shape` should provide useful thinking material instead of over-blocking.
+
+- You may output `Provisional Recommendation`, `Candidate Options`, `Best Guess`, and `What Would Change My Mind`.
+- Include `Confidence`, `Assumptions`, and `Human Decision Needed` when the recommendation is uncertain or consequential.
+- Do not present provisional recommendations as approval, readiness, source of truth, or permission to execute.
+- Keep strict write and execution boundaries unchanged; discussion freedom does not allow file writes, project docs sync, or implementation.
 
 When the user explicitly selects `conceptual`, output `Planning Level: concept` unless the user clearly requests a different level. Keep the result at concept level: goal, principles, boundaries, key tradeoffs, success criteria, non-goals, and validation direction. Do not produce target files or executable implementation steps from `shape`.
 
@@ -142,7 +151,7 @@ User-selected lenses:
 
 Convert notes, goals, what-if prompts, strategy questions, and discussion into a clear session direction or goal update. For vague or broad goals, first reframe the request. Name the smallest useful wedge that can validate the goal, the success criteria that would make it worth continuing, and the larger scope that is intentionally rejected for now.
 
-You may provide a hypothesis-based recommendation when evidence is incomplete, but label it as provisional and name what `explore` or `review` would need to confirm. Do not output approval, acceptance, or implementation readiness verdicts; route those to `review`.
+You may provide a hypothesis-based recommendation when evidence is incomplete. Label it as provisional, name what `explore` or `review` would need to confirm, and include what would change the recommendation. Do not output approval, acceptance, or implementation readiness verdicts; route those to `review`.
 
 When a shape is likely to drive execution, involves costly reversal, or depends on unverified assumptions, include `Suggested Lens: redteam` as a recommendation rather than applying it automatically.
 
@@ -156,6 +165,8 @@ Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
+Provisional Recommendation: <best guess or none>
+Human Decision Needed: <yes/no and why>
 Persist Hint: Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
 ```
 
@@ -169,6 +180,8 @@ Use `Output: normal` when the user asks to整理, refine, or prepare the discuss
 Understanding: <one line>
 Refined Direction / Plan:
 - <current recommendation, planning level, phase/concept structure, boundaries, and validation direction>
+What Would Change My Mind:
+- <evidence, constraint, user decision, or risk that would change the recommendation>
 Important Context To Preserve:
 - <phase boundary, constraint, user correction, example, counterexample, accepted risk, or weak-model handoff detail>
 Open Questions:

@@ -1,5 +1,5 @@
 ---
-description: Workflow Lite repo-aware plan or external-agent handoff.
+description: Workflow Lite planning draft, repo-aware plan, or external-agent handoff.
 ---
 
 Use Workflow Lite planning semantics.
@@ -12,7 +12,8 @@ Lens: none unless explicitly requested
 Rules:
 - Do not edit files.
 - Do not treat this as OpenCode implementation.
-- Create a repo-aware plan only after the direction is chosen.
+- Create a planning draft or repo-aware plan only after the direction is chosen.
+- Non-build-ready planning drafts are allowed; label what is missing for implementation handoff.
 - Use `Output: full` when the plan is intended as an implementation handoff.
 - Use `.workflow/tasks/plan.md` as the task contract if needed.
 - If the user explicitly selects `Lens: conceptual`, output `Planning Level: high-level-plan` or `implementation-plan` according to the request.
@@ -24,6 +25,7 @@ Return:
 - Target outcome
 - Planning Level, only when `Lens: conceptual` is selected
 - Take, 3-5 bullets max
+- Planning Draft, yes/no
 - Risks/Stop conditions
 - Next
 - Persist Hint, none or one line

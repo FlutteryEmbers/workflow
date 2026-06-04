@@ -1,7 +1,7 @@
 ---
 id: plan
 role: designer
-purpose: Turn a chosen direction into a repo-aware plan or external-agent handoff in chat.
+purpose: Turn a chosen direction into a planning draft, repo-aware plan, or external-agent handoff in chat.
 inputs:
   - decision_or_target
 outputs:
@@ -53,7 +53,8 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## Expected Output
 
-- A repo-aware plan with `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
+- A `Planning Draft` or implementation handoff appropriate to the user's requested level.
+- Build-ready handoffs include `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
 - `Compatibility / Constraint Plan` that records the selected compatibility and constraint policy before execution.
 - `Output: compact` default: short plan summary, critical risks, and optional `Persist Hint`.
 - `Full Persist Packet` only when the plan should be persisted now, used as a handoff, or `Output: full` is requested.
@@ -85,9 +86,9 @@ User-selected lenses:
 
 ## Instructions
 
-Write the smallest repo-aware plan or handoff another engineer, Codex, Copilot, OpenCode, or similar agent can execute without making product decisions. Include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected when they matter.
+Write the smallest useful plan for the user's current intent. In `Mode: discuss`, plans may be non-build-ready planning drafts when the user is still exploring sequencing, phases, or strategy. Only implementation handoff or build-ready plans must include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected when they matter.
 
-Every major step must use `Step / Change / Verify / Risk / Stop Condition`. If the verification method is unclear, mark the plan as not executable enough and recommend `review` or `shape` instead of treating it as ready for `build`.
+For implementation handoff or build-ready planning, every major step must use `Step / Change / Verify / Risk / Stop Condition`. For planning drafts, use phases, work packages, dependencies, assumptions, risks, and what would be needed to turn the draft into an implementation handoff. If verification is unclear, mark the plan as a `Planning Draft` rather than treating it as ready for `build`.
 
 Include `Docs Follow-up` only when the planned change clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context. Do not force docs impact analysis for small or temporary changes.
 
@@ -99,6 +100,15 @@ When the user explicitly selects `conceptual`, declare the current `Planning Lev
 - `implementation-plan`: target files, allowed changes, do-not-touch areas, step -> verify, stop conditions, and handoff notes for weak-model or OpenCode execution.
 
 Use `high-level-plan` when the user asks for strategy, phases, or staged planning. Use `implementation-plan` only when the user asks for low-level execution detail, OpenCode handoff, weak-model handoff, or build-ready planning. Do not treat `strategy` as automatically enabling `conceptual`; if both are selected, `strategy` compares routes and `conceptual` controls the planning level.
+
+## Discussion Freedom
+
+In `Mode: discuss`, `plan` may output a `Planning Draft` before all execution details are known.
+
+- `Planning Draft`: phases, sequencing, dependencies, assumptions, risks, and open decisions; not build-ready.
+- `Implementation Handoff`: target files, allowed changes, do-not-touch, step verification, stop conditions, and handoff notes.
+- Include `Confidence`, `Assumptions`, `Human Decision Needed`, and `What Would Make This Build-Ready` when the plan is still a draft.
+- Do not let a planning draft imply execution authorization.
 
 ## Compatibility / Constraint Policy
 
@@ -139,6 +149,7 @@ Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
+Planning Draft: <yes/no; if yes, say what is missing for build-ready handoff>
 Persist Hint: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
@@ -152,6 +163,8 @@ Use `Output: normal` when the user asks to整理, refine, or prepare the plan fo
 Understanding: <one line>
 Refined Direction / Plan:
 - <target outcome, planning level, phase plan, key constraints, and readiness>
+What Would Make This Build-Ready:
+- <target files, allowed changes, verification, stop conditions, or missing decision>
 Important Context To Preserve:
 - <phase constraint, sequencing reason, user correction, accepted risk, example, or weak-model handoff detail>
 Open Questions:
