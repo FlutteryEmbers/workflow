@@ -84,13 +84,13 @@ User-selected lenses:
 
 Capture the user's goal, staged requirements, background, constraints, non-goals, acceptance signals, and open questions. Keep this as chat output until the user chooses `persist`.
 
-## Persist Hint By Default
+## Compact Output By Default
 
 In `Mode: discuss`, default to:
 
 ```text
 Understanding: <one line>
-Answer:
+Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
@@ -98,6 +98,22 @@ Persist Hint: Artifact=<brief|note>; Status=inbox; Topic=<topic>; Suggested Targ
 ```
 
 Use `Persist Hint: none` when the clarification is not worth preserving.
+
+## Normal Refine Output
+
+Use `Output: normal` when the user asks to整理, refine, or prepare for persist without writing files:
+
+```text
+Understanding: <one line>
+Refined Direction / Plan:
+- <clarified goal, scope, acceptance signal, and constraints>
+Important Context To Preserve:
+- <user correction, staged requirement, constraint, example, or non-goal worth preserving>
+Open Questions:
+- <question>
+Persist Hint:
+- Artifact=<brief|note>; Status=inbox; Topic=<topic>; Suggested Target=.session/inbox/<artifact>_<topic>.md
+```
 
 ## Full Persist Packet
 

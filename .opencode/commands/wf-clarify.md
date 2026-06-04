@@ -20,10 +20,8 @@ Request:
 $ARGUMENTS
 
 Return:
-- Goal
-- In Scope
-- Out of Scope
-- Success Criteria
-- Constraints or assumptions
-- Open Questions
-- Persist Hint, if worth saving
+- Understanding
+- Take, 3-5 bullets max
+- Risks/Unknowns, 0-3 bullets
+- Next
+- Persist Hint, none or one line

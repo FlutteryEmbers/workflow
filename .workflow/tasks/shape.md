@@ -146,13 +146,13 @@ You may provide a hypothesis-based recommendation when evidence is incomplete, b
 
 When a shape is likely to drive execution, involves costly reversal, or depends on unverified assumptions, include `Suggested Lens: redteam` as a recommendation rather than applying it automatically.
 
-## Persist Hint By Default
+## Compact Output By Default
 
 In `Mode: discuss`, default to:
 
 ```text
 Understanding: <one line>
-Answer:
+Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
@@ -160,6 +160,22 @@ Persist Hint: Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=
 ```
 
 Use `Persist Hint: none` when the shape is not worth preserving.
+
+## Normal Refine Output
+
+Use `Output: normal` when the user asks to整理, refine, or prepare the discussion for persist without writing files:
+
+```text
+Understanding: <one line>
+Refined Direction / Plan:
+- <current recommendation, planning level, phase/concept structure, boundaries, and validation direction>
+Important Context To Preserve:
+- <phase boundary, constraint, user correction, example, counterexample, accepted risk, or weak-model handoff detail>
+Open Questions:
+- <question that could change the shape>
+Persist Hint:
+- Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
+```
 
 ## Full Persist Packet
 

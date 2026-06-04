@@ -21,8 +21,7 @@ $ARGUMENTS
 
 Return:
 - Decision: ready | needs changes | needs more evidence | blocked | docs blocked
-- Key findings
-- Required revisions
-- Verification gaps
-- Recommended next task
-- Persist Hint, if worth saving
+- Take, 3-5 bullets max
+- Risks/Unknowns, 0-3 bullets
+- Next
+- Persist Hint, none or one line

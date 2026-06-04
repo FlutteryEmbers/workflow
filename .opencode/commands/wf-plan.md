@@ -23,9 +23,7 @@ $ARGUMENTS
 Return:
 - Target outcome
 - Planning Level, only when `Lens: conceptual` is selected
-- Plan summary
-- Allowed changes
-- Do-not-touch areas
-- Step -> Verify summary
+- Take, 3-5 bullets max
 - Risks/Stop conditions
-- Persist Hint, if worth saving
+- Next
+- Persist Hint, none or one line

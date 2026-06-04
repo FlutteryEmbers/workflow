@@ -129,13 +129,13 @@ Compatibility / Constraint Plan
 - Stop Conditions: <when breaking scope or exceptions exceed the explicit plan>
 ```
 
-## Persist Hint By Default
+## Compact Output By Default
 
 In `Mode: discuss`, default to:
 
 ```text
 Understanding: <one line>
-Answer:
+Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
@@ -143,6 +143,22 @@ Persist Hint: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.s
 ```
 
 Use `Persist Hint: none` when the plan is not worth preserving.
+
+## Normal Refine Output
+
+Use `Output: normal` when the user asks to整理, refine, or prepare the plan for persist without writing files:
+
+```text
+Understanding: <one line>
+Refined Direction / Plan:
+- <target outcome, planning level, phase plan, key constraints, and readiness>
+Important Context To Preserve:
+- <phase constraint, sequencing reason, user correction, accepted risk, example, or weak-model handoff detail>
+Open Questions:
+- <question that blocks readiness or execution>
+Persist Hint:
+- Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
+```
 
 ## Full Persist Packet
 

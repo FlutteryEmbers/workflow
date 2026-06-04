@@ -139,23 +139,25 @@ Use `Lens: conceptual` only when the user explicitly wants concept-first plannin
 - `strategy` compares options; `conceptual` controls the planning level.
 - `build` does not require a `Planning Level` label. It still only needs an explicit plan that is concrete enough to execute safely.
 
-## Token-Aware Copilot Usage
+## Conversation-to-Artifact Output Flow
 
 Default to `Output: compact`.
 
 Protocol: `Output: compact | normal | full`.
 
-- `compact`: short answer plus optional `Persist Hint`.
-- `normal`: add concise rationale or evidence when needed.
-- `full`: use only for explicit persist requests, artifact previews, plan handoff, external-agent audit, diff review, or complex composite routing.
+- `compact`: general discussion. Optimize the next turn, not archival completeness.
+- `normal`: refine. Prepare key structure and important context for later persist, without writing files.
+- `full`: artifact, handoff, audit, diff review, or complex routing.
 
-Daily Copilot path:
+Daily path:
 
 ```text
-discuss compact -> persist full artifact only when needed
+compact discussion -> normal refine -> full persist
 ```
 
 Discussion tasks should not output full `Persist Packet` by default. Use `Persist Hint` unless the user asks to persist, asks for `Output: full`, or needs a handoff/audit.
+
+Compact output uses `Understanding`, short `Take`, limited risks, one `Next`, and at most one-line `Persist Hint`. Normal refine output should include `Important Context To Preserve` for phase boundaries, constraints, examples, accepted risks, and user corrections.
 
 ## Task Boundary Router
 

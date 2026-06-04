@@ -23,6 +23,7 @@ $ARGUMENTS
 Return:
 - Understanding
 - Planning Level, only when `Lens: conceptual` is selected
-- Answer, 3-6 bullets
+- Take, 3-5 bullets max
 - Risks/Unknowns, 0-3 bullets
-- Persist Hint, if worth saving
+- Next
+- Persist Hint, none or one line

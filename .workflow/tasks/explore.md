@@ -127,13 +127,13 @@ Reliability Notes:
 - Suggested Follow-up: <inspect runtime behavior | check tests | ask owner | compare versions | treat as hypothesis>
 ```
 
-## Persist Hint By Default
+## Compact Output By Default
 
 In `Mode: discuss`, default to:
 
 ```text
 Understanding: <one line>
-Answer:
+Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
@@ -141,6 +141,22 @@ Persist Hint: Artifact=<note|option|distillation>; Thread=<thread or none>; Topi
 ```
 
 Use `Persist Hint: none` when the exploration is not worth preserving.
+
+## Normal Refine Output
+
+Use `Output: normal` when the user asks to整理, refine, or prepare evidence for persist without writing files:
+
+```text
+Understanding: <one line>
+Refined Direction / Plan:
+- <evidence summary, reliability status, and recommended next task>
+Important Context To Preserve:
+- <source, reliability note, contradiction, example, or constraint worth preserving>
+Open Questions:
+- <missing source or evidence gap>
+Persist Hint:
+- Artifact=<note|option|distillation>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+```
 
 ## Full Persist Packet
 

@@ -34,15 +34,21 @@ Request:
 - `Mode: execute` applies an explicit workflow-managed plan through `Task: build`.
 - Native Codex/Copilot Plan -> Implement is the `external-agent` write path. It is not a Workflow Mode and does not use `Task: build`.
 
-## Output Budget
+## Conversation-to-Artifact Output Flow
 
 Default to `Output: compact`.
 
 Protocol: `Output: compact | normal | full`.
 
-- `compact`: use `Understanding`, 3-6 answer bullets, 0-3 risk/unknown bullets, and optional one-line `Persist Hint`.
-- `normal`: add short rationale or evidence when it materially improves the answer.
-- `full`: use only for explicit persist requests, artifact previews, plan handoff, external-agent audit, diff review, or complex composite routing.
+- `compact`: general discussion. Optimize the next turn, not archival completeness.
+- `normal`: refine. Prepare key structure and important context for later persist, without writing files.
+- `full`: artifact, handoff, audit, diff review, or complex routing.
+
+Recommended flow:
+
+```text
+compact discussion -> normal refine -> full persist
+```
 
 In `Mode: discuss`, do not output a full `Persist Packet` by default. Use `Persist Hint` instead:
 
@@ -51,6 +57,33 @@ Persist Hint: Artifact=<artifact>; Thread=<thread>; Topic=<topic>; Suggested Tar
 ```
 
 Full `Persist Packet` is allowed only when the user asks to persist, says `Output: full`, asks for a handoff/audit, or the current response is the source for a following `Task: persist`.
+
+Compact format:
+
+```text
+Understanding: <one line>
+Take:
+- <3-5 bullets max>
+Risks/Unknowns:
+- <0-3 bullets max>
+Next:
+- <one suggested next move>
+Persist Hint: <none or one line>
+```
+
+Normal refine format:
+
+```text
+Understanding: <one line>
+Refined Direction / Plan:
+- <key structure>
+Important Context To Preserve:
+- <phase, constraints, examples, accepted risks, user corrections>
+Open Questions:
+- <questions>
+Persist Hint:
+- <artifact/thread/topic/target>
+```
 
 ## Task Boundary Shortcut
 

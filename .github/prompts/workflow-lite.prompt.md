@@ -86,11 +86,27 @@ For `Output: compact`, prefer:
 
 ```text
 Understanding: <one line>
-Answer:
-- <3-6 bullets>
+Take:
+- <3-5 bullets max>
 Risks/Unknowns:
 - <0-3 bullets>
-Persist Hint: <optional one-liner>
+Next:
+- <one suggested next move>
+Persist Hint: <none or one line>
+```
+
+For `Output: normal`, refine toward a future persist without writing files:
+
+```text
+Understanding: <one line>
+Refined Direction / Plan:
+- <key structure>
+Important Context To Preserve:
+- <phase, constraints, examples, accepted risks, user corrections>
+Open Questions:
+- <questions>
+Persist Hint:
+- <artifact/thread/topic/target>
 ```
 
 Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.

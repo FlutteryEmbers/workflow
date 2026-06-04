@@ -129,13 +129,13 @@ Check for scope drift, unrelated edits, missing edits, missing verification, cha
 
 Treat drive-by refactors and unplanned scope expansion as blocking unless the plan explicitly allowed them.
 
-## Persist Hint By Default
+## Compact Output By Default
 
 In `Mode: discuss`, default to:
 
 ```text
 Understanding: <one line>
-Answer:
+Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
@@ -143,6 +143,22 @@ Persist Hint: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=
 ```
 
 Use `Persist Hint: none` when the review is not worth preserving.
+
+## Normal Refine Output
+
+Use `Output: normal` when the user asks to整理, refine, or prepare the review for persist without writing files:
+
+```text
+Understanding: <one line>
+Refined Direction / Plan:
+- <decision, key findings, required revisions, and recommended next task>
+Important Context To Preserve:
+- <review question clarification, evidence priority, accepted risk, verdict change reason, or user concern>
+Open Questions:
+- <question that blocks readiness, execution, or sync>
+Persist Hint:
+- Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
+```
 
 ## Full Persist Packet
 

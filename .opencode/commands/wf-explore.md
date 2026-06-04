@@ -21,10 +21,8 @@ Request:
 $ARGUMENTS
 
 Return:
-- Sources Checked
-- Observed Facts
-- Evidence Map, when useful
-- Reliability Notes
-- Unknowns
-- Recommended Next Task
-- Persist Hint, if worth saving
+- Understanding
+- Take, 3-5 bullets max
+- Risks/Unknowns, 0-3 bullets
+- Next
+- Persist Hint, none or one line
