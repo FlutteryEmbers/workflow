@@ -12,7 +12,10 @@ Output: full
 Rules:
 - Write only `docs/**` or explicit `src/**/README.md`.
 - Do not write `.session/**`, `notes/**`, source code, `.workflow/**`, or `.github/**`.
-- Require source, future use, source of truth, and future-use success criteria for `docs/**`.
+- Require source, scope, docs type, source of truth, and alignment success criteria for `docs/**`.
+- Allowed Project Doc Types: `docs/architecture/**`, `docs/design/**`, `docs/adr/**`, `docs/operations/**`, `docs/reference/**`, and `src/**/README.md`.
+- Do not create workflow-internal docs such as `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` unless the user explicitly declares host-project taxonomy override.
+- If `Target` is missing, require `Scope` and return an `Alignment Set` of at most 3 targets before writing.
 - Use `.workflow/tasks/sync.md` as the task contract if needed.
 - If Project Docs Rules are not satisfied, output `docs blocked`.
 
@@ -20,7 +23,11 @@ Request:
 $ARGUMENTS
 
 Return:
+- Scope
+- Docs Type
+- Alignment Set
 - Target
 - Source of truth
 - Changes made or `docs blocked`
+- Blocked Items
 - Follow-up

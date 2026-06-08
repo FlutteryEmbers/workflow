@@ -141,7 +141,7 @@ Examples:
 /wf-review Audit this plan before implementation: <plan>
 /wf-persist Artifact: shape Thread: graph10x Topic: entrypoints Source: last discussion
 /wf-build Plan: .session/threads/auth/plan_auth.md
-/wf-sync Source: .session/threads/auth/decision_auth_boundary.md Target: docs/architecture/auth.md Future Use: guide future auth changes
+/wf-sync Source: .session/threads/auth/decision_auth_boundary.md Scope: auth Source Of Truth: session decision Target: docs/architecture/auth.md Alignment Success Criteria: future auth docs match confirmed boundaries
 ```
 
 ## Add Context
@@ -325,15 +325,23 @@ Source:
 - <session decision, diff, code, or existing docs>
 
 Target:
-- docs/<area>/<topic>.md or src/<area>/README.md
+- docs/architecture/<topic>.md or src/<area>/README.md
 
-Future Use:
-<how this doc guides future human/agent work>
+Scope:
+<area or code/docs scope>
+
+Source Of Truth:
+<code | diff | session thread artifact | explicit user decision | existing docs>
+
+Alignment Success Criteria:
+<what code/docs alignment mistake this sync should prevent>
 
 Rules:
 - Follow Project Docs Rules.
-- Source, future use, source of truth, and future-use success criteria must be clear.
+- Source, scope, docs type, source of truth, and alignment success criteria must be clear.
+- Allowed docs targets are docs/architecture/**, docs/design/**, docs/adr/**, docs/operations/**, docs/reference/**, and src/**/README.md.
+- Do not create workflow-internal docs such as docs/workflow/**, docs/session/**, docs/ai/**, docs/prompts/**, docs/notes/**, docs/plans/**, or docs/reviews/** unless the user explicitly declares host-project taxonomy override.
 - Preserve existing docs structure and tone.
 - Do not write .session/**, .workflow/**, source code, or unrelated docs.
-- Output docs blocked if source, future use, source of truth, future-use success criteria, or safety is unclear.
+- Output docs blocked if source, scope, docs type, source of truth, alignment success criteria, or safety is unclear.
 ```

@@ -163,7 +163,9 @@ Use `sync` for code-aligned project docs and code-adjacent README alignment.
 Mode: persist
 Task: sync
 Lens: <none|consistency|language|domain|architecture|distill>
-Target: docs/{area}/{topic}.md or src/{area}/README.md
+Scope: <area or code/docs scope>
+Source Of Truth: <code | diff | session thread artifact | explicit user decision | existing docs>
+Target: docs/architecture/{topic}.md or src/{area}/README.md
 Source:
 - .session/threads/<thread>/<artifact>.md
 Context:
@@ -171,10 +173,10 @@ Context:
 - .workflow/templates/sync.md or .workflow/templates/code_readme.md
 - source artifact, existing docs, and relevant source files
 Request:
-Sync confirmed facts into the target only.
+Sync confirmed facts into the target only. Use allowed docs types unless the user explicitly declares host-project taxonomy override.
 ```
 
-When creating a new `docs/**` target, add `.workflow/templates/project_doc.md` or `.workflow/templates/architecture_note.md`. When updating existing docs, preserve the target file's structure.
+When creating a new allowed `docs/**` target, add `.workflow/templates/project_doc.md` or `.workflow/templates/architecture_note.md`. When updating existing docs, preserve the target file's structure.
 
 If the source is only `.session/inbox/**` or `notes/**`, require explicit source-of-truth confirmation before writing project docs.
 
@@ -284,11 +286,13 @@ Review the Codex diff against the explicit external plan.
 Use .workflow/codex.md as the Codex adapter.
 Mode: persist
 Task: sync
-Target: docs/<area>/<topic>.md
+Scope: <area>
+Source Of Truth: <code | diff | session thread artifact | explicit user decision | existing docs>
+Target: docs/architecture/<topic>.md
 Source:
 - .session/threads/<thread>/<artifact>.md
-Future Use:
-<how this doc guides future human/agent work>
+Alignment Success Criteria:
+<what code/docs alignment mistake this sync should prevent>
 Request:
 Sync confirmed facts into code-aligned project docs. Follow Project Docs Rules and preserve existing docs tone and structure.
 ```

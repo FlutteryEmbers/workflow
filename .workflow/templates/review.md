@@ -104,17 +104,18 @@ flowchart TD
 {{only when docs/** is involved}}
 
 - Source clear: {{yes/no}}
-- Future use clear: {{yes/no}}
+- Scope clear: {{yes/no}}
+- Docs type allowed: {{yes/no}}
 - Source of truth clear: {{yes/no}}
-- Future-use success criteria clear: {{yes/no}}
+- Alignment success criteria clear: {{yes/no}}
 - Existing docs tone and structure preserved: {{yes/no}}
 - Session-only material excluded: {{yes/no}}
 
 ## Docs Follow-up
 
 - Impact: {{none | suggested | required}}
-- Target: {{docs/** path or none}}
-- Reason: {{why future human/agent execution could be misled without docs update}}
+- Target: {{allowed docs/** path or none}}
+- Reason: {{what code/docs alignment mistake could happen without docs update}}
 - Recommended Sync: {{sync prompt or none}}
 
 ## Verification

@@ -8,25 +8,39 @@
 
 {{topic}}
 
+## Scope
+
+{{explicit area, code path, feature, package, docs subtree, or target-only sync}}
+
 ## Source
 
 - {{session decision, code path, diff, test, existing docs, or README}}
 
+## Docs Type
+
+{{architecture | design | adr | operations | reference | code-readme | blocked}}
+
 ## Target
 
-- {{docs/** or src/**/README.md}}
+- {{docs/architecture/** | docs/design/** | docs/adr/** | docs/operations/** | docs/reference/** | src/**/README.md}}
 
 ## Source Of Truth
 
 {{confirmed source of truth}}
 
-## Future Use
+## Alignment Purpose
 
-{{how this doc or README will guide future human/agent work}}
+{{what code/docs alignment mistake this sync should prevent}}
 
-## Future-Use Success Criteria
+## Alignment Success Criteria
 
-- {{what future human/agent work should understand or avoid after reading}}
+- {{what must be true after sync for docs/code alignment to be correct}}
+
+## Alignment Set
+
+| Docs Type | Target | Source | Source Of Truth | Alignment Reason | Action |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| {{architecture / design / adr / operations / reference / code-readme}} | {{target path}} | {{source path or diff}} | {{truth source}} | {{why this target must align}} | {{update / create / no change / blocked}} |
 
 ## Sync Flow
 
@@ -42,20 +56,30 @@ flowchart TD
 ## Project Docs Rules Check
 
 - Source is clear: {{yes/no}}
-- Future use is clear: {{yes/no}}
+- Scope is clear: {{yes/no}}
+- Docs type is allowed: {{yes/no}}
 - Source of truth is clear: {{yes/no}}
-- Future-use success criteria clear: {{yes/no}}
+- Alignment success criteria clear: {{yes/no}}
 - Existing docs tone and structure preserved: {{yes/no}}
 - Session-only residue removed: {{yes/no}}
 - Temporary PoC, low-level mirror, or misleading details removed: {{yes/no}}
+- Workflow-internal docs leakage avoided: {{yes/no}}
+
+## Docs Type Gate
+
+{{allowed docs type, explicit taxonomy override, or docs blocked}}
 
 ## Create Docs Gate
 
-{{for new docs/** targets only: why this doc will reduce future human/agent execution mistakes, or docs blocked}}
+{{for new docs/** targets only: why this doc will reduce future code/docs alignment mistakes, or docs blocked}}
 
 ## Updates
 
 - {{project docs or README update}}
+
+## Blocked Items
+
+- {{blocked target, reason, and suggested next task or none}}
 
 ## Verification
 
@@ -63,4 +87,4 @@ flowchart TD
 
 ## Follow-up
 
-- {{follow-up or none}}
+- {{follow-up review needed, next sync batch, or none}}

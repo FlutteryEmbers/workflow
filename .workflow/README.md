@@ -284,14 +284,25 @@ Task behavior:
 
 Any write to `docs/**` must:
 
-- Name source, future use, and source of truth.
-- Name future-use success criteria for the target document.
-- Preserve stable, confirmed facts useful for future human or agent execution.
+- Name source, scope, docs type, and source of truth.
+- Name alignment success criteria for the target document.
+- Preserve stable, confirmed facts useful for future code/docs alignment.
 - Preserve existing docs structure and tone when updating an existing file.
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, temporary PoC detail, low-level implementation mirror content, and details that would mislead future execution.
-- Output `docs blocked` and do not write `docs/**` when source, future use, source of truth, future-use success criteria, or safety is unclear.
+- Output `docs blocked` and do not write `docs/**` when source, scope, docs type, source of truth, alignment success criteria, or safety is unclear.
 
-`docs/**` is updated only when drift would cause future human/agent execution mistakes. Do not use it as a transcript, exploration log, temporary PoC journal, or low-level implementation mirror.
+Allowed Project Doc Types:
+
+- `architecture`: `docs/architecture/**`
+- `design`: `docs/design/**`
+- `adr`: `docs/adr/**`
+- `operations`: `docs/operations/**`
+- `reference`: `docs/reference/**`
+- `code-readme`: `src/**/README.md`
+
+No Workflow-Internal Docs Leakage: do not create `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` by default. Do not sync `.workflow/**`, task/lens/template/prompt usage, session operation mechanics, AI workflow instructions, or Workflow Lite internal rules into `docs/**`.
+
+`docs/**` is updated only when drift would cause future code/docs alignment mistakes. Do not use it as a transcript, exploration log, temporary PoC journal, workflow usage guide, or low-level implementation mirror.
 
 ## Common Paths
 

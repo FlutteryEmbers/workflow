@@ -236,7 +236,7 @@ Examples / Pseudocode:
 Handoff Notes:
 - <minimal context for build or external-agent>
 Docs Follow-up:
-- <none | suggested | required; include target and reason only when future human/agent execution could be misled>
+- <none | suggested | required; include allowed target and reason only when future code/docs alignment could drift>
 Next Use:
 - <persist | review | build | external-agent>
 ```

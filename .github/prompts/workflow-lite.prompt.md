@@ -69,17 +69,19 @@ Request: ${input:request:describe the work}
 
 ## Project Docs Rules
 
-- Source, future use, source of truth, and future-use success criteria must be clear.
+- Source, scope, docs type, source of truth, and alignment success criteria must be clear.
+- Allowed Project Doc Types: `docs/architecture/**`, `docs/design/**`, `docs/adr/**`, `docs/operations/**`, `docs/reference/**`, and `src/**/README.md`.
+- No Workflow-Internal Docs Leakage: do not create `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` unless the user explicitly declares host-project taxonomy override.
 - Preserve existing docs tone and structure when updating.
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, temporary PoC detail, low-level implementation mirror content, and details that would mislead future execution.
-- If source, future use, source of truth, future-use success criteria, or safety is unclear, output `docs blocked` and do not write `docs/**`.
-- `docs/**` is updated only when drift would cause future human/agent execution mistakes.
+- If source, scope, docs type, source of truth, alignment success criteria, or safety is unclear, output `docs blocked` and do not write `docs/**`.
+- `docs/**` is updated only when drift would cause future code/docs alignment mistakes.
 
 ## Context Format
 
 Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only for `persist` or `sync` in `Mode: persist`.
-For new `docs/**` targets, add `project_doc.md` or `architecture_note.md`; for existing docs, preserve the target structure.
+For new allowed `docs/**` targets, add `project_doc.md` or `architecture_note.md`; for existing docs, preserve the target structure.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
 Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.
 

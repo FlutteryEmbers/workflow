@@ -38,7 +38,7 @@
 
 ## Source Of Truth
 
-- Project docs: {{docs/** path or none}}
+- Project docs: {{allowed docs/** path or none}}
 - Code: {{source path}}
 
 ## Last Reviewed

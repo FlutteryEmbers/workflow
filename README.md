@@ -45,7 +45,7 @@ Reusable lessons from this project:
 - Treat review as a gate, not as a redesign task.
 - Keep lenses optional; do not turn every useful method into a default branch.
 - Preserve reasoning that affects future decisions, but do not store full chat transcripts by default.
-- Use project docs only for stable conclusions that guide future human/agent work.
+- Use project docs only for stable conclusions that prevent future code/docs alignment mistakes.
 
 Features worth preserving in a future experiment workflow:
 

@@ -174,8 +174,8 @@ flowchart TD
 {{include only when the plan clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context}}
 
 - Impact: {{none | suggested | required}}
-- Target: {{docs/** path or none}}
-- Reason: {{why future human/agent execution could be misled without docs update}}
+- Target: {{allowed docs/** path or none}}
+- Reason: {{what code/docs alignment mistake could happen without docs update}}
 - Suggested Sync: {{sync prompt or none}}
 
 ## Project Docs Conditions
@@ -183,9 +183,9 @@ flowchart TD
 {{required only when the plan allows direct docs/** edits; otherwise use sync}}
 
 - Source: {{source material}}
-- Future Use: {{how the doc guides future human/agent work}}
+- Alignment Purpose: {{what code/docs alignment mistake this doc should prevent}}
 - Source Of Truth: {{confirmed source}}
-- Future-Use Success Criteria: {{what future work should understand or avoid}}
+- Alignment Success Criteria: {{what must remain aligned after sync}}
 - Existing Docs Structure: {{preserve or describe intended change}}
 - Safety: {{session-only residue, temporary PoC detail, low-level mirror content, and misleading details removed}}
 

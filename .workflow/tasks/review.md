@@ -124,7 +124,7 @@ Decision values:
 - `ready`: safe to implement as written.
 - `needs changes`: direction is valid but the plan needs edits.
 - `blocked`: critical scope, safety, verification, or source-of-truth information is missing.
-- `docs blocked`: the target touches project docs and source, future use, source of truth, or Project Docs Rules are unclear.
+- `docs blocked`: the target touches project docs and source, scope, docs type, source of truth, alignment success criteria, or Project Docs Rules are unclear.
 
 Check scope, target files, do-not-touch areas, interface or data changes, verification, rollback, open questions, and whether the plan exceeds the user's stated intent.
 

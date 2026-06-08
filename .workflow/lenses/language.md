@@ -20,6 +20,6 @@ Use full English only when explicitly requested.
 ## Output Hints
 
 - Terminology notes can be persisted to `.session/inbox/**` or `.session/threads/{thread}/**`.
-- Stable terminology choices enter `docs/glossary.md` or another user-specified docs target through `sync`.
-- Stable terminology belongs in `docs/glossary.md` or another user-specified `docs/**` target through `sync`.
+- Stable terminology choices enter `docs/reference/glossary.md` or another user-specified allowed docs target through `sync`.
+- Stable terminology belongs in `docs/reference/glossary.md` or another user-specified allowed `docs/**` target through `sync`.
 - Do not create language-specific directories or filename variants by default.
