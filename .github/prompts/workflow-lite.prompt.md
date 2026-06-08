@@ -1,11 +1,20 @@
 ---
-description: Use Workflow Lite with explicit user-selected lenses.
+description: Workflow Lite fallback/router prompt for mixed requests and full protocol control.
 argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|persist|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|conceptual|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference>; Depth=<compact|standard|detailed>; Thread=<thread-name>; Target=<required for sync/docs/code; optional for persist>; Plan=<required for execute>; Request=<what you want>"
 ---
 
-# Workflow Lite Prompt
+# Workflow Lite Fallback / Router Prompt
 
-Use Workflow Lite with progressive context.
+Use this full-protocol prompt when the request is mixed, the right task is unclear, or you need explicit fields such as `Write Path`, `Mode`, `Target`, `Plan`, or `Scope`.
+
+For common daily Copilot work, prefer dedicated workflow prompt commands:
+
+- `/wf-route`
+- `/wf-shape`
+- `/wf-plan`
+- `/wf-review`
+- `/wf-persist`
+- `/wf-sync`
 
 ## Required Input
 
@@ -26,6 +35,7 @@ Request: ${input:request:describe the work}
 ## Rules
 
 - Use exactly one task as the main workflow context.
+- Prefer dedicated workflow prompt commands for common single-task work; use this prompt as fallback/router for mixed, unclear, or full-protocol requests.
 - Default to `Mode: discuss`.
 - Default to `Output: compact`.
 - Start with an inline `Understanding Check` unless the request is trivial.
@@ -48,14 +58,14 @@ Request: ${input:request:describe the work}
 - Do not infer, auto-apply, or load all lenses.
 - In `Mode: discuss`, do not load templates and do not create or update files.
 - Discussion tasks should produce a short `Persist Hint` when the result is worth preserving; output full `Persist Packet` only when `Output: full`, the user asks to persist, or a handoff/audit requires it.
-- In `Mode: persist`, use `Task: persist` for `.session/**` artifacts or `Task: sync` for `docs/**` / `src/**/README.md`.
+- In `Mode: persist`, use `Task: persist` for `.session/**` artifacts or `Task: sync` for allowed project docs targets / `src/**/README.md`.
 - For `persist`, `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md` targets may be inferred from `Artifact + Thread + Topic`.
 - For `persist`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
 - Use `persist shape_<topic>` to reference a shape by `Artifact ID`; in multi-topic discussion, persist the main goal over the latest topic unless explicitly targeted.
 - `notes/**` is not project docs and is not an execution source.
 - For `persist`, preserve decision-relevant reasoning, not full transcript. Discuss output budget does not reduce artifact depth.
 - `persist` may apply explicit review edits, but must not choose a new direction, re-plan execution, or judge whether review feedback is correct.
-- `Task: sync` in `Mode: persist` may write only `docs/**` or explicit `src/**/README.md` targets.
+- `Task: sync` in `Mode: persist` may write only allowed project docs targets or explicit `src/**/README.md` targets.
 - In `Mode: execute`, require `Task: build` and an explicit executable plan.
 - If using Codex/Copilot native Plan -> Implement, set `Write Path: external-agent`; external-agent is not a Mode.
 - For `Write Path: external-agent`, audit the native plan before implementation and review the diff after implementation.

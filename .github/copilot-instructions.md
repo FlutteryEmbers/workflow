@@ -7,7 +7,8 @@
 - In discuss mode, do not write files and do not output full `Persist Packet` unless requested.
 - Use short `Persist Hint` for discussion results worth saving.
 - `persist` writes `.session/**` or explicit `notes/**`.
-- `sync` writes only `docs/**` or explicit `src/**/README.md`.
+- `sync` writes only allowed project docs targets or explicit `src/**/README.md`.
 - `build` requires `Mode: execute` and an explicit executable `Plan`.
 - Treat `.session/**` as working memory, not project docs source of truth.
+- Prefer dedicated workflow prompt commands when available; use `workflow-lite.prompt.md` as fallback/router.
 - Use `.workflow/copilot.md` for the full context menu.

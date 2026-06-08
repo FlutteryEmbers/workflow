@@ -19,6 +19,8 @@ Read [.workflow/README.md](.workflow/README.md) for the full workflow guide.
 Read [.workflow/codex.md](.workflow/codex.md) when using Codex manually.
 Read [.workflow/opencode.md](.workflow/opencode.md) when using OpenCode.
 
+For Copilot, use dedicated GitHub prompt commands for common work: `/wf-route`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, and `/wf-sync`. Use `workflow-lite.prompt.md` as fallback/router for mixed or full-protocol requests.
+
 ## Embedding Rule
 
 Do not put workflow system files under `.session/` or `docs/`. Do not treat `.session/**` as project source of truth. Stable project knowledge, architecture constraints, terminology, and design docs belong in the host project's `docs/**`.

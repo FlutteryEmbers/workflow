@@ -2,6 +2,25 @@
 
 Use this file as a manual Add Context menu. Prefer one mode, one task, selected lenses, and only the files needed for the current request.
 
+## GitHub Prompt Commands
+
+Use dedicated workflow prompt commands for common Copilot work:
+
+- `/wf-route`: choose the smallest useful next path.
+- `/wf-shape`: discuss what-if, strategy, conceptual, or direction-setting work.
+- `/wf-plan`: produce a planning draft, repo-aware plan, or handoff.
+- `/wf-review`: review plans, diffs, docs/code drift, or artifacts.
+- `/wf-persist`: write `.session/**` artifacts or explicit `notes/**`.
+- `/wf-sync`: run the docs/code alignment stage for allowed project docs or `src/**/README.md`.
+
+Recommended daily chain:
+
+```text
+/wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-sync
+```
+
+Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear task boundaries, or full protocol control. Prompt commands are shortcuts only; `.workflow/tasks/**` remains the source of truth.
+
 ## Mode Format
 
 ```text
@@ -30,7 +49,7 @@ Request:
 
 - `Mode: discuss` is the default. Add the task, selected lenses, and relevant context. Do not add templates. Do not create or update files.
 - `Task: persist` in `Mode: persist` writes session artifacts to `.session/**`.
-- `Task: sync` in `Mode: persist` writes only `docs/**` or explicit `src/**/README.md`.
+- `Task: sync` in `Mode: persist` writes only allowed project docs targets or explicit `src/**/README.md`.
 - `Mode: execute` applies an explicit workflow-managed plan through `Task: build`.
 - Native Codex/Copilot Plan -> Implement is the `external-agent` write path. It is not a Workflow Mode and does not use `Task: build`.
 

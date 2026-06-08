@@ -134,7 +134,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 
 - `Mode: discuss`: chat only; no templates and no writes.
 - `Task: persist` in `Mode: persist`: writes session artifacts to `.session/**`.
-- `Task: sync` in `Mode: persist`: writes only `docs/**` or explicit `src/**/README.md`.
+- `Task: sync` in `Mode: persist`: writes only allowed project docs targets or explicit `src/**/README.md`.
 - `Mode: execute`: uses `Task: build` with an explicit executable plan.
 - External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan audit before implementation and diff review afterward.
 
@@ -323,11 +323,19 @@ No Workflow-Internal Docs Leakage: do not create `docs/workflow/**`, `docs/sessi
 
 ## Using With Copilot
 
-- Add one task file from `.workflow/tasks/`.
+- Prefer dedicated GitHub prompt commands for common Copilot work: `/wf-route`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, and `/wf-sync`.
+- Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear task boundaries, or full protocol control.
+- Add one task file from `.workflow/tasks/` when manually using Add Context.
 - Add selected lenses only when explicitly named.
 - Add templates only for `persist` or `sync` in `Mode: persist`.
 - Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.
 - Use `.workflow/copilot.md` as the Add Context menu.
+
+Recommended Copilot chain:
+
+```text
+/wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-sync
+```
 
 ## Using With OpenCode
 
