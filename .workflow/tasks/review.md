@@ -30,7 +30,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial.
+- Start with `User Intent` unless the request is trivial; it must restate what the user wants reviewed, not summarize technical facts.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in user-provided order, then give actionable findings.
 - Do not load templates and do not write files.
@@ -53,8 +53,8 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 ## Expected Output
 
-- Findings first, then `Decision`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
-- `Output: compact` default: short verdict, key findings, and optional `Persist Hint`.
+- Findings first, then `Review Verdict`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
+- `Output: compact` default: short verdict, key findings, and optional `Persist Candidate`.
 - `Full Persist Packet` only when the review should be persisted now, used as an audit handoff, or `Output: full` is requested.
 
 ## Task Boundary Check
@@ -70,7 +70,7 @@ Before reviewing, classify the request:
 
 Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become a second full review before the review, must not load templates, and must not write files.
 
-If evidence is insufficient for a verdict, output `Decision: needs more evidence`, name the missing evidence, and recommend `explore` instead of inventing readiness or blocking conclusions.
+If evidence is insufficient for a verdict, output `Review Verdict: needs more evidence`, name the missing evidence, and recommend `explore` instead of inventing readiness or blocking conclusions.
 
 Review acts as a gateway. Verdicts should recommend next task: `none`, `persist`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 
@@ -88,7 +88,7 @@ User-selected lenses:
 
 ## Instructions
 
-Inspect the target and report findings first. Keep review scope explicit. A review may decide that a session artifact is stable, needs revision, blocked, or should be synced to code-aligned project docs.
+Inspect the target and report findings first. Keep review scope explicit. A review may report whether a session artifact is ready, needs changes, lacks evidence, is blocked, or should be synced to code-aligned project docs.
 
 Do not create a full replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions, `Repair Direction`, and a `Minimal Revision Sketch`, but it should not become a design synthesis task.
 
@@ -107,7 +107,7 @@ In `Mode: discuss`, review may help the human decide what to do next without tak
 
 For non-trivial reviews, include a readiness dashboard:
 
-- `Decision`: `ready | needs changes | needs more evidence | blocked | docs blocked | stable | revise`
+- `Review Verdict`: `ready | needs changes | needs more evidence | blocked | docs blocked`
 - `Confidence`: `high | medium | low`
 - `Readiness`: `0-10`
 - `Blocking Gaps`: issues that must be resolved before the next write or implementation step.
@@ -143,32 +143,34 @@ Treat drive-by refactors and unplanned scope expansion as blocking unless the pl
 In `Mode: discuss`, default to:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants reviewed>
+Current Read: <optional one line about the target or evidence being reviewed>
 Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
 Minimal Revision Sketch: <smallest repair direction or none>
-Persist Hint: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
+Persist Candidate: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
 ```
 
-Use `Persist Hint: none` when the review is not worth preserving.
+Use `Persist Candidate: none` when the review is not worth preserving.
 
 ## Normal Refine Output
 
 Use `Output: normal` when the user asks to整理, refine, or prepare the review for persist without writing files:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants reviewed>
+Current Read: <optional one line about the target or evidence being reviewed>
 Refined Direction / Plan:
-- <decision, key findings, required revisions, and recommended next task>
+- <review verdict, key findings, required revisions, and recommended next task>
 Repair Direction:
 - <minimal direction of change, not full redesign>
-Important Context To Preserve:
+Discussion Notes To Preserve:
 - <review question clarification, evidence priority, accepted risk, verdict change reason, or user concern>
 Open Questions:
 - <question that blocks readiness, execution, or sync>
-Persist Hint:
+Persist Candidate:
 - Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
 ```
 
@@ -179,7 +181,7 @@ Output the full packet only when the user asks to persist, provides `Target`, re
 ```text
 Persist Packet:
 Artifact: review | decision
-Status: working | stable | superseded
+Artifact State: working | settled | superseded
 Intent: audit | decision
 Depth: detailed
 Thread: <thread>
@@ -195,7 +197,7 @@ Key Points:
 - <verdict and main reasons>
 Decision-Relevant Facts:
 - <facts that affect readiness, revision, or blocking>
-Reasoning Trail:
+Decision Trail:
 - <concern -> evidence -> verdict>
 Findings:
 - <finding with severity and evidence>
@@ -217,7 +219,7 @@ Next Use:
 - <persist | plan | build | sync>
 ```
 
-If the review is not worth preserving, output `Persist Hint: none`.
+If the review is not worth preserving, output `Persist Candidate: none`.
 
 ## User Input
 

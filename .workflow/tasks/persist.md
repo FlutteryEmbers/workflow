@@ -34,9 +34,9 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial.
+- Start with `User Intent` unless the request is trivial; it must state what the user wants persisted.
 - `Mode: persist` is required for writes.
-- `Mode: discuss` may propose a persist packet, target, artifact kind, status, intent, depth, and template without writing.
+- `Mode: discuss` may propose a persist packet, target, artifact kind, artifact state, intent, depth, and template without writing.
 - `Mode: execute` is not valid for this task.
 - Load templates only for the artifact being persisted.
 
@@ -56,12 +56,12 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 ## Persist Inputs
 
 - `Artifact`: `brief | note | shape | option | plan | review | decision | distillation | expanded | goal`.
-- `Status`: `inbox | working | stable | superseded`.
+- `Artifact State`: `inbox | working | settled | superseded`.
 - `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
 - `Depth`: `compact | standard | detailed`.
 - `Thread`: kebab-case discussion or work-thread directory name.
 - `Topic`: short file-safe topic.
-- `Source`: `Persist Packet`, recent discussion, existing artifact, user input, file path, or selected context.
+- `Source`: `Persist Packet`, `Persist Candidate`, recent discussion, existing artifact, user input, file path, or selected context.
 - `Target Directory`: optional directory such as `.session/threads/auth-backend/`; when present, generate `{artifact}_{topic}.md` under it.
 - `Target`: optional explicit path. Explicit target wins over inferred path.
 - `Target: notes/**`: explicit only; used for disposable exploration notes.
@@ -88,16 +88,16 @@ Persisted artifacts must be more structured than chat without losing the reasoni
 
 - `compact`: keep the artifact short, but include why it matters, useful facts, and next step.
 - `standard`: include source context, key points, decision-relevant facts, assumptions, open questions, and next use.
-- `detailed`: include reasoning trail, evidence, alternatives considered, rejected options, risks, examples or pseudocode when useful, validation approach, and next use.
+- `detailed`: include decision trail, evidence, alternatives considered, rejected options, risks, examples or pseudocode when useful, validation approach, and next use.
 - Default `Depth: standard` for `brief` and `note`.
 - Default `Depth: detailed` for `shape`, `option`, `plan`, `review`, `decision`, `distillation`, and `expanded`.
 - Use a lower depth only when the user explicitly asks for a compact artifact.
 
 ## Source Handling
 
-- Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Packet`; explicit `Persist Hint`; main goal from recent discussion; latest topic only when explicitly targeted.
+- Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Packet`; explicit `Persist Candidate`; main goal from recent discussion; latest topic only when explicitly targeted.
 - Prefer an explicit `Persist Packet` when present.
-- If no `Persist Packet` exists, synthesize one from `Persist Hint`, recent discussion, source artifacts, user corrections, and selected files.
+- If no `Persist Packet` exists, synthesize one from `Persist Candidate`, recent discussion, source artifacts, user corrections, and selected files.
 - Discuss output budget does not reduce artifact fidelity. Even if the prior answer used `Output: compact`, generate the persisted artifact at the requested or default `Depth`.
 - If source material conflicts, preserve the conflict and mark the source of truth as unresolved.
 - Do not use `persist` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
@@ -118,7 +118,7 @@ When persisting from a multi-topic discussion, prefer the original or recurring 
 Allowed:
 
 - Restructure an artifact using the matching template.
-- Improve wording, metadata, reasoning trail, examples, and traceability.
+- Improve wording, metadata, decision trail, examples, and traceability.
 - Merge an existing artifact with explicit review findings or user-confirmed edits.
 - Move rejected or invalidated content into rejected options, risks, or open questions.
 
@@ -127,13 +127,13 @@ Not allowed:
 - Choose a new direction, boundary, or architecture.
 - Reorder an implementation plan based on new judgment.
 - Decide whether a review finding is correct.
-- Turn an unclear `needs changes` review into a stable artifact.
+- Turn an unclear `needs changes` review into a settled artifact.
 
 If review feedback is not explicit enough to apply mechanically, route back to `shape`, `plan`, or `review` before persisting.
 
 ## Target Rules
 
-- Infer `.session/inbox/{artifact}_{topic}.md` for `Status: inbox`.
+- Infer `.session/inbox/{artifact}_{topic}.md` for `Artifact State: inbox`.
 - Infer `.session/threads/{thread}/{artifact}_{topic}.md` when `Thread`, `Artifact`, and `Topic` are available.
 - If `Target Directory` is provided, infer `{target_directory}/{artifact}_{topic}.md`.
 - If the user references `Artifact ID: shape_<topic>` without an explicit thread, infer `.session/threads/<topic-kebab>/shape_<topic>.md`.
@@ -186,7 +186,7 @@ If the user explicitly provides a target path, respect it unless it violates wri
 - Write only the target session artifact or explicit `notes/**` exploration note.
 - Add `Persist Metadata` to the artifact.
 - Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
-- `Status` is metadata only. It does not authorize execution and does not choose directories.
+- `Artifact State` is metadata only. `settled` does not authorize execution, does not mean approved, and does not choose directories.
 - Thread artifacts are session working memory; code-aligned project docs still go through `sync`.
 - The persisted artifact should be denser and more durable than chat. It must not be a low-context bullet summary when detailed reasoning is available.
 - For `notes/**`, compact or standard depth is acceptable. Preserve useful conclusion, evidence, and next use, but do not treat the note as an implementation source.

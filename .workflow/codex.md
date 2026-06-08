@@ -95,7 +95,7 @@ Use when the user wants to persist a session artifact from recent discussion, an
 Mode: persist
 Task: persist
 Artifact: <brief|note|shape|option|plan|review|decision|distillation|expanded|goal>
-Status: <inbox|working|stable|superseded>
+Artifact State: <inbox|working|settled|superseded>
 Thread: <thread-name>
 Intent: <summary|exploration|decision|audit|handoff|constraint|reference>
 Depth: <compact|standard|detailed>
@@ -112,13 +112,13 @@ Persist the high-fidelity structured artifact only.
 
 `persist` may infer `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. Targets outside `.session/**` and `notes/**` route to `sync`, `build`, or external-agent.
 
-Use `Persist Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, reasoning trail, rejected options, risks, examples, and next use when they affect later work.
+Use `Persist Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, decision trail, rejected options, risks, examples, and next use when they affect later work.
 
 Use `persist shape_<topic>` to reference a shape by `Artifact ID`. In multi-topic discussion, persist the original/main goal by default and keep later topics as supporting context unless explicitly targeted.
 
-`persist` may restructure artifacts and apply explicit review edits. It must not choose a new direction, re-plan execution, judge whether review feedback is correct, or turn unclear `needs changes` content into a stable artifact; route those cases back to `shape`, `plan`, or `review`.
+`persist` may restructure artifacts and apply explicit review edits. It must not choose a new direction, re-plan execution, judge whether review feedback is correct, or turn unclear `needs changes` content into a settled artifact; route those cases back to `shape`, `plan`, or `review`.
 
-`notes/**` is not an execution source. Stable conclusions should be promoted through normal workflow into `.session/**` or `docs/**`.
+`notes/**` is not an execution source. Settled conclusions should be promoted through normal workflow into `.session/**` or `docs/**`.
 
 ### Workflow-Managed Execute
 
@@ -190,7 +190,7 @@ Mode: discuss
 Task: shape
 Lens: <none or selected lenses>
 Request:
-Discuss the target direction. Include evidence, unknowns, tradeoffs, and a short Persist Hint when worth preserving. Do not write files.
+Discuss the target direction. Include evidence, unknowns, tradeoffs, and a short Persist Candidate when worth preserving. Do not write files.
 ```
 
 ### Persist Artifact
@@ -200,7 +200,7 @@ Use .workflow/codex.md as the Codex adapter.
 Mode: persist
 Task: persist
 Artifact: <artifact>
-Status: <inbox|working|stable|superseded>
+Artifact State: <inbox|working|settled|superseded>
 Thread: <thread-name>
 Intent: <summary|exploration|decision|audit|handoff|constraint|reference>
 Depth: <compact|standard|detailed>
@@ -218,7 +218,7 @@ Use .workflow/codex.md as the Codex adapter.
 Mode: persist
 Task: persist
 Artifact: note
-Status: inbox
+Artifact State: inbox
 Intent: exploration
 Depth: compact | standard
 Target: notes/<topic>.md

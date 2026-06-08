@@ -15,7 +15,7 @@ Use full English only when explicitly requested.
 - Are terms used consistently across session decisions, project docs, code, and APIs?
 - Are near-synonyms intentionally different?
 - Does the audience understand the explanation?
-- Should a stable term be added to project docs?
+- Should a settled term be added to project docs?
 
 ## Output Hints
 

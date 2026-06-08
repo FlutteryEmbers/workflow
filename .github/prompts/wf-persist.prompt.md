@@ -26,7 +26,7 @@ Rules:
 - If target belongs to another write boundary, route to `wf-sync`, external-agent, or manual workflow-lite fallback.
 
 Request:
-${input:request:describe source discussion, Persist Hint, Persist Packet, existing artifact, or requested edit}
+${input:request:describe source discussion, Persist Candidate, Persist Packet, existing artifact, or requested edit}
 
 Return:
 - Target

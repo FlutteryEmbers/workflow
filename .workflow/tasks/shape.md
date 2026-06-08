@@ -32,7 +32,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial.
+- Start with `User Intent` unless the request is trivial; it must restate what the user wants, not summarize technical facts.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
@@ -58,7 +58,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - `Reframed Goal`, `Narrowest Useful Wedge`, `Success Criteria`, `Rejected Larger Scope`, tradeoffs, and recommended next step.
 - `Compatibility / Constraint Check` with compatibility pressure, breaking option availability, constraint tension, suggested policy, and whether a human decision is needed.
-- `Output: compact` default: short recommendation, risks, and optional `Persist Hint`.
+- `Output: compact` default: short recommendation, risks, and optional `Persist Candidate`.
 - `Full Persist Packet` only when the shape should be persisted now or `Output: full` is requested.
 - `Triage` when the request may actually need evidence, verdict, or executable planning first.
 
@@ -160,33 +160,35 @@ When a shape is likely to drive execution, involves costly reversal, or depends 
 In `Mode: discuss`, default to:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants shaped>
+Current Read: <optional one line about relevant code/docs/discussion facts>
 Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
 Provisional Recommendation: <best guess or none>
 Human Decision Needed: <yes/no and why>
-Persist Hint: Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
+Persist Candidate: Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
 ```
 
-Use `Persist Hint: none` when the shape is not worth preserving.
+Use `Persist Candidate: none` when the shape is not worth preserving.
 
 ## Normal Refine Output
 
 Use `Output: normal` when the user asks to整理, refine, or prepare the discussion for persist without writing files:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants shaped>
+Current Read: <optional one line about relevant code/docs/discussion facts>
 Refined Direction / Plan:
 - <current recommendation, planning level, phase/concept structure, boundaries, and validation direction>
 What Would Change My Mind:
 - <evidence, constraint, user decision, or risk that would change the recommendation>
-Important Context To Preserve:
+Discussion Notes To Preserve:
 - <phase boundary, constraint, user correction, example, counterexample, accepted risk, or weak-model handoff detail>
 Open Questions:
 - <question that could change the shape>
-Persist Hint:
+Persist Candidate:
 - Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
 ```
 
@@ -199,7 +201,7 @@ Persist Packet:
 Artifact: shape | decision | goal
 Artifact ID: shape_<topic>
 Planning Level: <concept | high-level-plan | implementation-plan | none>
-Status: working | stable | superseded
+Artifact State: working | settled | superseded
 Intent: exploration | decision | constraint
 Depth: detailed
 Thread: <thread>
@@ -207,7 +209,7 @@ Topic: <topic>
 Suggested Target: .session/threads/<thread>/shape_<topic>.md or .session/threads/<thread>/decision_<topic>.md
 Decision Snapshot:
 - <current recommendation, core boundary, narrowest wedge, success criteria, key risk, next use>
-Important Context From Discussion:
+Discussion Notes To Preserve:
 - <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
 Source Context:
 - <goal, session artifact, code/docs evidence, or user correction>
@@ -217,7 +219,7 @@ Decision-Relevant Facts:
 - <facts that materially affect the direction>
 Phase / Concept Structure:
 - <phase or concept> -> <purpose, scope, constraints, validation, notes>
-Reasoning Trail:
+Decision Trail:
 - <initial direction -> revisions -> current direction>
 Options Considered:
 - <option and short description>
@@ -250,7 +252,7 @@ Next Use:
 `Artifact ID` is a lightweight reference anchor for later `persist` requests. It is not a file path and does not change artifact kind or directory rules.
 
 Use `.session/goal/**` only when the user explicitly provides that target.
-If the shape is not worth preserving, output `Persist Hint: none`.
+If the shape is not worth preserving, output `Persist Candidate: none`.
 
 ## User Input
 

@@ -23,9 +23,10 @@ Request:
 ${input:request:describe the chosen direction and planning need}
 
 Return:
-- Understanding
+- User Intent
+- Current Read, optional
 - Take
 - Planning Draft: yes/no
 - Risks/Unknowns
 - Next
-- Persist Hint
+- Persist Candidate, candidate only and do not write

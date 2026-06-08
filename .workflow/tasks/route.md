@@ -89,7 +89,7 @@ Recommend the smallest path:
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
 - Project docs alignment: `sync` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute` and an explicit executable plan.
-- Discussion chains should end with `Persist Hint` when the result is worth preserving. `persist` consumes the hint, recent discussion, or full packet; the original discussion task does not write files.
+- Discussion chains should end with `Persist Candidate` when the result is worth preserving. `persist` consumes the candidate, recent discussion, or full packet; the original discussion task does not write files.
 
 ## Lens Suggestions
 

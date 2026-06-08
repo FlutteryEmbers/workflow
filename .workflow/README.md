@@ -167,9 +167,9 @@ Daily path:
 compact discussion -> normal refine -> full persist
 ```
 
-Discussion tasks should not output full `Persist Packet` by default. Use `Persist Hint` unless the user asks to persist, asks for `Output: full`, or needs a handoff/audit.
+Discussion tasks should not output full `Persist Packet` by default. Use `Persist Candidate` unless the user asks to persist, asks for `Output: full`, or needs a handoff/audit.
 
-Compact output uses `Understanding`, short `Take`, limited risks, one `Next`, and at most one-line `Persist Hint`. Normal refine output should include `Important Context To Preserve` for phase boundaries, constraints, examples, accepted risks, and user corrections.
+Compact output starts with `User Intent`, may include `Current Read`, and uses short `Take`, limited risks, one `Next`, and at most one-line `Persist Candidate`. Normal refine output should include `Discussion Notes To Preserve` for phase boundaries, constraints, examples, accepted risks, and user corrections.
 
 ## Task Boundary Router
 
@@ -185,11 +185,11 @@ Composite requests should return segmented prompts with stop points. Do not sile
 
 ## Persist-Centered Session Writes
 
-Discussion tasks do not write files. They should end with short `Persist Hint` when the current output is worth preserving. Full `Persist Packet` is only for `Output: full`, explicit persist requests, or handoff/audit responses.
+Discussion tasks do not write files. They should end with short `Persist Candidate` when the current output is worth preserving. Full `Persist Packet` is only for `Output: full`, explicit persist requests, or handoff/audit responses.
 
 - `persist` writes `.session/**`.
 - `persist` may also write explicit `notes/**` disposable exploration notes.
-- `persist` consumes `Persist Hint`, `Persist Packet`, recent discussion, existing artifacts, or source files.
+- `persist` consumes `Persist Candidate`, `Persist Packet`, recent discussion, existing artifacts, or source files.
 - `persist` can infer targets for `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`.
 - `Thread` or `Target Directory` may guide where related artifacts are grouped.
 - Explicit `.session/**` targets are respected even when the file name does not follow the recommended prefix.
@@ -286,7 +286,7 @@ Any write to `docs/**` must:
 
 - Name source, scope, docs type, and source of truth.
 - Name alignment success criteria for the target document.
-- Preserve stable, confirmed facts useful for future code/docs alignment.
+- Preserve settled, confirmed facts useful for future code/docs alignment.
 - Preserve existing docs structure and tone when updating an existing file.
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, temporary PoC detail, low-level implementation mirror content, and details that would mislead future execution.
 - Output `docs blocked` and do not write `docs/**` when source, scope, docs type, source of truth, alignment success criteria, or safety is unclear.
@@ -367,7 +367,7 @@ Workflow artifacts default to Chinese explanations with English technical terms 
 
 - Keep the default path light.
 - Default to `Mode: discuss`.
-- Start non-trivial responses with an inline `Understanding Check`.
+- Start non-trivial responses with `User Intent`, not a technical diagnosis.
 - Select lenses only when the user explicitly asks or adds them as context.
 - Multiple lenses are allowed in `Mode: discuss` only when explicitly listed.
 - Do not create project docs from session material without source, future use, and source of truth.

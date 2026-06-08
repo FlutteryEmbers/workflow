@@ -4,7 +4,7 @@
 
 - Artifact: expanded
 - Topic: {{topic}}
-- Status: {{working | stable | superseded}}
+- Artifact State: {{working | settled | superseded}}
 - Thread: {{thread-name}}
 - Intent: {{summary | handoff | audit | reference}}
 - Depth: {{detailed}}
@@ -35,7 +35,7 @@
 
 ## Expansion Index
 
-| Source | Expanded | Parts | Status | Last Updated |
+| Source | Expanded | Parts | State | Last Updated |
 | :--- | :--- | :--- | :--- | :--- |
 | {{source}} | {{expanded file}} | {{parts}} | {{draft/active}} | {{date}} |
 
@@ -43,7 +43,7 @@
 
 {{expanded outline}}
 
-## Reasoning Trail
+## Decision Trail
 
 {{why the source was expanded this way and what changed from the compact version}}
 

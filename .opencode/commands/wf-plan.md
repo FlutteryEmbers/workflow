@@ -24,8 +24,10 @@ $ARGUMENTS
 Return:
 - Target outcome
 - Planning Level, only when `Lens: conceptual` is selected
+- User Intent
+- Current Read, optional
 - Take, 3-5 bullets max
 - Planning Draft, yes/no
 - Risks/Stop conditions
 - Next
-- Persist Hint, none or one line
+- Persist Candidate, candidate only and do not write

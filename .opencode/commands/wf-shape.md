@@ -21,9 +21,10 @@ Request:
 $ARGUMENTS
 
 Return:
-- Understanding
+- User Intent
+- Current Read, optional
 - Planning Level, only when `Lens: conceptual` is selected
 - Take, 3-5 bullets max
 - Risks/Unknowns, 0-3 bullets
 - Next
-- Persist Hint, none or one line
+- Persist Candidate, candidate only and do not write

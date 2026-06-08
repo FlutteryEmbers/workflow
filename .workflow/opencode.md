@@ -99,7 +99,7 @@ OpenCode context summary
 -> Persist Packet -> persist thread handoff when useful
 -> OpenCode bounded implement
 -> workflow diff review
--> sync project docs when stable
+-> sync project docs when settled
 ```
 
 OpenCode native Plan belongs to the `external-agent` path. It is not `Mode: execute`. `Mode: execute` remains workflow-managed execution through `Task: build`.
@@ -224,7 +224,7 @@ Plan requirements:
 Mode: persist
 Task: persist
 Artifact: plan
-Status: working | stable | superseded
+Artifact State: working | settled | superseded
 Thread: <thread-name>
 Intent: handoff
 Depth: detailed
@@ -233,7 +233,7 @@ Request:
 Persist the OpenCode handoff plan. Preserve decision-relevant reasoning, not full transcript.
 ```
 
-`persist` can apply explicit edits, but it must not invent a new direction, re-plan work, or turn unclear `needs changes` content into a stable artifact. Route those cases back to `shape`, `plan`, or `review`.
+`persist` can apply explicit edits, but it must not invent a new direction, re-plan work, or turn unclear `needs changes` content into a settled artifact. Route those cases back to `shape`, `plan`, or `review`.
 
 Use `persist shape_<topic>` to reference a shape by `Artifact ID`. In multi-topic discussion, persist the original/main goal by default and keep later topics as supporting context unless explicitly targeted.
 
@@ -243,7 +243,7 @@ Use `persist shape_<topic>` to reference a shape by `Artifact ID`. In multi-topi
 Mode: persist
 Task: persist
 Artifact: note
-Status: inbox
+Artifact State: inbox
 Intent: exploration
 Depth: compact | standard
 Target: notes/<topic>.md
@@ -261,7 +261,7 @@ Request:
 Audit this OpenCode plan draft before implementation.
 
 Return:
-Decision: ready | needs changes | blocked | docs blocked
+Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
 
 Check:
 - Scope and target files

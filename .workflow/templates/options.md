@@ -3,7 +3,7 @@
 ## Persist Metadata
 
 - Artifact: option
-- Status: {{working | stable | superseded}}
+- Artifact State: {{working | settled | superseded}}
 - Thread: {{thread-name}}
 - Intent: {{exploration | decision | audit}}
 - Depth: {{detailed}}
@@ -15,7 +15,7 @@
 
 - {{discussion, file, reference, or goal that triggered the comparison}}
 
-## Important Context From Discussion
+## Discussion Notes To Preserve
 
 {{preserve discussion details that affect option fit, preference, exclusion, comparison criteria, examples, counterexamples, or what would change the recommendation. Do not preserve full transcript or conversational noise.}}
 
@@ -54,7 +54,7 @@ flowchart TD
 
 ## Options
 
-| Option | Fit | Cost | Risk | Evidence | Status |
+| Option | Fit | Cost | Risk | Evidence | State |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | {{option}} | {{where it fits}} | {{cost}} | {{risk}} | {{evidence}} | {{current / rejected / parked}} |
 
@@ -68,7 +68,7 @@ flowchart TD
 
 {{recommended option and why}}
 
-## Reasoning Trail
+## Decision Trail
 
 {{how the option set and recommendation changed during discussion}}
 

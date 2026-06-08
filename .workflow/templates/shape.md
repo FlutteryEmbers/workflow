@@ -5,7 +5,7 @@
 - Artifact: shape
 - Artifact ID: {{shape_<topic>}}
 - Topic: {{topic}}
-- Status: {{working | stable | superseded}}
+- Artifact State: {{working | settled | superseded}}
 - Thread: {{thread-name}}
 - Intent: {{exploration | decision | constraint}}
 - Depth: {{detailed}}
@@ -33,7 +33,7 @@
 - Key Risk: {{main risk or unknown}}
 - Next Use: {{persist | review | plan | sync | none}}
 
-## Important Context From Discussion
+## Discussion Notes To Preserve
 
 {{preserve any discussion detail that would help future readers understand, revise, implement, or audit this shape. This may include user corrections, user preferences, examples, counterexamples, phase boundaries, constraints mentioned in chat, why the recommendation changed, accepted risks, or details a weaker model might otherwise miss. Do not preserve full transcript or conversational noise.}}
 
@@ -96,7 +96,7 @@ flowchart TD
 
 ## Options Considered
 
-| Option | Fit | Cost | Risk | Status |
+| Option | Fit | Cost | Risk | State |
 | :--- | :--- | :--- | :--- | :--- |
 | {{option}} | {{fit}} | {{cost}} | {{risk}} | {{chosen / rejected / parked}} |
 
@@ -128,7 +128,7 @@ flowchart TD
 - Rejected Options: {{compressed list}}
 - Open Questions: {{remaining uncertainty}}
 
-## Reasoning Trail
+## Decision Trail
 
 {{how the discussion moved from initial framing to the current shape}}
 

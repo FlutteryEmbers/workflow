@@ -26,7 +26,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 
 ## Mode Rules
 
-- Start with `## Execution Understanding` in `Mode: execute`, naming the explicit plan, selected lenses, scope, and key constraints.
+- Start with `## Execution Intent` in `Mode: execute`, naming the explicit plan, selected lenses, scope, and key constraints.
 - Ask instead of editing when the plan is missing, scope is unclear, not executable enough, or requested edits exceed the plan.
 - `Mode: discuss` is default: explain the build approach or missing prerequisites in chat, do not write files.
 - `Mode: persist`: not valid for this task; use `persist` for session artifacts or `sync` for project docs / code-adjacent README.
@@ -154,10 +154,10 @@ Execution Summary:
     Follow-up Suggested: persist note | review | plan revision | docs sync | none
 - Useful Notes For Future Work:
   - <fact or caution worth remembering>
-- Suggested Persist Hint: Artifact=note; Intent=audit; Thread=<thread>; Topic=<topic>_execution_summary
+- Suggested Persist Candidate: Artifact=note; Intent=audit; Thread=<thread>; Topic=<topic>_execution_summary
 ```
 
-Output `Suggested Persist Hint` only when there are pitfalls, blocked or partial execution, failed verification, or the user asks to save the execution summary. `build` must not write `.session/**`; use `persist` to store the summary as `Artifact: note` and `Intent: audit`.
+Output `Suggested Persist Candidate` only when there are pitfalls, blocked or partial execution, failed verification, or the user asks to save the execution summary. `build` must not write `.session/**`; use `persist` to store the summary as `Artifact: note` and `Intent: audit`.
 
 ## Lens Suggestions
 

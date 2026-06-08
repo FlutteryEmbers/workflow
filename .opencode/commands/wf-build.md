@@ -20,7 +20,7 @@ Rules:
 - Return compact `Execution Summary` by default.
 - Use full `Execution Summary` only when blocked, partial, verification failed, a pitfall was found, scope expansion risk appeared, or the user asks to persist the summary.
 - Record pitfalls as execution facts with `Likely Source`, not review verdicts.
-- Do not write `.session/**`; if useful, output `Suggested Persist Hint: Artifact=note; Intent=audit; Topic=<topic>_execution_summary`.
+- Do not write `.session/**`; if useful, output `Suggested Persist Candidate: Artifact=note; Intent=audit; Topic=<topic>_execution_summary`.
 - Use `.workflow/tasks/build.md` as the task contract if needed.
 
 Request:
@@ -31,5 +31,5 @@ Return:
 - Changed files, when full output is needed
 - Verification run for each major step, when full output is needed
 - Pitfalls Encountered, when any
-- Suggested Persist Hint, only when worth saving
+- Suggested Persist Candidate, only when worth saving
 - Stop reason, if blocked

@@ -4,7 +4,7 @@
 
 - Artifact: review
 - Topic: {{topic}}
-- Status: {{working | stable | superseded}}
+- Artifact State: {{working | settled | superseded}}
 - Thread: {{thread-name}}
 - Intent: {{audit | decision}}
 - Depth: {{detailed}}
@@ -28,7 +28,7 @@
 
 - {{plan, diff, code path, project doc, session artifact, or user claim}}
 
-## Important Context From Discussion
+## Discussion Notes To Preserve
 
 {{preserve discussion details that clarify the review question, user concern, evidence priority, accepted risk, or why the verdict changed. Do not redesign the target here, and do not preserve full transcript or conversational noise.}}
 
@@ -53,13 +53,13 @@
 - Rejected Options: {{fixes or interpretations rejected}}
 - Open Questions: {{remaining uncertainty}}
 
-## Reasoning Trail
+## Decision Trail
 
 {{how evidence changed or confirmed the verdict}}
 
-## Decision
+## Review Verdict
 
-{{ready | needs changes | blocked | docs blocked | stable | revise}}
+{{ready | needs changes | needs more evidence | blocked | docs blocked}}
 
 ## Readiness
 

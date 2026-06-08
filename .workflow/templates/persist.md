@@ -5,19 +5,19 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 ## Inputs
 
 - Artifact: {{brief | note | shape | option | plan | review | decision | distillation | expanded | goal}}
-- Status: {{inbox | working | stable | superseded}}
+- Artifact State: {{inbox | working | settled | superseded}}
 - Thread: {{thread-name or none}}
 - Intent: {{summary | exploration | decision | audit | handoff | constraint | reference}}
 - Depth: {{compact | standard | detailed}}
 - Topic: {{file-safe topic}}
-- Source: {{Persist Packet | recent discussion | existing artifact | file path | user input}}
+- Source: {{Persist Packet | Persist Candidate | recent discussion | existing artifact | file path | user input}}
 - Target: {{explicit target or inferred target}}
 
 ## Rules
 
 - Preserve decision-relevant reasoning, not full transcript.
-- Keep source context, key facts, reasoning trail, rejected options, risks, unknowns, examples, and next use when they affect later work.
-- For `shape`, `plan`, `decision`, `review`, and `option` artifacts, preserve selected discussion memory in `Important Context From Discussion` when it affects future understanding, revision, implementation, or audit.
+- Keep source context, key facts, decision trail, rejected options, risks, unknowns, examples, and next use when they affect later work.
+- For `shape`, `plan`, `decision`, `review`, and `option` artifacts, preserve selected discussion memory in `Discussion Notes To Preserve` when it affects future understanding, revision, implementation, or audit.
 - Prefer preserving useful nuance over forcing every discussion point into a predefined field.
 - `Execution Summary` from `build` may be persisted as `Artifact: note` with `Intent: audit`.
 - If the source is only a compact execution summary, do not invent missing details; mark missing fields as `unknown`.
@@ -40,7 +40,7 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 
 - `compact`: short artifact with why it matters, useful facts, and next step.
 - `standard`: structured artifact with source context, key points, facts, assumptions, open questions, and next use.
-- `detailed`: high-fidelity artifact with reasoning trail, evidence, alternatives, rejected options, risks, examples or pseudocode, validation, and next use.
+- `detailed`: high-fidelity artifact with decision trail, evidence, alternatives, rejected options, risks, examples or pseudocode, validation, and next use.
 
 ## Output
 

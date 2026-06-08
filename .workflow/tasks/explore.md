@@ -28,7 +28,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial.
+- Start with `User Intent` unless the request is trivial; it must restate what the user wants, not summarize technical facts.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Do not load templates and do not write files.
 - If the user asks to persist, provides a target, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
@@ -55,7 +55,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Expected Output
 
 - `Sources Checked`, `Observed Facts`, `Evidence Map`, `Reliability Notes`, `Unknowns`, `Constraints Found`, `Potential Options`, and `Recommended Next Task`.
-- `Output: compact` default: short findings, key reliability notes, and optional `Persist Hint`.
+- `Output: compact` default: short findings, key reliability notes, and optional `Persist Candidate`.
 - `Full Persist Packet` only when findings should be persisted now or `Output: full` is requested.
 
 ## Task Boundary Check
@@ -135,33 +135,35 @@ Reliability Notes:
 In `Mode: discuss`, default to:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants to understand>
+Current Read: <optional one line about the strongest source-backed fact>
 Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
 Candidate Interpretations:
 - <0-3 plausible interpretations, not final direction>
-Persist Hint: Artifact=<note|option|distillation>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+Persist Candidate: Artifact=<note|option|distillation>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
-Use `Persist Hint: none` when the exploration is not worth preserving.
+Use `Persist Candidate: none` when the exploration is not worth preserving.
 
 ## Normal Refine Output
 
 Use `Output: normal` when the user asks to整理, refine, or prepare evidence for persist without writing files:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants to understand>
+Current Read: <optional one line about the strongest source-backed fact>
 Refined Direction / Plan:
 - <evidence summary, reliability status, and recommended next task>
 Candidate Interpretations:
 - <plausible explanation, borrowable idea, or likely entrypoint to preserve>
-Important Context To Preserve:
+Discussion Notes To Preserve:
 - <source, reliability note, contradiction, example, or constraint worth preserving>
 Open Questions:
 - <missing source or evidence gap>
-Persist Hint:
+Persist Candidate:
 - Artifact=<note|option|distillation>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
@@ -172,7 +174,7 @@ Output the full packet only when the user asks to persist, provides `Target`, re
 ```text
 Persist Packet:
 Artifact: note | option | distillation
-Status: inbox | working | stable | superseded
+Artifact State: inbox | working | settled | superseded
 Intent: exploration | audit | reference
 Depth: standard | detailed
 Thread: <thread or none>
@@ -184,7 +186,7 @@ Key Points:
 - <main finding or structure discovered>
 Decision-Relevant Facts:
 - <facts that affect shape, plan, review, or sync>
-Reasoning Trail:
+Decision Trail:
 - <how evidence led to the current interpretation>
 Rejected Options:
 - <interpretations or sources ruled out>
@@ -210,7 +212,7 @@ Next Use:
 - <shape | plan | review | persist | sync>
 ```
 
-If the exploration is not worth preserving, output `Persist Hint: none`.
+If the exploration is not worth preserving, output `Persist Candidate: none`.
 
 ## User Input
 

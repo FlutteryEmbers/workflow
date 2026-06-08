@@ -38,7 +38,7 @@ Request: ${input:request:describe the work}
 - Prefer dedicated workflow prompt commands for common single-task work; use this prompt as fallback/router for mixed, unclear, or full-protocol requests.
 - Default to `Mode: discuss`.
 - Default to `Output: compact`.
-- Start with an inline `Understanding Check` unless the request is trivial.
+- Start with `User Intent` unless the request is trivial; this must describe what the user wants, not the technical diagnosis.
 - Run a lightweight Task Boundary Check before acting.
 - Classify boundary as `fits`, `fits_with_preflight`, `composite`, `wrong_task`, or `missing_prerequisite` when the request is not straightforward.
 - If composite, output segmented prompts with stop points instead of forcing the request into one task.
@@ -57,7 +57,7 @@ Request: ${input:request:describe the work}
 - Multiple lenses are allowed in `Mode: discuss` only when explicitly listed; follow the user's lens order.
 - Do not infer, auto-apply, or load all lenses.
 - In `Mode: discuss`, do not load templates and do not create or update files.
-- Discussion tasks should produce a short `Persist Hint` when the result is worth preserving; output full `Persist Packet` only when `Output: full`, the user asks to persist, or a handoff/audit requires it.
+- Discussion tasks should produce a short `Persist Candidate` when the result is worth preserving; this is only a candidate and must not write files. Output full `Persist Packet` only when `Output: full`, the user asks to persist, or a handoff/audit requires it.
 - In `Mode: persist`, use `Task: persist` for `.session/**` artifacts or `Task: sync` for allowed project docs targets / `src/**/README.md`.
 - For `persist`, `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md` targets may be inferred from `Artifact + Thread + Topic`.
 - For `persist`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
@@ -100,27 +100,29 @@ Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/threads/**`, `doc
 For `Output: compact`, prefer:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants>
+Current Read: <optional one line about relevant code/docs/discussion facts>
 Take:
 - <3-5 bullets max>
 Risks/Unknowns:
 - <0-3 bullets>
 Next:
 - <one suggested next move>
-Persist Hint: <none or one line>
+Persist Candidate: <none or one line; candidate only, do not write>
 ```
 
 For `Output: normal`, refine toward a future persist without writing files:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants>
+Current Read: <optional one line about relevant code/docs/discussion facts>
 Refined Direction / Plan:
 - <key structure>
-Important Context To Preserve:
+Discussion Notes To Preserve:
 - <phase, constraints, examples, accepted risks, user corrections>
 Open Questions:
 - <questions>
-Persist Hint:
+Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
@@ -159,7 +161,7 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this external plan before native implementation. Return ready, needs changes, blocked, or docs blocked.
+Audit this external plan before native implementation. Return Review Verdict: ready, needs changes, needs more evidence, blocked, or docs blocked.
 ```
 
 Diff review:

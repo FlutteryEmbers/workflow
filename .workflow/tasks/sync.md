@@ -35,7 +35,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial.
+- Start with `User Intent` unless the request is trivial; it must state what docs/code alignment the user wants.
 - `Mode: discuss` is default: recommend sync targets in chat, do not load templates, and do not write files.
 - `Mode: persist`: write only `docs/**` or explicit `src/**/README.md` targets.
 - Reject `.session/**` targets; session files are maintained by `persist`.
@@ -112,7 +112,7 @@ Any write to `docs/**` must:
 
 - Name source, scope, docs type, and source of truth.
 - Name alignment success criteria for the target document.
-- Preserve stable, confirmed facts useful for future code/docs alignment.
+- Preserve settled, confirmed facts useful for future code/docs alignment.
 - Preserve existing docs structure and tone when updating an existing file.
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, temporary PoC details, low-level implementation mirror content, and details that would mislead future execution.
 - Output `docs blocked` and do not write `docs/**` when source, scope, docs type, source of truth, alignment success criteria, or safety is unclear.
@@ -154,7 +154,7 @@ Create a new `docs/**` file only when it would reduce future code/docs alignment
 
 - The knowledge affects future code changes.
 - The boundary or design intent is not obvious from code.
-- The area is a stable public surface, architecture boundary, or repeated execution context.
+- The area is an established public surface, architecture boundary, or repeated execution context.
 - The same confusion, drift, or planning discussion has appeared more than once.
 - The source is an explicit `.session/threads/**` artifact or a clear code/diff/test fact.
 
@@ -184,8 +184,8 @@ If `Target` exists, update only that target. If `Scope` exists without a target,
 - Project docs source from session must be explicit, usually `.session/threads/**`; inbox notes and exploration notes require explicit source-of-truth confirmation.
 - With `consistency`, sync only confirmed drift. If code may be wrong, route to `plan -> build` or external-agent implementation; if intent is unclear, route to `shape`.
 - With `architecture`, project constraints go to `docs/architecture/boundaries.md` or a user-specified docs target.
-- With `language`, stable terminology goes to `docs/reference/glossary.md` or a user-specified allowed docs target.
-- With `distill`, stable reference-derived structures go to project docs only after they are confirmed as project knowledge.
+- With `language`, settled terminology goes to `docs/reference/glossary.md` or a user-specified allowed docs target.
+- With `distill`, reference-derived structures go to project docs only after they are confirmed as project knowledge.
 
 ## User Input
 

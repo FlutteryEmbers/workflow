@@ -30,7 +30,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial.
+- Start with `User Intent` unless the request is trivial; it must restate what the user wants, not summarize technical facts.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
@@ -56,7 +56,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - A `Planning Draft` or implementation handoff appropriate to the user's requested level.
 - Build-ready handoffs include `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
 - `Compatibility / Constraint Plan` that records the selected compatibility and constraint policy before execution.
-- `Output: compact` default: short plan summary, critical risks, and optional `Persist Hint`.
+- `Output: compact` default: short plan summary, critical risks, and optional `Persist Candidate`.
 - `Full Persist Packet` only when the plan should be persisted now, used as a handoff, or `Output: full` is requested.
 
 ## Task Boundary Check
@@ -144,32 +144,34 @@ Compatibility / Constraint Plan
 In `Mode: discuss`, default to:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants planned>
+Current Read: <optional one line about relevant plan/code/docs facts>
 Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
 Planning Draft: <yes/no; if yes, say what is missing for build-ready handoff>
-Persist Hint: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
+Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
-Use `Persist Hint: none` when the plan is not worth preserving.
+Use `Persist Candidate: none` when the plan is not worth preserving.
 
 ## Normal Refine Output
 
 Use `Output: normal` when the user asks to整理, refine, or prepare the plan for persist without writing files:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants planned>
+Current Read: <optional one line about relevant plan/code/docs facts>
 Refined Direction / Plan:
 - <target outcome, planning level, phase plan, key constraints, and readiness>
 What Would Make This Build-Ready:
 - <target files, allowed changes, verification, stop conditions, or missing decision>
-Important Context To Preserve:
+Discussion Notes To Preserve:
 - <phase constraint, sequencing reason, user correction, accepted risk, example, or weak-model handoff detail>
 Open Questions:
 - <question that blocks readiness or execution>
-Persist Hint:
+Persist Candidate:
 - Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
@@ -181,7 +183,7 @@ Output the full packet only when the user asks to persist, provides `Target`, re
 Persist Packet:
 Artifact: plan
 Planning Level: <high-level-plan | implementation-plan | none>
-Status: working | stable | superseded
+Artifact State: working | settled | superseded
 Intent: handoff | decision | audit
 Depth: detailed
 Thread: <thread>
@@ -189,7 +191,7 @@ Topic: <topic>
 Suggested Target: .session/threads/<thread>/plan_<topic>.md
 Plan Snapshot:
 - <target outcome, execution target, phase count, readiness, key constraint, key stop condition, next use>
-Important Context From Discussion:
+Discussion Notes To Preserve:
 - <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
 Source Context:
 - <thread decision, target design, code/docs evidence, or planning discussion>
@@ -203,7 +205,7 @@ Phase Plan:
 - <phase> -> <goal, scope, allowed changes, constraints, verify, exit criteria, stop conditions>
 Phase Constraints:
 - <phase-level constraint or ordering rule that must survive persist>
-Reasoning Trail:
+Decision Trail:
 - <why this sequence is preferred>
 Allowed Changes:
 - <paths, behavior, docs, tests, or prompts allowed to change>
@@ -241,7 +243,7 @@ Next Use:
 - <persist | review | build | external-agent>
 ```
 
-If the plan is not worth preserving, output `Persist Hint: none`.
+If the plan is not worth preserving, output `Persist Candidate: none`.
 
 ## User Input
 

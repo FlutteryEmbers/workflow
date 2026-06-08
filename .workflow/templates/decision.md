@@ -4,7 +4,7 @@
 
 - Artifact: decision
 - Topic: {{topic}}
-- Status: {{working | stable | superseded}}
+- Artifact State: {{working | settled | superseded}}
 - Thread: {{thread-name}}
 - Intent: {{decision | constraint | handoff | audit}}
 - Depth: {{detailed}}
@@ -20,9 +20,9 @@
 
 {{direction | scope | plan | constraint | handoff | review}}
 
-## Status
+## Artifact State
 
-{{draft | active | superseded | synced}}
+{{working | settled | superseded}}
 
 ## Acceptance
 
@@ -30,7 +30,7 @@
 - Source Artifact: {{thread artifact or discussion}}
 - Effective Scope: {{where this decision applies}}
 
-## Context
+## Decision Context
 
 {{why this decision exists and what inputs it uses}}
 
@@ -38,7 +38,7 @@
 
 - {{discussion, thread artifact, review, code path, project doc, or user decision source}}
 
-## Important Context From Discussion
+## Discussion Notes To Preserve
 
 {{preserve discussion details that would help future readers understand, revise, implement, or audit this decision. Include user corrections, preferences, examples, important constraints, accepted risks, or why the decision changed when they matter. Do not preserve full transcript or conversational noise.}}
 
@@ -67,7 +67,7 @@
 - Rejected Options: {{compressed list}}
 - Open Questions: {{remaining uncertainty}}
 
-## Reasoning Trail
+## Decision Trail
 
 {{how the decision emerged from discussion, evidence, review, or user instruction}}
 
@@ -85,7 +85,7 @@
 
 ## Alternatives Considered
 
-| Alternative | Why Not | Status |
+| Alternative | Why Not | State |
 | :--- | :--- | :--- |
 | {{alternative}} | {{reason}} | {{rejected / parked / superseded}} |
 

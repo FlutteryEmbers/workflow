@@ -29,7 +29,7 @@ OpenCode support is an adapter, not a second workflow. Keep task, lens, role, an
 
 ## Experiment Workflow Direction
 
-If experiment-driven work becomes a stable development mode, keep it as a separate workflow instead of adding another branch inside Workflow Lite.
+If experiment-driven work becomes an established development mode, keep it as a separate workflow instead of adding another branch inside Workflow Lite.
 
 An ideal experiment workflow should focus on matrix-style validation, comparison, and evidence capture:
 
@@ -47,7 +47,7 @@ Reusable lessons from this project:
 - Treat review as a gate, not as a redesign task.
 - Keep lenses optional; do not turn every useful method into a default branch.
 - Preserve reasoning that affects future decisions, but do not store full chat transcripts by default.
-- Use project docs only for stable conclusions that prevent future code/docs alignment mistakes.
+- Use project docs only for settled conclusions that prevent future code/docs alignment mistakes.
 
 Features worth preserving in a future experiment workflow:
 

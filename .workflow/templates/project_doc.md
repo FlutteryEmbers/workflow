@@ -14,7 +14,7 @@
 
 ## Current Behavior / Design
 
-{{stable facts about current code, behavior, design intent, or operating model}}
+{{settled facts about current code, behavior, design intent, or operating model}}
 
 ## Key Boundaries
 

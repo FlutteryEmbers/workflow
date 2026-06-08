@@ -4,7 +4,7 @@
 
 - Artifact: plan
 - Topic: {{topic}}
-- Status: {{working | stable | superseded}}
+- Artifact State: {{working | settled | superseded}}
 - Thread: {{thread-name}}
 - Intent: {{handoff | decision | audit}}
 - Depth: {{detailed}}
@@ -31,7 +31,7 @@
 - Key Stop Condition: {{main reason to stop instead of expanding scope}}
 - Next Use: {{review | persist | build | external-agent | sync | none}}
 
-## Important Context From Discussion
+## Discussion Notes To Preserve
 
 {{preserve any discussion detail that would help future readers understand, revise, implement, or audit this plan. This may include user corrections, user preferences, examples, counterexamples, phase boundaries, phase constraints, why the sequence changed, accepted risks, or details a weaker model might otherwise miss. Do not preserve full transcript or conversational noise.}}
 
@@ -137,7 +137,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | {{phase}} | {{step}} | {{change}} | {{test, check, or manual verification}} | {{risk}} | {{when to stop and return to plan/review}} |
 
-## Reasoning Trail
+## Decision Trail
 
 {{how the plan changed during discussion and why this sequence remains preferred}}
 

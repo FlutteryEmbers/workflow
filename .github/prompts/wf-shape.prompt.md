@@ -23,9 +23,10 @@ Request:
 ${input:request:describe the what-if, strategy, concept, or direction-setting question}
 
 Return:
-- Understanding
+- User Intent
+- Current Read, optional
 - Take
 - Risks/Unknowns
 - Provisional Recommendation
 - Human Decision Needed
-- Persist Hint
+- Persist Candidate, candidate only and do not write

@@ -26,7 +26,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 
 ## Mode Rules
 
-- Start with an inline `Understanding` unless the request is trivial.
+- Start with `User Intent` unless the request is trivial; it must restate what the user wants, not summarize technical facts.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Do not load templates and do not write files.
 - If the user asks to persist, provides a target, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
@@ -48,7 +48,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 ## Expected Output
 
 - Concise clarified goal, scope, acceptance signals, assumptions, and open questions.
-- `Output: compact` default: short answer and optional `Persist Hint`.
+- `Output: compact` default: short answer and optional `Persist Candidate`.
 - `Full Persist Packet` only when the clarification should be persisted now or `Output: full` is requested.
 
 ## Task Boundary Check
@@ -89,30 +89,32 @@ Capture the user's goal, staged requirements, background, constraints, non-goals
 In `Mode: discuss`, default to:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants clarified>
+Current Read: <optional one line about relevant known context>
 Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
-Persist Hint: Artifact=<brief|note>; Status=inbox; Topic=<topic>; Suggested Target=.session/inbox/<artifact>_<topic>.md
+Persist Candidate: Artifact=<brief|note>; Artifact State=inbox; Topic=<topic>; Suggested Target=.session/inbox/<artifact>_<topic>.md
 ```
 
-Use `Persist Hint: none` when the clarification is not worth preserving.
+Use `Persist Candidate: none` when the clarification is not worth preserving.
 
 ## Normal Refine Output
 
 Use `Output: normal` when the user asks to整理, refine, or prepare for persist without writing files:
 
 ```text
-Understanding: <one line>
+User Intent: <one line about what the user wants clarified>
+Current Read: <optional one line about relevant known context>
 Refined Direction / Plan:
 - <clarified goal, scope, acceptance signal, and constraints>
-Important Context To Preserve:
+Discussion Notes To Preserve:
 - <user correction, staged requirement, constraint, example, or non-goal worth preserving>
 Open Questions:
 - <question>
-Persist Hint:
-- Artifact=<brief|note>; Status=inbox; Topic=<topic>; Suggested Target=.session/inbox/<artifact>_<topic>.md
+Persist Candidate:
+- Artifact=<brief|note>; Artifact State=inbox; Topic=<topic>; Suggested Target=.session/inbox/<artifact>_<topic>.md
 ```
 
 ## Full Persist Packet
@@ -122,7 +124,7 @@ Output the full packet only when the user asks to persist, provides `Target`, re
 ```text
 Persist Packet:
 Artifact: brief | note
-Status: inbox
+Artifact State: inbox
 Intent: summary | exploration
 Depth: compact | standard
 Topic: <topic>
@@ -133,7 +135,7 @@ Key Points:
 - <clarified goal, scope, acceptance signal, or constraint>
 Decision-Relevant Facts:
 - <facts worth preserving for later shape/plan>
-Reasoning Trail:
+Decision Trail:
 - <how the clarification changed the understanding, or none>
 Rejected Options:
 - <non-goals or excluded scope>
@@ -145,7 +147,7 @@ Next Use:
 - <explore | shape | plan | persist | sync>
 ```
 
-If the clarification is not worth preserving, output `Persist Hint: none`.
+If the clarification is not worth preserving, output `Persist Candidate: none`.
 
 ## User Input
 

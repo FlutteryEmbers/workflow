@@ -6,7 +6,7 @@ Do not force tactical DDD patterns such as entities, aggregates, repositories, o
 
 ## Checks
 
-- Language notes: what terms need stable meaning?
+- Language notes: what terms need settled meaning?
 - Story flow: what is the user/system flow?
 - Events: what changes state or matters to the business?
 - Rules ownership: who owns each rule?

@@ -3,7 +3,7 @@
 ## Persist Metadata
 
 - Artifact: brief
-- Status: {{inbox | working | stable | superseded}}
+- Artifact State: {{inbox | working | settled | superseded}}
 - Thread: {{thread-name or none}}
 - Intent: {{summary | exploration}}
 - Depth: {{compact | standard}}

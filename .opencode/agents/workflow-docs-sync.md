@@ -28,7 +28,7 @@ Before writing `docs/**`, require:
 
 Project Docs Rules:
 
-- Preserve stable, confirmed facts useful for future code/docs alignment.
+- Preserve settled, confirmed facts useful for future code/docs alignment.
 - Preserve existing docs structure and tone when updating an existing file.
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, temporary PoC detail, low-level implementation mirror content, and details that would mislead future execution.
 - Output `docs blocked` and do not write when source, scope, docs type, source of truth, alignment success criteria, or safety is unclear.

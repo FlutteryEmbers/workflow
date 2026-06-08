@@ -4,7 +4,7 @@
 
 - Artifact: distillation
 - Topic: {{source}}
-- Status: {{inbox | working | stable | superseded}}
+- Artifact State: {{inbox | working | settled | superseded}}
 - Thread: {{thread-name or none}}
 - Intent: {{exploration | audit | reference}}
 - Depth: {{detailed}}
@@ -49,7 +49,7 @@
 
 {{structural reason, not just content summary}}
 
-## Reasoning Trail
+## Decision Trail
 
 {{how observation became a transferable recommendation}}
 

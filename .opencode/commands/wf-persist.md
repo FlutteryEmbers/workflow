@@ -12,7 +12,7 @@ Rules:
 - Write only `.session/**` or explicit `notes/**`.
 - Do not write `docs/**`, source code, `.workflow/**`, or `.github/**`.
 - Use `.workflow/tasks/persist.md` and the matching `.workflow/templates/<artifact>.md` as contracts if needed.
-- You may consume a `Persist Hint`, recent discussion, explicit source files, or user-provided content.
+- You may consume a `Persist Candidate`, recent discussion, explicit source files, or user-provided content.
 - Preserve decision-relevant reasoning; do not save full transcript by default.
 
 Request:

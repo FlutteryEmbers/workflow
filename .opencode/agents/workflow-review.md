@@ -22,7 +22,7 @@ Review external plans, implementation diffs, project docs changes, and consisten
 For external plan audit, output this first:
 
 ```text
-Decision: ready | needs changes | blocked | docs blocked
+Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
 ```
 
 Check:

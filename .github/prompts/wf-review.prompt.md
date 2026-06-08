@@ -23,10 +23,11 @@ Request:
 ${input:request:describe the plan, diff, docs/code drift, claim, or artifact to review}
 
 Return:
-- Understanding
+- User Intent
+- Current Read, optional
 - Findings or Take
-- Decision
+- Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
 - Confidence
 - Minimal Revision Sketch
 - Recommended Action
-- Persist Hint
+- Persist Candidate, candidate only and do not write

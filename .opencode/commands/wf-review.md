@@ -20,8 +20,10 @@ Request:
 $ARGUMENTS
 
 Return:
-- Decision: ready | needs changes | needs more evidence | blocked | docs blocked
+- User Intent
+- Current Read, optional
+- Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
 - Take, 3-5 bullets max
 - Risks/Unknowns, 0-3 bullets
 - Next
-- Persist Hint, none or one line
+- Persist Candidate, candidate only and do not write
