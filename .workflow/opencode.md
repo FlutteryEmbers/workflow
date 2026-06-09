@@ -111,7 +111,7 @@ OpenCode project commands live in `.opencode/commands/**`. They are thin prompt 
 Default commands:
 
 - `/wf`: route a request and recommend the smallest path.
-- `/wf-clarify`: clarify goal, scope, constraints, and success criteria.
+- `/wf-clarify`: explain terms, prior answers, statements, assumptions, scope, and success criteria.
 - `/wf-explore`: extract read-only evidence from code, docs, references, or unfamiliar repos.
 - `/wf-shape`: discuss direction, what-if, strategy, or conceptual design.
 - `/wf-plan`: draft a repo-aware plan or external-agent handoff.
@@ -135,7 +135,7 @@ Command rules:
 Examples:
 
 ```text
-/wf-clarify 我想做一个 graph10x PoC，帮我收敛目标和成功标准
+/wf-clarify source of truth 在这个 workflow 里是什么意思？
 /wf-explore 帮我看这个第三方 repo 是否有调用链入口
 /wf-shape 如果我要结合 graph10x 调用链分析来构建项目，起始入口怎么选？
 /wf-review Audit this plan before implementation: <plan>

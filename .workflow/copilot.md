@@ -7,6 +7,7 @@ Use this file as a manual Add Context menu. Prefer one mode, one task, selected 
 Use dedicated workflow prompt commands for common Copilot work:
 
 - `/wf-route`: choose the smallest useful next path.
+- `/wf-clarify`: explain terms, prior answers, statements, assumptions, or request boundaries.
 - `/wf-shape`: discuss what-if, strategy, conceptual, or direction-setting work.
 - `/wf-plan`: produce a planning draft, repo-aware plan, or handoff.
 - `/wf-review`: review plans, diffs, docs/code drift, or artifacts.
@@ -16,7 +17,7 @@ Use dedicated workflow prompt commands for common Copilot work:
 Recommended daily chain:
 
 ```text
-/wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-sync
+/wf-clarify -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-sync
 ```
 
 Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear task boundaries, or full protocol control. Prompt commands are shortcuts only; `.workflow/tasks/**` remains the source of truth.
@@ -108,8 +109,9 @@ Persist Candidate:
 
 ## Task Boundary Shortcut
 
-When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
+When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, and `review` for verdict.
 
+- `clarify = explain/restate/unpack`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
 - `shape = synthesis`: ambiguous, what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
@@ -132,6 +134,7 @@ Do not treat discussion freedom as write permission. `persist`, `sync`, `build`,
 Discovery vs judgment rule:
 
 - Do not infer repo ownership or maintenance responsibility.
+- Use `clarify` for meaning, explanation, restatement, difference, assumptions, hidden scope, or prior AI answer unpacking.
 - Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
 - Use `review` for whether something is correct, acceptable, ready, worth changing, or which source should be treated as truth.
 - Do not add the `consistency` lens for discovery questions.

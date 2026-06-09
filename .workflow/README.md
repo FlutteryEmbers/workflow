@@ -68,7 +68,7 @@ Do not use task names as mandatory file prefixes. `docs/**` follows the host pro
 | Task | Role | Default Output | Purpose |
 | :--- | :--- | :--- | :--- |
 | `route` | `analyst` | chat | Recommend the smallest useful next path. |
-| `clarify` | `analyst` | chat | Capture staged requirements, background, scope, and acceptance notes. |
+| `clarify` | `analyst` | chat | Explain terms, prior answers, statements, assumptions, scope, and success criteria. |
 | `explore` | `designer` | chat | Understand code, materials, behavior, feasibility, or reference structure. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, goal update, or session decision. |
 | `plan` | `designer` | chat | Turn a chosen direction into a planning draft, repo-aware plan, or external-agent handoff. |
@@ -79,8 +79,9 @@ Do not use task names as mandatory file prefixes. `docs/**` follows the host pro
 
 ## Task Boundary Shortcut
 
-When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
+When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, and `review` for verdict.
 
+- `clarify = explain/restate/unpack`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
 - `shape = synthesis`: default for ambiguous, what-if, strategy, conceptual, direction-setting, entrypoint-selection, or "how should I think about this" requests.
 - `explore = evidence`: use only when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, or dependencies.
 - `review = verdict`: use only when there is an existing target to judge, such as code, docs, plan, diff, decision, behavior claim, or thread artifact.
@@ -323,7 +324,7 @@ No Workflow-Internal Docs Leakage: do not create `docs/workflow/**`, `docs/sessi
 
 ## Using With Copilot
 
-- Prefer dedicated GitHub prompt commands for common Copilot work: `/wf-route`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, and `/wf-sync`.
+- Prefer dedicated GitHub prompt commands for common Copilot work: `/wf-route`, `/wf-clarify`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, and `/wf-sync`.
 - Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear task boundaries, or full protocol control.
 - Add one task file from `.workflow/tasks/` when manually using Add Context.
 - Add selected lenses only when explicitly named.
@@ -334,7 +335,7 @@ No Workflow-Internal Docs Leakage: do not create `docs/workflow/**`, `docs/sessi
 Recommended Copilot chain:
 
 ```text
-/wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-sync
+/wf-clarify -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-sync
 ```
 
 ## Using With OpenCode

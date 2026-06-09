@@ -43,6 +43,7 @@ Request: ${input:request:describe the work}
 - Classify boundary as `fits`, `fits_with_preflight`, `composite`, `wrong_task`, or `missing_prerequisite` when the request is not straightforward.
 - If composite, output segmented prompts with stop points instead of forcing the request into one task.
 - When unsure, start with `shape`.
+- Meaning, explanation, restatement, difference, assumption, hidden scope, or prior AI answer unpacking requests go to `clarify`.
 - Ambiguous what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests default to `shape`.
 - Evidence-only requests go to `explore`; verdict-only requests go to `review`.
 - Lenses may strengthen the selected task, but must not change task responsibility.
