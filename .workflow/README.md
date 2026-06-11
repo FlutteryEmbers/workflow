@@ -17,7 +17,6 @@ graph TD
 
     C -. "input" .-> N[".session/inbox"]
     W -. "thread artifacts" .-> D[".session/threads"]
-    S -. "goal" .-> G[".session/goal"]
     Y -. "project docs" .-> F["docs"]
     Y -. "archive summaries" .-> A[".session/archive"]
 ```
@@ -28,7 +27,6 @@ graph TD
 - `role`: small perspective file in `.workflow/roles/`.
 - `lens`: optional user-selected thinking method in `.workflow/lenses/`.
 - `.session`: AI session working memory, not project source of truth.
-- `.session/goal`: evolving goal space and target docs map.
 - `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, and reference material.
 - `.session/threads`: related shape, option, plan, review, decision, and reference artifacts grouped by discussion/work thread.
 - `.session/archive`: stable summaries of completed, superseded, abandoned, implemented, or blocked threads.
@@ -42,18 +40,13 @@ graph TD
 
 ```text
 .session/
-  goal/
-    vision.md
-    target_docs.md
-    assumptions.md
-    roadmap.md
   inbox/
   threads/
     {thread}/
   archive/
 ```
 
-Use `.session/inbox/**`, `.session/threads/**`, and `.session/goal/**` for work that may change during AI collaboration. Use `.session/archive/**` for stable thread summaries. Stable long-term project knowledge, terms, architecture constraints, and design docs belong in `docs/**`.
+Use `.session/inbox/**` for raw or lightly structured inputs, and `.session/threads/**` for shaped discussion artifacts. Use `.session/archive/**` for stable thread summaries. Stable long-term project knowledge, terms, architecture constraints, and design docs belong in `docs/**`.
 
 ## Session Naming
 
@@ -66,6 +59,23 @@ Do not use task names as mandatory file prefixes. `docs/**` follows the host pro
 
 `thread` is a kebab-case discussion or work topic. File `{topic}` remains snake_case. Path location does not authorize execution; user-invoked `build` with an explicit executable plan is the authorization boundary.
 
+## External Goal Intake
+
+External goals have two valid entry paths:
+
+```text
+long or reusable source
+-> persist external-goal brief
+-> shape consumes inbox goal brief
+-> persist shape artifact
+
+conversational source
+-> shape directly in chat
+-> persist shape artifact
+```
+
+`Brief Type: external-goal` is an optional inbox cache for long, external, or reusable goal material. It is not a mandatory step. `shape` is the reasoned projection of external or conversational goal context into a `concept` artifact. The durable shaped result belongs in `.session/threads/<thread>/shape_<topic>.md`.
+
 ## Tasks
 
 | Task | Role | Default Output | Purpose |
@@ -73,9 +83,9 @@ Do not use task names as mandatory file prefixes. `docs/**` follows the host pro
 | `route` | `analyst` | chat | Recommend the smallest useful next path. |
 | `clarify` | `analyst` | chat | Explain terms, prior answers, statements, assumptions, scope, and success criteria. |
 | `explore` | `designer` | chat | Understand code, materials, behavior, feasibility, or reference structure. |
-| `shape` | `designer` | chat | Form a direction, concept, architecture, goal update, or session decision. |
+| `shape` | `designer` | chat | Form a direction, concept, architecture, or session decision. |
 | `plan` | `designer` | chat | Turn a chosen direction into a planning draft, repo-aware plan, or external-agent handoff. |
-| `persist` | `steward` | `.session/**` | Persist high-fidelity structured session artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
+| `persist` | `steward` | active session artifacts | Persist high-fidelity structured inbox or thread artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
 | `build` | `builder` | repository changes | Apply an explicit workflow-managed plan. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
 | `sync` | `steward` | stable docs | Project confirmed outcomes into project docs, code-adjacent README files, or session archive summaries. |
@@ -188,7 +198,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 ## Mode And Write Boundaries
 
 - `Mode: discuss`: chat only; no templates and no writes.
-- `Task: persist` in `Mode: persist`: writes session artifacts to `.session/**`.
+- `Task: persist` in `Mode: persist`: writes active session artifacts to `.session/inbox/**` or `.session/threads/**`.
 - `Task: sync` in `Mode: persist`: writes stable documents only: allowed project docs targets, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - `Mode: execute`: uses `Task: build` with an explicit executable plan.
 - External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan audit before implementation and diff review afterward.
@@ -242,14 +252,14 @@ Composite requests should return segmented prompts with stop points. Do not sile
 
 Discussion tasks do not write files. They should end with short `Persist Candidate` when the current output is worth preserving. Full `Persist Packet` is only for `Output: full`, explicit persist requests, or handoff/audit responses.
 
-- `persist` writes `.session/**`.
+- `persist` writes `.session/inbox/**` and `.session/threads/**`.
 - `persist` may also write explicit `notes/**` disposable exploration notes.
 - `persist` consumes `Persist Candidate`, `Persist Packet`, recent discussion, existing artifacts, or source files.
 - `persist` can infer targets for `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`.
 - `Thread` or `Target Directory` may guide where related artifacts are grouped.
-- Explicit `.session/**` targets are respected even when the file name does not follow the recommended prefix.
+- Explicit active `.session/inbox/**` and `.session/threads/**` targets are respected even when the file name does not follow the recommended prefix.
 - `notes/**` must be explicit and is never inferred.
-- Targets outside active `.session/**` and `notes/**` are routed instead of rejected: `docs/**`, `src/**/README.md`, and `.session/archive/<thread>/summary.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
+- Targets outside active `.session/inbox/**`, `.session/threads/**`, and `notes/**` are routed instead of rejected: `docs/**`, `src/**/README.md`, and `.session/archive/<thread>/summary.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
 
 Persisted artifacts preserve decision-relevant reasoning, not full transcript. They should be more structured than chat without dropping useful context, evidence, tradeoffs, rejected options, examples, risks, open questions, or next use.
 
@@ -384,9 +394,11 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 
 - Usage guidance: `route`.
 - Stage requirements or background: `clarify -> persist -> .session/inbox/**`.
+- Long or reusable external goal: `persist external-goal brief -> shape -> persist shape`.
+- Conversational goal: `shape -> persist shape`.
 - Explore code or reference material: `explore -> persist -> .session/inbox/**` or `.session/threads/{thread}/option_*.md`.
 - Disposable exploration note: `persist -> notes/{topic}.md` only with explicit target.
-- Shape a direction or goal: `shape -> persist -> .session/threads/{thread}/shape_*.md`.
+- Shape a direction: `shape -> persist -> .session/threads/{thread}/shape_*.md`.
 - Ambiguous what-if or strategy: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 - Existing target reasonableness: `review`, then `shape` or `plan` only if revision is needed.
 - Plan work or handoff: `plan -> persist -> .session/threads/{thread}/plan_*.md`.
@@ -405,7 +417,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Add one task file from `.workflow/tasks/` when manually using Add Context.
 - Add selected lenses only when explicitly named.
 - Add templates only for `persist` or `sync` in `Mode: persist`.
-- Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.
+- Add relevant `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.
 - Use `.workflow/copilot.md` as the Add Context menu.
 
 Recommended Copilot chain:

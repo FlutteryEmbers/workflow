@@ -11,7 +11,8 @@ Mode: persist
 Output: full
 Task: persist
 Lens: ${input:lens:none}
-Artifact: ${input:artifact:brief|note|shape|option|plan|review|decision|distillation|expanded|goal}
+Artifact: ${input:artifact:brief|note|shape|option|plan|review|decision|distillation|expanded}
+Brief Type: ${input:brief_type:general|external-goal; only for Artifact=brief}
 Thread: ${input:thread:optional thread}
 Topic: ${input:topic:file-safe topic}
 Target: ${input:target:optional explicit target}
@@ -19,7 +20,8 @@ Intent: ${input:intent:summary|exploration|decision|audit|handoff|constraint|ref
 Depth: ${input:depth:compact|standard|detailed}
 
 Rules:
-- Write only `.session/**` or explicit `notes/**`.
+- Write only `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
+- Use `Brief Type: external-goal` only for long, external, or reusable goal material stored as an inbox brief before shape.
 - Do not write `docs/**`, source code, `.workflow/**`, or `.github/**`.
 - Load `.workflow/tasks/persist.md` and the matching artifact template.
 - Preserve decision-relevant reasoning, not full transcript.

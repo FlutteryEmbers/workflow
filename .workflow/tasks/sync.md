@@ -42,7 +42,7 @@ done_check:
 - `Sync Domain: project-docs` -> `docs/**` or explicit `src/**/README.md`
 - `Sync Domain: session-archive` -> `.session/archive/<thread>/summary.md`
 
-`sync` does not maintain active session working memory. `.session/threads/**`, `.session/inbox/**`, `.session/goal/**`, and explicit `notes/**` remain `persist` targets.
+`sync` does not maintain active session working memory. `.session/threads/**`, `.session/inbox/**`, and explicit `notes/**` remain `persist` targets.
 
 ## Context Injection
 
@@ -62,7 +62,7 @@ Allowed write targets in `Mode: persist`:
 
 Rejected targets:
 
-- `.session/threads/**`, `.session/inbox/**`, `.session/goal/**`: use `persist`.
+- `.session/threads/**`, `.session/inbox/**`: use `persist`.
 - `notes/**`: use `persist` with an explicit notes target.
 - source code, `.workflow/**`, `.github/**`, prompts, templates, and other repository artifacts: use `plan -> build` or the external-agent path.
 
@@ -95,7 +95,7 @@ Before syncing, classify the request:
 - `wrong_task`: request asks to judge correctness, source of truth, readiness, or conflict; recommend `review --lens consistency`.
 - `wrong_task`: request asks to decide docs architecture, artifact ownership, or long-term boundary; recommend `shape`.
 - `wrong_task`: request asks to sequence repairs or create a multi-target work plan; recommend `plan`.
-- `wrong_task`: request targets `.session/threads/**`, `.session/inbox/**`, `.session/goal/**`, or `notes/**`; recommend `persist`.
+- `wrong_task`: request targets `.session/threads/**`, `.session/inbox/**`, or `notes/**`; recommend `persist`.
 - `wrong_task`: request targets code, `.workflow/**`, `.github/**`, prompts, templates, or unrelated files; recommend `plan -> build` or external-agent.
 - `missing_prerequisite`: `Sync Domain` is missing and cannot be inferred from target.
 - `missing_prerequisite`: `Target` and `Scope` are both missing.
@@ -228,7 +228,7 @@ For `session-archive`, default to one source thread and one archive summary targ
 - Stable project docs go only to allowed project docs targets unless an explicit taxonomy override is provided.
 - Code-adjacent README files go to `src/**/README.md`.
 - Session archive summaries go only to `.session/archive/<thread>/summary.md`.
-- Do not write `.session/threads/**`, `.session/inbox/**`, `.session/goal/**`, or `notes/**`.
+- Do not write `.session/threads/**`, `.session/inbox/**`, or `notes/**`.
 - Do not create workflow-internal docs under `docs/**` by default.
 - For scope-based project-docs sync, output `Alignment Set` before writing. Each item must include docs type, target, source, source of truth, and alignment reason.
 - Default project-docs alignment set size is 1-3 targets. More than 3 targets must be split into batches.

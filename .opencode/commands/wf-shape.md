@@ -14,6 +14,8 @@ Rules:
 - Do not load templates.
 - Do not output a full `Persist Packet` unless requested.
 - Use `.workflow/tasks/shape.md` as the task contract if needed.
+- Shape may consume the current chat goal directly or a `.session/inbox/**` brief with `Brief Type: external-goal`.
+- Do not require an inbox goal brief when the conversation already contains enough context.
 - If evidence is missing and could change the answer, recommend `explore -> shape`.
 - Output `Abstraction Level: concept` for conceptual shape work.
 - Include `Impact Surface` and `Recommended Next Abstraction Level` when this shape may feed planning.

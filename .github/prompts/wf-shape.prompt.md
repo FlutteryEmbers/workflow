@@ -17,6 +17,8 @@ Rules:
 - Do not load templates.
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/shape.md` as the task contract.
+- Shape may consume the current chat goal directly or a `.session/inbox/**` brief with `Brief Type: external-goal`.
+- Do not require an inbox goal brief when the conversation already contains enough context.
 - Provide provisional thinking when useful; do not present it as approval, readiness, or execution permission.
 - Output `Abstraction Level: concept` for conceptual shape work.
 - Include `Impact Surface` and `Recommended Next Abstraction Level` when this shape may feed planning.

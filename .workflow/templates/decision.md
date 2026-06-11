@@ -119,4 +119,4 @@
 
 ## Source
 
-- {{session note, goal file, project doc, code path, or user input}}
+- {{session note, inbox brief, thread artifact, project doc, code path, or user input}}

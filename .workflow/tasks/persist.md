@@ -4,6 +4,7 @@ role: steward
 purpose: Persist high-fidelity structured session artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources.
 inputs:
   - artifact
+  - brief_type
   - status
   - intent
   - depth
@@ -55,7 +56,8 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 ## Persist Inputs
 
-- `Artifact`: `brief | note | shape | option | plan | review | decision | distillation | expanded | goal`.
+- `Artifact`: `brief | note | shape | option | plan | review | decision | distillation | expanded`.
+- `Brief Type`: optional for `Artifact: brief`; use `external-goal` for long, external, or reusable goal material stored in `.session/inbox/**`.
 - `Artifact State`: `inbox | working | settled | superseded`.
 - `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
 - `Depth`: `compact | standard | detailed`.
@@ -138,8 +140,7 @@ If review feedback is not explicit enough to apply mechanically, route back to `
 - If `Target Directory` is provided, infer `{target_directory}/{artifact}_{topic}.md`.
 - If the user references `Artifact ID: shape_<topic>` without an explicit thread, infer `.session/threads/<topic-kebab>/shape_<topic>.md`.
 - Never infer `notes/**`. Write `notes/**` only when the user explicitly provides that target.
-- Write `.session/goal/**` only when the user explicitly provides that target.
-- Respect explicit active `.session/inbox/**`, `.session/threads/**`, or `.session/goal/**` targets even when the file name does not follow the recommended prefix; include a naming note instead of blocking.
+- Respect explicit active `.session/inbox/**` or `.session/threads/**` targets even when the file name does not follow the recommended prefix; include a naming note instead of blocking.
 - Route `.session/archive/**` targets to `sync` with `Sync Domain: session-archive`.
 - If `Artifact`, `Thread`, `Topic`, `Target Directory`, `Target`, and `Artifact ID` are insufficient to infer a target, return `missing_prerequisite` and ask for one anchor.
 
@@ -159,7 +160,7 @@ If review feedback is not explicit enough to apply mechanically, route back to `
 
 If the user explicitly provides a target path, respect it unless it violates write safety, lacks required prerequisites, or belongs to another write boundary.
 
-- `.session/inbox/**`, `.session/threads/**`, `.session/goal/**`: `persist` may write them when the request is an active session artifact.
+- `.session/inbox/**`, `.session/threads/**`: `persist` may write them when the request is an active session artifact.
 - `.session/archive/**`: route to `sync` with `Sync Domain: session-archive`.
 - `notes/**`: `persist` may write it only as an explicit disposable exploration note target.
 - `docs/**` or `src/**/README.md`: route to `sync` and require Project Docs Rules.
@@ -181,11 +182,10 @@ If the user explicitly provides a target path, respect it unless it violates wri
 - `decision`: `.workflow/templates/decision.md`
 - `distillation`: `.workflow/templates/distillation.md`
 - `expanded`: `.workflow/templates/expanded.md`
-- `goal`: `.workflow/templates/goal.md`
 
 ## Output Rules
 
-- Write only the target session artifact or explicit `notes/**` exploration note.
+- Write only the target `.session/inbox/**` or `.session/threads/**` artifact, or explicit `notes/**` exploration note.
 - Add `Persist Metadata` to the artifact.
 - Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
 - `Artifact State` is metadata only. `settled` does not authorize execution, does not mean approved, and does not choose directories.

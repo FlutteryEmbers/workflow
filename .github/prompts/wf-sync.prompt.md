@@ -21,7 +21,7 @@ Rules:
 - Allowed Project Doc Types: `docs/architecture/**`, `docs/design/**`, `docs/adr/**`, `docs/operations/**`, `docs/reference/**`, and `src/**/README.md`.
 - For `session-archive`, require Source Thread, Thread Status, Archive Purpose, Summary Scope, Next Retrieval Use, and target `.session/archive/<thread>/summary.md`.
 - Do not create workflow-internal docs such as `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` unless the user explicitly declares host-project taxonomy override.
-- Do not write `.session/threads/**`, `.session/inbox/**`, `.session/goal/**`, `notes/**`, source code, `.workflow/**`, or `.github/**`.
+- Do not write `.session/threads/**`, `.session/inbox/**`, `notes/**`, source code, `.workflow/**`, or `.github/**`.
 - If both `Target` and `Scope` are missing, output `docs blocked` or `archive blocked`.
 - If source of truth is unclear, route to `wf-review` with `Lens: consistency`.
 - Use `.workflow/tasks/sync.md` as the task contract.

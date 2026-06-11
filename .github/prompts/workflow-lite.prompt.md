@@ -60,8 +60,10 @@ Request: ${input:request:describe the work}
 - Do not infer, auto-apply, or load all lenses.
 - In `Mode: discuss`, do not load templates and do not create or update files.
 - Discussion tasks should produce a short `Persist Candidate` when the result is worth preserving; this is only a candidate and must not write files. Output full `Persist Packet` only when `Output: full`, the user asks to persist, or a handoff/audit requires it.
-- In `Mode: persist`, use `Task: persist` for active `.session/**` artifacts or `Task: sync` for stable-document targets: allowed project docs targets, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
+- In `Mode: persist`, use `Task: persist` for active `.session/inbox/**` or `.session/threads/**` artifacts, and use `Task: sync` for stable-document targets: allowed project docs targets, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - For `persist`, `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md` targets may be inferred from `Artifact + Thread + Topic`.
+- External goals have two valid paths: long or reusable sources may be persisted as `Artifact: brief` with `Brief Type: external-goal` before `shape`; conversational goals may go directly to `shape`.
+- `shape` is the reasoned projection from current chat or an inbox goal brief; the durable shaped result is a `.session/threads/**/shape_*.md` artifact.
 - For `persist`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
 - Use `persist shape_<topic>` to reference a shape by `Artifact ID`; in multi-topic discussion, persist the main goal over the latest topic unless explicitly targeted.
 - `notes/**` is not project docs and is not an execution source.
@@ -93,7 +95,7 @@ Request: ${input:request:describe the work}
 
 - `Sync Domain: session-archive` writes only `.session/archive/<thread>/summary.md`.
 - Required: Source Thread, Thread Status, Archive Purpose, Summary Scope, Next Retrieval Use, and target.
-- Do not write `.session/threads/**`, `.session/inbox/**`, or `.session/goal/**` through sync; active session memory belongs to `persist`.
+- Do not write `.session/threads/**` or `.session/inbox/**` through sync; active session memory belongs to `persist`.
 - Output `archive blocked` when archive prerequisites are unclear.
 
 ## Context Format
@@ -102,7 +104,7 @@ Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only for `persist` or `sync` in `Mode: persist`.
 For new allowed `docs/**` targets, add `project_doc.md` or `architecture_note.md`; for existing docs, preserve the target structure.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
-Add relevant `.session/goal/*`, `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.
+Add relevant `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.
 
 ## Boundary Output
 

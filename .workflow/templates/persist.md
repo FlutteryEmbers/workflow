@@ -4,7 +4,8 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 
 ## Inputs
 
-- Artifact: {{brief | note | shape | option | plan | review | decision | distillation | expanded | goal}}
+- Artifact: {{brief | note | shape | option | plan | review | decision | distillation | expanded}}
+- Brief Type: {{general | external-goal; only for Artifact: brief}}
 - Artifact State: {{inbox | working | settled | superseded}}
 - Thread: {{thread-name or none}}
 - Intent: {{summary | exploration | decision | audit | handoff | constraint | reference}}

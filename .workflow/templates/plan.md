@@ -62,7 +62,7 @@
 
 ## Source Context
 
-- {{thread decision, shape artifact, goal file, project doc, code path, or user correction}}
+- {{thread decision, shape artifact, inbox brief, project doc, code path, or user correction}}
 
 ## Inputs
 

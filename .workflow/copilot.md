@@ -11,7 +11,7 @@ Use dedicated workflow prompt commands for common Copilot work:
 - `/wf-shape`: discuss what-if, strategy, conceptual, or direction-setting work.
 - `/wf-plan`: produce a planning draft, repo-aware plan, or handoff.
 - `/wf-review`: review plans, diffs, docs/code drift, or artifacts.
-- `/wf-persist`: write `.session/**` artifacts or explicit `notes/**`.
+- `/wf-persist`: write `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
 - `/wf-sync`: run the stable-document projection stage for project docs, code-adjacent README, or session archive summaries.
 
 Recommended daily chain:
@@ -42,7 +42,7 @@ Context:
 - #.workflow/tasks/<task>.md
 - #.workflow/lenses/<lens>.md only when selected
 - #.workflow/templates/<template>.md only for persist or sync in Mode: persist
-- #.session/goal/*, relevant .session/inbox/**, relevant .session/threads/**, docs/**, or source files
+- relevant .session/inbox/**, relevant .session/threads/**, docs/**, or source files
 Request:
 <what you want>
 ```
@@ -50,7 +50,7 @@ Request:
 ## Mode Rules
 
 - `Mode: discuss` is the default. Add the task, selected lenses, and relevant context. Do not add templates. Do not create or update files.
-- `Task: persist` in `Mode: persist` writes session artifacts to `.session/**`.
+- `Task: persist` in `Mode: persist` writes active session artifacts to `.session/inbox/**` or `.session/threads/**`.
 - `Task: sync` in `Mode: persist` writes only stable-document targets: allowed project docs targets, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - `Mode: execute` applies an explicit workflow-managed plan through `Task: build`.
 - Native Codex/Copilot Plan -> Implement is the `external-agent` write path. It is not a Workflow Mode and does not use `Task: build`.
@@ -70,6 +70,15 @@ Recommended flow:
 ```text
 compact discussion -> normal refine -> full persist
 ```
+
+## External Goal Intake
+
+Use one of two paths:
+
+- Long or reusable external source: persist `Artifact: brief` with `Brief Type: external-goal`, then shape from that inbox brief and persist the shape.
+- Current conversational goal: shape directly in chat, then persist the shape if it is worth preserving.
+
+`shape` is the reasoned projection from chat or an inbox goal brief. The durable shaped result belongs in `.session/threads/{thread}/shape_{topic}.md`.
 
 In `Mode: discuss`, do not output a full `Persist Packet` by default. Use `Persist Candidate` instead:
 
@@ -154,7 +163,7 @@ Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate 
 ## Write Boundaries
 
 - `discuss`: no writes.
-- `persist` persist: write `.session/**` or explicit `notes/**` disposable exploration notes.
+- `persist` persist: write `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**` disposable exploration notes.
 - `sync` persist: write only stable-document targets for `Sync Domain: project-docs | session-archive`.
 - `execute`: may modify broader repository artifacts only when the explicit plan says so.
 - `external-agent`: native Plan/Implement may write files directly, but the native plan must be audited before implementation and the diff must be reviewed afterward.
@@ -183,8 +192,7 @@ Target rules:
 
 - `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md` may be inferred from `Artifact + Thread + Topic`.
 - `Target Directory` may be used to choose a specific thread folder.
-- `.session/goal/**` requires an explicit target.
-- Explicit active `.session/**` targets should be respected even if naming differs from the recommended prefix.
+- Explicit active `.session/inbox/**` and `.session/threads/**` targets should be respected even if naming differs from the recommended prefix.
 - `.session/archive/**` targets route to `sync` with `Sync Domain: session-archive`.
 - Explicit `notes/**` targets are allowed for disposable exploration notes. Never infer `notes/**`.
 - `docs/**` or `src/**/README.md` targets route to `sync` with `Sync Domain: project-docs`.
@@ -210,7 +218,7 @@ Exploration notes:
 
 - `notes/**` is disposable exploration memory, not project docs.
 - `notes/**` is not an execution source for build or external-agent implementation.
-- Settled conclusions should later be persisted to `.session/**` or synced to `docs/**`.
+- Settled conclusions should later be persisted to `.session/threads/**` or synced to `docs/**`.
 - If `notes/**` grows beyond five active notes, suggest an optional `notes/INDEX.md`.
 
 ## Task Boundary Check
@@ -249,7 +257,6 @@ Use stop points before implementation and stable-document sync.
 - `Artifact: decision`: #.workflow/templates/decision.md
 - `Artifact: distillation`: #.workflow/templates/distillation.md
 - `Artifact: expanded`: #.workflow/templates/expanded.md
-- `Artifact: goal`: #.workflow/templates/goal.md
 
 ## Common Scenarios
 

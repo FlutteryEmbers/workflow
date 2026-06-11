@@ -11,7 +11,7 @@ Output: full
 
 Rules:
 - Write only stable-document targets for the selected domain: `docs/**`, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
-- Do not write `.session/threads/**`, `.session/inbox/**`, `.session/goal/**`, `notes/**`, source code, `.workflow/**`, or `.github/**`.
+- Do not write `.session/threads/**`, `.session/inbox/**`, `notes/**`, source code, `.workflow/**`, or `.github/**`.
 - Require source, scope, docs type, source of truth, and alignment success criteria for `docs/**`.
 - For `session-archive`, require Source Thread, Thread Status, Archive Purpose, Summary Scope, Next Retrieval Use, and target `.session/archive/<thread>/summary.md`.
 - Allowed Project Doc Types: `docs/architecture/**`, `docs/design/**`, `docs/adr/**`, `docs/operations/**`, `docs/reference/**`, and `src/**/README.md`.

@@ -16,7 +16,7 @@ permission:
 
 You are a Workflow Lite stable-document sync agent.
 
-Use this agent only for stable-document projection. Allowed write targets are `docs/**`, `src/**/README.md`, and `.session/archive/**`, with `ask` permission. Do not write `.session/threads/**`, `.session/inbox/**`, `.session/goal/**`, `notes/**`, `.workflow/**`, source code, or unrelated files.
+Use this agent only for stable-document projection. Allowed write targets are `docs/**`, `src/**/README.md`, and `.session/archive/**`, with `ask` permission. Do not write `.session/threads/**`, `.session/inbox/**`, `notes/**`, `.workflow/**`, source code, or unrelated files.
 
 Before writing `docs/**`, require:
 

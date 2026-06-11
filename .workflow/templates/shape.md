@@ -21,7 +21,7 @@
 
 - Thread shape: `.session/threads/<thread>/shape_<topic>.md`
 - Thread decision: `.session/threads/<thread>/decision_<topic>.md`
-- Goal file: `.session/goal/<file>.md`
+- Source brief: `.session/inbox/brief_<topic>.md` when an external-goal brief exists
 
 ## Decision Snapshot
 
@@ -92,7 +92,9 @@ flowchart TD
 
 ## Source Context
 
-- {{discussion, goal, source file, project doc, or user correction that this shape depends on}}
+- {{discussion, inbox goal brief, source file, project doc, or user correction that this shape depends on}}
+
+> Shape is the reasoned projection from current chat or an inbox goal brief. Do not copy raw external goal material verbatim unless it is needed as evidence.
 
 ## Decision-Relevant Facts
 

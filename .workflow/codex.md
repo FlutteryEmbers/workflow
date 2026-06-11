@@ -71,6 +71,15 @@ Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate 
 
 ## Common Paths
 
+### External Goal Intake
+
+Use one of two paths:
+
+- Long or reusable external source: persist `Artifact: brief` with `Brief Type: external-goal`, then shape from that inbox brief and persist the shape.
+- Current conversational goal: shape directly in chat, then persist the shape if it is worth preserving.
+
+`shape` is the reasoned projection from chat or an inbox goal brief. The durable shaped result belongs in `.session/threads/{thread}/shape_{topic}.md`.
+
 ### Discuss
 
 Use for design discussion, code understanding, route selection, critique, planning conversation, or preflight.
@@ -82,7 +91,7 @@ Lens: <none or explicit lenses>
 Context:
 - .workflow/tasks/<task>.md
 - .workflow/lenses/<lens>.md only when selected
-- .session/goal/* and relevant .session/inbox/**, .session/threads/**
+- relevant .session/inbox/** and .session/threads/**
 - docs/** or source files when relevant
 Request:
 <what you want>
@@ -97,13 +106,14 @@ Use when the user wants to persist a session artifact from recent discussion, an
 ```text
 Mode: persist
 Task: persist
-Artifact: <brief|note|shape|option|plan|review|decision|distillation|expanded|goal>
+Artifact: <brief|note|shape|option|plan|review|decision|distillation|expanded>
+Brief Type: <general|external-goal; only for Artifact: brief>
 Artifact State: <inbox|working|settled|superseded>
 Thread: <thread-name>
 Intent: <summary|exploration|decision|audit|handoff|constraint|reference>
 Depth: <compact|standard|detailed>
 Topic: <topic>
-Target: <optional when thread/topic can infer target; explicit for goal when needed>
+Target: <optional when thread/topic can infer target>
 Context:
 - .workflow/tasks/persist.md
 - .workflow/templates/<artifact template>.md
@@ -113,7 +123,7 @@ Request:
 Persist the high-fidelity structured artifact only.
 ```
 
-`persist` may infer `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. `.session/archive/**` targets route to `sync` with `Sync Domain: session-archive`. Targets outside active `.session/**` and `notes/**` route to `sync`, `build`, or external-agent.
+`persist` may infer `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. `.session/archive/**` targets route to `sync` with `Sync Domain: session-archive`. Targets outside active `.session/inbox/**`, `.session/threads/**`, and `notes/**` route to `sync`, `build`, or external-agent.
 
 Use `Persist Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, decision trail, rejected options, risks, examples, and next use when they affect later work.
 
@@ -121,7 +131,7 @@ Use `persist shape_<topic>` to reference a shape by `Artifact ID`. In multi-topi
 
 `persist` may restructure artifacts and apply explicit review edits. It must not choose a new direction, re-plan execution, judge whether review feedback is correct, or turn unclear `needs changes` content into a settled artifact; route those cases back to `shape`, `plan`, or `review`.
 
-`notes/**` is not an execution source. Settled conclusions should be promoted through normal workflow into `.session/**` or `docs/**`.
+`notes/**` is not an execution source. Settled conclusions should be promoted through normal workflow into `.session/threads/**` or `docs/**`.
 
 ### Workflow-Managed Execute
 

@@ -1,7 +1,7 @@
 ---
 id: shape
 role: designer
-purpose: Default synthesis entry for ambiguous, what-if, strategy, conceptual, direction-setting, goal update, or session decision work in chat.
+purpose: Default synthesis entry for ambiguous, what-if, strategy, conceptual, direction-setting, or session decision work in chat.
 inputs:
   - clarified_context
 outputs:
@@ -41,7 +41,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## When To Use
 
-- Use when the user needs a direction, concept, architecture shape, goal update, or session decision.
+- Use when the user needs a direction, concept, architecture shape, or session decision.
 - Use for vision-driven PoC work where the initial request should be reframed into the smallest useful wedge.
 - Use by default when the request is ambiguous, what-if, strategy-oriented, conceptual, direction-setting, or unclear between `shape`, `explore`, and `review`.
 
@@ -68,7 +68,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 Before shaping, classify the request:
 
-- `fits`: user asks to form a direction, concept, architecture, strategy, what-if recommendation, goal update, or session decision.
+- `fits`: user asks to form a direction, concept, architecture, strategy, what-if recommendation, or session decision.
 - `fits_with_preflight`: user asks to shape based on current code, project docs, session context, external tools, references, repository fit, architecture entrypoints, implementation entrypoints, or how to start. In `Mode: discuss`, run default implicit preflight first, then shape.
 - `composite`: user asks to shape and persist; shape first, then route to `persist`.
 - `wrong_task`: user only asks whether current code/docs are reasonable; recommend `review`.
@@ -110,6 +110,16 @@ When the user explicitly selects `conceptual`, output `Abstraction Level: concep
 ## Shape / Plan Boundary
 
 `shape` owns concept design. It decides what the direction is, what it is not, and why. It may recommend the next abstraction level, but it does not create a phase plan or implementation plan.
+
+## External Goal Intake
+
+`shape` is the reasoned projection of external or conversational goal context. It may consume:
+
+- the current chat goal directly
+- `.session/inbox/**` brief artifacts with `Brief Type: external-goal`
+- relevant `.session/threads/**`, docs, or source evidence
+
+Do not require an inbox brief when the current conversation already contains enough goal context. Use an external-goal brief only when the raw source is long, external, reusable, or worth preserving separately.
 
 Use decision states when a shape may feed `plan`:
 
@@ -166,7 +176,7 @@ If `Compatibility: breaking` or `Constraint Mode != respect` is explicitly reque
 Required:
 
 - #.workflow/tasks/shape.md
-- relevant `.session/goal/*`, `.session/inbox/**`, existing decisions, docs, or source files
+- relevant `.session/inbox/**`, `.session/threads/**`, existing decisions, docs, or source files
 
 User-selected lenses:
 
@@ -175,7 +185,7 @@ User-selected lenses:
 
 ## Instructions
 
-Convert notes, goals, what-if prompts, strategy questions, and discussion into a clear session direction or goal update. For vague or broad goals, first reframe the request. Name the smallest useful wedge that can validate the goal, the success criteria that would make it worth continuing, and the larger scope that is intentionally rejected for now.
+Convert notes, external-goal briefs, current chat goals, what-if prompts, strategy questions, and discussion into a clear session direction. For vague or broad goals, first reframe the request. Name the smallest useful wedge that can validate the goal, the success criteria that would make it worth continuing, and the larger scope that is intentionally rejected for now.
 
 You may provide a hypothesis-based recommendation when evidence is incomplete. Label it as provisional, name what `explore` or `review` would need to confirm, and include what would change the recommendation. Do not output approval, acceptance, or implementation readiness verdicts; route those to `review`.
 
@@ -233,7 +243,7 @@ Output the full packet only when the user asks to persist, provides `Target`, re
 
 ```text
 Persist Packet:
-Artifact: shape | decision | goal
+Artifact: shape | decision
 Artifact ID: shape_<topic>
 Abstraction Level: <concept | none>
 Artifact State: working | settled | superseded
@@ -247,7 +257,7 @@ Decision Snapshot:
 Discussion Notes To Preserve:
 - <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
 Source Context:
-- <goal, session artifact, code/docs evidence, or user correction>
+- <current chat goal, external-goal brief, session artifact, code/docs evidence, or user correction>
 Key Points:
 - <current recommendation and core boundaries>
 Decision-Relevant Facts:
@@ -299,9 +309,8 @@ Next Use:
 
 `Artifact ID` is a lightweight reference anchor for later `persist` requests. It is not a file path and does not change artifact kind or directory rules.
 
-Use `.session/goal/**` only when the user explicitly provides that target.
 If the shape is not worth preserving, output `Persist Candidate: none`.
 
 ## User Input
 
-{{context, options, goal update, design direction, or concept to shape}}
+{{context, options, external goal context, design direction, or concept to shape}}

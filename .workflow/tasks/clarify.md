@@ -74,7 +74,7 @@ If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, an
 Required:
 
 - #.workflow/tasks/clarify.md
-- user request, existing `.session/goal/*`, or relevant background
+- user request, relevant `.session/inbox/**`, existing thread artifacts, or background
 
 User-selected lenses:
 

@@ -78,7 +78,7 @@ Default implicit preflight runs only in `Mode: discuss` and checks target stabil
 Required:
 
 - #.workflow/tasks/plan.md
-- relevant `.session/goal/*`, `.session/inbox/**`, `.session/threads/**`, docs, and target source files
+- relevant `.session/inbox/**`, `.session/threads/**`, docs, and target source files
 
 User-selected lenses:
 

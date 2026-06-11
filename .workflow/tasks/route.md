@@ -81,11 +81,13 @@ Recommend the smallest path:
 - Existence and discovery questions such as "does this repo have X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
 - Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
 - Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
-- Typical session flow: `goal -> inbox -> threads -> build/external-agent -> review -> sync`.
+- Typical session flow: `external or conversational goal -> shape/thread artifact -> build/external-agent -> review -> sync`.
+- Long or reusable external goal sources: `persist` as `Artifact: brief`, `Brief Type: external-goal`, then `shape` consumes the inbox brief.
+- Current conversational goals: `shape` directly, then persist the shaped concept only when worth preserving.
 - New background or staged requirements: `clarify` or `explore` -> `persist` to `.session/inbox/**`.
 - Target direction, option, architecture, or concept: `shape` -> `persist` to `.session/threads/{thread}/shape_{topic}.md`.
 - Repo-aware implementation sequence or handoff: `plan` -> `persist` to `.session/threads/{thread}/plan_{topic}.md`.
-- Session artifact write: `persist` -> active `.session/**`.
+- Session artifact write: `persist` -> active `.session/inbox/**` or `.session/threads/**`.
 - Active thread metadata or thread file maintenance: `persist` -> `.session/threads/**`.
 - Completed thread archive summary: `review/plan -> sync` with `Sync Domain: session-archive` -> `.session/archive/<thread>/summary.md`.
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
@@ -135,7 +137,7 @@ Add Context:
 - .workflow/tasks/<task>.md
 - .workflow/lenses/<lens>.md only when selected
 - .workflow/templates/<template>.md only for `persist` or `sync` when persisting
-- .session/goal/*, relevant .session/inbox/**, relevant .session/threads/**, docs/**, or source files as needed
+- relevant .session/inbox/**, relevant .session/threads/**, docs/**, or source files as needed
 Next prompt: <copyable prompt>
 ```
 

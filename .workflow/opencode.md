@@ -61,7 +61,7 @@ Exploration notes:
 
 - Explicit `notes/**` targets may be persisted as disposable exploration notes through `Task: persist`.
 - Do not treat `notes/**` as project docs or implementation plans.
-- Do not use OpenCode bounded implement from `notes/**`; promote useful conclusions into `.session/**` or create an explicit external plan first.
+- Do not use OpenCode bounded implement from `notes/**`; promote useful conclusions into `.session/threads/**` or create an explicit external plan first.
 
 ## Usage Levels
 
@@ -107,6 +107,15 @@ OpenCode context summary
 
 OpenCode native Plan belongs to the `external-agent` path. It is not `Mode: execute`. `Mode: execute` remains workflow-managed execution through `Task: build`.
 
+## External Goal Intake
+
+Use one of two paths:
+
+- Long or reusable external source: persist `Artifact: brief` with `Brief Type: external-goal`, then shape from that inbox brief and persist the shape.
+- Current conversational goal: shape directly in chat, then persist the shape if it is worth preserving.
+
+`shape` is the reasoned projection from chat or an inbox goal brief. The durable shaped result belongs in `.session/threads/{thread}/shape_{topic}.md`.
+
 ## Slash Commands
 
 OpenCode project commands live in `.opencode/commands/**`. They are thin prompt shortcuts, not a separate workflow. Keep task, lens, role, and template semantics in `.workflow/**`.
@@ -119,7 +128,7 @@ Default commands:
 - `/wf-shape`: discuss direction, what-if, strategy, or conceptual design.
 - `/wf-plan`: draft a repo-aware plan or external-agent handoff.
 - `/wf-review`: review a plan, diff, code/docs claim, or readiness question.
-- `/wf-persist`: persist `.session/**` or explicit `notes/**`.
+- `/wf-persist`: persist `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
 - `/wf-build`: execute an explicit plan only.
 - `/wf-sync`: sync stable documents: `docs/**`, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 
@@ -161,7 +170,7 @@ Use only the files needed for the current step.
 - `.workflow/tasks/build.md` for explicit-plan execution rules.
 - `.workflow/tasks/sync.md` for project docs or code-adjacent README alignment.
 - `.workflow/lenses/<lens>.md` only when explicitly selected.
-- `.session/goal/*`, relevant `.session/inbox/**`, relevant `.session/threads/**`, `docs/**`, and source files as needed.
+- relevant `.session/inbox/**`, relevant `.session/threads/**`, `docs/**`, and source files as needed.
 - explicit `notes/**` only when persisting disposable exploration notes.
 
 Do not load all tasks or all lenses by default.
@@ -174,7 +183,6 @@ Do not load all tasks or all lenses by default.
 Use OpenCode as context helper only. Do not edit files and do not create an implementation plan.
 
 Context:
-- .session/goal/*
 - .session/inbox/<relevant>
 - .session/threads/<relevant>
 - docs/<relevant>
@@ -200,7 +208,7 @@ Goal:
 <goal>
 
 Context:
-- .session/goal/*
+- .session/inbox/<relevant>
 - .session/threads/<relevant>
 - docs/<relevant>
 - <source files>
@@ -349,7 +357,7 @@ Rules:
 - Do not create workflow-internal docs such as docs/workflow/**, docs/session/**, docs/ai/**, docs/prompts/**, docs/notes/**, docs/plans/**, or docs/reviews/** unless the user explicitly declares host-project taxonomy override.
 - Preserve existing docs structure and tone.
 - For `session-archive`, require Source Thread, Thread Status, Archive Purpose, Summary Scope, Next Retrieval Use, and target .session/archive/<thread>/summary.md.
-- Do not write .session/threads/**, .session/inbox/**, .session/goal/**, .workflow/**, source code, or unrelated docs.
+- Do not write .session/threads/**, .session/inbox/**, .workflow/**, source code, or unrelated docs.
 - Output docs blocked if source, scope, docs type, source of truth, alignment success criteria, or safety is unclear.
 - Output archive blocked if archive prerequisites are unclear.
 ```
