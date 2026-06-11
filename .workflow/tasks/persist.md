@@ -61,10 +61,10 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - `Artifact State`: `inbox | working | settled | superseded`.
 - `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
 - `Depth`: `compact | standard | detailed`.
-- `Thread`: kebab-case discussion or work-thread directory name.
+- `Thread`: kebab-case small closable work item directory name.
 - `Topic`: short file-safe topic.
 - `Source`: `Persist Packet`, `Persist Candidate`, recent discussion, existing artifact, user input, file path, or selected context.
-- `Target Directory`: optional directory such as `.session/threads/auth-backend/`; when present, generate `{artifact}_{topic}.md` under it.
+- `Target Directory`: optional directory such as `.session/threads/workflow-thread-naming/`; when present, generate `{artifact}_{topic}.md` under it.
 - `Target`: optional explicit path. Explicit target wins over inferred path.
 - `Target: notes/**`: explicit only; used for disposable exploration notes.
 
@@ -97,21 +97,28 @@ Persisted artifacts must be more structured than chat without losing the reasoni
 
 ## Source Handling
 
-- Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Packet`; explicit `Persist Candidate`; main goal from recent discussion; latest topic only when explicitly targeted.
+- Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Packet`; explicit `Persist Candidate`; source artifacts from the inferred same work item; recent discussion that matches the target work item.
 - Prefer an explicit `Persist Packet` when present.
 - If no `Persist Packet` exists, synthesize one from `Persist Candidate`, recent discussion, source artifacts, user corrections, and selected files.
 - Discuss output budget does not reduce artifact fidelity. Even if the prior answer used `Output: compact`, generate the persisted artifact at the requested or default `Depth`.
 - If source material conflicts, preserve the conflict and mark the source of truth as unresolved.
 - Do not use `persist` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
 
-## Main Goal Bias
+## Thread Inference
 
-When persisting from a multi-topic discussion, prefer the original or recurring main goal over the most recent topic.
+Infer thread targets automatically by same-work-item fit.
 
-- If the user references an `Artifact ID` such as `shape_<topic>`, persist that artifact as the primary source.
-- Treat later topics as supporting context unless the user explicitly asks to persist the latest topic.
-- If the discussion includes multiple topics and no main goal can be inferred from `Artifact ID`, `Topic`, `Target`, or explicit request wording, return `missing_prerequisite` and ask for one of those anchors before writing.
-- Example: after discussing backend design and then frontend integration, `persist shape_auth_backend` should persist the backend shape; frontend integration belongs only in supporting context unless explicitly targeted.
+- `Thread` names should represent small closable work items, not tasks, lenses, modes, artifact kinds, or broad feature areas.
+- Prefer `{area}-{work-item}` when it improves retrieval, but do not enforce a category prefix table.
+- Reuse an active thread when the request is a continuation, refinement, correction, review response, or implementation follow-up for the same closable work item.
+- Reuse is supported when the request shares the same target, success criteria, blocking decision, source artifact, or natural archive summary.
+- Create or suggest a new thread when the request introduces a distinct bounded decision, change, or question; has different success criteria or close condition; or would make the archive summary unclear.
+- Recency is supporting evidence only. It is never sufficient by itself.
+- Related old threads are `Source Context` unless they pass the same-work-item test.
+- Settled, implemented, superseded, abandoned, blocked, or archived threads are `Source Context` by default and must not be reopened automatically.
+- If the user references an `Artifact ID` such as `shape_<topic>`, use that artifact as source context. Do not derive the thread directory from `<topic>`.
+- If confidence is low but safe, infer the best target and include `Thread Inference Note` with assumptions and risk.
+- Return `missing_prerequisite` only when ambiguity would risk overwriting, mixing unrelated work items, or writing into a closed/archive thread.
 
 ## Persist Revision Rule
 
@@ -138,11 +145,11 @@ If review feedback is not explicit enough to apply mechanically, route back to `
 - Infer `.session/inbox/{artifact}_{topic}.md` for `Artifact State: inbox`.
 - Infer `.session/threads/{thread}/{artifact}_{topic}.md` when `Thread`, `Artifact`, and `Topic` are available.
 - If `Target Directory` is provided, infer `{target_directory}/{artifact}_{topic}.md`.
-- If the user references `Artifact ID: shape_<topic>` without an explicit thread, infer `.session/threads/<topic-kebab>/shape_<topic>.md`.
+- If the user references `Artifact ID: shape_<topic>` without an explicit thread, use it as source context and infer the target by same-work-item fit.
 - Never infer `notes/**`. Write `notes/**` only when the user explicitly provides that target.
 - Respect explicit active `.session/inbox/**` or `.session/threads/**` targets even when the file name does not follow the recommended prefix; include a naming note instead of blocking.
 - Route `.session/archive/**` targets to `sync` with `Sync Domain: session-archive`.
-- If `Artifact`, `Thread`, `Topic`, `Target Directory`, `Target`, and `Artifact ID` are insufficient to infer a target, return `missing_prerequisite` and ask for one anchor.
+- If `Artifact`, `Thread`, `Topic`, `Target Directory`, `Target`, source context, and same-work-item inference are insufficient to infer a safe target, return `missing_prerequisite` and ask for one anchor.
 
 ## Exploration Notes Rule
 
@@ -187,6 +194,7 @@ If the user explicitly provides a target path, respect it unless it violates wri
 
 - Write only the target `.session/inbox/**` or `.session/threads/**` artifact, or explicit `notes/**` exploration note.
 - Add `Persist Metadata` to the artifact.
+- Include `Thread Inference Note` when thread selection depends on same-work-item assumptions, source context, or low-confidence inference.
 - Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
 - `Artifact State` is metadata only. `settled` does not authorize execution, does not mean approved, and does not choose directories.
 - Thread artifacts are active session working memory; code-aligned project docs and session archive summaries still go through `sync`.

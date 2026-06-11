@@ -22,6 +22,8 @@ Depth: ${input:depth:compact|standard|detailed}
 Rules:
 - Write only `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
 - Use `Brief Type: external-goal` only for long, external, or reusable goal material stored as an inbox brief before shape.
+- Infer thread targets by same-work-item fit when `Thread` is absent; recency alone is not enough.
+- Include `Thread Inference Note` when target selection depends on assumptions or low-confidence fit.
 - Do not write `docs/**`, source code, `.workflow/**`, or `.github/**`.
 - Load `.workflow/tasks/persist.md` and the matching artifact template.
 - Preserve decision-relevant reasoning, not full transcript.
@@ -32,6 +34,7 @@ ${input:request:describe source discussion, Persist Candidate, Persist Packet, e
 
 Return:
 - Target
+- Thread Inference Note
 - Artifact metadata
 - Written artifact or blocking reason
 - Naming note, if explicit target differs from recommended naming

@@ -190,8 +190,11 @@ Add:
 
 Target rules:
 
-- `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md` may be inferred from `Artifact + Thread + Topic`.
+- `.session/inbox/**` may be inferred from `Artifact State: inbox`; `.session/threads/{thread}/{artifact}_{topic}.md` may be inferred from explicit `Thread + Artifact + Topic` or automatic same-work-item fit.
 - `Target Directory` may be used to choose a specific thread folder.
+- Thread directories are small closable work items. Reuse active threads for continuations, refinements, corrections, review responses, or implementation follow-ups for the same work item.
+- Create or suggest a new thread for a distinct bounded decision, change, or question. Recency alone is not enough to reuse a thread.
+- Use related old or closed threads as `Source Context` unless they pass the same-work-item test.
 - Explicit active `.session/inbox/**` and `.session/threads/**` targets should be respected even if naming differs from the recommended prefix.
 - `.session/archive/**` targets route to `sync` with `Sync Domain: session-archive`.
 - Explicit `notes/**` targets are allowed for disposable exploration notes. Never infer `notes/**`.
@@ -201,8 +204,8 @@ Target rules:
 Content fidelity:
 
 - `persist` should consume `Persist Packet` when available, but it may also consume `Persist Candidate` plus recent discussion.
-- Use `persist shape_<topic>` to reference a shape by `Artifact ID`.
-- In multi-topic discussion, persist the original/main goal by default; treat later topics as supporting context unless explicitly targeted.
+- Use `persist shape_<topic>` to reference a shape by `Artifact ID`; this anchors source context and does not derive the thread directory.
+- Include `Thread Inference Note` when the inferred target depends on assumptions or low-confidence same-work-item fit.
 - Preserve decision-relevant reasoning, not full transcript.
 - Keep context, key facts, decision trail, rejected options, risks, examples, and next use when they affect later work.
 - Use artifact `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact artifact output.
@@ -279,12 +282,12 @@ Artifact: shape
 Artifact State: working
 Intent: exploration
 Depth: detailed
-Thread: graph10x
-Topic: graph10x_entrypoints
+Thread: workflow-thread-naming
+Topic: thread_inference
 ```
 
-Add #.workflow/tasks/persist.md and #.workflow/templates/shape.md. Target may be inferred as `.session/threads/graph10x/shape_graph10x_entrypoints.md`.
-You may also say `persist shape_graph10x_entrypoints` to anchor the persist request to the shape artifact instead of the latest discussion topic.
+Add #.workflow/tasks/persist.md and #.workflow/templates/shape.md. Target may be inferred as `.session/threads/workflow-thread-naming/shape_thread_inference.md`.
+You may also say `persist shape_thread_inference` to anchor the persist request to the shape artifact; thread selection still follows same-work-item fit.
 
 ### Persist Exploration Note
 
@@ -295,7 +298,7 @@ Artifact: note
 Artifact State: inbox
 Intent: exploration
 Depth: compact | standard
-Target: notes/graph10x.md
+Target: notes/thread-naming.md
 ```
 
 Add #.workflow/tasks/persist.md and #.workflow/templates/note.md. `notes/**` must be explicit and remains disposable exploration memory.
@@ -309,8 +312,8 @@ Artifact: decision
 Artifact State: settled
 Intent: constraint
 Depth: detailed
-Thread: auth
-Topic: auth_boundary
+Thread: workflow-goal-removal
+Topic: goal_boundary
 ```
 
 Add #.workflow/tasks/persist.md and #.workflow/templates/decision.md.

@@ -17,7 +17,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Codex may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
 - Load templates only for `persist` or `sync` in `Mode: persist`.
 - Treat `.session/**` as working memory, not project source of truth.
-- Treat `.session/threads/**` as session working memory grouped by discussion/work thread.
+- Treat `.session/threads/**` as session working memory grouped by small closable work item.
 - Use explicit `.session/threads/{thread}/plan_{topic}.md` files for workflow-managed build input.
 - Treat explicit `notes/**` targets as disposable exploration notes, not project docs or execution sources.
 - Treat `docs/**` as code-aligned project docs and apply Project Docs Rules before writing.
@@ -123,11 +123,11 @@ Request:
 Persist the high-fidelity structured artifact only.
 ```
 
-`persist` may infer `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. `.session/archive/**` targets route to `sync` with `Sync Domain: session-archive`. Targets outside active `.session/inbox/**`, `.session/threads/**`, and `notes/**` route to `sync`, `build`, or external-agent.
+`persist` may infer `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`. Thread directories are small closable work items. When `Thread` is absent, infer the target by same-work-item fit: reuse active threads for continuations/refinements/review responses, create or suggest a new thread for distinct bounded decisions or changes, and treat recency as supporting evidence only. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. `.session/archive/**` targets route to `sync` with `Sync Domain: session-archive`. Targets outside active `.session/inbox/**`, `.session/threads/**`, and `notes/**` route to `sync`, `build`, or external-agent.
 
 Use `Persist Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, decision trail, rejected options, risks, examples, and next use when they affect later work.
 
-Use `persist shape_<topic>` to reference a shape by `Artifact ID`. In multi-topic discussion, persist the original/main goal by default and keep later topics as supporting context unless explicitly targeted.
+Use `persist shape_<topic>` to reference a shape by `Artifact ID`. This anchors source context and does not derive the thread directory. Include `Thread Inference Note` when the inferred target depends on same-work-item assumptions, related old threads, or low-confidence fit.
 
 `persist` may restructure artifacts and apply explicit review edits. It must not choose a new direction, re-plan execution, judge whether review feedback is correct, or turn unclear `needs changes` content into a settled artifact; route those cases back to `shape`, `plan`, or `review`.
 

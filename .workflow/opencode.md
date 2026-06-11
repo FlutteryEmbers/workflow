@@ -149,11 +149,11 @@ Examples:
 ```text
 /wf-clarify source of truth 在这个 workflow 里是什么意思？
 /wf-explore 帮我看这个第三方 repo 是否有调用链入口
-/wf-shape 如果我要结合 graph10x 调用链分析来构建项目，起始入口怎么选？
+/wf-shape 这个 thread 命名规则应该怎么收敛？
 /wf-review Audit this plan before implementation: <plan>
-/wf-persist Artifact: shape Thread: graph10x Topic: entrypoints Source: last discussion
-/wf-build Plan: .session/threads/auth/plan_auth.md
-/wf-sync Source: .session/threads/auth/decision_auth_boundary.md Scope: auth Source Of Truth: session decision Target: docs/architecture/auth.md Alignment Success Criteria: future auth docs match confirmed boundaries
+/wf-persist Artifact: shape Thread: workflow-thread-naming Topic: thread_inference Source: last discussion
+/wf-build Plan: .session/threads/workflow-goal-removal/plan_goal_removal.md
+/wf-sync Source: .session/threads/workflow-goal-removal/decision_goal_boundary.md Scope: workflow memory Source Of Truth: session decision Target: docs/architecture/workflow-memory.md Alignment Success Criteria: future workflow docs match confirmed boundaries
 ```
 
 ## Add Context
@@ -246,7 +246,7 @@ Persist the OpenCode handoff plan. Preserve decision-relevant reasoning, not ful
 
 `persist` can apply explicit edits, but it must not invent a new direction, re-plan work, or turn unclear `needs changes` content into a settled artifact. Route those cases back to `shape`, `plan`, or `review`.
 
-Use `persist shape_<topic>` to reference a shape by `Artifact ID`. In multi-topic discussion, persist the original/main goal by default and keep later topics as supporting context unless explicitly targeted.
+Use `persist shape_<topic>` to reference a shape by `Artifact ID`. This anchors source context and does not derive the thread directory. Thread directories are small closable work items; infer targets by same-work-item fit, reuse active threads only for the same work item, and include `Thread Inference Note` when assumptions matter.
 
 ### Persist Exploration Note
 

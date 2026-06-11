@@ -28,7 +28,7 @@ graph TD
 - `lens`: optional user-selected thinking method in `.workflow/lenses/`.
 - `.session`: AI session working memory, not project source of truth.
 - `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, and reference material.
-- `.session/threads`: related shape, option, plan, review, decision, and reference artifacts grouped by discussion/work thread.
+- `.session/threads`: related shape, option, plan, review, decision, and reference artifacts grouped by small closable work item.
 - `.session/archive`: stable summaries of completed, superseded, abandoned, implemented, or blocked threads.
 - `persist`: the only task that writes session artifacts.
 - `sync`: stable-document projection for project docs, code-adjacent README files, and session archive summaries.
@@ -50,14 +50,29 @@ Use `.session/inbox/**` for raw or lightly structured inputs, and `.session/thre
 
 ## Session Naming
 
-Session directories express role; file prefixes express artifact kind.
+Session directories express role; thread directories express small closable work items; file prefixes express artifact kind.
 
 - `inbox`: `note_{topic}.md`, `brief_{topic}.md`
 - `threads/{thread}`: `brief_`, `note_`, `shape_`, `option_`, `plan_`, `review_`, `decision_`, `distillation_`, `expanded_`
 
-Do not use task names as mandatory file prefixes. `docs/**` follows the host project's project docs naming. `src/**/README.md` is fixed.
+Do not use task names, lenses, modes, or artifact kinds as thread names. `docs/**` follows the host project's project docs naming. `src/**/README.md` is fixed.
 
-`thread` is a kebab-case discussion or work topic. File `{topic}` remains snake_case. Path location does not authorize execution; user-invoked `build` with an explicit executable plan is the authorization boundary.
+`thread` is a kebab-case small closable work item. Prefer `{area}-{work-item}` when it helps retrieval, such as `workflow-thread-naming` or `sync-archive-summary`, but do not introduce a mandatory category table. File `{topic}` remains snake_case. Path location does not authorize execution; user-invoked `build` with an explicit executable plan is the authorization boundary.
+
+## Thread Inference
+
+`persist` infers thread targets automatically by same-work-item fit.
+
+- Explicit `Target` wins.
+- Explicit `Target Directory` wins when `Target` is absent.
+- Explicit `Thread + Artifact + Topic` directly infers `.session/threads/{thread}/{artifact}_{topic}.md`.
+- Without an explicit thread, infer whether the request continues an active same work item or starts a distinct closable work item.
+- Reuse an active thread when the request is a continuation, refinement, correction, review response, or implementation follow-up for the same work item.
+- Prefer a new thread when the request introduces a distinct bounded decision, change, or question; has different success criteria or close condition; or would need a separate archive summary to stay clear.
+- Recency is supporting evidence only. It is never sufficient by itself.
+- Related old threads are source context unless they pass the same-work-item test.
+- Settled, implemented, superseded, abandoned, blocked, or archived threads are source context by default, not targets.
+- When confidence is low, infer the best target and include `Thread Inference Note` with assumptions and risk. Block only when ambiguity would risk overwriting, mixing unrelated work items, or writing into a closed/archive thread.
 
 ## External Goal Intake
 
@@ -256,7 +271,7 @@ Discussion tasks do not write files. They should end with short `Persist Candida
 - `persist` may also write explicit `notes/**` disposable exploration notes.
 - `persist` consumes `Persist Candidate`, `Persist Packet`, recent discussion, existing artifacts, or source files.
 - `persist` can infer targets for `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`.
-- `Thread` or `Target Directory` may guide where related artifacts are grouped.
+- `Thread`, `Target Directory`, and same-work-item fit guide where related artifacts are grouped.
 - Explicit active `.session/inbox/**` and `.session/threads/**` targets are respected even when the file name does not follow the recommended prefix.
 - `notes/**` must be explicit and is never inferred.
 - Targets outside active `.session/inbox/**`, `.session/threads/**`, and `notes/**` are routed instead of rejected: `docs/**`, `src/**/README.md`, and `.session/archive/<thread>/summary.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
@@ -265,7 +280,7 @@ Persisted artifacts preserve decision-relevant reasoning, not full transcript. T
 
 `persist` may apply explicit revisions, but it must not make new design, planning, or review judgments. If review feedback requires choosing a new direction, reordering a plan, or deciding whether a finding is correct, return to `shape`, `plan`, or `review` before persisting.
 
-`shape` emits `Artifact ID: shape_<topic>` when it is worth persisting. Use `persist shape_<topic>` to anchor persistence to that shape. In multi-topic discussions, `persist` should preserve the original/main goal by default and treat later topics as supporting context unless explicitly targeted.
+`shape` emits `Artifact ID: shape_<topic>` when it is worth persisting. Use `persist shape_<topic>` to anchor the source shape, not to derive the thread directory. In multi-topic discussions, `persist` should infer the target by same-work-item fit and include related threads as source context when they are not the target.
 
 `persist` uses:
 
@@ -409,6 +424,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Project-docs sync: `review -> plan -> sync -> docs/**`.
 - Code-adjacent README sync: `review -> plan -> sync -> src/**/README.md`.
 - Thread archive summary: `review/plan -> sync -> .session/archive/<thread>/summary.md`.
+- Close a completed work item: `review/plan -> sync session-archive -> .session/archive/<thread>/summary.md`.
 
 ## Using With Copilot
 

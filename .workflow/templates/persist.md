@@ -7,7 +7,7 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 - Artifact: {{brief | note | shape | option | plan | review | decision | distillation | expanded}}
 - Brief Type: {{general | external-goal; only for Artifact: brief}}
 - Artifact State: {{inbox | working | settled | superseded}}
-- Thread: {{thread-name or none}}
+- Thread: {{kebab-case small closable work item or none}}
 - Intent: {{summary | exploration | decision | audit | handoff | constraint | reference}}
 - Depth: {{compact | standard | detailed}}
 - Topic: {{file-safe topic}}
@@ -28,6 +28,10 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 - Apply explicit review edits only; do not invent a new direction, plan, or verdict.
 - Infer targets for `.session/inbox/**` or `.session/threads/{thread}/{artifact}_{topic}.md`.
 - Use `Target Directory` when the user wants a specific thread folder.
+- Infer thread targets by same-work-item fit when `Thread` is absent.
+- Reuse active threads for continuations, refinements, corrections, review responses, or implementation follow-ups for the same closable work item.
+- Use related old or closed threads as `Source Context` unless they pass the same-work-item test.
+- Include `Thread Inference Note` when inference depends on assumptions or low-confidence fit.
 - Route `docs/**`, `src/**/README.md`, and `.session/archive/**` to `sync`.
 - Route code, `.workflow/**`, and `.github/**` to `build` or external-agent.
 
@@ -47,4 +51,5 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 
 - Target: {{resolved target}}
 - Naming Note: {{only if explicit target differs from recommended prefix}}
+- Thread Inference Note: {{same-work-item basis, source context, low-confidence assumption, or none}}
 - Persisted Artifact: {{summary of what was written}}
