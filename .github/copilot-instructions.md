@@ -7,8 +7,8 @@
 - In discuss mode, do not write files and do not output full `Persist Packet` unless requested.
 - Start non-trivial replies with `User Intent`, not a technical diagnosis.
 - Use short `Persist Candidate` for discussion results worth saving; it is candidate only and must not write files.
-- `persist` writes `.session/**` or explicit `notes/**`.
-- `sync` writes only allowed project docs targets or explicit `src/**/README.md`.
+- `persist` writes active `.session/**` artifacts or explicit `notes/**`; `.session/archive/**` is a sync target.
+- `sync` writes only stable-document targets: allowed project docs, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - `build` requires `Mode: execute` and an explicit executable `Plan`.
 - Treat `.session/**` as working memory, not project docs source of truth.
 - Prefer dedicated workflow prompt commands when available; use `workflow-lite.prompt.md` as fallback/router.

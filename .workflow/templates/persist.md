@@ -27,7 +27,7 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 - Apply explicit review edits only; do not invent a new direction, plan, or verdict.
 - Infer targets for `.session/inbox/**` or `.session/threads/{thread}/{artifact}_{topic}.md`.
 - Use `Target Directory` when the user wants a specific thread folder.
-- Route `docs/**` and `src/**/README.md` to `sync`.
+- Route `docs/**`, `src/**/README.md`, and `.session/archive/**` to `sync`.
 - Route code, `.workflow/**`, and `.github/**` to `build` or external-agent.
 
 ## Revision Boundary

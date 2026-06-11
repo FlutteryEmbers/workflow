@@ -13,12 +13,13 @@ graph TD
     P --> W["persist session artifact"]
     P --> B["build or external-agent"]
     B --> V["review"]
-    V --> Y["sync project docs"]
+    V --> Y["sync stable documents"]
 
     C -. "input" .-> N[".session/inbox"]
     W -. "thread artifacts" .-> D[".session/threads"]
     S -. "goal" .-> G[".session/goal"]
     Y -. "project docs" .-> F["docs"]
+    Y -. "archive summaries" .-> A[".session/archive"]
 ```
 
 ## Core Ideas
@@ -30,7 +31,9 @@ graph TD
 - `.session/goal`: evolving goal space and target docs map.
 - `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, and reference material.
 - `.session/threads`: related shape, option, plan, review, decision, and reference artifacts grouped by discussion/work thread.
+- `.session/archive`: stable summaries of completed, superseded, abandoned, implemented, or blocked threads.
 - `persist`: the only task that writes session artifacts.
+- `sync`: stable-document projection for project docs, code-adjacent README files, and session archive summaries.
 - `docs`: code-aligned project docs maintained by the host project.
 - `notes`: optional disposable exploration notes for lightweight exploration repos when explicitly targeted.
 - `src/**/README.md`: optional code-adjacent reading entrypoint.
@@ -50,7 +53,7 @@ graph TD
   archive/
 ```
 
-Use `.session/**` for work that may change during AI collaboration. Stable long-term knowledge, terms, architecture constraints, and design docs belong in `docs/**`.
+Use `.session/inbox/**`, `.session/threads/**`, and `.session/goal/**` for work that may change during AI collaboration. Use `.session/archive/**` for stable thread summaries. Stable long-term project knowledge, terms, architecture constraints, and design docs belong in `docs/**`.
 
 ## Session Naming
 
@@ -75,7 +78,7 @@ Do not use task names as mandatory file prefixes. `docs/**` follows the host pro
 | `persist` | `steward` | `.session/**` | Persist high-fidelity structured session artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
 | `build` | `builder` | repository changes | Apply an explicit workflow-managed plan. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
-| `sync` | `steward` | `docs/**` or `src/**/README.md` | Project confirmed facts into code-aligned project docs and code-adjacent README files. |
+| `sync` | `steward` | stable docs | Project confirmed outcomes into project docs, code-adjacent README files, or session archive summaries. |
 
 ## Task Boundary Shortcut
 
@@ -156,10 +159,12 @@ For repository conflicts:
 - Judgment question: conflict = possible source-of-truth issue. Use `review --lens consistency` when the user asks what is correct, acceptable, ready, or worth changing.
 - Do not infer repo ownership. Use the user's question type to choose `explore` vs `review`.
 
-For project docs:
+For stable documents:
 
 - `review` makes the judgment: source-of-truth, readiness, drift, and whether a fact should enter `docs/**`.
-- `sync` performs the projection: rewrite confirmed facts into `docs/**` or `src/**/README.md` without reopening the design judgment.
+- `shape` decides source-of-truth, artifact-boundary, or long-term ownership questions when intent is unclear.
+- `plan` sequences docs or archive repair work when the update spans multiple facts, targets, or prerequisites.
+- `sync` performs the projection: rewrite confirmed facts into `docs/**` or `src/**/README.md`, or summarize a completed thread into `.session/archive/<thread>/summary.md`, without reopening the design judgment.
 
 ## Lenses
 
@@ -169,7 +174,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 | :--- | :--- |
 | `iteration` | Multi-turn discussion needs session state, goal changes, decisions, and open questions. |
 | `expand` | A decision or plan needs examples, pseudocode, smaller diagrams, or split parts. |
-| `consistency` | Session decisions, project docs, code, tests, or README files may conflict. |
+| `consistency` | Session decisions, project docs, code, tests, README files, workflow artifacts, or archive summaries may conflict. |
 | `distill` | A strong reference document should be studied for reusable structure and writing principles. |
 | `language` | Full English, translation, terminology consistency, or project glossary updates are needed. |
 | `domain` | Terms, rules, ownership, boundaries, or conceptual model are unclear. |
@@ -184,7 +189,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 
 - `Mode: discuss`: chat only; no templates and no writes.
 - `Task: persist` in `Mode: persist`: writes session artifacts to `.session/**`.
-- `Task: sync` in `Mode: persist`: writes only allowed project docs targets or explicit `src/**/README.md`.
+- `Task: sync` in `Mode: persist`: writes stable documents only: allowed project docs targets, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - `Mode: execute`: uses `Task: build` with an explicit executable plan.
 - External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan audit before implementation and diff review afterward.
 
@@ -244,7 +249,7 @@ Discussion tasks do not write files. They should end with short `Persist Candida
 - `Thread` or `Target Directory` may guide where related artifacts are grouped.
 - Explicit `.session/**` targets are respected even when the file name does not follow the recommended prefix.
 - `notes/**` must be explicit and is never inferred.
-- Targets outside `.session/**` and `notes/**` are routed instead of rejected: `docs/**` and `src/**/README.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
+- Targets outside active `.session/**` and `notes/**` are routed instead of rejected: `docs/**`, `src/**/README.md`, and `.session/archive/<thread>/summary.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
 
 Persisted artifacts preserve decision-relevant reasoning, not full transcript. They should be more structured than chat without dropping useful context, evidence, tradeoffs, rejected options, examples, risks, open questions, or next use.
 
@@ -307,7 +312,7 @@ These rules are core protocol, not optional lenses:
 - `Step -> Verify`: every major plan step needs a matching verification method.
 - `Minimal Diff`: implementation changes only the plan scope; no drive-by refactors, formatting churn, or opportunistic cleanup.
 - `Stop On Scope Expansion`: if execution reveals that scope must expand, stop and return to `plan` or `review`.
-- `Readiness Before Write`: external-agent plans and diffs should be reviewed before further implementation or project docs sync.
+- `Readiness Before Write`: external-agent plans and diffs should be reviewed before further implementation or stable-document sync.
 
 This project borrows prompt discipline from agent prompt repositories, but it does not copy role-command systems and does not add a root Claude-specific instruction file by default.
 
@@ -332,6 +337,13 @@ Task behavior:
 
 ## Project Docs Rules
 
+`sync` is the stable-document projection task. It has two domains:
+
+- `Sync Domain: project-docs`: write `docs/**` or explicit `src/**/README.md`.
+- `Sync Domain: session-archive`: write `.session/archive/<thread>/summary.md`.
+
+Docs maintenance usually follows `review --lens consistency -> plan --lens consistency -> sync`. If source of truth or artifact ownership is unclear, use `review --lens consistency -> shape -> plan -> sync`.
+
 Any write to `docs/**` must:
 
 - Name source, scope, docs type, and source of truth.
@@ -354,6 +366,20 @@ No Workflow-Internal Docs Leakage: do not create `docs/workflow/**`, `docs/sessi
 
 `docs/**` is updated only when drift would cause future code/docs alignment mistakes. Do not use it as a transcript, exploration log, temporary PoC journal, workflow usage guide, or low-level implementation mirror.
 
+## Archive Rules
+
+Any write to `.session/archive/**` must use `Sync Domain: session-archive` and target `.session/archive/<thread>/summary.md`.
+
+Required archive fields:
+
+- Source Thread: `.session/threads/<thread>/**`
+- Thread Status: `settled | superseded | abandoned | implemented | blocked`
+- Archive Purpose
+- Summary Scope
+- Next Retrieval Use
+
+Archive summaries preserve completed thread outcomes, key decisions, plans/execution state, review findings, docs synced, open questions, superseded or rejected directions, conflicts, and retrieval notes. They must not move, rename, delete, or edit active `.session/threads/**` files. Active session artifacts still belong to `persist`.
+
 ## Common Paths
 
 - Usage guidance: `route`.
@@ -368,8 +394,9 @@ No Workflow-Internal Docs Leakage: do not create `docs/workflow/**`, `docs/sessi
 - Native implementation: external-agent native Plan -> `review` audit -> native Implement -> `review` diff.
 - Workflow-managed implementation: `plan -> build`.
 - Build result capture: `build -> compact Execution Summary -> optional persist note -> optional review`.
-- Project docs sync: `sync -> docs/**`.
-- Code-adjacent README sync: `sync -> src/**/README.md`.
+- Project-docs sync: `review -> plan -> sync -> docs/**`.
+- Code-adjacent README sync: `review -> plan -> sync -> src/**/README.md`.
+- Thread archive summary: `review/plan -> sync -> .session/archive/<thread>/summary.md`.
 
 ## Using With Copilot
 

@@ -11,7 +11,7 @@ docs/        # code-aligned project docs, when the host project uses it
 
 The workflow system belongs in `.workflow/`. Session artifacts belong in `.session/`. Code-aligned long-term project docs belong in `docs/**`. Code-adjacent reading notes may live in `src/**/README.md` when useful.
 
-Use `persist` for high-fidelity session artifacts from `Persist Packet`, `sync` for code-aligned project docs / code-adjacent README, and `build` for explicit repository changes.
+Use `persist` for high-fidelity active session artifacts from `Persist Packet`, `sync` for stable documents such as code-aligned project docs, code-adjacent README, and session archive summaries, and `build` for explicit repository changes.
 
 Exploration repos may use explicit `notes/**` targets for disposable exploration notes. Code-aligned project docs remain `docs/**`.
 
@@ -25,7 +25,7 @@ For Copilot, use dedicated GitHub prompt commands for common work: `/wf-route`, 
 
 Do not put workflow system files under `.session/` or `docs/`. Do not treat `.session/**` as project source of truth. Stable project knowledge, architecture constraints, terminology, and design docs belong in the host project's `docs/**`.
 
-OpenCode support is an adapter, not a second workflow. Keep task, lens, role, and template semantics in `.workflow/**`; use `.opencode/commands/**` as thin slash-command shortcuts and `.opencode/agents/**` only for OpenCode-specific context helper, review, and docs sync behavior. `/wf-build` is the explicit-plan execution command and should be used only with a concrete `Plan:`.
+OpenCode support is an adapter, not a second workflow. Keep task, lens, role, and template semantics in `.workflow/**`; use `.opencode/commands/**` as thin slash-command shortcuts and `.opencode/agents/**` only for OpenCode-specific context helper, review, and stable-document sync behavior. `/wf-build` is the explicit-plan execution command and should be used only with a concrete `Plan:`.
 
 ## Experiment Workflow Direction
 
@@ -47,7 +47,7 @@ Reusable lessons from this project:
 - Treat review as a gate, not as a redesign task.
 - Keep lenses optional; do not turn every useful method into a default branch.
 - Preserve reasoning that affects future decisions, but do not store full chat transcripts by default.
-- Use project docs only for settled conclusions that prevent future code/docs alignment mistakes.
+- Keep project docs for settled conclusions that prevent future code/docs alignment mistakes.
 
 Features worth preserving in a future experiment workflow:
 

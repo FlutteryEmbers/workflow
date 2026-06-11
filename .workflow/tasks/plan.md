@@ -49,7 +49,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to judge whether a plan, target, code, or diff is good; use `review`.
 - Do not use to implement the plan; use `build` or the external-agent path after review.
 - Do not use to write session artifacts; use `persist`.
-- Do not use to update project docs; use `sync`.
+- Do not use to update stable documents; use `sync`.
 
 ## Expected Output
 
@@ -116,7 +116,7 @@ Block build-ready `implementation-plan` when any of these are unresolved:
 - high-risk assumption
 - source-of-truth, project-docs-truth, permissions, data, security, or architecture-constraint decision
 
-Include `Docs Follow-up` only when the planned change clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context. Do not force docs impact analysis for small or temporary changes.
+Include stable-document follow-up only when the planned change clearly affects architecture, public behavior, module responsibility, execution constraints, agent/human onboarding context, or thread closure. Do not force docs/archive impact analysis for small or temporary changes.
 
 If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend plan audit with `review --lens redteam,test`. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
 
@@ -277,8 +277,8 @@ Examples / Pseudocode:
 - <implementation sketch if useful>
 Handoff Notes:
 - <minimal context for build or external-agent>
-Docs Follow-up:
-- <none | suggested | required; include allowed target and reason only when future code/docs alignment could drift>
+Stable Document Follow-up:
+- <none | project-docs | session-archive; include target, sync domain, and reason only when future alignment or retrieval could drift>
 Next Use:
 - <persist | review | build | external-agent>
 ```

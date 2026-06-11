@@ -1,4 +1,4 @@
-# Project Docs Sync
+# Stable Document Sync
 
 ## Language / Style
 
@@ -8,13 +8,17 @@
 
 {{topic}}
 
+## Sync Domain
+
+{{project-docs | session-archive}}
+
 ## Scope
 
-{{explicit area, code path, feature, package, docs subtree, or target-only sync}}
+{{explicit area, code path, feature, package, docs subtree, source thread, archive scope, or target-only sync}}
 
 ## Source
 
-- {{session decision, code path, diff, test, existing docs, or README}}
+- {{session decision, source thread, code path, diff, test, existing docs, or README}}
 
 ## Docs Type
 
@@ -22,7 +26,7 @@
 
 ## Target
 
-- {{docs/architecture/** | docs/design/** | docs/adr/** | docs/operations/** | docs/reference/** | src/**/README.md}}
+- {{docs/architecture/** | docs/design/** | docs/adr/** | docs/operations/** | docs/reference/** | src/**/README.md | .session/archive/<thread>/summary.md}}
 
 ## Source Of Truth
 
@@ -35,6 +39,16 @@
 ## Alignment Success Criteria
 
 - {{what must be true after sync for docs/code alignment to be correct}}
+
+## Archive Criteria
+
+{{only for Sync Domain: session-archive}}
+
+- Source Thread: {{.session/threads/<thread>/**}}
+- Thread Status: {{settled | superseded | abandoned | implemented | blocked}}
+- Archive Purpose: {{why this archive exists}}
+- Summary Scope: {{what source artifacts are summarized}}
+- Next Retrieval Use: {{how future work should use the archive}}
 
 ## Alignment Set
 
@@ -49,7 +63,7 @@
 ```mermaid
 flowchart TD
     source_node["Source"] --> sync_node["Sync"]
-    sync_node --> docs_node["docs or code README"]
+    sync_node --> docs_node["stable document"]
     sync_node --> verify_node["Verify"]
 ```
 
@@ -65,6 +79,18 @@ flowchart TD
 - Temporary PoC, low-level mirror, or misleading details removed: {{yes/no}}
 - Workflow-internal docs leakage avoided: {{yes/no}}
 
+## Archive Rules Check
+
+{{only for Sync Domain: session-archive}}
+
+- Source thread is clear: {{yes/no}}
+- Thread status is clear: {{yes/no}}
+- Archive purpose is clear: {{yes/no}}
+- Summary scope is clear: {{yes/no}}
+- Next retrieval use is clear: {{yes/no}}
+- Active thread files untouched: {{yes/no}}
+- Unresolved conflicts marked instead of resolved: {{yes/no}}
+
 ## Docs Type Gate
 
 {{allowed docs type, explicit taxonomy override, or docs blocked}}
@@ -75,7 +101,7 @@ flowchart TD
 
 ## Updates
 
-- {{project docs or README update}}
+- {{project docs, README, or archive summary update}}
 
 ## Blocked Items
 

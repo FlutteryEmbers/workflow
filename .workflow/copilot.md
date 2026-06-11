@@ -12,7 +12,7 @@ Use dedicated workflow prompt commands for common Copilot work:
 - `/wf-plan`: produce a planning draft, repo-aware plan, or handoff.
 - `/wf-review`: review plans, diffs, docs/code drift, or artifacts.
 - `/wf-persist`: write `.session/**` artifacts or explicit `notes/**`.
-- `/wf-sync`: run the docs/code alignment stage for allowed project docs or `src/**/README.md`.
+- `/wf-sync`: run the stable-document projection stage for project docs, code-adjacent README, or session archive summaries.
 
 Recommended daily chain:
 
@@ -35,7 +35,8 @@ Thread: <thread-name; for persist thread target inference>
 Intent: <summary|exploration|decision|audit|handoff|constraint|reference; for persist>
 Depth: <compact|standard|detailed; optional for persist>
 Topic: <file-safe topic; for inferred persist target>
-Target: <optional for persist; required for sync and explicit writes>
+Sync Domain: <project-docs|session-archive; required for sync when target does not make it obvious>
+Target: <optional for persist; required for sync stable documents and explicit writes>
 Plan: <required for execute; otherwise none>
 Context:
 - #.workflow/tasks/<task>.md
@@ -50,7 +51,7 @@ Request:
 
 - `Mode: discuss` is the default. Add the task, selected lenses, and relevant context. Do not add templates. Do not create or update files.
 - `Task: persist` in `Mode: persist` writes session artifacts to `.session/**`.
-- `Task: sync` in `Mode: persist` writes only allowed project docs targets or explicit `src/**/README.md`.
+- `Task: sync` in `Mode: persist` writes only stable-document targets: allowed project docs targets, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - `Mode: execute` applies an explicit workflow-managed plan through `Task: build`.
 - Native Codex/Copilot Plan -> Implement is the `external-agent` write path. It is not a Workflow Mode and does not use `Task: build`.
 
@@ -154,7 +155,7 @@ Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate 
 
 - `discuss`: no writes.
 - `persist` persist: write `.session/**` or explicit `notes/**` disposable exploration notes.
-- `sync` persist: write only `docs/**` or `src/**/README.md`.
+- `sync` persist: write only stable-document targets for `Sync Domain: project-docs | session-archive`.
 - `execute`: may modify broader repository artifacts only when the explicit plan says so.
 - `external-agent`: native Plan/Implement may write files directly, but the native plan must be audited before implementation and the diff must be reviewed afterward.
 - `build` outputs an `Execution Summary`; it does not write `.session/**`. Persist useful summaries with `Task: persist`, `Artifact: note`, and `Intent: audit`.
@@ -183,9 +184,10 @@ Target rules:
 - `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md` may be inferred from `Artifact + Thread + Topic`.
 - `Target Directory` may be used to choose a specific thread folder.
 - `.session/goal/**` requires an explicit target.
-- Explicit `.session/**` targets should be respected even if naming differs from the recommended prefix.
+- Explicit active `.session/**` targets should be respected even if naming differs from the recommended prefix.
+- `.session/archive/**` targets route to `sync` with `Sync Domain: session-archive`.
 - Explicit `notes/**` targets are allowed for disposable exploration notes. Never infer `notes/**`.
-- `docs/**` or `src/**/README.md` targets route to `sync`.
+- `docs/**` or `src/**/README.md` targets route to `sync` with `Sync Domain: project-docs`.
 - Code, `.workflow/**`, `.github/**`, or other repo artifacts route to `build` or external-agent.
 
 Content fidelity:
@@ -234,7 +236,7 @@ Common segmentations:
 - Ambiguous what-if or entrypoint selection: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 - Understand code/docs mismatches as discovery: `explore -> Persist Candidate -> persist note`, with `Reliability Notes`; use `review --lens consistency` only for source-of-truth judgments.
 
-Use stop points before implementation and project docs sync.
+Use stop points before implementation and stable-document sync.
 
 ## Template Map For Persist
 
@@ -306,11 +308,12 @@ Topic: auth_boundary
 
 Add #.workflow/tasks/persist.md and #.workflow/templates/decision.md.
 
-### Sync Project Docs
+### Sync Stable Documents
 
 ```text
 Mode: persist
 Task: sync
+Sync Domain: project-docs
 Scope: auth
 Source Of Truth: .session/threads/{thread}/decision_{topic}.md
 Target: docs/architecture/{topic}.md
@@ -318,11 +321,13 @@ Source:
 - .session/threads/{thread}/decision_{topic}.md
 ```
 
-Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant thread artifacts, existing docs, and source files. Apply Project Docs Rules.
+Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant thread artifacts, existing docs, and source files. Apply Project Docs Rules for `project-docs` or Archive Rules for `session-archive`.
 
 When creating a new allowed `docs/**` target, also add #.workflow/templates/project_doc.md or #.workflow/templates/architecture_note.md. When updating existing docs, preserve the target file's existing structure.
 
 Allowed default docs targets are `docs/architecture/**`, `docs/design/**`, `docs/adr/**`, `docs/operations/**`, `docs/reference/**`, and explicit `src/**/README.md`. Do not create workflow-internal docs such as `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` unless the user explicitly declares a host-project taxonomy override.
+
+For `session-archive`, use target `.session/archive/<thread>/summary.md` and add #.workflow/templates/archive_summary.md. Require Source Thread, Thread Status, Archive Purpose, Summary Scope, and Next Retrieval Use. Do not edit active `.session/threads/**`.
 
 ### Execute A Plan
 

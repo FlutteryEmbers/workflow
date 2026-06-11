@@ -67,7 +67,7 @@
 - Readiness: {{0-10}}
 - Blocking Gaps: {{must-fix before next write or implementation}}
 - Non-blocking Gaps: {{can track without blocking}}
-- Recommended Action: {{none | persist | sync | shape | plan | build | external-agent}}
+- Recommended Action: {{none | persist | sync project-docs | sync session-archive | shape | plan | build | external-agent}}
 - Can Promote Source: {{yes/no}}
 - Can Execute Plan: {{yes/no}}
 
@@ -87,7 +87,7 @@
 
 ## Open Questions
 
-- {{question that prevents readiness, execution, or sync}}
+- {{question that prevents readiness, execution, or stable-document sync}}
 
 ## Failure Or Risk Path
 

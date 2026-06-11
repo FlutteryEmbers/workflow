@@ -1,7 +1,7 @@
 ---
 id: review
 role: reviewer
-purpose: Provide verdicts and gatekeeping for behavior, evidence, decisions, plans, diffs, source-of-truth, or project docs alignment in chat.
+purpose: Provide verdicts and gatekeeping for behavior, evidence, decisions, plans, diffs, source-of-truth, or stable-document alignment in chat.
 inputs:
   - target_or_claim
 outputs:
@@ -49,7 +49,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - Do not use to create implementation steps from a chosen direction; use `plan`.
 - Do not use to perform repository edits; use `build` or the external-agent path after an explicit plan.
 - Do not use to write session artifacts; use `persist`.
-- Do not use to update project docs; use `sync`.
+- Do not use to update stable documents; use `sync`.
 
 ## Expected Output
 
@@ -66,7 +66,7 @@ Before reviewing, classify the request:
 - `composite`: user asks to review and persist; review first, then route to `persist`.
 - `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
 - `wrong_task`: user asks to implement steps from a chosen direction; recommend `plan` or `build`.
-- `wrong_task`: user asks to update project docs; recommend `sync`.
+- `wrong_task`: user asks to update project docs, code-adjacent README, or session archive summary; recommend `sync`.
 
 Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become a second full review before the review, must not load templates, and must not write files.
 
@@ -88,7 +88,7 @@ User-selected lenses:
 
 ## Instructions
 
-Inspect the target and report findings first. Keep review scope explicit. A review may report whether a session artifact is ready, needs changes, lacks evidence, is blocked, or should be synced to code-aligned project docs.
+Inspect the target and report findings first. Keep review scope explicit. A review may report whether a session artifact is ready, needs changes, lacks evidence, is blocked, or should be synced to stable documents.
 
 Do not create a full replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions, `Repair Direction`, and a `Minimal Revision Sketch`, but it should not become a design synthesis task.
 
@@ -112,7 +112,7 @@ For non-trivial reviews, include a readiness dashboard:
 - `Readiness`: `0-10`
 - `Blocking Gaps`: issues that must be resolved before the next write or implementation step.
 - `Non-blocking Gaps`: issues that can be tracked without blocking.
-- `Recommended Action`: `none | persist | sync | shape | plan | build | external-agent`.
+- `Recommended Action`: `none | persist | sync project-docs | sync session-archive | shape | plan | build | external-agent`.
 - `Suggested Lens`: `redteam` or `none`.
 
 ## External Plan Audit

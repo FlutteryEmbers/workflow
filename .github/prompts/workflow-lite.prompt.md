@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite fallback/router prompt for mixed requests and full protocol control.
-argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|persist|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|conceptual|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference>; Depth=<compact|standard|detailed>; Thread=<thread-name>; Target=<required for sync/docs/code; optional for persist>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|persist|build|review|sync>; Lens=<none|iteration|expand|consistency|distill|language|domain|strategy|conceptual|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference>; Depth=<compact|standard|detailed>; Sync Domain=<project-docs|session-archive>; Thread=<thread-name>; Target=<required for sync stable documents; optional for persist>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Fallback / Router Prompt
@@ -26,7 +26,8 @@ Task: ${input:task:route|clarify|explore|shape|plan|persist|build|review|sync}
 Lens: ${input:lens:none; comma-separated lenses allowed only when explicitly selected}
 Intent: ${input:intent:required for persist; otherwise none}
 Depth: ${input:depth:compact|standard|detailed; optional for persist}
-Target: ${input:target:required for sync/docs/code; optional for persist; otherwise none}
+Target: ${input:target:required for sync stable documents; optional for persist; otherwise none}
+Sync Domain: ${input:sync_domain:project-docs|session-archive; required for sync when target does not make it obvious}
 Thread: ${input:thread:optional for persist thread target inference}
 Plan: ${input:plan:required for execute; otherwise none}
 Request: ${input:request:describe the work}
@@ -59,14 +60,14 @@ Request: ${input:request:describe the work}
 - Do not infer, auto-apply, or load all lenses.
 - In `Mode: discuss`, do not load templates and do not create or update files.
 - Discussion tasks should produce a short `Persist Candidate` when the result is worth preserving; this is only a candidate and must not write files. Output full `Persist Packet` only when `Output: full`, the user asks to persist, or a handoff/audit requires it.
-- In `Mode: persist`, use `Task: persist` for `.session/**` artifacts or `Task: sync` for allowed project docs targets / `src/**/README.md`.
+- In `Mode: persist`, use `Task: persist` for active `.session/**` artifacts or `Task: sync` for stable-document targets: allowed project docs targets, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - For `persist`, `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md` targets may be inferred from `Artifact + Thread + Topic`.
 - For `persist`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
 - Use `persist shape_<topic>` to reference a shape by `Artifact ID`; in multi-topic discussion, persist the main goal over the latest topic unless explicitly targeted.
 - `notes/**` is not project docs and is not an execution source.
 - For `persist`, preserve decision-relevant reasoning, not full transcript. Discuss output budget does not reduce artifact depth.
 - `persist` may apply explicit review edits, but must not choose a new direction, re-plan execution, or judge whether review feedback is correct.
-- `Task: sync` in `Mode: persist` may write only allowed project docs targets or explicit `src/**/README.md` targets.
+- `Task: sync` in `Mode: persist` may write only stable-document targets for its selected `Sync Domain: project-docs | session-archive`.
 - In `Mode: execute`, require `Task: build` and an explicit executable plan.
 - If using Codex/Copilot native Plan -> Implement, set `Write Path: external-agent`; external-agent is not a Mode.
 - For `Write Path: external-agent`, audit the native plan before implementation and review the diff after implementation.
@@ -87,6 +88,13 @@ Request: ${input:request:describe the work}
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, temporary PoC detail, low-level implementation mirror content, and details that would mislead future execution.
 - If source, scope, docs type, source of truth, alignment success criteria, or safety is unclear, output `docs blocked` and do not write `docs/**`.
 - `docs/**` is updated only when drift would cause future code/docs alignment mistakes.
+
+## Archive Rules
+
+- `Sync Domain: session-archive` writes only `.session/archive/<thread>/summary.md`.
+- Required: Source Thread, Thread Status, Archive Purpose, Summary Scope, Next Retrieval Use, and target.
+- Do not write `.session/threads/**`, `.session/inbox/**`, or `.session/goal/**` through sync; active session memory belongs to `persist`.
+- Output `archive blocked` when archive prerequisites are unclear.
 
 ## Context Format
 

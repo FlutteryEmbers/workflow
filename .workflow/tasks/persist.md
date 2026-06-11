@@ -49,7 +49,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 ## Do Not Use When
 
-- Do not write project docs; use `sync` for `docs/**` and `src/**/README.md`.
+- Do not write stable sync targets; use `sync` for `docs/**`, `src/**/README.md`, and `.session/archive/**`.
 - Do not modify source code, `.workflow/**`, `.github/**`, or other repository artifacts; use `build` or external-agent.
 - Do not persist full transcripts by default.
 
@@ -139,7 +139,8 @@ If review feedback is not explicit enough to apply mechanically, route back to `
 - If the user references `Artifact ID: shape_<topic>` without an explicit thread, infer `.session/threads/<topic-kebab>/shape_<topic>.md`.
 - Never infer `notes/**`. Write `notes/**` only when the user explicitly provides that target.
 - Write `.session/goal/**` only when the user explicitly provides that target.
-- Respect explicit `.session/**` targets even when the file name does not follow the recommended prefix; include a naming note instead of blocking.
+- Respect explicit active `.session/inbox/**`, `.session/threads/**`, or `.session/goal/**` targets even when the file name does not follow the recommended prefix; include a naming note instead of blocking.
+- Route `.session/archive/**` targets to `sync` with `Sync Domain: session-archive`.
 - If `Artifact`, `Thread`, `Topic`, `Target Directory`, `Target`, and `Artifact ID` are insufficient to infer a target, return `missing_prerequisite` and ask for one anchor.
 
 ## Exploration Notes Rule
@@ -158,7 +159,8 @@ If review feedback is not explicit enough to apply mechanically, route back to `
 
 If the user explicitly provides a target path, respect it unless it violates write safety, lacks required prerequisites, or belongs to another write boundary.
 
-- `.session/**`: `persist` may write it when the request is a session artifact.
+- `.session/inbox/**`, `.session/threads/**`, `.session/goal/**`: `persist` may write them when the request is an active session artifact.
+- `.session/archive/**`: route to `sync` with `Sync Domain: session-archive`.
 - `notes/**`: `persist` may write it only as an explicit disposable exploration note target.
 - `docs/**` or `src/**/README.md`: route to `sync` and require Project Docs Rules.
 - Source code, `.workflow/**`, `.github/**`, or other repository artifacts: route to `build` or external-agent with an explicit executable plan.
@@ -187,7 +189,7 @@ If the user explicitly provides a target path, respect it unless it violates wri
 - Add `Persist Metadata` to the artifact.
 - Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
 - `Artifact State` is metadata only. `settled` does not authorize execution, does not mean approved, and does not choose directories.
-- Thread artifacts are session working memory; code-aligned project docs still go through `sync`.
+- Thread artifacts are active session working memory; code-aligned project docs and session archive summaries still go through `sync`.
 - The persisted artifact should be denser and more durable than chat. It must not be a low-context bullet summary when detailed reasoning is available.
 - For `notes/**`, compact or standard depth is acceptable. Preserve useful conclusion, evidence, and next use, but do not treat the note as an implementation source.
 

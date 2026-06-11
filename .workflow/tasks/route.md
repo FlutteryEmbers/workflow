@@ -85,9 +85,11 @@ Recommend the smallest path:
 - New background or staged requirements: `clarify` or `explore` -> `persist` to `.session/inbox/**`.
 - Target direction, option, architecture, or concept: `shape` -> `persist` to `.session/threads/{thread}/shape_{topic}.md`.
 - Repo-aware implementation sequence or handoff: `plan` -> `persist` to `.session/threads/{thread}/plan_{topic}.md`.
-- Session artifact write: `persist` -> `.session/**`.
+- Session artifact write: `persist` -> active `.session/**`.
+- Active thread metadata or thread file maintenance: `persist` -> `.session/threads/**`.
+- Completed thread archive summary: `review/plan -> sync` with `Sync Domain: session-archive` -> `.session/archive/<thread>/summary.md`.
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
-- Project docs alignment: `sync` -> `docs/**` or `src/**/README.md`.
+- Project docs alignment: `review -> plan -> sync` with `Sync Domain: project-docs` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute` and an explicit executable plan.
 - Discussion chains should end with `Persist Candidate` when the result is worth preserving. `persist` consumes the candidate, recent discussion, or full packet; the original discussion task does not write files.
 
@@ -102,7 +104,7 @@ Recommend the smallest path:
 - Do not enable `redteam` automatically; output it only as a suggested lens unless the user explicitly selected it.
 - Suggest `test` for verification planning.
 - Suggest `debug` for defects or uncertain runtime behavior.
-- Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across explicit session sources, project docs, code, tests, or code-adjacent README files.
+- Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across explicit session sources, project docs, code, tests, code-adjacent README files, workflow artifacts, prompts, templates, or archive summaries.
 - Do not suggest `consistency` for discovery questions like whether a capability exists, where it is implemented, or how reliable the evidence is.
 - Suggest `language` for terminology or output language.
 - Suggest `distill` for learning structure from strong reference material.

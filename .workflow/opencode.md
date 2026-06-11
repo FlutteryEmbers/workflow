@@ -102,7 +102,7 @@ OpenCode context summary
 -> Persist Packet -> persist thread handoff when useful
 -> OpenCode bounded implement
 -> workflow diff review
--> sync project docs when settled
+-> sync stable documents when settled
 ```
 
 OpenCode native Plan belongs to the `external-agent` path. It is not `Mode: execute`. `Mode: execute` remains workflow-managed execution through `Task: build`.
@@ -121,7 +121,7 @@ Default commands:
 - `/wf-review`: review a plan, diff, code/docs claim, or readiness question.
 - `/wf-persist`: persist `.session/**` or explicit `notes/**`.
 - `/wf-build`: execute an explicit plan only.
-- `/wf-sync`: sync `docs/**` or explicit `src/**/README.md`.
+- `/wf-sync`: sync stable documents: `docs/**`, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 
 Command rules:
 
@@ -319,16 +319,19 @@ Check:
 - Required follow-up
 ```
 
-### Project Docs Sync
+### Stable Document Sync
 
 ```text
-Use OpenCode docs sync only for code-aligned project docs or code-adjacent README alignment.
+Use OpenCode sync only for stable-document projection.
+
+Sync Domain:
+<project-docs | session-archive>
 
 Source:
 - <session decision, diff, code, or existing docs>
 
 Target:
-- docs/architecture/<topic>.md or src/<area>/README.md
+- docs/architecture/<topic>.md, src/<area>/README.md, or .session/archive/<thread>/summary.md
 
 Scope:
 <area or code/docs scope>
@@ -345,6 +348,8 @@ Rules:
 - Allowed docs targets are docs/architecture/**, docs/design/**, docs/adr/**, docs/operations/**, docs/reference/**, and src/**/README.md.
 - Do not create workflow-internal docs such as docs/workflow/**, docs/session/**, docs/ai/**, docs/prompts/**, docs/notes/**, docs/plans/**, or docs/reviews/** unless the user explicitly declares host-project taxonomy override.
 - Preserve existing docs structure and tone.
-- Do not write .session/**, .workflow/**, source code, or unrelated docs.
+- For `session-archive`, require Source Thread, Thread Status, Archive Purpose, Summary Scope, Next Retrieval Use, and target .session/archive/<thread>/summary.md.
+- Do not write .session/threads/**, .session/inbox/**, .session/goal/**, .workflow/**, source code, or unrelated docs.
 - Output docs blocked if source, scope, docs type, source of truth, alignment success criteria, or safety is unclear.
+- Output archive blocked if archive prerequisites are unclear.
 ```

@@ -151,7 +151,7 @@ Execution Summary:
     Evidence: <file, command, error, or observation>
     Likely Source: plan gap | repo reality | missing context | test failure | model mistake | unclear
     Impact: <effect on execution>
-    Follow-up Suggested: persist note | review | plan revision | docs sync | none
+    Follow-up Suggested: persist note | review | plan revision | stable-document sync | none
 - Useful Notes For Future Work:
   - <fact or caution worth remembering>
 - Suggested Persist Candidate: Artifact=note; Intent=audit; Thread=<thread>; Topic=<topic>_execution_summary

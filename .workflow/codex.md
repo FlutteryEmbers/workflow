@@ -41,7 +41,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `plan`: non-build-ready `Planning Draft` when execution detail is not requested yet.
 - Add `Confidence`, `Assumptions`, and `Human Decision Needed` when uncertainty or impact is material.
 
-Discussion freedom does not permit file writes, project docs sync, implementation, or source-of-truth decisions.
+Discussion freedom does not permit file writes, stable-document sync, implementation, or source-of-truth decisions.
 
 Discovery vs judgment rule:
 
@@ -113,7 +113,7 @@ Request:
 Persist the high-fidelity structured artifact only.
 ```
 
-`persist` may infer `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. Targets outside `.session/**` and `notes/**` route to `sync`, `build`, or external-agent.
+`persist` may infer `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. `.session/archive/**` targets route to `sync` with `Sync Domain: session-archive`. Targets outside active `.session/**` and `notes/**` route to `sync`, `build`, or external-agent.
 
 Use `Persist Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, decision trail, rejected options, risks, examples, and next use when they affect later work.
 
@@ -158,30 +158,33 @@ Codex native Plan
 
 The native plan is a draft until reviewed or explicitly chosen for implementation. Persist handoffs with `persist` to `.session/threads/{thread}/plan_{topic}.md`.
 
-### Project Docs Sync
+### Stable Document Sync
 
-Use `sync` for code-aligned project docs and code-adjacent README alignment.
+Use `sync` for stable-document projection.
 
 ```text
 Mode: persist
 Task: sync
 Lens: <none|consistency|language|domain|architecture|distill>
-Scope: <area or code/docs scope>
+Sync Domain: <project-docs | session-archive>
+Scope: <area, code/docs scope, source thread, or archive scope>
 Source Of Truth: <code | diff | session thread artifact | explicit user decision | existing docs>
-Target: docs/architecture/{topic}.md or src/{area}/README.md
+Target: docs/architecture/{topic}.md or src/{area}/README.md or .session/archive/{thread}/summary.md
 Source:
 - .session/threads/<thread>/<artifact>.md
 Context:
 - .workflow/tasks/sync.md
-- .workflow/templates/sync.md or .workflow/templates/code_readme.md
+- .workflow/templates/sync.md, .workflow/templates/code_readme.md, or .workflow/templates/archive_summary.md
 - source artifact, existing docs, and relevant source files
 Request:
-Sync confirmed facts into the target only. Use allowed docs types unless the user explicitly declares host-project taxonomy override.
+Project confirmed outcomes into the target only. Use allowed docs types for `project-docs`; use archive prerequisites for `session-archive`.
 ```
 
 When creating a new allowed `docs/**` target, add `.workflow/templates/project_doc.md` or `.workflow/templates/architecture_note.md`. When updating existing docs, preserve the target file's structure.
 
 If the source is only `.session/inbox/**` or `notes/**`, require explicit source-of-truth confirmation before writing project docs.
+
+For `session-archive`, require `Source Thread`, `Thread Status`, `Archive Purpose`, `Summary Scope`, `Next Retrieval Use`, and target `.session/archive/<thread>/summary.md`. Do not edit active `.session/threads/**`.
 
 ## Copyable Prompts
 
@@ -283,12 +286,13 @@ Request:
 Review the Codex diff against the explicit external plan.
 ```
 
-### Project Docs Sync
+### Stable Document Sync
 
 ```text
 Use .workflow/codex.md as the Codex adapter.
 Mode: persist
 Task: sync
+Sync Domain: project-docs
 Scope: <area>
 Source Of Truth: <code | diff | session thread artifact | explicit user decision | existing docs>
 Target: docs/architecture/<topic>.md
@@ -299,6 +303,8 @@ Alignment Success Criteria:
 Request:
 Sync confirmed facts into code-aligned project docs. Follow Project Docs Rules and preserve existing docs tone and structure.
 ```
+
+For archive summaries, set `Sync Domain: session-archive`, `Source Thread: .session/threads/<thread>/**`, `Thread Status`, `Archive Purpose`, `Summary Scope`, `Next Retrieval Use`, and `Target: .session/archive/<thread>/summary.md`.
 
 ## When Not To Use Codex Adapter
 

@@ -168,7 +168,7 @@ flowchart TD
 
 ## Open Questions
 
-- {{question that blocks readiness, execution, or docs sync}}
+- {{question that blocks readiness, execution, or stable-document sync}}
 
 ## Rollback / Recovery
 
@@ -186,13 +186,14 @@ flowchart TD
 
 - {{docs path or none}}
 
-## Docs Follow-up
+## Stable Document Follow-up
 
-{{include only when the plan clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context}}
+{{include only when the plan clearly affects architecture, public behavior, module responsibility, execution constraints, agent/human onboarding context, or thread closure}}
 
 - Impact: {{none | suggested | required}}
-- Target: {{allowed docs/** path or none}}
-- Reason: {{what code/docs alignment mistake could happen without docs update}}
+- Sync Domain: {{project-docs | session-archive | none}}
+- Target: {{allowed docs/** path, src/**/README.md, .session/archive/<thread>/summary.md, or none}}
+- Reason: {{what alignment or retrieval mistake could happen without sync}}
 - Suggested Sync: {{sync prompt or none}}
 
 ## Project Docs Conditions

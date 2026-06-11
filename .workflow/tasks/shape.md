@@ -103,7 +103,7 @@ In `Mode: discuss`, the user remains responsible for final judgment. `shape` sho
 - You may output `Provisional Recommendation`, `Candidate Options`, `Best Guess`, and `What Would Change My Mind`.
 - Include `Confidence`, `Assumptions`, and `Human Decision Needed` when the recommendation is uncertain or consequential.
 - Do not present provisional recommendations as approval, readiness, source of truth, or permission to execute.
-- Keep strict write and execution boundaries unchanged; discussion freedom does not allow file writes, project docs sync, or implementation.
+- Keep strict write and execution boundaries unchanged; discussion freedom does not allow file writes, stable-document sync, or implementation.
 
 When the user explicitly selects `conceptual`, output `Abstraction Level: concept`. Keep the result at concept level: goal, principles, boundaries, key tradeoffs, success criteria, non-goals, impact surface, and validation direction. Do not produce ordered implementation steps, target files, allowed changes, or step-level verification from `shape`.
 

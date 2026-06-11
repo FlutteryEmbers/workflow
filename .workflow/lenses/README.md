@@ -15,6 +15,6 @@ Default to `Lens: none`. Add a lens only when the user explicitly names it or ad
 - `test`: strengthen verification and acceptance evidence.
 - `architecture`: inspect boundaries, dependencies, interfaces, constraints, and structural tradeoffs.
 - `debug`: diagnose defects or uncertain runtime behavior.
-- `consistency`: compare code, project docs, session decisions, tests, and code-adjacent README files for drift.
+- `consistency`: triangulate code, project docs, session decisions, tests, README files, workflow artifacts, prompts, templates, and archive summaries for drift.
 
-Use `persist` for session outputs: `.session/inbox/**` for staged inputs and `.session/threads/{thread}/**` for related shape, plan, review, decision, and reference artifacts. Code-aligned project knowledge goes to `docs/**` through `sync`. Code-adjacent reading notes go to `src/**/README.md`.
+Use `persist` for active session outputs: `.session/inbox/**` for staged inputs and `.session/threads/{thread}/**` for related shape, plan, review, decision, and reference artifacts. Code-aligned project knowledge goes to `docs/**` through `sync`; archive summaries go to `.session/archive/<thread>/summary.md` through `sync`. Code-adjacent reading notes go to `src/**/README.md`.

@@ -39,7 +39,7 @@
 
 ## Useful Facts
 
-- {{fact that affects a later decision, plan, review, or docs sync}}
+- {{fact that affects a later decision, plan, review, or stable-document sync}}
 
 ## Execution Summary
 
