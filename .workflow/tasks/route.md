@@ -94,7 +94,7 @@ Recommend the smallest path:
 ## Lens Suggestions
 
 - Suggest `strategy` for route comparison or technical direction.
-- Suggest `conceptual` for concept-first planning, high-level plans, low-level implementation plans, strong-model-to-weak-model handoff, or requests to avoid premature code-level detail.
+- Suggest `conceptual` for concept-first planning, phase plans, low-level implementation plans, strong-model-to-weak-model handoff, or requests to avoid premature code-level detail.
 - Suggest `architecture` for boundaries, dependency direction, public surfaces, or constraints.
 - Suggest `domain` for terminology, rules, ownership, and conceptual model questions.
 - Suggest `iteration` for multi-turn work with changing background.

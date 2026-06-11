@@ -50,7 +50,7 @@ Request: ${input:request:describe the work}
 - Discussion freedom applies only in `Mode: discuss`: AI may provide `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Minimal Revision Sketch`, and `What Would Change My Mind` as thinking material.
 - For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision Needed`.
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
-- `conceptual` is explicit-only. When selected, state `Planning Level: concept | high-level-plan | implementation-plan`; `build` does not require this label and still relies on explicit plan executability.
+- Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate direction, staged planning, and execution handoff. `shape` normally produces `concept` and records `Impact Surface` plus `Recommended Next Abstraction Level` when it may feed planning. `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one; default to `phase-plan` when uncertain. `build` does not require this label and still relies on explicit plan executability.
 - Read-only preflight is allowed only in `Mode: discuss`; do not load templates, write files, run implementation, or apply unselected deep lenses during preflight.
 - Implicit preflight defaults to `shape`, `plan`, and `sync`; conditional preflight applies to `review`, `build`, and `explore`; no implicit preflight runs for `clarify` or `route`.
 - Ask for confirmation only when ambiguity would affect file writes, execution, source of truth, or material scope.

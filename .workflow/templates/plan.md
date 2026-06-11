@@ -22,7 +22,7 @@
 
 ## Plan Snapshot
 
-- Planning Level: {{high-level-plan | implementation-plan | none}}
+- Abstraction Level: {{phase-plan | implementation-plan | none}}
 - Target Outcome: {{what should be true after execution}}
 - Execution Target: {{human | strong-agent | weak-agent | OpenCode | Codex | Copilot | none}}
 - Phase Count: {{number of phases or none}}
@@ -30,6 +30,21 @@
 - Key Constraint: {{most important constraint or do-not-touch item}}
 - Key Stop Condition: {{main reason to stop instead of expanding scope}}
 - Next Use: {{review | persist | build | external-agent | sync | none}}
+
+## Planning Basis
+
+- Source Direction: {{shape artifact, decision, user request, project doc, or inferred target}}
+- Requested Abstraction Level: {{phase-plan | implementation-plan | none}}
+- Selected Abstraction Level: {{phase-plan | implementation-plan}}
+- Selection Reason: {{shape recommendation | user request | inferred impact surface | readiness downgrade}}
+- Locked Decisions: {{confirmed decisions and sources}}
+- Assumed Decisions: {{recommended defaults and risk if wrong}}
+- Blocking Decisions: {{unresolved decisions blocking implementation-plan, or none}}
+- Requires User Confirmation Before: {{none | implementation-plan | build}}
+
+## What Would Make This Implementation-Ready
+
+- {{missing target area, allowed change, verification, stop condition, or decision; none if already implementation-ready}}
 
 ## Discussion Notes To Preserve
 
@@ -78,6 +93,8 @@
 - Ready For External Agent: {{yes/no}}
 - Blocking Gaps: {{gap or none}}
 - Execution Readiness: {{ready for build | needs review | needs more detail}}
+
+> `phase-plan` is not direct build input. Convert it to `implementation-plan` before `build` or external-agent implementation.
 
 ## Success Criteria
 

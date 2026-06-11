@@ -8,7 +8,7 @@ Output flow: use `Output: compact` for general discussion, `Output: normal` to r
 
 OpenCode may suggest `redteam` when risk triggers match, but must not auto-load or apply it. Use full `redteam` only when the user explicitly selected that lens or the prompt explicitly includes it.
 
-Use `conceptual` only when the user explicitly wants concept-first planning, high-level planning, low-level implementation planning, or strong-model-to-weak-model handoff. It is not loaded by default.
+Use `conceptual` only when the user explicitly wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff. It is not loaded by default.
 
 When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility.
 
@@ -49,10 +49,13 @@ Compatibility / constraint rule:
 
 Conceptual planning rule:
 
-- `shape --lens conceptual` defaults to `Planning Level: concept`.
-- `plan --lens conceptual` can produce `Planning Level: high-level-plan` or `Planning Level: implementation-plan`.
-- `strategy` compares options; `conceptual` controls planning level.
-- `/wf-build` does not require a `Planning Level` label; it still requires an explicit executable plan.
+- `shape --lens conceptual` defaults to `Abstraction Level: concept`.
+- `shape` records `Impact Surface` and `Recommended Next Abstraction Level` when it may feed planning.
+- `plan` automatically chooses `Abstraction Level: phase-plan` or `implementation-plan` unless the user explicitly names one.
+- `plan` inherits a shape artifact's `Recommended Next Abstraction Level` when present; without that, infer from the request and read-only preflight, defaulting to `phase-plan` when uncertain.
+- `implementation-plan` is only for build-ready planning, external-agent handoff, weak-model handoff, or explicit execution preparation.
+- `strategy` compares options; `conceptual` controls abstraction level.
+- `/wf-build` does not require an `Abstraction Level` label; it still requires an explicit executable plan.
 
 Exploration notes:
 

@@ -55,6 +55,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - A `Planning Draft` or implementation handoff appropriate to the user's requested level.
 - Build-ready handoffs include `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
+- `Planning Basis` that records source shape/decision, locked decisions, assumed decisions, blocking decisions, and the chosen abstraction level.
 - `Compatibility / Constraint Plan` that records the selected compatibility and constraint policy before execution.
 - `Output: compact` default: short plan summary, critical risks, and optional `Persist Candidate`.
 - `Full Persist Packet` only when the plan should be persisted now, used as a handoff, or `Output: full` is requested.
@@ -90,16 +91,41 @@ Write the smallest useful plan for the user's current intent. In `Mode: discuss`
 
 For implementation handoff or build-ready planning, every major step must use `Step / Change / Verify / Risk / Stop Condition`. For planning drafts, use phases, work packages, dependencies, assumptions, risks, and what would be needed to turn the draft into an implementation handoff. If verification is unclear, mark the plan as a `Planning Draft` rather than treating it as ready for `build`.
 
+## Abstraction Level Selection
+
+Choose `Abstraction Level` automatically unless the user explicitly names one:
+
+- If the user explicitly names `phase-plan` or `implementation-plan`, use that as the requested level, subject to readiness checks.
+- If a source shape artifact includes `Recommended Next Abstraction Level`, inherit it by default.
+- If no shape artifact is available, infer from the request and read-only preflight.
+- Default to `phase-plan` when uncertain.
+
+Use `phase-plan` for general planning, sequencing, staged work, roadmap-style requests, medium or large impact surfaces, medium or high reversal cost, medium or high execution risk, multiple affected surfaces, or any required user confirmation before implementation/build. `phase-plan` may include assumed decisions, but it is not direct build input.
+
+Use `implementation-plan` only for build-ready planning, external-agent handoff, weak-model handoff, or explicit execution preparation. It must include success criteria, target areas or files, allowed changes, do-not-touch areas, step-level verification, stop conditions, and compatibility / constraint policy.
+
+If `implementation-plan` is requested but readiness is incomplete, downgrade to `Abstraction Level: phase-plan` and include `What Would Make This Implementation-Ready`.
+
+Block build-ready `implementation-plan` when any of these are unresolved:
+
+- compatibility policy
+- source of truth
+- artifact boundaries
+- target areas or files
+- verification
+- high-risk assumption
+- source-of-truth, project-docs-truth, permissions, data, security, or architecture-constraint decision
+
 Include `Docs Follow-up` only when the planned change clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context. Do not force docs impact analysis for small or temporary changes.
 
 If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend plan audit with `review --lens redteam,test`. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
 
-When the user explicitly selects `conceptual`, declare the current `Planning Level`:
+When the user explicitly selects `conceptual`, declare the current `Abstraction Level`:
 
-- `high-level-plan`: phases, work packages, dependencies, validation direction, sequencing options, and risks.
+- `phase-plan`: phases, work packages, dependencies, validation direction, sequencing options, and risks.
 - `implementation-plan`: target files, allowed changes, do-not-touch areas, step -> verify, stop conditions, and handoff notes for weak-model or OpenCode execution.
 
-Use `high-level-plan` when the user asks for strategy, phases, or staged planning. Use `implementation-plan` only when the user asks for low-level execution detail, OpenCode handoff, weak-model handoff, or build-ready planning. Do not treat `strategy` as automatically enabling `conceptual`; if both are selected, `strategy` compares routes and `conceptual` controls the planning level.
+Do not treat `strategy` as automatically enabling `conceptual`; if both are selected, `strategy` compares routes and `conceptual` controls the abstraction level.
 
 ## Discussion Freedom
 
@@ -107,7 +133,7 @@ In `Mode: discuss`, `plan` may output a `Planning Draft` before all execution de
 
 - `Planning Draft`: phases, sequencing, dependencies, assumptions, risks, and open decisions; not build-ready.
 - `Implementation Handoff`: target files, allowed changes, do-not-touch, step verification, stop conditions, and handoff notes.
-- Include `Confidence`, `Assumptions`, `Human Decision Needed`, and `What Would Make This Build-Ready` when the plan is still a draft.
+- Include `Confidence`, `Assumptions`, `Human Decision Needed`, and `What Would Make This Implementation-Ready` when the plan is still a draft.
 - Do not let a planning draft imply execution authorization.
 
 ## Compatibility / Constraint Policy
@@ -150,6 +176,7 @@ Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
+Abstraction Level: <phase-plan|implementation-plan>
 Planning Draft: <yes/no; if yes, say what is missing for build-ready handoff>
 Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
@@ -164,8 +191,10 @@ Use `Output: normal` when the user asks to整理, refine, or prepare the plan fo
 User Intent: <one line about what the user wants planned>
 Current Read: <optional one line about relevant plan/code/docs facts>
 Refined Direction / Plan:
-- <target outcome, planning level, phase plan, key constraints, and readiness>
-What Would Make This Build-Ready:
+- <target outcome, abstraction level, phase plan, key constraints, and readiness>
+Planning Basis:
+- <source shape/decision, locked decisions, assumed decisions, blocking decisions>
+What Would Make This Implementation-Ready:
 - <target files, allowed changes, verification, stop conditions, or missing decision>
 Discussion Notes To Preserve:
 - <phase constraint, sequencing reason, user correction, accepted risk, example, or weak-model handoff detail>
@@ -182,7 +211,7 @@ Output the full packet only when the user asks to persist, provides `Target`, re
 ```text
 Persist Packet:
 Artifact: plan
-Planning Level: <high-level-plan | implementation-plan | none>
+Abstraction Level: <phase-plan | implementation-plan | none>
 Artifact State: working | settled | superseded
 Intent: handoff | decision | audit
 Depth: detailed
@@ -193,6 +222,15 @@ Plan Snapshot:
 - <target outcome, execution target, phase count, readiness, key constraint, key stop condition, next use>
 Discussion Notes To Preserve:
 - <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
+Planning Basis:
+- Source Direction: <shape artifact, decision, user request, project doc, or inferred target>
+- Requested Abstraction Level: <phase-plan | implementation-plan | none>
+- Selected Abstraction Level: <phase-plan | implementation-plan>
+- Selection Reason: <shape recommendation | user request | inferred impact surface | readiness downgrade>
+- Locked Decisions: <confirmed decisions and sources>
+- Assumed Decisions: <recommended defaults and risk if wrong>
+- Blocking Decisions: <unresolved decisions blocking implementation-plan, or none>
+- Requires User Confirmation Before: <none | implementation-plan | build>
 Source Context:
 - <thread decision, target design, code/docs evidence, or planning discussion>
 Target Outcome:
@@ -231,6 +269,8 @@ Stop Conditions:
 - <when to stop and return to plan/review>
 Risks / Unknowns:
 - <execution risk or missing information>
+What Would Make This Implementation-Ready:
+- <missing target area, allowed change, verification, stop condition, or decision; none if already implementation-ready>
 Preserve From Discussion:
 - <phase boundaries, phase constraints, important examples/counterexamples, user corrections, accepted risks, or weak-model handoff details to preserve>
 Examples / Pseudocode:

@@ -148,7 +148,7 @@ Discovery vs judgment rule:
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Candidate` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
-`conceptual` is useful for strong-model-to-weak-model handoff. When explicitly selected, ask for or infer the current `Planning Level: concept | high-level-plan | implementation-plan`. `strategy` compares routes; `conceptual` controls the abstraction level.
+Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate direction, staged planning, and execution handoff. `shape` normally produces `concept` and records `Impact Surface` plus `Recommended Next Abstraction Level` when it may feed planning. `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one; inherit the shape recommendation when present, otherwise infer from the request and read-only preflight, defaulting to `phase-plan` when uncertain. `strategy` compares routes; `conceptual` controls the abstraction level when explicitly selected.
 
 ## Write Boundaries
 

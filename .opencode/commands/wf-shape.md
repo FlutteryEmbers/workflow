@@ -15,7 +15,8 @@ Rules:
 - Do not output a full `Persist Packet` unless requested.
 - Use `.workflow/tasks/shape.md` as the task contract if needed.
 - If evidence is missing and could change the answer, recommend `explore -> shape`.
-- If the user explicitly selects `Lens: conceptual`, output `Planning Level: concept` unless they clearly request another level.
+- Output `Abstraction Level: concept` for conceptual shape work.
+- Include `Impact Surface` and `Recommended Next Abstraction Level` when this shape may feed planning.
 
 Request:
 $ARGUMENTS
@@ -23,8 +24,9 @@ $ARGUMENTS
 Return:
 - User Intent
 - Current Read, optional
-- Planning Level, only when `Lens: conceptual` is selected
+- Abstraction Level, when concept structure is relevant
 - Take, 3-5 bullets max
 - Risks/Unknowns, 0-3 bullets
+- Impact Surface, when planning may follow
 - Next
 - Persist Candidate, candidate only and do not write

@@ -18,6 +18,8 @@ Rules:
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/shape.md` as the task contract.
 - Provide provisional thinking when useful; do not present it as approval, readiness, or execution permission.
+- Output `Abstraction Level: concept` for conceptual shape work.
+- Include `Impact Surface` and `Recommended Next Abstraction Level` when this shape may feed planning.
 
 Request:
 ${input:request:describe the what-if, strategy, concept, or direction-setting question}
@@ -25,8 +27,10 @@ ${input:request:describe the what-if, strategy, concept, or direction-setting qu
 Return:
 - User Intent
 - Current Read, optional
+- Abstraction Level, when concept structure is relevant
 - Take
 - Risks/Unknowns
 - Provisional Recommendation
+- Impact Surface, when planning may follow
 - Human Decision Needed
 - Persist Candidate, candidate only and do not write

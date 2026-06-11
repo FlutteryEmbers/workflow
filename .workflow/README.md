@@ -89,6 +89,55 @@ When unsure, start with `shape`. Use `clarify` for meaning, `explore` for eviden
 
 `shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` may give candidate interpretations and borrowable ideas, but not final direction. `review` may give a minimal revision sketch, but not a full replacement design.
 
+## Shape / Plan Boundary
+
+Workflow Lite separates task responsibility from abstraction level.
+
+- Task axis: `shape` decides what the direction is, what it is not, and why; `plan` organizes an already selected or explicitly assumed direction into phases or executable steps.
+- Abstraction level: `concept`, `phase-plan`, and `implementation-plan`.
+- Concept design is a shape-level artifact. It defines the model, boundaries, goals, non-goals, tradeoffs, and success criteria. It is not executable.
+- A plan is a plan-level artifact. It defines phases or executable work, with verification and stop conditions at the level needed for the user's next step.
+
+`shape` may name the next workflow task, the smallest conceptual wedge, and the approximate impact surface. It must not output ordered implementation steps, target files, or step-level verification.
+
+`plan` assumes the direction is selected or proceeds from a clearly marked recommended assumption. It must not reopen the core direction. If the main uncertainty is still which direction to choose, return to `shape`.
+
+## Abstraction Levels
+
+- `concept`: direction, model, boundaries, principles, tradeoffs, non-goals, success criteria, and validation direction. Default for `shape`.
+- `phase-plan`: phases, work packages, dependencies, sequencing, phase verification, risks, and what would make the plan implementation-ready. Default for general `plan` requests.
+- `implementation-plan`: target areas or files, allowed changes, do-not-touch areas, step-level verify, stop conditions, and handoff notes. Use only for build-ready planning, external-agent handoff, weak-model handoff, or explicit execution preparation.
+
+Unless the user explicitly names an abstraction level, `plan` chooses it automatically:
+
+- Prefer the `Recommended Next Abstraction Level` from the source shape artifact.
+- Without a shape artifact, infer from the request and read-only preflight.
+- Default to `phase-plan` when uncertain.
+- Use `implementation-plan` only when the direction is stable, target areas/files and verification are clear, and no blocking decision affects execution boundaries.
+- If the user asks for handoff or build-ready output but implementation readiness is incomplete, downgrade to `phase-plan` and list `What Would Make This Implementation-Ready`.
+
+## Impact Surface
+
+Shape artifacts should include a lightweight impact surface so later planning can choose the right abstraction level without asking the user first:
+
+```text
+Impact Surface:
+- Scope Size: small | medium | large
+- Affected Surfaces: workflow core | task docs | templates | adapters | project docs | source code | tests | other
+- Reversal Cost: low | medium | high
+- Execution Risk: low | medium | high
+- User Confirmation Needed Before: none | phase-plan | implementation-plan | build
+- Recommended Next Abstraction Level: phase-plan | implementation-plan
+```
+
+Default to `implementation-plan` only for small, low-risk, low-reversal work with no blocking decision and no unresolved source-of-truth, artifact-boundary, compatibility, architecture-constraint, project-docs-truth, permissions, data, or security question. Default to `phase-plan` for medium or large scope, medium or high reversal cost, medium or high execution risk, multiple affected surfaces, or any confirmation needed before implementation/build.
+
+Use these decision states across shape and plan:
+
+- `Locked Decisions`: confirmed by the user or an explicit source.
+- `Assumed Decisions`: recommended defaults that can support advisory planning; note risk if wrong.
+- `Blocking Decisions`: unresolved choices that prevent a build-ready implementation plan.
+
 ## Discussion Freedom
 
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is thinking material for the user, not final authorization.
@@ -125,7 +174,7 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 | `language` | Full English, translation, terminology consistency, or project glossary updates are needed. |
 | `domain` | Terms, rules, ownership, boundaries, or conceptual model are unclear. |
 | `strategy` | Technical routes or design options need comparison. |
-| `conceptual` | Work should stay separated into concept, high-level plan, and implementation-plan handoff levels. |
+| `conceptual` | Work should stay separated into concept, phase-plan, and implementation-plan handoff levels. |
 | `redteam` | The current recommendation needs deliberate critique. |
 | `test` | Behavior needs stronger verification. |
 | `architecture` | Structure, interfaces, dependencies, constraints, or durable tradeoffs matter. |
@@ -145,12 +194,12 @@ Native Plan/Implement is a separate external-agent write path.
 
 ## Conceptual Planning Lens
 
-Use `Lens: conceptual` only when the user explicitly wants concept-first planning, high-level planning, low-level implementation planning, or a strong-model-to-weak-model handoff.
+Use `Lens: conceptual` only when the user explicitly wants concept design, phase planning, implementation planning, or a strong-model-to-weak-model handoff.
 
-- `shape --lens conceptual` defaults to `Planning Level: concept`.
-- `plan --lens conceptual` can produce `Planning Level: high-level-plan` or `Planning Level: implementation-plan`.
-- `strategy` compares options; `conceptual` controls the planning level.
-- `build` does not require a `Planning Level` label. It still only needs an explicit plan that is concrete enough to execute safely.
+- `shape --lens conceptual` defaults to `Abstraction Level: concept`.
+- `plan --lens conceptual` can produce `Abstraction Level: phase-plan` or `Abstraction Level: implementation-plan`.
+- `strategy` compares options; `conceptual` controls the abstraction level.
+- `build` does not require an `Abstraction Level` label. It still only needs an explicit plan that is concrete enough to execute safely.
 
 ## Conversation-to-Artifact Output Flow
 

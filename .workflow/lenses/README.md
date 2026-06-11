@@ -10,7 +10,7 @@ Default to `Lens: none`. Add a lens only when the user explicitly names it or ad
 - `language`: control output language, terminology consistency, and project glossary updates.
 - `domain`: align terms, rules, ownership, boundaries, events, and conceptual model.
 - `strategy`: compare technical routes or design options.
-- `conceptual`: separate concept, high-level plan, and implementation-plan handoff levels.
+- `conceptual`: separate concept, phase-plan, and implementation-plan handoff levels.
 - `redteam`: deliberately challenge assumptions, risks, boundaries, and failure modes.
 - `test`: strengthen verification and acceptance evidence.
 - `architecture`: inspect boundaries, dependencies, interfaces, constraints, and structural tradeoffs.

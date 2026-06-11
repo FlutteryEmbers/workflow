@@ -13,7 +13,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
-- Use `conceptual` only when the user explicitly wants concept-first planning, high-level planning, low-level implementation planning, or strong-model-to-weak-model handoff.
+- Use `conceptual` only when the user explicitly wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff.
 - Codex may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
 - Load templates only for `persist` or `sync` in `Mode: persist`.
 - Treat `.session/**` as working memory, not project source of truth.
@@ -59,12 +59,15 @@ Discovery vs judgment rule:
 
 ## Conceptual Planning
 
-When `Lens: conceptual` is explicitly selected, state `Planning Level: concept | high-level-plan | implementation-plan`.
+Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate direction, staged planning, and execution handoff.
 
 - `shape` usually produces `concept`.
-- `plan` may produce `high-level-plan` or `implementation-plan`.
+- `shape` records `Impact Surface` and `Recommended Next Abstraction Level` when it may feed planning.
+- `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one.
+- `plan` inherits a shape artifact's `Recommended Next Abstraction Level` when present; without that, infer from the request and read-only preflight, defaulting to `phase-plan` when uncertain.
+- `implementation-plan` is only for build-ready planning, external-agent handoff, weak-model handoff, or explicit execution preparation.
 - `strategy` compares options; `conceptual` controls the level.
-- `build` does not require a `Planning Level` label; it requires an explicit plan concrete enough to execute safely.
+- `build` does not require an `Abstraction Level` label; it requires an explicit plan concrete enough to execute safely.
 
 ## Common Paths
 

@@ -25,7 +25,7 @@
 
 ## Decision Snapshot
 
-- Planning Level: {{concept | high-level-plan | implementation-plan | none}}
+- Abstraction Level: {{concept | none}}
 - Current Recommendation: {{one-paragraph recommendation}}
 - Core Boundary: {{main in/out boundary}}
 - Narrowest Useful Wedge: {{smallest scope that can validate the goal}}
@@ -33,15 +33,30 @@
 - Key Risk: {{main risk or unknown}}
 - Next Use: {{persist | review | plan | sync | none}}
 
+## Impact Surface
+
+- Scope Size: {{small | medium | large}}
+- Affected Surfaces: {{workflow core | task docs | templates | adapters | project docs | source code | tests | other}}
+- Reversal Cost: {{low | medium | high}}
+- Execution Risk: {{low | medium | high}}
+- User Confirmation Needed Before: {{none | phase-plan | implementation-plan | build}}
+- Recommended Next Abstraction Level: {{phase-plan | implementation-plan}}
+
+## Decision State
+
+- Locked Decisions: {{confirmed decisions and sources}}
+- Assumed Decisions: {{recommended defaults, why they are acceptable for advisory planning, and risk if wrong}}
+- Blocking Decisions: {{unresolved choices that prevent implementation-plan, or none}}
+
 ## Discussion Notes To Preserve
 
 {{preserve any discussion detail that would help future readers understand, revise, implement, or audit this shape. This may include user corrections, user preferences, examples, counterexamples, phase boundaries, constraints mentioned in chat, why the recommendation changed, accepted risks, or details a weaker model might otherwise miss. Do not preserve full transcript or conversational noise.}}
 
-## Phase / Concept Structure
+## Concept Structure
 
-| Phase / Concept | Purpose | Scope | Constraints | Validation | Notes |
+| Concept | Purpose | Scope | Constraints | Validation | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| {{phase or concept}} | {{purpose}} | {{included scope}} | {{constraint or boundary}} | {{how to validate}} | {{important context or none}} |
+| {{concept}} | {{purpose}} | {{included scope}} | {{constraint or boundary}} | {{how to validate}} | {{important context or none}} |
 
 ## Operating Constraints
 
@@ -61,8 +76,10 @@
 ```mermaid
 flowchart TD
     input_node["Input"] --> shape_node["Shape"]
-    shape_node --> phase_node["Phase or concept structure"]
-    phase_node --> next_node["Review or plan"]
+    shape_node --> concept_node["Concept structure"]
+    shape_node --> impact_node["Impact surface"]
+    concept_node --> next_node["Review or plan"]
+    impact_node --> next_node
 ```
 
 ## Problem Framing
