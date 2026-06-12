@@ -83,12 +83,12 @@ Request: ${input:request:describe the work}
 
 ## Project Docs Rules
 
-- Source, scope, docs type, source of truth, and alignment success criteria must be clear.
-- Allowed Project Doc Types: `docs/architecture/**`, `docs/design/**`, `docs/adr/**`, `docs/operations/**`, `docs/reference/**`, and `src/**/README.md`.
+- Source, scope, sync object, source of truth, alignment success criteria, and safe target selection must be clear.
+- Sync Objects: `architecture | feature | reference | code-readme | archive-summary | all`.
 - No Workflow-Internal Docs Leakage: do not create `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` unless the user explicitly declares host-project taxonomy override.
 - Preserve existing docs tone and structure when updating.
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, temporary PoC detail, low-level implementation mirror content, and details that would mislead future execution.
-- If source, scope, docs type, source of truth, alignment success criteria, or safety is unclear, output `docs blocked` and do not write `docs/**`.
+- If source, scope, sync object, source of truth, alignment success criteria, target selection, or safety is unclear, output `docs blocked` and do not write `docs/**`.
 - `docs/**` is updated only when drift would cause future code/docs alignment mistakes.
 
 ## Archive Rules
@@ -102,7 +102,7 @@ Request: ${input:request:describe the work}
 
 Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only for `persist` or `sync` in `Mode: persist`.
-For new allowed `docs/**` targets, add `project_doc.md` or `architecture_note.md`; for existing docs, preserve the target structure.
+For new `architecture | feature | reference` docs targets, add `project_doc.md`; for `code-readme`, add `code_readme.md`; for archive summaries, add `archive_summary.md`. For existing docs, preserve the target structure.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
 Add relevant `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.
 

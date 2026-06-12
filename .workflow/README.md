@@ -371,25 +371,26 @@ Docs maintenance usually follows `review --lens consistency -> plan --lens consi
 
 Any write to `docs/**` must:
 
-- Name source, scope, docs type, and source of truth.
+- Name source, scope, sync object, target selection basis, and source of truth.
 - Name alignment success criteria for the target document.
 - Preserve settled, confirmed facts useful for future code/docs alignment.
 - Preserve existing docs structure and tone when updating an existing file.
 - Exclude AI discussion residue, unconfirmed tradeoffs, rejected options, temporary PoC detail, low-level implementation mirror content, and details that would mislead future execution.
-- Output `docs blocked` and do not write `docs/**` when source, scope, docs type, source of truth, alignment success criteria, or safety is unclear.
+- Output `docs blocked` and do not write `docs/**` when source, scope, sync object, target selection basis, source of truth, alignment success criteria, or safety is unclear.
 
-Allowed Project Doc Types:
+Allowed Project Docs Sync Objects:
 
-- `architecture`: `docs/architecture/**`
-- `design`: `docs/design/**`
-- `adr`: `docs/adr/**`
-- `operations`: `docs/operations/**`
-- `reference`: `docs/reference/**`
+- `architecture`
+- `feature`
+- `reference`
 - `code-readme`: `src/**/README.md`
+- `all`: produces an Alignment Set; writing requires confirmed targets or an explicit plan
 
 No Workflow-Internal Docs Leakage: do not create `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` by default. Do not sync `.workflow/**`, task/lens/template/prompt usage, session operation mechanics, AI workflow instructions, or Workflow Lite internal rules into `docs/**`.
 
 `docs/**` is updated only when drift would cause future code/docs alignment mistakes. Do not use it as a transcript, exploration log, temporary PoC journal, workflow usage guide, or low-level implementation mirror.
+
+`Target` and `Target Directory` are project/user-selected placement. If neither is explicit, sync may use an existing docs convention or return an Alignment Set with suggested targets. Creating a missing docs file is allowed when source of truth, sync object, target selection, and alignment criteria are clear. Deciding the docs taxonomy, source of truth, or long-term ownership is not sync work; route that to `shape`.
 
 ## Archive Rules
 

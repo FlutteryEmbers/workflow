@@ -112,7 +112,7 @@ Do not execute `notes/**`. Exploration notes are disposable working memory and m
 
 Build may update code, docs, prompts, templates, or workflow artifacts only when the plan explicitly names them. Do not modify `.workflow/**`, `.session/**`, `docs/**`, or `src/**/README.md` unless the plan names those targets.
 
-When writing `docs/**`, the plan must explicitly name the docs targets and include Project Docs conditions: source, scope, docs type, source of truth, alignment success criteria, existing docs structure, and safety. If these conditions are missing, do not modify `docs/**`; output `Docs Follow-up` and recommend `sync`.
+When writing `docs/**`, the plan must explicitly name the docs targets and include Project Docs conditions: source, scope, sync object, source of truth, target selection, alignment success criteria, existing docs structure, and safety. If these conditions are missing, do not modify `docs/**`; output `Docs Follow-up` and recommend `sync`.
 
 After implementation, output `Docs Follow-up` only when the change clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context. Do not invent docs work for small or temporary changes.
 

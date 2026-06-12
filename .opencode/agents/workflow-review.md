@@ -35,7 +35,7 @@ Check:
 - Step-by-step verification and rollback
 - Minimal diff risk
 - Open questions
-- Project Docs Rules when `docs/**` is touched, including source, scope, docs type, source of truth, and alignment success criteria
+- Project Docs Rules when `docs/**` is touched, including source, scope, sync object, source of truth, target selection, and alignment success criteria
 
 For diff review, compare the diff against the explicit external plan before broader recommendations. Check scope drift, unrelated edits, drive-by refactors, missing edits, missing verification, and unsafe or misleading project docs content.
 

@@ -177,20 +177,22 @@ Mode: persist
 Task: sync
 Lens: <none|consistency|language|domain|architecture|distill>
 Sync Domain: <project-docs | session-archive>
+Sync Object: <architecture | feature | reference | code-readme | archive-summary | all>
 Scope: <area, code/docs scope, source thread, or archive scope>
 Source Of Truth: <code | diff | session thread artifact | explicit user decision | existing docs>
-Target: docs/architecture/{topic}.md or src/{area}/README.md or .session/archive/{thread}/summary.md
+Target Directory: <optional docs directory, src area, or archive directory>
+Target: docs/<target>.md or src/{area}/README.md or .session/archive/{thread}/summary.md
 Source:
 - .session/threads/<thread>/<artifact>.md
 Context:
 - .workflow/tasks/sync.md
-- .workflow/templates/sync.md, .workflow/templates/code_readme.md, or .workflow/templates/archive_summary.md
+- .workflow/templates/sync.md, plus .workflow/templates/project_doc.md, .workflow/templates/code_readme.md, or .workflow/templates/archive_summary.md when creating a target
 - source artifact, existing docs, and relevant source files
 Request:
-Project confirmed outcomes into the target only. Use allowed docs types for `project-docs`; use archive prerequisites for `session-archive`.
+Project confirmed outcomes into the target only. Use Sync Object gates for `project-docs`; use archive prerequisites for `session-archive`.
 ```
 
-When creating a new allowed `docs/**` target, add `.workflow/templates/project_doc.md` or `.workflow/templates/architecture_note.md`. When updating existing docs, preserve the target file's structure.
+When creating a new `architecture`, `feature`, or `reference` docs target, add `.workflow/templates/project_doc.md`. When updating existing docs, preserve the target file's structure.
 
 If the source is only `.session/inbox/**` or `notes/**`, require explicit source-of-truth confirmation before writing project docs.
 
@@ -303,9 +305,10 @@ Use .workflow/codex.md as the Codex adapter.
 Mode: persist
 Task: sync
 Sync Domain: project-docs
+Sync Object: architecture
 Scope: <area>
 Source Of Truth: <code | diff | session thread artifact | explicit user decision | existing docs>
-Target: docs/architecture/<topic>.md
+Target: docs/architecture.md
 Source:
 - .session/threads/<thread>/<artifact>.md
 Alignment Success Criteria:

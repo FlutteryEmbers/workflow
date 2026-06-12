@@ -12,6 +12,10 @@
 
 {{project-docs | session-archive}}
 
+## Sync Object
+
+{{architecture | feature | reference | code-readme | archive-summary | all | blocked}}
+
 ## Scope
 
 {{explicit area, code path, feature, package, docs subtree, source thread, archive scope, or target-only sync}}
@@ -20,13 +24,13 @@
 
 - {{session decision, source thread, code path, diff, test, existing docs, or README}}
 
-## Docs Type
+## Target Directory
 
-{{architecture | design | adr | operations | reference | code-readme | blocked}}
+- {{explicit docs directory, src area, archive directory, existing convention, or none}}
 
 ## Target
 
-- {{docs/architecture/** | docs/design/** | docs/adr/** | docs/operations/** | docs/reference/** | src/**/README.md | .session/archive/<thread>/summary.md}}
+- {{docs/** | src/**/README.md | .session/archive/<thread>/summary.md | suggested target | blocked}}
 
 ## Source Of Truth
 
@@ -52,9 +56,9 @@
 
 ## Alignment Set
 
-| Docs Type | Target | Source | Source Of Truth | Alignment Reason | Action |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| {{architecture / design / adr / operations / reference / code-readme}} | {{target path}} | {{source path or diff}} | {{truth source}} | {{why this target must align}} | {{update / create / no change / blocked}} |
+| Sync Object | Target Directory | Target | Source | Source Of Truth | Alignment Reason | Action |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| {{architecture / feature / reference / code-readme / archive-summary}} | {{directory or none}} | {{target path}} | {{source path or diff}} | {{truth source}} | {{why this target must align}} | {{update / create / no change / blocked}} |
 
 ## Sync Flow
 
@@ -71,7 +75,8 @@ flowchart TD
 
 - Source is clear: {{yes/no}}
 - Scope is clear: {{yes/no}}
-- Docs type is allowed: {{yes/no}}
+- Sync object is clear: {{yes/no}}
+- Target, target directory, or existing convention is safe: {{yes/no}}
 - Source of truth is clear: {{yes/no}}
 - Alignment success criteria clear: {{yes/no}}
 - Existing docs tone and structure preserved: {{yes/no}}
@@ -91,13 +96,13 @@ flowchart TD
 - Active thread files untouched: {{yes/no}}
 - Unresolved conflicts marked instead of resolved: {{yes/no}}
 
-## Docs Type Gate
+## Sync Object Gate
 
-{{allowed docs type, explicit taxonomy override, or docs blocked}}
+{{allowed sync object, confirmed alignment set for all, or docs blocked}}
 
 ## Create Docs Gate
 
-{{for new docs/** targets only: why this doc will reduce future code/docs alignment mistakes, or docs blocked}}
+{{for new docs/** targets only: object is clear, target/target directory/convention is safe, no docs taxonomy decision is being made by sync, and why this doc will reduce future code/docs alignment mistakes; otherwise docs blocked}}
 
 ## Updates
 

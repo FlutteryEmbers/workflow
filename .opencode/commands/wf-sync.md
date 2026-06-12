@@ -12,9 +12,10 @@ Output: full
 Rules:
 - Write only stable-document targets for the selected domain: `docs/**`, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - Do not write `.session/threads/**`, `.session/inbox/**`, `notes/**`, source code, `.workflow/**`, or `.github/**`.
-- Require source, scope, docs type, source of truth, and alignment success criteria for `docs/**`.
+- Require source, scope, sync object, source of truth, alignment success criteria, and safe target selection for `docs/**`.
 - For `session-archive`, require Source Thread, Thread Status, Archive Purpose, Summary Scope, Next Retrieval Use, and target `.session/archive/<thread>/summary.md`.
-- Allowed Project Doc Types: `docs/architecture/**`, `docs/design/**`, `docs/adr/**`, `docs/operations/**`, `docs/reference/**`, and `src/**/README.md`.
+- Use `Sync Object: architecture | feature | reference | code-readme | archive-summary | all`.
+- `Target` wins; `Target Directory` may guide creation/update; otherwise use an existing docs convention or output an Alignment Set.
 - Do not create workflow-internal docs such as `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` unless the user explicitly declares host-project taxonomy override.
 - If `Target` is missing, require `Scope` and return an `Alignment Set` of at most 3 targets before writing.
 - Use `.workflow/tasks/sync.md` as the task contract if needed.
@@ -25,10 +26,12 @@ $ARGUMENTS
 
 Return:
 - Sync Domain
+- Sync Object
 - Scope
-- Docs Type
+- Sync Object Gate
 - Archive Criteria, when relevant
 - Alignment Set
+- Target Directory
 - Target
 - Source of truth
 - Changes made or `docs blocked` / `archive blocked`

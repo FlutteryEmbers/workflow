@@ -8,6 +8,10 @@
 
 {{title}}
 
+## Sync Object
+
+{{architecture | feature | reference}}
+
 ## Purpose
 
 {{why this code-aligned doc exists and what future work it should prevent or enable}}

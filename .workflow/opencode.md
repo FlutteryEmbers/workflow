@@ -153,7 +153,7 @@ Examples:
 /wf-review Audit this plan before implementation: <plan>
 /wf-persist Artifact: shape Thread: workflow-thread-naming Topic: thread_inference Source: last discussion
 /wf-build Plan: .session/threads/workflow-goal-removal/plan_goal_removal.md
-/wf-sync Source: .session/threads/workflow-goal-removal/decision_goal_boundary.md Scope: workflow memory Source Of Truth: session decision Target: docs/architecture/workflow-memory.md Alignment Success Criteria: future workflow docs match confirmed boundaries
+/wf-sync Sync Object: architecture Source: .session/threads/workflow-goal-removal/decision_goal_boundary.md Scope: workflow memory Source Of Truth: session decision Target: docs/architecture.md Alignment Success Criteria: future workflow docs match confirmed boundaries
 ```
 
 ## Add Context
@@ -335,11 +335,17 @@ Use OpenCode sync only for stable-document projection.
 Sync Domain:
 <project-docs | session-archive>
 
+Sync Object:
+<architecture | feature | reference | code-readme | archive-summary | all>
+
 Source:
 - <session decision, diff, code, or existing docs>
 
+Target Directory:
+- <optional docs directory, src area, or archive directory>
+
 Target:
-- docs/architecture/<topic>.md, src/<area>/README.md, or .session/archive/<thread>/summary.md
+- docs/<target>.md, src/<area>/README.md, or .session/archive/<thread>/summary.md
 
 Scope:
 <area or code/docs scope>
@@ -352,12 +358,12 @@ Alignment Success Criteria:
 
 Rules:
 - Follow Project Docs Rules.
-- Source, scope, docs type, source of truth, and alignment success criteria must be clear.
-- Allowed docs targets are docs/architecture/**, docs/design/**, docs/adr/**, docs/operations/**, docs/reference/**, and src/**/README.md.
+- Source, scope, sync object, source of truth, alignment success criteria, and safe target selection must be clear.
+- Use `Sync Object: architecture | feature | reference | code-readme | archive-summary | all`.
 - Do not create workflow-internal docs such as docs/workflow/**, docs/session/**, docs/ai/**, docs/prompts/**, docs/notes/**, docs/plans/**, or docs/reviews/** unless the user explicitly declares host-project taxonomy override.
 - Preserve existing docs structure and tone.
 - For `session-archive`, require Source Thread, Thread Status, Archive Purpose, Summary Scope, Next Retrieval Use, and target .session/archive/<thread>/summary.md.
 - Do not write .session/threads/**, .session/inbox/**, .workflow/**, source code, or unrelated docs.
-- Output docs blocked if source, scope, docs type, source of truth, alignment success criteria, or safety is unclear.
+- Output docs blocked if source, scope, sync object, source of truth, alignment success criteria, target selection, or safety is unclear.
 - Output archive blocked if archive prerequisites are unclear.
 ```

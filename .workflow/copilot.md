@@ -324,18 +324,19 @@ Add #.workflow/tasks/persist.md and #.workflow/templates/decision.md.
 Mode: persist
 Task: sync
 Sync Domain: project-docs
+Sync Object: architecture
 Scope: auth
 Source Of Truth: .session/threads/{thread}/decision_{topic}.md
-Target: docs/architecture/{topic}.md
+Target: docs/architecture.md
 Source:
 - .session/threads/{thread}/decision_{topic}.md
 ```
 
 Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant thread artifacts, existing docs, and source files. Apply Project Docs Rules for `project-docs` or Archive Rules for `session-archive`.
 
-When creating a new allowed `docs/**` target, also add #.workflow/templates/project_doc.md or #.workflow/templates/architecture_note.md. When updating existing docs, preserve the target file's existing structure.
+When creating a new `architecture`, `feature`, or `reference` docs target, also add #.workflow/templates/project_doc.md. When updating existing docs, preserve the target file's existing structure.
 
-Allowed default docs targets are `docs/architecture/**`, `docs/design/**`, `docs/adr/**`, `docs/operations/**`, `docs/reference/**`, and explicit `src/**/README.md`. Do not create workflow-internal docs such as `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` unless the user explicitly declares a host-project taxonomy override.
+Use `Sync Object: architecture | feature | reference | code-readme | archive-summary | all`. `Target` wins, `Target Directory` may guide creation/update, and existing docs convention may guide suggested targets. Do not create workflow-internal docs such as `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` unless the user explicitly declares a host-project taxonomy override.
 
 For `session-archive`, use target `.session/archive/<thread>/summary.md` and add #.workflow/templates/archive_summary.md. Require Source Thread, Thread Status, Archive Purpose, Summary Scope, and Next Retrieval Use. Do not edit active `.session/threads/**`.
 
