@@ -73,6 +73,7 @@ Recommend the smallest path:
 - Long or reusable external goal sources: `persist` as `Artifact: brief`, `Brief Type: external-goal`, then `shape` consumes the inbox brief.
 - Current conversational goals: `shape` directly, then persist the shaped concept only when worth preserving.
 - New background or staged requirements: `clarify` or `explore` -> `persist` to `.session/inbox/**`.
+- Reusable execution discovery or build environment lesson: `build -> Persist Candidate -> persist` as `Artifact: note`, `Artifact State: inbox`, `Intent: capture`.
 - Target direction, option, architecture, or concept: `shape` -> `persist` to `.session/threads/{thread}/shape_{topic}.md`.
 - Repo-aware implementation sequence or handoff: `plan` -> `persist` to `.session/threads/{thread}/plan_{topic}.md`.
 - Session artifact write: `persist` -> active `.session/inbox/**` or `.session/threads/**`.

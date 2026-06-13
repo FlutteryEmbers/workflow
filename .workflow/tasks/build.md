@@ -1,7 +1,7 @@
 ---
 id: build
 role: builder
-purpose: Apply an explicit workflow-managed plan to repository artifacts when the user invokes build.
+purpose: Apply an explicit workflow-managed plan with bounded execution, environment discipline, verification trace, and reusable discovery capture.
 inputs:
   - plan
 outputs:
@@ -19,6 +19,8 @@ done_check:
 # Build Task
 
 `build` is the workflow-managed execution task. Native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents is the external-agent write path; it does not use `build`, but its plan should be audited before implementation and its diff should be reviewed afterward.
+
+`build` is special because it is not a general implementation agent. It is a workflow-aware bounded executor: it applies the explicit plan, limits command/path trial-and-error, records command provenance, produces an execution trace, and surfaces reusable execution discoveries through persist candidates.
 
 ## Context Injection
 
@@ -49,8 +51,8 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 ## Expected Output
 
 - `Mode: discuss`: missing prerequisite or build-readiness guidance only.
-- `Mode: execute` with `Output: compact`: minimal diff inside the plan scope plus compact `Execution Summary`.
-- `Mode: execute` with `Output: full`, blocked, partial, failed verification, pitfall found, scope-expansion risk, or user-requested summary persistence: full `Execution Summary`.
+- `Mode: execute` with `Output: compact`: minimal diff inside the plan scope plus compact `Execution Trace`.
+- `Mode: execute` with `Output: full`, blocked, partial, failed verification, pitfall found, scope-expansion risk, reusable execution discovery, or user-requested trace persistence: full `Execution Trace`.
 
 ## Task Boundary Check
 
@@ -98,6 +100,32 @@ Before editing, check the plan's compatibility and constraint policy:
 
 Use minimal diff discipline: do not perform drive-by refactors, formatting churn, unrelated cleanup, or opportunistic rewrites. After each major plan step, record the verification evidence requested by the plan. If implementation reveals that scope must expand, stop and return to `plan` or `review` instead of editing beyond the plan scope.
 
+## Execution Environment Contract
+
+Before running verification commands, establish the execution environment from repo facts instead of guessing:
+
+- `CWD`: current working directory used for the command.
+- `Repo Root`: detected repository root.
+- `OS / Shell`: operating system and shell when relevant to path or quoting.
+- `Package Manager / Runner`: package manager, task runner, Makefile, build tool, test tool, or none.
+- `Available Scripts`: relevant scripts discovered from repo manifests or docs.
+- `Verification Command Source`: plan, package script, Makefile, project docs, existing CI config, or confirmed repo fact.
+- `Retry Budget`: default `2` for command/path/shell/quoting failures unless the explicit plan states a smaller budget.
+
+Do not blindly try multiple directories, shells, path separators, or command variants. If a command fails due to path, cwd, shell, or quoting, use read-only repo inspection to pick one evidence-backed correction. Stop when the retry budget for the same failure class is exhausted and report `Verification Blocked`.
+
+## Command Provenance
+
+Verification commands must have provenance. Prefer, in order:
+
+- explicit command from the plan
+- repo manifest script such as `package.json`, `pyproject.toml`, `Cargo.toml`, or equivalent
+- `Makefile` or documented project command
+- existing CI or project docs
+- confirmed repo fact from read-only inspection
+
+Do not invent ad hoc commands when the repo provides a script. If no safe command source exists, mark verification as `not run` or `blocked` and explain what source is missing.
+
 This stop-on-scope-expansion behavior is embedded critique, not the `redteam` lens. Do not perform redteam critique during `build`; stop and route back to critique/review when the plan appears unsafe or under-specified.
 
 If `Mode: execute` or an explicit executable `Plan` is missing, do not modify files; explain what is needed to proceed.
@@ -116,33 +144,53 @@ When writing `docs/**`, the plan must explicitly name the docs targets and inclu
 
 After implementation, output `Docs Follow-up` only when the change clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context. Do not invent docs work for small or temporary changes.
 
-## Execution Summary
+## Reusable Execution Discovery
+
+Capture a reusable execution discovery when build learns a non-obvious fact that can reduce future trial-and-error, such as the correct cwd, OS/shell behavior, command source, frontend route, viewport requirement, slow but reliable test, path convention, generated-file constraint, or recurring failure mode.
+
+Ordinary successful execution does not need persistence. Suggest persistence only when the discovery is reusable, non-obvious, explains repo reality, prevents future command/path churn, or the user asks to save it.
+
+## Execution Trace
 
 Default compact output:
 
 ```text
-Execution Summary:
+Execution Trace:
 - Result: completed | partial | blocked
 - Changed: <count and short description>
-- Verification: passed | failed | not run
+- Verification: passed | failed | not run | blocked
+- Environment: CWD=<path>; Command Source=<plan | script | Makefile | docs | CI | repo fact | none>; Retry Budget=<used>/<limit>
 - Pitfalls: none | <count> found, likely <plan gap | repo reality | missing context | test failure | model mistake | unclear>
-- Follow-up: none | persist note | review | plan revision | sync
+- Reusable Execution Discovery: none | <short discovery>
+- Follow-up: none | persist thread audit note | persist inbox capture | review | plan revision | sync
 ```
 
-Use full output only when `Output: full`, the build is blocked or partial, verification failed, a pitfall was found, scope expansion risk appeared, or the user asks to persist the summary:
+Use full output only when `Output: full`, the build is blocked or partial, verification failed, a pitfall was found, scope expansion risk appeared, or the user asks to persist the trace:
 
 ```text
-Execution Summary:
+Execution Trace:
 - Plan Used: <plan path or inline plan>
 - Result: completed | partial | blocked
+- Execution Environment Contract:
+  - CWD: <path>
+  - Repo Root: <path>
+  - OS / Shell: <os and shell or unknown>
+  - Package Manager / Runner: <tool or none>
+  - Available Scripts: <relevant scripts or none>
+  - Retry Budget: <used>/<limit>
 - Changed Files:
   - <path and reason>
 - Completed Steps:
   - <step and evidence>
 - Skipped Steps:
   - <step and reason>
-- Verification:
-  - <verification and result>
+- Verification Trace:
+  - Plan Step: <step>
+    Verification Command: <command or none>
+    CWD: <path>
+    Command Source: <plan | script | Makefile | docs | CI | repo fact | none>
+    Result: <passed | failed | blocked | not run>
+    Deviation: <none | deviation from plan>
 - Deviations From Plan:
   - <deviation or none>
 - Pitfalls Encountered:
@@ -151,13 +199,17 @@ Execution Summary:
     Evidence: <file, command, error, or observation>
     Likely Source: plan gap | repo reality | missing context | test failure | model mistake | unclear
     Impact: <effect on execution>
-    Follow-up Suggested: persist note | review | plan revision | stable-document sync | none
-- Useful Notes For Future Work:
-  - <fact or caution worth remembering>
-- Suggested Persist Candidate: Artifact=note; Intent=audit; Thread=<thread>; Topic=<topic>_execution_summary
+    Follow-up Suggested: persist thread audit note | persist inbox capture | review | plan revision | stable-document sync | none
+- Reusable Execution Discoveries:
+  - Discovery: <fact or caution worth remembering>
+    Future Use: <how future build/review/plan/sync should use it>
+    Promotion Candidate: thread note | inbox capture | project docs | code README | build adapter | none
+- Suggested Persist Candidate:
+  - <none | Artifact=note; Artifact State=working; Intent=audit; Thread=<thread>; Topic=<topic>_execution_trace>
+  - <none | Artifact=note; Artifact State=inbox; Intent=capture; Topic=<topic>_execution_discovery>
 ```
 
-Output `Suggested Persist Candidate` only when there are pitfalls, blocked or partial execution, failed verification, or the user asks to save the execution summary. `build` must not write `.session/**`; use `persist` to store the summary as `Artifact: note` and `Intent: audit`.
+Output `Suggested Persist Candidate` only when there are pitfalls, blocked or partial execution, failed verification, reusable execution discovery, or the user asks to save the execution trace. `build` must not write `.session/**`; use `persist` to store current-work-item audit output as `Artifact: note`, `Intent: audit`, and reusable untriaged discoveries as `Artifact: note`, `Artifact State: inbox`, `Intent: capture`.
 
 ## Lens Suggestions
 
@@ -174,7 +226,8 @@ Output `Suggested Persist Candidate` only when there are pitfalls, blocked or pa
 - Code-adjacent README updates live in `src/**/README.md` and require an explicit plan.
 - Project docs live in `docs/**` and require plan-level Project Docs conditions; otherwise output `Docs Follow-up` and route to `sync`.
 - Compatibility removal and constraint exceptions require explicit plan policy; otherwise stop as scope expansion.
-- Execution summaries are output only. Persist them through `persist` as `Artifact: note` and `Intent: audit` when useful.
+- Execution traces are output only. Persist them through `persist` as `Artifact: note` and `Intent: audit` when useful for current-work-item audit.
+- Reusable execution discoveries are output only. Persist them through `persist` as inbox notes with `Intent: capture`; inbox capture is not source of truth and is not an execution plan.
 
 ## User Input
 

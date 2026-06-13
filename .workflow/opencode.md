@@ -95,8 +95,10 @@ Use this only after an explicit narrow plan exists.
 - Implement only the explicit segment.
 - Do not broaden scope.
 - Do not touch `.session/**`, `.workflow/**`, `docs/**`, or unrelated files unless the explicit plan names them.
-- Return compact `Execution Summary` by default; use full summary only for blocked, partial, failed verification, pitfalls, scope-expansion risk, or user-requested persistence.
-- `Execution Summary` is factual, not a review verdict. Persist useful summaries through `persist` as `Artifact: note` and `Intent: audit`.
+- Establish `Execution Environment Contract` and command provenance before verification: CWD, repo root, OS/shell, package manager or runner, available scripts, command source, and retry budget.
+- Do not blindly retry path, cwd, shell, quoting, or command variants; default retry budget is 2 for the same failure class.
+- Return compact `Execution Trace` by default; use full trace only for blocked, partial, failed verification, pitfalls, reusable execution discovery, scope-expansion risk, or user-requested persistence.
+- `Execution Trace` is factual, not a review verdict. Persist current-work-item audit output through `persist` as `Artifact: note` and `Intent: audit`; persist reusable execution discoveries as inbox notes with `Intent: capture`.
 - Review the diff after implementation.
 
 ## Recommended Path
@@ -311,7 +313,7 @@ Report:
 
 `/wf-build` is the command form of bounded implementation. Use it only when the explicit plan is present in `Plan:` or in the current prompt. If the plan is missing or not executable enough, `/wf-build` must return `missing_prerequisite` and avoid file edits.
 
-`/wf-build` does not write `.session/**`. When execution pitfalls or blocked work should be remembered, persist the build output with `Task: persist`, `Artifact: note`, `Intent: audit`, and `Topic: <topic>_execution_summary`.
+`/wf-build` does not write `.session/**`. When execution pitfalls or blocked work should be remembered for the current work item, persist the build output with `Task: persist`, `Artifact: note`, `Intent: audit`, and `Topic: <topic>_execution_trace`. When a reusable execution discovery should be captured for future work, persist it as `Artifact: note`, `Artifact State: inbox`, `Intent: capture`, and `Topic: <topic>_execution_discovery`.
 
 ### Diff Review
 

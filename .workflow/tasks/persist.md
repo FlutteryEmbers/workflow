@@ -1,7 +1,7 @@
 ---
 id: persist
 role: steward
-purpose: Persist high-fidelity structured session artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources.
+purpose: Persist high-fidelity structured session artifacts and untriaged knowledge captures from discussion, thread artifacts, Persist Packets, or user-provided sources.
 inputs:
   - artifact
   - brief_type
@@ -42,7 +42,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 ## When To Use
 
-- Use after `clarify`, `explore`, `shape`, `plan`, or `review` discussion when the user wants to persist a session artifact.
+- Use after `clarify`, `explore`, `shape`, `plan`, `review`, or `build` output when the user wants to persist a session artifact or knowledge capture.
 - Use to update an existing `.session/**` artifact with newer discussion, review feedback, or user corrections.
 - Use to persist structured artifacts into `.session/threads/{thread}/**` so related shape, plan, review, and decision files stay together.
 - Use to write disposable exploration notes only when the user explicitly provides `Target: notes/**`.
@@ -58,7 +58,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - `Artifact`: `brief | note | shape | option | plan | review | decision | distillation | expanded`.
 - `Brief Type`: optional for `Artifact: brief`; use `external-goal` for long, external, or reusable goal material stored in `.session/inbox/**`.
 - `Artifact State`: `inbox | working | settled | superseded`.
-- `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
+- `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference | capture`.
 - `Depth`: `compact | standard | detailed`.
 - `Thread`: kebab-case small closable work item directory name.
 - `Topic`: short file-safe topic.
@@ -70,9 +70,11 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 Canonical fields:
 
 ```text
-Intent: summary | exploration | decision | audit | handoff | constraint | reference
+Intent: summary | exploration | decision | audit | handoff | constraint | reference | capture
 Depth: compact | standard | detailed
 ```
+
+Use `Intent: capture` for untriaged knowledge captures, especially `Artifact: note`, `Artifact State: inbox` from build execution discoveries. Capture notes are not source of truth, are not executable plans, and require later review/plan/sync promotion before becoming stable project knowledge.
 
 ## Content Fidelity Contract
 
@@ -102,6 +104,7 @@ Persisted artifacts must be more structured than chat without losing the reasoni
 - Discuss output budget does not reduce artifact fidelity. Even if the prior answer used `Output: compact`, generate the persisted artifact at the requested or default `Depth`.
 - If source material conflicts, preserve the conflict and mark the source of truth as unresolved.
 - Do not use `persist` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
+- Do not promote inbox capture to source of truth. Persist can store the capture, but promotion to thread decision, project docs, code README, or build adapter requires later `review`, `plan`, or `sync`.
 
 ## Thread Inference
 
@@ -162,6 +165,16 @@ If review feedback is not explicit enough to apply mechanically, route back to `
 - Optional note metadata may be used when helpful: `status`, `source`, `updated`, `promoted_to`.
 - `notes/**` is suitable for `Artifact: brief | note | shape | option | review | distillation | expanded`; do not use it for implementation plans or project docs.
 
+## Inbox Capture Rule
+
+`.session/inbox/**` is an untriaged capture pool as well as a staging area for inputs.
+
+- Use inbox for raw or lightly structured inputs, background, exploration material, external-goal briefs, execution discoveries, and reusable project knowledge that is not yet stable source of truth.
+- Use `Artifact: note`, `Artifact State: inbox`, and `Intent: capture` for build execution discoveries.
+- Inbox capture may record successful or failed execution facts only when they are reusable, non-obvious, reduce future trial-and-error, or explain repo reality.
+- Inbox capture is not source of truth, not an executable plan, and not approval for future build.
+- Stable conclusions from inbox capture must be promoted later through `review`, `plan`, or `sync`.
+
 ## Explicit Target Override
 
 If the user explicitly provides a target path, respect it unless it violates write safety, lacks required prerequisites, or belongs to another write boundary.
@@ -199,6 +212,7 @@ If the user explicitly provides a target path, respect it unless it violates wri
 - Thread artifacts are active session working memory; code-aligned project docs and session archive summaries still go through `sync`.
 - The persisted artifact should be denser and more durable than chat. It must not be a low-context bullet summary when detailed reasoning is available.
 - For `notes/**`, compact or standard depth is acceptable. Preserve useful conclusion, evidence, and next use, but do not treat the note as an implementation source.
+- For inbox capture, compact or standard depth is acceptable. Preserve source, evidence, reusable lesson, future use, and promotion candidate; do not present it as source of truth.
 
 ## User Input
 

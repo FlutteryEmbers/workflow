@@ -8,16 +8,18 @@ Use dedicated workflow prompt commands for common Copilot work:
 
 - `/wf-route`: choose the smallest useful next path.
 - `/wf-clarify`: explain terms, prior answers, statements, assumptions, or request boundaries.
+- `/wf-explore`: extract read-only evidence from code, docs, behavior, dependencies, or references.
 - `/wf-shape`: discuss what-if, option-comparison, concept-level, or direction-setting work.
 - `/wf-plan`: produce a planning draft, repo-aware plan, or handoff.
 - `/wf-review`: review plans, diffs, docs/code drift, or artifacts.
 - `/wf-persist`: write `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
+- `/wf-build`: execute an explicit workflow-managed plan with bounded execution and `Execution Trace`.
 - `/wf-sync`: run the stable-document projection stage for project docs, code-adjacent README, or session archive summaries.
 
 Recommended daily chain:
 
 ```text
-/wf-clarify -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-sync
+/wf-clarify -> /wf-explore -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-build -> /wf-sync
 ```
 
 Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear task boundaries, or full protocol control. Prompt commands are shortcuts only; `.workflow/tasks/**` remains the source of truth.
@@ -32,7 +34,7 @@ Lens: <none|consistency|distill|language|domain|redteam|test|architecture|debug>
 Artifact: <required for persist unless target is explicit>
 Artifact State: <inbox|working|settled|superseded; for persist metadata>
 Thread: <thread-name; for persist thread target inference>
-Intent: <summary|exploration|decision|audit|handoff|constraint|reference; for persist>
+Intent: <summary|exploration|decision|audit|handoff|constraint|reference|capture; for persist>
 Depth: <compact|standard|detailed; optional for persist>
 Topic: <file-safe topic; for inferred persist target>
 Sync Domain: <project-docs|session-archive; required for sync when target does not make it obvious>
@@ -173,7 +175,7 @@ Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate 
 - `sync` persist: write only stable-document targets for `Sync Domain: project-docs | session-archive`.
 - `execute`: may modify broader repository artifacts only when the explicit plan says so.
 - `external-agent`: native Plan/Implement may write files directly, but the native plan must be audited before implementation and the diff must be reviewed afterward.
-- `build` outputs an `Execution Summary`; it does not write `.session/**`. Persist useful summaries with `Task: persist`, `Artifact: note`, and `Intent: audit`.
+- `build` outputs an `Execution Trace`; it does not write `.session/**`. Persist current-work-item audit output with `Task: persist`, `Artifact: note`, and `Intent: audit`; persist reusable execution discoveries as inbox notes with `Intent: capture`.
 
 ## Compatibility / Constraint Policy
 
@@ -358,6 +360,8 @@ Add #.workflow/tasks/build.md, the explicit plan, and target artifacts named by 
 
 The plan must state `Compatibility: preserve | breaking` and `Constraint Mode: respect | propose_override | prototype_exception` when compatibility removal or constraint exceptions are involved. `build` must stop on unplanned breaking changes or constraint overrides.
 
-Build output should default to compact `Execution Summary`. Use full summary only for blocked, partial, failed verification, pitfall, scope-expansion risk, or user-requested persistence. The summary is factual, not a review verdict.
+Build must establish `Execution Environment Contract` and command provenance before verification: CWD, repo root, OS/shell, package manager or runner, available scripts, command source, and retry budget. Do not blindly retry path, cwd, shell, quoting, or command variants; default retry budget is 2 for the same failure class.
+
+Build output should default to compact `Execution Trace`. Use full trace only for blocked, partial, failed verification, pitfall, reusable execution discovery, scope-expansion risk, or user-requested persistence. The trace is factual, not a review verdict.
 
 In chat, summarize decisions and next steps. Do not paste full artifact contents unless the user asks for a preview.

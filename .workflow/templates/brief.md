@@ -20,6 +20,8 @@
 
 {{for Brief Type: external-goal, preserve the external goal, source excerpt, file path, meeting note, or user-provided source summary without turning it into a shape}}
 
+> Build execution discoveries use `Artifact: note`, `Artifact State: inbox`, and `Intent: capture`; do not store them as briefs.
+
 ## Why
 
 {{why it matters}}

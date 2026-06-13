@@ -27,7 +27,7 @@ graph TD
 - `role`: small perspective file in `.workflow/roles/`.
 - `lens`: optional user-selected thinking method in `.workflow/lenses/`.
 - `.session`: AI session working memory, not project source of truth.
-- `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, and reference material.
+- `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, reference material, and untriaged knowledge captures.
 - `.session/threads`: related shape, option, plan, review, decision, and reference artifacts grouped by small closable work item.
 - `.session/archive`: stable summaries of completed, superseded, abandoned, implemented, or blocked threads.
 - `persist`: the only task that writes session artifacts.
@@ -46,7 +46,7 @@ graph TD
   archive/
 ```
 
-Use `.session/inbox/**` for raw or lightly structured inputs, and `.session/threads/**` for shaped discussion artifacts. Use `.session/archive/**` for stable thread summaries. Stable long-term project knowledge, terms, architecture constraints, and design docs belong in `docs/**`.
+Use `.session/inbox/**` for raw or lightly structured inputs and untriaged knowledge captures, and `.session/threads/**` for shaped discussion artifacts tied to a closable work item. Use `.session/archive/**` for stable thread summaries. Stable long-term project knowledge, terms, architecture constraints, and design docs belong in `docs/**`.
 
 ## Session Naming
 
@@ -58,6 +58,8 @@ Session directories express role; thread directories express small closable work
 Do not use task names, lenses, modes, or artifact kinds as thread names. `docs/**` follows the host project's project docs naming. `src/**/README.md` is fixed.
 
 `thread` is a kebab-case small closable work item. Prefer `{area}-{work-item}` when it helps retrieval, such as `workflow-thread-naming` or `sync-archive-summary`, but do not introduce a mandatory category table. File `{topic}` remains snake_case. Path location does not authorize execution; user-invoked `build` with an explicit executable plan is the authorization boundary.
+
+Inbox capture is not source of truth and is not an execution source. Use inbox notes for untriaged material such as external goals, background, exploration inputs, execution discoveries, and reusable project knowledge that may later be promoted through `review`, `plan`, or `sync`.
 
 ## Thread Inference
 
@@ -100,8 +102,8 @@ conversational source
 | `explore` | `designer` | chat | Understand code, materials, behavior, feasibility, or reference structure. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, or session decision. |
 | `plan` | `designer` | chat | Turn a chosen direction into a planning draft, repo-aware plan, or external-agent handoff. |
-| `persist` | `steward` | active session artifacts | Persist high-fidelity structured inbox or thread artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
-| `build` | `builder` | repository changes | Apply an explicit workflow-managed plan. |
+| `persist` | `steward` | active session artifacts | Persist high-fidelity structured inbox, thread, or capture artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
+| `build` | `builder` | repository changes | Apply an explicit workflow-managed plan with bounded execution and traceable verification. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
 | `sync` | `steward` | stable docs | Project confirmed outcomes into project docs, code-adjacent README files, or session archive summaries. |
 
@@ -282,6 +284,8 @@ Selectable lenses by task:
 
 Native Plan/Implement is a separate external-agent write path.
 
+`build` is a workflow-aware bounded executor, not a general implementation agent. Its special responsibility is bounded execution plus environment contract, command provenance, retry discipline, execution trace, and discovery capture. External-agent implementation may produce general changes; `build` must apply the explicit workflow plan, limit trial-and-error, record verification evidence, and surface reusable execution discoveries without writing session memory directly.
+
 ## Abstraction Level Core Rules
 
 Use `Abstraction Level: concept | phase-plan | implementation-plan` when the user wants concept design, phase planning, implementation planning, or a strong-model-to-weak-model handoff.
@@ -350,6 +354,7 @@ Composite requests should return segmented prompts with stop points. Do not sile
 Discussion tasks do not write files. They should end with short `Persist Candidate` when the current output is worth preserving. Full `Persist Packet` is only for `Output: full`, explicit persist requests, or handoff/audit responses.
 
 - `persist` writes `.session/inbox/**` and `.session/threads/**`.
+- `.session/inbox/**` may hold untriaged knowledge captures such as reusable build execution discoveries.
 - `persist` may also write explicit `notes/**` disposable exploration notes.
 - `persist` consumes `Persist Candidate`, `Persist Packet`, recent discussion, existing artifacts, or source files.
 - `persist` can infer targets for `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`.
@@ -366,7 +371,7 @@ Persisted artifacts preserve decision-relevant reasoning, not full transcript. T
 
 `persist` uses:
 
-- `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference`.
+- `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference | capture`.
 - `Depth`: `compact | standard | detailed`.
 
 Default depth is `standard` for `brief` and `note`, and `detailed` for `shape`, `option`, `plan`, `review`, `decision`, `distillation`, and `expanded`.
@@ -419,6 +424,8 @@ These rules are core protocol, not optional lenses:
 - `Step -> Verify`: every major plan step needs a matching verification method.
 - `Minimal Diff`: implementation changes only the plan scope; no drive-by refactors, formatting churn, or opportunistic cleanup.
 - `Stop On Scope Expansion`: if execution reveals that scope must expand, stop and return to `plan` or `review`.
+- `Execution Environment Contract`: before verification, `build` records cwd, repo root, OS/shell, package manager or runner, command source, and retry budget.
+- `Command Provenance`: verification commands should come from the plan, repo scripts, Makefile, project docs, or confirmed repo facts. Do not keep guessing commands or paths.
 - `Readiness Before Write`: external-agent plans and diffs should be reviewed before further implementation or stable-document sync.
 
 This project borrows prompt discipline from agent prompt repositories, but it does not copy role-command systems and does not add a root Claude-specific instruction file by default.
@@ -503,7 +510,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Multi-turn design: `shape/review/explore discuss loop -> persist into one thread`.
 - Native implementation: external-agent native Plan -> `review` audit -> native Implement -> `review` diff.
 - Workflow-managed implementation: `plan -> build`.
-- Build result capture: `build -> compact Execution Summary -> optional persist note -> optional review`.
+- Build result capture: `build -> Execution Trace -> optional persist inbox capture/thread audit note -> optional review/sync promotion`.
 - Project-docs sync: `review -> plan -> sync -> docs/**`.
 - Code-adjacent README sync: `review -> plan -> sync -> src/**/README.md`.
 - Thread archive summary: `review/plan -> sync -> .session/archive/<thread>/summary.md`.
@@ -511,7 +518,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 
 ## Using With Copilot
 
-- Prefer dedicated GitHub prompt commands for common Copilot work: `/wf-route`, `/wf-clarify`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, and `/wf-sync`.
+- Prefer dedicated GitHub prompt commands for common Copilot work: `/wf-route`, `/wf-clarify`, `/wf-explore`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync`.
 - Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear task boundaries, or full protocol control.
 - Add one task file from `.workflow/tasks/` when manually using Add Context.
 - Add selected lenses only when explicitly named.
@@ -522,7 +529,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 Recommended Copilot chain:
 
 ```text
-/wf-clarify -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-sync
+/wf-clarify -> /wf-explore -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-build -> /wf-sync
 ```
 
 ## Using With OpenCode
@@ -534,7 +541,7 @@ Recommended Copilot chain:
 - Treat OpenCode native Plan output as an external plan draft until it is reviewed or explicitly chosen for implementation.
 - Audit OpenCode plans with `review` before implementation and review diffs afterward.
 - `/wf-build` is a high-risk write command for explicit plans only. It should block when `Plan:` is missing or not executable enough.
-- `/wf-build` defaults to compact `Execution Summary`; it does not write `.session/**`. Persist useful build summaries as `Artifact: note` with `Intent: audit`.
+- `/wf-build` defaults to compact `Execution Trace`; it does not write `.session/**`. Persist current-work-item audit traces as `Artifact: note` with `Intent: audit`, and reusable execution discoveries as inbox notes with `Intent: capture`.
 - OpenCode bounded implementation should execute only explicit narrow segments.
 - Temporary `.opencode/plans/` files are scratch; use `persist` to persist handoffs to `.session/threads/{thread}/plan_{topic}.md`.
 

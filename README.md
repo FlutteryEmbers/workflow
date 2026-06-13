@@ -19,7 +19,7 @@ Read [.workflow/README.md](.workflow/README.md) for the full workflow guide.
 Read [.workflow/codex.md](.workflow/codex.md) when using Codex manually.
 Read [.workflow/opencode.md](.workflow/opencode.md) when using OpenCode.
 
-For Copilot, use dedicated GitHub prompt commands for common work: `/wf-route`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, and `/wf-sync`. Use `workflow-lite.prompt.md` as fallback/router for mixed or full-protocol requests.
+For Copilot, use dedicated GitHub prompt commands for common work: `/wf-route`, `/wf-clarify`, `/wf-explore`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync`. Use `workflow-lite.prompt.md` as fallback/router for mixed or full-protocol requests.
 
 ## Embedding Rule
 

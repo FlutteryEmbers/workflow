@@ -1,13 +1,17 @@
 ---
-description: Workflow Lite explicit-plan execution.
+description: Workflow Lite build command for explicit-plan execution.
+argument-hint: "Plan=<plan path or pasted explicit plan>; Lens=<none|test|debug>; Request=<build constraints or target segment>"
 ---
+
+# wf-build
 
 Use Workflow Lite build semantics.
 
 Mode: execute
-Output: compact unless blocked, partial, failed verification, pitfall found, scope expansion risk appears, or full output is requested
+Output: compact unless blocked, partial, failed verification, pitfall found, reusable execution discovery appears, scope expansion risk appears, or full output is requested
 Task: build
-Lens: none unless explicitly requested; allowed: test, debug
+Lens: ${input:lens:none}
+Plan: ${input:plan:required explicit executable plan}
 
 Rules:
 - This command is an explicit execution entrypoint. User invocation authorizes execution of the provided plan only.
@@ -24,10 +28,10 @@ Rules:
 - Use full `Execution Trace` only when blocked, partial, verification failed, a pitfall was found, reusable execution discovery appeared, scope expansion risk appeared, or the user asks to persist the trace.
 - Record pitfalls as execution facts with `Likely Source`, not review verdicts.
 - Do not write `.session/**`; if useful, output `Suggested Persist Candidate` for current-work-item audit as `Artifact=note; Intent=audit; Topic=<topic>_execution_trace`, or reusable discovery as `Artifact=note; Artifact State=inbox; Intent=capture; Topic=<topic>_execution_discovery`.
-- Use `.workflow/tasks/build.md` as the task contract if needed.
+- Use `.workflow/tasks/build.md` as the task contract.
 
 Request:
-$ARGUMENTS
+${input:request:optional build constraints, target segment, or verification notes}
 
 Return:
 - Execution Trace

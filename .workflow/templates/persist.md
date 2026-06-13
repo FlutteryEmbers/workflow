@@ -8,7 +8,7 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 - Brief Type: {{general | external-goal; only for Artifact: brief}}
 - Artifact State: {{inbox | working | settled | superseded}}
 - Thread: {{kebab-case small closable work item or none}}
-- Intent: {{summary | exploration | decision | audit | handoff | constraint | reference}}
+- Intent: {{summary | exploration | decision | audit | handoff | constraint | reference | capture}}
 - Depth: {{compact | standard | detailed}}
 - Topic: {{file-safe topic}}
 - Source: {{Persist Packet | Persist Candidate | recent discussion | existing artifact | file path | user input}}
@@ -20,13 +20,15 @@ Use this as the `persist` task operation checklist. It is not the persisted arti
 - Keep source context, key facts, decision trail, rejected options, risks, unknowns, examples, and next use when they affect later work.
 - For `shape`, `plan`, `decision`, `review`, and `option` artifacts, preserve selected discussion memory in `Discussion Notes To Preserve` when it affects future understanding, revision, implementation, or audit.
 - Prefer preserving useful nuance over forcing every discussion point into a predefined field.
-- `Execution Summary` from `build` may be persisted as `Artifact: note` with `Intent: audit`.
-- If the source is only a compact execution summary, do not invent missing details; mark missing fields as `unknown`.
+- `Execution Trace` from `build` may be persisted as `Artifact: note` with `Intent: audit` for current-work-item audit.
+- Reusable build execution discoveries may be persisted as `Artifact: note`, `Artifact State: inbox`, and `Intent: capture`.
+- If the source is only a compact execution trace, do not invent missing details; mark missing fields as `unknown`.
 - Separate confirmed facts from assumptions.
 - Do not compress detailed discussion into unsupported conclusions.
 - Use the artifact template that matches `Artifact`.
 - Apply explicit review edits only; do not invent a new direction, plan, or verdict.
 - Infer targets for `.session/inbox/**` or `.session/threads/{thread}/{artifact}_{topic}.md`.
+- Treat inbox capture as untriaged working memory, not source of truth or an execution source.
 - Use `Target Directory` when the user wants a specific thread folder.
 - Infer thread targets by same-work-item fit when `Thread` is absent.
 - Reuse active threads for continuations, refinements, corrections, review responses, or implementation follow-ups for the same closable work item.

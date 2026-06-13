@@ -114,7 +114,7 @@ Artifact: <brief|note|shape|option|plan|review|decision|distillation|expanded>
 Brief Type: <general|external-goal; only for Artifact: brief>
 Artifact State: <inbox|working|settled|superseded>
 Thread: <thread-name>
-Intent: <summary|exploration|decision|audit|handoff|constraint|reference>
+Intent: <summary|exploration|decision|audit|handoff|constraint|reference|capture>
 Depth: <compact|standard|detailed>
 Topic: <topic>
 Target: <optional when thread/topic can infer target>
@@ -157,7 +157,9 @@ Implement only the explicit plan.
 
 If the plan is missing, unclear, or not executable enough, do not edit files.
 
-After build, output compact `Execution Summary` by default. Use full summary only for blocked, partial, failed verification, pitfall, scope-expansion risk, or user-requested persistence. `Execution Summary` is factual, not a review verdict, and `build` must not write `.session/**`; persist useful summaries as `Artifact: note` with `Intent: audit`.
+Build is a workflow-aware bounded executor. Before verification, establish `Execution Environment Contract` and command provenance: CWD, repo root, OS/shell, package manager or runner, available scripts, command source, and retry budget. Do not blindly retry path, cwd, shell, quoting, or command variants; default retry budget is 2 for the same failure class.
+
+After build, output compact `Execution Trace` by default. Use full trace only for blocked, partial, failed verification, pitfall, reusable execution discovery, scope-expansion risk, or user-requested persistence. `Execution Trace` is factual, not a review verdict, and `build` must not write `.session/**`; persist current-work-item audit output as `Artifact: note`, `Intent: audit`, or reusable execution discoveries as `Artifact: note`, `Artifact State: inbox`, `Intent: capture`.
 
 ### External-Agent Native Plan / Implement
 
@@ -224,7 +226,7 @@ Task: persist
 Artifact: <artifact>
 Artifact State: <inbox|working|settled|superseded>
 Thread: <thread-name>
-Intent: <summary|exploration|decision|audit|handoff|constraint|reference>
+Intent: <summary|exploration|decision|audit|handoff|constraint|reference|capture>
 Depth: <compact|standard|detailed>
 Topic: <topic>
 Request:
