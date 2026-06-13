@@ -299,7 +299,7 @@ Protocol: `Output: compact | normal | full`.
 
 - `compact`: general discussion. Optimize the next turn, not archival completeness.
 - `normal`: refine. Prepare key structure and important context for later persist, without writing files.
-- `full`: artifact, handoff, audit, diff review, or complex routing.
+- `full`: artifact, handoff, audit, diff review, build-ready plan, or complex routing.
 
 Daily path:
 
@@ -310,6 +310,28 @@ compact discussion -> normal refine -> full persist
 Discussion tasks should not output full `Persist Packet` by default. Use `Persist Candidate` unless the user asks to persist, asks for `Output: full`, or needs a handoff/audit.
 
 Compact output starts with `User Intent`, may include `Current Read`, and uses short `Take`, limited risks, one `Next`, and at most one-line `Persist Candidate`. Normal refine output should include `Discussion Notes To Preserve` for phase boundaries, constraints, examples, accepted risks, and user corrections.
+
+`shape` and `plan` may both be compact in chat, but they have different responsibilities:
+
+- `shape compact`: reason about direction and choose or recommend a concept.
+- `plan compact`: summarize the shaped/chosen direction, show a compact `Impact Surface`, then give the plan sketch.
+- `plan full`: detailed commitment artifact for persist, handoff, build-ready planning, or external-agent use.
+
+Every `plan` output, including compact chat output, must include:
+
+```text
+Shape Summary
+Impact Surface
+Plan
+Blocking Questions
+Next
+```
+
+Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Compact `Impact Surface` includes only scope size, affected surfaces, risk, and reversal cost. Full plan artifacts may expand impact with docs/sync and build/handoff readiness.
+
+`Depth: detailed` is persisted artifact metadata, not a chat output mode. Do not add a detailed chat output mode; use `Output: full` for detailed artifacts and handoffs.
+
+Plans should not use generic open-question sections. Use `Blocking Questions` for questions that affect current readiness or next-step eligibility, and `Follow-up Questions` for non-blocking future considerations. `implementation-plan` requires `Blocking Questions: none`; `phase-plan` may include blocking questions when each says what it blocks.
 
 ## Task Boundary Router
 

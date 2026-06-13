@@ -20,6 +20,32 @@
 
 - Thread plan: `.session/threads/<thread>/plan_<topic>.md`
 
+## Plan Summary
+
+- Target Outcome: {{what should be true after execution}}
+- Recommended Path: {{short sequence or phase summary}}
+- Abstraction Level: {{phase-plan | implementation-plan}}
+- Readiness: {{ready for build | ready for external-agent | needs review | needs more detail | blocked}}
+- Next Action: {{review | build | external-agent | sync | persist | shape | none}}
+- Main Risk: {{main risk or none}}
+- Source Basis: {{chat | shape artifact | inbox brief | decision | project docs}}
+
+## Shape Summary
+
+- Source: {{chat | shape artifact | inbox brief | decision | project docs}}
+- Selected Direction: {{one-line chosen direction}}
+- Key Decisions: {{decisions that affect execution order, scope, compatibility, or verification}}
+- Assumptions: {{defaults or inferred decisions and risk if wrong}}
+
+## Impact Surface
+
+- Scope Size: {{small | medium | large}}
+- Affected Surfaces: {{workflow core | task docs | templates | adapters | project docs | source code | tests | other}}
+- Risk: {{low | medium | high}}
+- Reversal Cost: {{low | medium | high}}
+- Docs / Sync Impact: {{none | suggested | required}}
+- Build / Handoff Readiness: {{ready | needs review | needs implementation-plan | blocked}}
+
 ## Plan Snapshot
 
 - Abstraction Level: {{phase-plan | implementation-plan | none}}
@@ -39,6 +65,7 @@
 - Selection Reason: {{shape recommendation | user request | inferred impact surface | readiness downgrade}}
 - Locked Decisions: {{confirmed decisions and sources}}
 - Assumed Decisions: {{recommended defaults and risk if wrong}}
+- Rejected Options: {{options rejected because they affect sequence, scope, or constraints; none if not relevant}}
 - Blocking Decisions: {{unresolved decisions blocking implementation-plan, or none}}
 - Requires User Confirmation Before: {{none | implementation-plan | build}}
 
@@ -81,7 +108,8 @@
 
 - Why This Sequence: {{reason}}
 - Rejected Sequencing: {{alternatives and why not}}
-- Open Questions: {{remaining uncertainty}}
+- Blocking Questions: {{none | questions that affect current readiness or next-step eligibility, with what each blocks}}
+- Follow-up Questions: {{none | non-blocking future considerations}}
 
 ## Execution Strategy
 
@@ -166,9 +194,15 @@ flowchart TD
 
 - {{condition that requires stopping instead of expanding scope}}
 
-## Open Questions
+## Blocking Questions
 
-- {{question that blocks readiness, execution, or stable-document sync}}
+- {{none | question that blocks readiness, execution, implementation-plan, build, sync, or source-of-truth decision}}
+
+> `implementation-plan` requires `Blocking Questions: none`. `phase-plan` may include blocking questions, but each question must say what it blocks.
+
+## Follow-up Questions
+
+- {{none | non-blocking future consideration}}
 
 ## Rollback / Recovery
 

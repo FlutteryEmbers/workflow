@@ -63,7 +63,9 @@ Protocol: `Output: compact | normal | full`.
 
 - `compact`: general discussion. Optimize the next turn, not archival completeness.
 - `normal`: refine. Prepare key structure and important context for later persist, without writing files.
-- `full`: artifact, handoff, audit, diff review, or complex routing.
+- `full`: artifact, handoff, audit, build-ready plan, diff review, or complex routing.
+
+For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as the detailed commitment artifact for persist, implementation handoff, build-ready planning, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 
 Recommended flow:
 
@@ -111,11 +113,13 @@ Refined Direction / Plan:
 - <key structure>
 Discussion Notes To Preserve:
 - <phase, constraints, examples, accepted risks, user corrections>
-Open Questions:
+Questions:
 - <questions>
 Persist Candidate:
 - <artifact/thread/topic/target>
 ```
+
+For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Shape Summary`, `Impact Surface`, `Plan`, `Blocking Questions`, `Abstraction Level`, `Planning Draft`, `Next`, and `Persist Candidate`. Do not use generic open-question sections in plan output; use `Blocking Questions` and, for normal/full output, `Follow-up Questions`.
 
 ## Task Boundary Shortcut
 

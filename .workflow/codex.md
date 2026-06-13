@@ -9,6 +9,8 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - `.workflow/README.md` is the workflow source of truth.
 - Default to `Mode: discuss`.
 - Default to `Output: compact` for general discussion; use `Output: normal` to refine before persist and `Output: full` for artifacts, handoffs, audits, or diff reviews.
+- For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact.
+- Treat `Output: full` plan output as the detailed commitment artifact for persist, build-ready planning, implementation handoff, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 - When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.

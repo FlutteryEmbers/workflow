@@ -4,7 +4,9 @@ OpenCode support is a thin adapter. It does not replace `.workflow/tasks/**`, `.
 
 Use OpenCode when it helps with context reading, plan drafting, or bounded implementation. Keep `.workflow/**` as the source of truth for task semantics, lenses, write boundaries, and Project Docs Rules.
 
-Output flow: use `Output: compact` for general discussion, `Output: normal` to refine before persist, and `Output: full` for artifacts, handoffs, audits, or diff reviews.
+Output flow: use `Output: compact` for general discussion, `Output: normal` to refine before persist, and `Output: full` for artifacts, handoffs, audits, build-ready plans, or diff reviews.
+
+For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as the detailed commitment artifact for persist, implementation handoff, build-ready planning, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 
 OpenCode may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically. Use full `redteam` only when the user explicitly selected that lens, asked for critique, or the prompt explicitly includes it.
 

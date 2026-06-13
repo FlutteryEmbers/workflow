@@ -53,6 +53,7 @@ Request: ${input:request:describe the work}
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available; otherwise output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 - Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate direction, staged planning, and execution handoff. `shape` normally produces `concept` and records `Impact Surface` plus `Recommended Next Abstraction Level` when it may feed planning. `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one; default to `phase-plan` when uncertain. `build` does not require this label and still relies on explicit plan executability.
+- `plan compact` must summarize the chosen direction first, then give a compact impact surface and plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. `Output: full` is the detailed commitment artifact for persist, build-ready planning, implementation handoff, or external-agent handoff.
 - Read-only preflight is allowed only in `Mode: discuss`; do not load templates, write files, run implementation, or apply unselected deep lenses during preflight.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 - Implicit preflight defaults to `shape`, `plan`, and `sync`; conditional preflight applies to `review`, `build`, and `explore`; no implicit preflight runs for `clarify` or `route`.
@@ -124,6 +125,30 @@ Next:
 Persist Candidate: <none or one line; candidate only, do not write>
 ```
 
+For `Task: plan` with `Output: compact`, use this structure instead:
+
+```text
+User Intent: <one line about what the user wants planned>
+Shape Summary:
+- Source: <chat | shape artifact | inbox brief | decision | project docs>
+- Selected Direction: <one line>
+- Key Decisions: <1-3 bullets or none>
+- Assumptions: <0-2 bullets or none>
+Impact Surface:
+- Scope Size: <small | medium | large>
+- Affected Surfaces: <surfaces>
+- Risk: <low | medium | high>
+- Reversal Cost: <low | medium | high>
+Plan:
+- <3-6 steps or phases>
+Blocking Questions:
+- <none | question plus what it blocks>
+Abstraction Level: <phase-plan | implementation-plan>
+Planning Draft: <yes/no>
+Next: <review | persist plan | build | sync | shape | none>
+Persist Candidate: <none or one line; candidate only, do not write>
+```
+
 For `Output: normal`, refine toward a future persist without writing files:
 
 ```text
@@ -133,11 +158,13 @@ Refined Direction / Plan:
 - <key structure>
 Discussion Notes To Preserve:
 - <phase, constraints, examples, accepted risks, user corrections>
-Open Questions:
+Questions:
 - <questions>
 Persist Candidate:
 - <artifact/thread/topic/target>
 ```
+
+For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Shape Summary` and `Impact Surface`, and use `Blocking Questions` / `Follow-up Questions` instead of generic open-question sections.
 
 Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 

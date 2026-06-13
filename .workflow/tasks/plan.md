@@ -51,10 +51,11 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - A `Planning Draft` or implementation handoff appropriate to the user's requested level.
 - Build-ready handoffs include `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
-- `Planning Basis` that records source shape/decision, locked decisions, assumed decisions, blocking decisions, and the chosen abstraction level.
+- `Shape Summary` and `Impact Surface` at the start of every plan, even compact chat output.
+- Full persisted plans include expanded `Planning Basis` that records source shape/decision, locked decisions, assumed decisions, rejected options, blocking decisions, and the chosen abstraction level.
 - `Compatibility / Constraint Plan` that records the selected compatibility and constraint policy before execution.
-- `Output: compact` default: short plan summary, critical risks, and optional `Persist Candidate`.
-- `Full Persist Packet` only when the plan should be persisted now, used as a handoff, or `Output: full` is requested.
+- `Output: compact` default: shape summary, compact impact surface, plan sketch, blocking questions, next step, and optional `Persist Candidate`.
+- `Output: full` / `Full Persist Packet` only when the plan should be persisted now, used as a handoff, needs build-ready detail, or `Output: full` is requested.
 
 ## Task Boundary Check
 
@@ -86,6 +87,12 @@ User-selected lenses:
 Write the smallest useful plan for the user's current intent. In `Mode: discuss`, plans may be non-build-ready planning drafts when the user is still exploring sequencing, phases, or options. Only implementation handoff or build-ready plans must include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected when they matter.
 
 For implementation handoff or build-ready planning, every major step must use `Step / Change / Verify / Risk / Stop Condition`. For planning drafts, use phases, work packages, dependencies, assumptions, risks, and what would be needed to turn the draft into an implementation handoff. If verification is unclear, mark the plan as a `Planning Draft` rather than treating it as ready for `build`.
+
+Every plan, including compact chat output, must summarize the shaped or chosen direction before planning execution. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Do not force a shape artifact just to plan.
+
+Every plan, including compact chat output, must include a short `Impact Surface`. Compact impact surface is a planning reader aid, not a full audit; include only `Scope Size`, `Affected Surfaces`, `Risk`, and `Reversal Cost`.
+
+`Depth: detailed` is persisted artifact metadata, not a chat output mode. Keep chat output modes to `compact`, `normal`, and `full`.
 
 ## Abstraction Level Selection
 
@@ -131,6 +138,11 @@ In `Mode: discuss`, `plan` may output a `Planning Draft` before all execution de
 - `Implementation Handoff`: target files, allowed changes, do-not-touch, step verification, stop conditions, and handoff notes.
 - Include `Confidence`, `Assumptions`, `Human Decision State`, and `What Would Make This Implementation-Ready` when the plan is still a draft.
 - Do not let a planning draft imply execution authorization.
+- Use `Blocking Questions` for questions that affect current readiness or next-step eligibility.
+- Use `Follow-up Questions` only in normal/full outputs for non-blocking future considerations.
+- Do not list generic curiosity questions for completeness.
+- `implementation-plan` must have `Blocking Questions: none`.
+- `phase-plan` may have blocking questions, but each question must say what it blocks.
 
 ## Compatibility / Constraint Policy
 
@@ -167,13 +179,23 @@ In `Mode: discuss`, default to:
 
 ```text
 User Intent: <one line about what the user wants planned>
-Current Read: <optional one line about relevant plan/code/docs facts>
-Take:
-- <3-6 bullets>
-Risks/Unknowns:
-- <0-3 bullets>
+Shape Summary:
+- Source: <chat | shape artifact | inbox brief | decision | project docs>
+- Selected Direction: <one line>
+- Key Decisions: <1-3 bullets or none>
+- Assumptions: <0-2 bullets or none>
+Impact Surface:
+- Scope Size: <small | medium | large>
+- Affected Surfaces: <workflow core | task docs | templates | adapters | project docs | source code | tests | other>
+- Risk: <low | medium | high>
+- Reversal Cost: <low | medium | high>
+Plan:
+- <3-6 steps or phases>
+Blocking Questions:
+- <none | question plus what it blocks>
 Abstraction Level: <phase-plan|implementation-plan>
 Planning Draft: <yes/no; if yes, say what is missing for build-ready handoff>
+Next: <review | persist plan | build | sync | shape | none>
 Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
@@ -186,16 +208,28 @@ Use `Output: normal` when the user asks to整理, refine, or prepare the plan fo
 ```text
 User Intent: <one line about what the user wants planned>
 Current Read: <optional one line about relevant plan/code/docs facts>
+Shape Summary:
+- Source: <chat | shape artifact | inbox brief | decision | project docs>
+- Selected Direction: <chosen direction>
+- Key Decisions: <confirmed decisions that affect the plan>
+- Assumptions: <recommended defaults and risk if wrong>
+Impact Surface:
+- Scope Size: <small | medium | large>
+- Affected Surfaces: <surfaces>
+- Risk: <low | medium | high>
+- Reversal Cost: <low | medium | high>
 Refined Direction / Plan:
 - <target outcome, abstraction level, phase plan, key constraints, and readiness>
 Planning Basis:
-- <source shape/decision, locked decisions, assumed decisions, blocking decisions>
+- <source shape/decision, locked decisions, assumed decisions, rejected options, blocking decisions>
 What Would Make This Implementation-Ready:
 - <target files, allowed changes, verification, stop conditions, or missing decision>
 Discussion Notes To Preserve:
 - <phase constraint, sequencing reason, user correction, accepted risk, example, or weak-model handoff detail>
-Open Questions:
-- <question that blocks readiness or execution>
+Blocking Questions:
+- <none | question plus what it blocks>
+Follow-up Questions:
+- <none | non-blocking future consideration>
 Persist Candidate:
 - Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
@@ -214,8 +248,28 @@ Depth: detailed
 Thread: <thread>
 Topic: <topic>
 Suggested Target: .session/threads/<thread>/plan_<topic>.md
+Plan Summary:
+- Target Outcome: <what should be true after execution>
+- Recommended Path: <short sequence or phase summary>
+- Abstraction Level: <phase-plan | implementation-plan>
+- Readiness: <ready for build | ready for external-agent | needs review | needs more detail | blocked>
+- Next Action: <review | build | external-agent | sync | persist | shape | none>
+- Main Risk: <main risk or none>
+- Source Basis: <chat | shape artifact | inbox brief | decision | project docs>
 Plan Snapshot:
 - <target outcome, execution target, phase count, readiness, key constraint, key stop condition, next use>
+Shape Summary:
+- Source: <chat | shape artifact | inbox brief | decision | project docs>
+- Selected Direction: <one-line direction>
+- Key Decisions: <decisions that shape execution>
+- Assumptions: <defaults and risk if wrong>
+Impact Surface:
+- Scope Size: <small | medium | large>
+- Affected Surfaces: <surfaces>
+- Risk: <low | medium | high>
+- Reversal Cost: <low | medium | high>
+- Docs / Sync Impact: <none | suggested | required>
+- Build / Handoff Readiness: <ready | needs review | needs implementation-plan | blocked>
 Discussion Notes To Preserve:
 - <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
 Planning Basis:
@@ -225,6 +279,7 @@ Planning Basis:
 - Selection Reason: <shape recommendation | user request | inferred impact surface | readiness downgrade>
 - Locked Decisions: <confirmed decisions and sources>
 - Assumed Decisions: <recommended defaults and risk if wrong>
+- Rejected Options: <options rejected because they affect sequence, scope, or constraints; none if not relevant>
 - Blocking Decisions: <unresolved decisions blocking implementation-plan, or none>
 - Requires User Confirmation Before: <none | implementation-plan | build>
 Source Context:
@@ -265,6 +320,10 @@ Stop Conditions:
 - <when to stop and return to plan/review>
 Risks / Unknowns:
 - <execution risk or missing information>
+Blocking Questions:
+- <none | question plus what it blocks; implementation-plan requires none>
+Follow-up Questions:
+- <none | non-blocking future consideration>
 What Would Make This Implementation-Ready:
 - <missing target area, allowed change, verification, stop condition, or decision; none if already implementation-ready>
 Preserve From Discussion:
