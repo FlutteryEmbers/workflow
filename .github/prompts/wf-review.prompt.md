@@ -17,6 +17,7 @@ Rules:
 - Do not load templates.
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/review.md` as the task contract.
+- Treat `redteam` as an explicit critique posture: failure paths, counterarguments, hidden costs, and boundary breaks. Review still owns the verdict.
 - Give verdict and minimal repair direction when useful; do not create a full replacement design.
 
 Request:

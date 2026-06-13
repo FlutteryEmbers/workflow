@@ -212,7 +212,7 @@ Review-owned lenses remain available to `review`:
 
 | Lens | Use When |
 | :--- | :--- |
-| `redteam` | The current recommendation needs deliberate critique. |
+| `redteam` | Review needs an explicit critique posture: failure paths, counterexamples, hidden costs, or boundary breaks. |
 | `domain` | Terms, rules, ownership, boundaries, events, or conceptual model need a review verdict. |
 
 Folded into protocol:
@@ -345,17 +345,17 @@ With shape-first routing:
 
 Implicit preflight must not load templates, write files, run implementation, run tests, perform sync, apply unselected lenses, or do a full repository scan. In `Mode: persist` and `Mode: execute`, do not run implicit preflight; block when prerequisites are missing.
 
-## Built-in Safety Checks
+## Embedded Critique Check
 
-Built-in safety checks are core protocol, not a lens. They do not load `.workflow/lenses/redteam.md` and do not use the full `critique.md` template.
+Embedded critique checks are lightweight core protocol behavior, not a lens. They do not load `.workflow/lenses/redteam.md`, do not use the full `critique.md` template, and do not issue formal review verdicts.
 
-- `shape`: name key unknowns, risky assumptions, and whether a separate `review --lens redteam` is recommended.
+- `shape`: name key unknowns, risky assumptions, likely failure paths, and whether an explicit redteam critique is worth running later.
 - `plan`: include `Step / Change / Verify / Risk / Stop Condition` for major steps.
 - `build`: stop on unplanned scope expansion instead of editing beyond the explicit plan.
 - `sync`: use Project Docs Rules and output `docs blocked` when project-doc safety is unclear.
-- `review`: recommend `redteam` when the target is costly, ambiguous, or about to enter execution.
+- `review`: may use `redteam` only when explicitly selected as a critique posture.
 
-Safety checks should stay lightweight and should not block ordinary PoC discussion unless a write, execution, project docs update, source-of-truth decision, or irreversible change is at risk.
+Embedded critique should stay lightweight and should not block ordinary PoC discussion unless a write, execution, project docs update, source-of-truth decision, or irreversible change is at risk.
 
 ## Prompt Discipline
 

@@ -98,7 +98,7 @@ Before editing, check the plan's compatibility and constraint policy:
 
 Use minimal diff discipline: do not perform drive-by refactors, formatting churn, unrelated cleanup, or opportunistic rewrites. After each major plan step, record the verification evidence requested by the plan. If implementation reveals that scope must expand, stop and return to `plan` or `review` instead of editing beyond the plan scope.
 
-This stop-on-scope-expansion behavior is built-in safety, not the `redteam` lens. Do not perform redteam critique during `build`; route back to `review --lens redteam` when the plan appears unsafe or under-specified.
+This stop-on-scope-expansion behavior is embedded critique, not the `redteam` lens. Do not perform redteam critique during `build`; stop and route back to critique/review when the plan appears unsafe or under-specified.
 
 If `Mode: execute` or an explicit executable `Plan` is missing, do not modify files; explain what is needed to proceed.
 

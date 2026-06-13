@@ -90,8 +90,9 @@ Recommend the smallest path:
 - Suggest `architecture` for boundaries, dependency direction, public surfaces, or constraints.
 - For terminology or rules questions outside review, suggest `language`, `clarify`, or `shape` depending on the request; reserve `domain` for review.
 - Use thread inference and `persist` rules for multi-turn work with changing background; do not suggest a separate iteration lens.
-- Suggest `redteam` when a thread artifact will drive implementation, a plan will enter `build` or external-agent Implement, the work touches architecture boundaries, permissions, security, data migration, irreversible changes, project docs, high-cost tradeoffs, or the user asks to find problems, critique, identify pitfalls, or judge reasonableness.
-- Do not enable `redteam` automatically; output it only as a suggested lens unless the user explicitly selected it.
+- For vague or early ideas, route to `shape` with embedded critique check rather than redteam.
+- For an existing target where the user asks to find problems, critique, counterargue, identify pitfalls, or trace failure paths, recommend a review with explicit redteam critique posture.
+- Do not enable `redteam` automatically; output it only as a critique recommendation unless the user explicitly selected it.
 - Suggest `test` for verification planning.
 - Suggest `debug` for defects or uncertain runtime behavior.
 - Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across explicit session sources, project docs, code, tests, code-adjacent README files, workflow artifacts, prompts, templates, or archive summaries.

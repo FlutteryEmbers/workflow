@@ -6,7 +6,9 @@ Use OpenCode when it helps with context reading, plan drafting, or bounded imple
 
 Output flow: use `Output: compact` for general discussion, `Output: normal` to refine before persist, and `Output: full` for artifacts, handoffs, audits, or diff reviews.
 
-OpenCode may suggest `redteam` when risk triggers match, but must not auto-load or apply it. Use full `redteam` only when the user explicitly selected that lens or the prompt explicitly includes it.
+OpenCode may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically. Use full `redteam` only when the user explicitly selected that lens, asked for critique, or the prompt explicitly includes it.
+
+Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 
 Use core `Abstraction Level` rules when the user explicitly wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff.
 
@@ -269,7 +271,7 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this OpenCode plan draft before implementation.
+Audit this OpenCode plan draft before implementation with explicit critique posture.
 
 Return:
 Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked

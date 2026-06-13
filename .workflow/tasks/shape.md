@@ -85,7 +85,7 @@ Can Shape Now?: <yes/no>
 
 If missing evidence could change the recommendation, still provide a provisional shape by default. Label it as provisional, name the assumptions, and state `What Would Change My Mind`. Stop and output `Recommended Segments: explore -> shape` only when the missing evidence would affect execution, project docs, source-of-truth judgment, irreversible choices, security, permissions, data migration, or another high-impact decision. If the user actually needs a verdict, stop and recommend `review`. If the target is fixed and the user needs steps, recommend `plan`.
 
-`Risk Check` is built-in safety, not the `redteam` lens. Use it to name risky assumptions, likely failure modes, and whether a follow-up `review --lens redteam` is recommended. Do not load `.workflow/lenses/redteam.md` from `shape`.
+`Embedded Critique Check` is core protocol, not the `redteam` lens. Use it to name risky assumptions, likely failure paths, and whether a later explicit redteam critique is worth running. Do not load `.workflow/lenses/redteam.md` from `shape`, and do not output a formal review verdict.
 
 Lens use must not change task responsibility. `architecture` and `language` may help synthesize direction, but `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`. Option comparison is built into `shape`; it does not require a separate lens. Abstraction Level is core protocol; it does not require a lens.
 
@@ -184,7 +184,7 @@ You may provide a hypothesis-based recommendation when evidence is incomplete. L
 
 Do not let `shape` become a plan. It may describe a conceptual structure and validation direction, but must not output ordered implementation steps, target files, allowed changes, do-not-touch areas, or step-level verification.
 
-When a shape is likely to drive execution, involves costly reversal, or depends on unverified assumptions, include `Suggested Lens: redteam` as a recommendation rather than applying it automatically.
+When a shape is likely to drive execution, involves costly reversal, or depends on unverified assumptions, include `Suggested Critique: explicit redteam critique` as a recommendation rather than applying it automatically.
 
 ## Compact Output By Default
 

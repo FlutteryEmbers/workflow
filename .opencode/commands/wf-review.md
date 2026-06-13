@@ -13,6 +13,7 @@ Lens: none unless explicitly requested; allowed: redteam, consistency, test, arc
 Rules:
 - Do not edit files.
 - Review the target against the stated question or explicit plan.
+- Treat `redteam` as an explicit critique posture: failure paths, counterarguments, hidden costs, and boundary breaks. Review still owns the verdict.
 - For external plan audit or diff review, use `Output: full`.
 - Use `.workflow/tasks/review.md` as the task contract if needed.
 

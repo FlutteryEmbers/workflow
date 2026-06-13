@@ -7,7 +7,7 @@ Default to `Lens: none`. Add a lens only when the user explicitly names it or ad
 - `distill`: extract reusable structure and writing principles from strong reference documents.
 - `language`: control output language, terminology consistency, and project glossary updates.
 - `domain`: review-owned lens for terms, rules, ownership, boundaries, events, and conceptual model verdicts.
-- `redteam`: deliberately challenge assumptions, risks, boundaries, and failure modes.
+- `redteam`: review-owned critique posture for failure paths, counterexamples, hidden costs, and boundary breaks.
 - `test`: strengthen verification and acceptance evidence.
 - `architecture`: inspect boundaries, dependencies, interfaces, constraints, and structural tradeoffs.
 - `debug`: diagnose defects or uncertain runtime behavior.

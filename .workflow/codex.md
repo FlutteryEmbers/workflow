@@ -14,7 +14,8 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
 - Use core `Abstraction Level` rules when the user wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff.
-- Codex may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
+- Codex may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically.
+- Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 - Load templates only for `persist` or `sync` in `Mode: persist`.
 - Treat `.session/**` as working memory, not project source of truth.
 - Treat `.session/threads/**` as session working memory grouped by small closable work item.
@@ -276,7 +277,7 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this Codex native plan before implementation. Return ready, needs changes, blocked, or docs blocked.
+Audit this Codex native plan before implementation with explicit critique posture. Return ready, needs changes, blocked, or docs blocked.
 ```
 
 ### Bounded Implement

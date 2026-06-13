@@ -114,7 +114,7 @@ Block build-ready `implementation-plan` when any of these are unresolved:
 
 Include stable-document follow-up only when the planned change clearly affects architecture, public behavior, module responsibility, execution constraints, agent/human onboarding context, or thread closure. Do not force docs/archive impact analysis for small or temporary changes.
 
-If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend plan audit with `review --lens redteam,test`. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
+If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend a critique review plus verification review. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
 
 When the user asks for a phase plan, implementation plan, build-ready handoff, or weak-model handoff, declare the current `Abstraction Level`:
 

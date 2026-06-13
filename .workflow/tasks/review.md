@@ -92,7 +92,7 @@ Inspect the target and report findings first. Keep review scope explicit. A revi
 
 Do not create a full replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions, `Repair Direction`, and a `Minimal Revision Sketch`, but it should not become a design synthesis task.
 
-Default review is normal review. Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam`. Otherwise, you may output `Suggested Lens: redteam` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
+Default review is normal verdict-oriented review. Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam` or asks for critique, counterarguments, failure paths, or a hostile read. Otherwise, you may output `Suggested Critique: explicit redteam critique` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
 
 Lens use must not change task responsibility. `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, and `architecture` may deepen the verdict, but `review` must not become evidence-only `explore`, full synthesis-oriented `shape`, or executable `plan`.
 
@@ -113,7 +113,7 @@ For non-trivial reviews, include a readiness dashboard:
 - `Blocking Gaps`: issues that must be resolved before the next write or implementation step.
 - `Non-blocking Gaps`: issues that can be tracked without blocking.
 - `Recommended Action`: `none | persist | sync project-docs | sync session-archive | shape | plan | build | external-agent`.
-- `Suggested Lens`: `redteam` or `none`.
+- `Suggested Critique`: `explicit redteam critique` or `none`.
 
 ## External Plan Audit
 

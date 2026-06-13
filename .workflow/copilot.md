@@ -154,7 +154,8 @@ Discovery vs judgment rule:
 - Default to `Lens: none`.
 - Multiple lenses are allowed in `Mode: discuss` only when the user explicitly lists them.
 - Copilot may recommend lenses, but must not load or apply them automatically.
-- Copilot may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
+- Copilot may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically.
+- Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Candidate` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
