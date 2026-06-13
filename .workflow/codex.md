@@ -40,7 +40,8 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `explore`: `Candidate Interpretations`, `Likely Entry Points`, `Borrowable Ideas`.
 - `review`: `Minimal Revision Sketch`, `Repair Direction`.
 - `plan`: non-build-ready `Planning Draft` when execution detail is not requested yet.
-- Add `Confidence`, `Assumptions`, and `Human Decision Needed` when uncertainty or impact is material.
+- Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
+- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
 Discussion freedom does not permit file writes, stable-document sync, implementation, or source-of-truth decisions.
 

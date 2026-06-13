@@ -22,7 +22,8 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, OpenCode may provi
 - `explore` may output `Candidate Interpretations`, `Likely Entry Points`, and `Borrowable Ideas`.
 - `review` may output `Minimal Revision Sketch` and `Repair Direction`.
 - `plan` may output a non-build-ready `Planning Draft`.
-- Include `Confidence`, `Assumptions`, and `Human Decision Needed` for uncertain or consequential output.
+- Include `Confidence`, `Assumptions`, and `Human Decision State` for uncertain or consequential output.
+- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
 This does not loosen `/wf-build`, `persist`, `sync`, or external-agent write boundaries.
 

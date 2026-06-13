@@ -26,6 +26,10 @@
 ## Decision Snapshot
 
 - Abstraction Level: {{concept | none}}
+- Human Decision State: {{none | assumed | checkpoint | blocking}}
+- Decision State Reason: {{why this state applies}}
+- Assumed Default: {{recommended default or none}}
+- Checkpoint Needed: {{yes | no}}
 - Current Recommendation: {{one-paragraph recommendation}}
 - Core Boundary: {{main in/out boundary}}
 - Narrowest Useful Wedge: {{smallest scope that can validate the goal}}
@@ -48,6 +52,22 @@
 - Assumed Decisions: {{recommended defaults, why they are acceptable for advisory planning, and risk if wrong}}
 - Blocking Decisions: {{unresolved choices that prevent implementation-plan, or none}}
 
+## User Checkpoint
+
+> Include only when `Human Decision State: checkpoint`. Do not write a final recommendation or persist candidate until the user selects an option.
+
+- Question: {{what the user is deciding}}
+- Why Now: {{why this choice matters before shape can continue}}
+- Recommended Option: {{option id}}
+- Options:
+  - ID: {{option id}}
+    Label: {{label; recommended option includes "(Recommended)"}}
+    Explanation: {{what happens if selected}}
+    Why Choose This: {{when this option fits}}
+    Risk: {{tradeoff or downside}}
+- Default If Skipped: {{recommended default}}
+- Continue After Selection: {{how shape continues after selection}}
+
 ## Discussion Notes To Preserve
 
 {{preserve any discussion detail that would help future readers understand, revise, implement, or audit this shape. This may include user corrections, user preferences, examples, counterexamples, phase boundaries, constraints mentioned in chat, why the recommendation changed, accepted risks, or details a weaker model might otherwise miss. Do not preserve full transcript or conversational noise.}}
@@ -65,7 +85,6 @@
 - In Scope: {{included work, behavior, or concept}}
 - Out Of Scope: {{excluded work, behavior, or concept}}
 - Do Not Assume: {{assumption or inference future work must not make}}
-- Human Decision Needed: {{yes/no and why}}
 
 > Use `Compatibility: breaking` or `Constraint Mode != respect` only when explicitly requested by the user or explicit source.
 

@@ -49,8 +49,9 @@ Request: ${input:request:describe the work}
 - Evidence-only requests go to `explore`; verdict-only requests go to `review`.
 - Lenses may strengthen the selected task, but must not change task responsibility.
 - Discussion freedom applies only in `Mode: discuss`: AI may provide `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Minimal Revision Sketch`, and `What Would Change My Mind` as thinking material.
-- For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision Needed`.
+- For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision State`.
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
+- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available; otherwise output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 - Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate direction, staged planning, and execution handoff. `shape` normally produces `concept` and records `Impact Surface` plus `Recommended Next Abstraction Level` when it may feed planning. `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one; default to `phase-plan` when uncertain. `build` does not require this label and still relies on explicit plan executability.
 - Read-only preflight is allowed only in `Mode: discuss`; do not load templates, write files, run implementation, or apply unselected deep lenses during preflight.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.

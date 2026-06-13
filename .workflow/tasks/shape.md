@@ -94,9 +94,37 @@ Lens use must not change task responsibility. `architecture` and `language` may 
 In `Mode: discuss`, the user remains responsible for final judgment. `shape` should provide useful thinking material instead of over-blocking.
 
 - You may output `Provisional Recommendation`, `Candidate Options`, `Best Guess`, and `What Would Change My Mind`.
-- Include `Confidence`, `Assumptions`, and `Human Decision Needed` when the recommendation is uncertain or consequential.
+- Include `Confidence`, `Assumptions`, and `Human Decision State` when the recommendation is uncertain or consequential.
 - Do not present provisional recommendations as approval, readiness, source of truth, or permission to execute.
 - Keep strict write and execution boundaries unchanged; discussion freedom does not allow file writes, stable-document sync, or implementation.
+
+## Human Decision State / User Checkpoint
+
+`Human Decision State` is shape control flow and must appear after `Current Read` and before `Take`, recommendation, or impact analysis.
+
+- `none`: no user-owned choice blocks the shape; continue normally.
+- `assumed`: a low-risk choice exists; choose the recommended default, continue shaping, and record it under `Assumed Decisions`.
+- `checkpoint`: a consequential choice can be expressed as 2-3 real options; output one `User Checkpoint` and stop. Do not output final `Take`, `Provisional Recommendation`, `Impact Surface`, or `Persist Candidate` in the same response.
+- `blocking`: the choice is too risky or under-specified to express safely; stop and name the missing evidence or decision.
+
+Use `checkpoint` for choices that affect direction, scope, source of truth, compatibility, constraint policy, artifact boundary, or next planning level. Use at most one checkpoint per shape turn.
+
+Checkpoint output:
+
+```text
+User Checkpoint
+- Question: <choice>
+- Why Now: <why the shape cannot safely finalize this without user input>
+- Recommended Option: <id>
+- Options:
+  - ID: <id>
+    Label: <label (Recommended) for the first option>
+    Explanation: <effect>
+    Why Choose This: <fit>
+    Risk: <tradeoff>
+- Default If Skipped: <recommended default>
+- Continue After Selection: continue shape and update Locked/Assumed/Blocking Decisions
+```
 
 Always output `Abstraction Level: concept` when the shape may feed later planning. Keep the result at concept level: goal, principles, boundaries, key tradeoffs, success criteria, non-goals, impact surface, and validation direction. Do not produce ordered implementation steps, target files, allowed changes, or step-level verification from `shape`.
 
@@ -159,7 +187,7 @@ Compatibility / Constraint Check
 - Breaking Option Available: yes/no
 - Constraint Tension: none | mild | strong
 - Suggested Policy: preserve | consider breaking | consider override | prototype exception
-- Human Decision Needed: yes/no
+- Human Decision State: none | assumed | checkpoint | blocking
 ```
 
 If `Compatibility: breaking` or `Constraint Mode != respect` is explicitly requested, label it as user-requested. If it is only suggested, keep the active policy as `preserve` and `respect`.
@@ -193,6 +221,13 @@ In `Mode: discuss`, default to:
 ```text
 User Intent: <one line about what the user wants shaped>
 Current Read: <optional one line about relevant code/docs/discussion facts>
+Decision State:
+- Human Decision State: <none|assumed|checkpoint|blocking>
+- Decision State Reason: <why this state applies>
+- Assumed Default: <recommended default or none>
+- Checkpoint Needed: <yes/no>
+User Checkpoint: <only when state is checkpoint; then stop before Take>
+Blocking Reason: <only when state is blocking; then stop before Take>
 Take:
 - <3-6 bullets>
 Risks/Unknowns:
@@ -205,7 +240,6 @@ Impact Surface:
 - Execution Risk: <low|medium|high>
 - User Confirmation Needed Before: <none|phase-plan|implementation-plan|build>
 - Recommended Next Abstraction Level: <phase-plan|implementation-plan>
-Human Decision Needed: <yes/no and why>
 Persist Candidate: Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
 ```
 
@@ -218,6 +252,13 @@ Use `Output: normal` when the user asks to整理, refine, or prepare the discuss
 ```text
 User Intent: <one line about what the user wants shaped>
 Current Read: <optional one line about relevant code/docs/discussion facts>
+Decision State:
+- Human Decision State: <none|assumed|checkpoint|blocking>
+- Decision State Reason: <why this state applies>
+- Assumed Default: <recommended default or none>
+- Checkpoint Needed: <yes/no>
+User Checkpoint: <only when state is checkpoint; then stop before Refined Direction>
+Blocking Reason: <only when state is blocking; then stop before Refined Direction>
 Refined Direction:
 - <current recommendation, abstraction level, concept structure, boundaries, impact surface, and validation direction>
 What Would Change My Mind:
@@ -232,7 +273,7 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a handoff artifact:
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a handoff artifact. Do not output a full persist packet when `Human Decision State` is `checkpoint` or `blocking`.
 
 ```text
 Persist Packet:
@@ -247,6 +288,11 @@ Topic: <topic>
 Suggested Target: .session/threads/<thread>/shape_<topic>.md or .session/threads/<thread>/decision_<topic>.md
 Decision Snapshot:
 - <current recommendation, core boundary, narrowest wedge, success criteria, key risk, next use>
+Decision State:
+- Human Decision State: <none|assumed>
+- Decision State Reason: <why this state applies>
+- Assumed Default: <recommended default or none>
+- Checkpoint Needed: no
 Discussion Notes To Preserve:
 - <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
 Source Context:

@@ -137,7 +137,8 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be use
 - `explore` may output `Candidate Interpretations`, `Likely Entry Points`, and `Borrowable Ideas`.
 - `review` may output `Minimal Revision Sketch` and `Repair Direction`.
 - `plan` may output a non-build-ready `Planning Draft`.
-- Include `Confidence`, `Assumptions`, and `Human Decision Needed` when the output is uncertain or consequential.
+- Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
+- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
 Do not treat discussion freedom as write permission. `persist`, `sync`, `build`, and external-agent implementation keep their normal boundaries.
 

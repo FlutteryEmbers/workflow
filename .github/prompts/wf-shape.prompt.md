@@ -20,6 +20,10 @@ Rules:
 - Shape may consume the current chat goal directly or a `.session/inbox/**` brief with `Brief Type: external-goal`.
 - Do not require an inbox goal brief when the conversation already contains enough context.
 - Provide provisional thinking when useful; do not present it as approval, readiness, or execution permission.
+- Put `Decision State` after `Current Read` and before `Take`.
+- If `Human Decision State: checkpoint`, output one `User Checkpoint` and stop before `Take`, `Provisional Recommendation`, `Impact Surface`, or `Persist Candidate`.
+- If `Human Decision State: blocking`, stop and name the missing evidence or decision.
+- If `Human Decision State: assumed`, continue and record the default in `Assumed Decisions`.
 - Output `Abstraction Level: concept` when concept structure may feed planning.
 - Include `Impact Surface` and `Recommended Next Abstraction Level` when this shape may feed planning.
 
@@ -29,10 +33,11 @@ ${input:request:describe the what-if, option, concept, or direction-setting ques
 Return:
 - User Intent
 - Current Read, optional
+- Decision State
+- User Checkpoint, only when checkpoint and then stop
 - Abstraction Level, when concept structure is relevant
 - Take
 - Risks/Unknowns
 - Provisional Recommendation
 - Impact Surface, when planning may follow
-- Human Decision Needed
 - Persist Candidate, candidate only and do not write

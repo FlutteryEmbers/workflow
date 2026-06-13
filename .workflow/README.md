@@ -174,9 +174,41 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is think
 - `explore` may provide `Candidate Interpretations`, `Likely Entry Points`, and `Borrowable Ideas`.
 - `review` may provide `Minimal Revision Sketch` and `Repair Direction`.
 - `plan` may provide a non-build-ready `Planning Draft`.
-- Discussion output should include `Confidence`, `Assumptions`, and `Human Decision Needed` when uncertainty or impact is material.
+- Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 
 These freedoms do not loosen write or execution boundaries. `persist`, `sync`, and `build` keep their existing target and prerequisite rules.
+
+## User Checkpoint
+
+`User Checkpoint` is a shape-first interactive checkpoint, not a task, lens, or persisted artifact. V1 uses it only inside `shape` to handle consequential user-owned choices before a recommendation is finalized.
+
+`shape` must treat human decision handling as control flow, not tail metadata:
+
+- `Human Decision State: none`: no user-owned choice blocks the shape; continue normally.
+- `Human Decision State: assumed`: a low-risk choice exists; choose the recommended default, continue, and record it in `Assumed Decisions`.
+- `Human Decision State: checkpoint`: a consequential choice can be expressed as 2-3 options; output one `User Checkpoint` and stop before final recommendation or `Persist Candidate`.
+- `Human Decision State: blocking`: the choice is too risky or under-specified to express safely; stop and name what evidence or decision is missing.
+
+Use a checkpoint for shape choices that affect direction, scope, source of truth, compatibility, constraint policy, artifact boundary, or next planning level. Do not checkpoint ordinary low-risk preferences or facts that can be discovered by read-only preflight.
+
+Checkpoint structure:
+
+```text
+User Checkpoint
+- Question: <what the user is deciding>
+- Why Now: <why this choice matters before continuing>
+- Recommended Option: <option id>
+- Options:
+  - ID: <stable id>
+    Label: <short label; recommended option includes "(Recommended)">
+    Explanation: <what happens if selected>
+    Why Choose This: <when this option fits>
+    Risk: <tradeoff or downside>
+- Default If Skipped: <recommended default>
+- Continue After Selection: <how shape continues after the user selects>
+```
+
+Use 2-3 mutually exclusive options and put the recommended option first. If a native user-input UI is available, use it for the question and options; otherwise output the structured checkpoint and wait for the user's selection.
 
 For repository conflicts:
 

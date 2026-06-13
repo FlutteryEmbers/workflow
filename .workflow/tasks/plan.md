@@ -129,7 +129,7 @@ In `Mode: discuss`, `plan` may output a `Planning Draft` before all execution de
 
 - `Planning Draft`: phases, sequencing, dependencies, assumptions, risks, and open decisions; not build-ready.
 - `Implementation Handoff`: target files, allowed changes, do-not-touch, step verification, stop conditions, and handoff notes.
-- Include `Confidence`, `Assumptions`, `Human Decision Needed`, and `What Would Make This Implementation-Ready` when the plan is still a draft.
+- Include `Confidence`, `Assumptions`, `Human Decision State`, and `What Would Make This Implementation-Ready` when the plan is still a draft.
 - Do not let a planning draft imply execution authorization.
 
 ## Compatibility / Constraint Policy

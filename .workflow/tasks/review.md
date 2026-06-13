@@ -102,7 +102,7 @@ In `Mode: discuss`, review may help the human decide what to do next without tak
 
 - You may output `Minimal Revision Sketch` and `Repair Direction` when they make the verdict actionable.
 - Keep the sketch minimal: name the direction of change, not a full replacement architecture or implementation plan.
-- Include `Confidence`, `Assumptions`, and `Human Decision Needed` when the verdict or repair direction depends on incomplete evidence.
+- Include `Confidence`, `Assumptions`, and `Human Decision State` when the verdict or repair direction depends on incomplete evidence.
 - Do not treat a sketch as approval to write files or execute work.
 
 For non-trivial reviews, include a readiness dashboard:
