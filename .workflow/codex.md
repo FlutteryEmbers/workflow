@@ -1,12 +1,13 @@
 # Codex Adapter
 
-Codex support is a manual adapter. It does not add `AGENTS.md`, does not replace `.workflow/tasks/**`, and does not create a separate Codex workflow.
+Codex support is a manual adapter. It does not add `AGENTS.md`, does not replace `.workflow/tasks/**`, and does not create a separate Codex workflow. This repo also includes an optional `workflow-lite-shortcuts` skill source for short task phrases; the skill is a shortcut layer only.
 
 Use this file when you want Codex to follow Workflow Lite explicitly. Add only the task, selected lenses, templates, session artifacts, project docs, and source files needed for the current request.
 
 ## Core Rules
 
 - `.workflow/README.md` is the workflow source of truth.
+- Optional shortcut skill source: `skills/workflow-lite-shortcuts/`. Install it into `$CODEX_HOME/skills` or `~/.codex/skills` only when you want phrases like `wf shape`, `wf plan`, or `wf build` to map to the matching `.workflow/tasks/<task>.md`.
 - Default to `Mode: discuss`.
 - Default to `Output: compact` for general discussion; use `Output: normal` to refine before persist and `Output: full` for artifacts, handoffs, audits, or diff reviews.
 - For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact.

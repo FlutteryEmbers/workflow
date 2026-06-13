@@ -548,6 +548,9 @@ Recommended Copilot chain:
 ## Using With Codex
 
 - Codex support is manual. This project does not add `AGENTS.md` by default.
+- Optional Codex shortcut skill source lives at `skills/workflow-lite-shortcuts/`.
+- Install or link that skill into `$CODEX_HOME/skills` or `~/.codex/skills` to use short task phrases such as `wf shape`, `wf plan`, `wf review`, and `wf build`.
+- The skill is only a shortcut layer. It maps a requested task to `.workflow/tasks/<task>.md` and does not replace `.workflow/**`.
 - Add or read `.workflow/codex.md` when you want Codex to follow Workflow Lite.
 - Do not load all `.workflow/**`; use one task, explicitly selected lenses, and relevant context.
 - Template files are persist-only and should be loaded only for `persist` or `sync` in `Mode: persist`.

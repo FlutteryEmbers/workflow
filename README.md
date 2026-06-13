@@ -19,6 +19,8 @@ Read [.workflow/README.md](.workflow/README.md) for the full workflow guide.
 Read [.workflow/codex.md](.workflow/codex.md) when using Codex manually.
 Read [.workflow/opencode.md](.workflow/opencode.md) when using OpenCode.
 
+For Codex, this repo includes an optional source skill at `skills/workflow-lite-shortcuts/`. Copy or link it into `$CODEX_HOME/skills` or `~/.codex/skills` to enable short task phrases such as `wf shape`, `wf plan`, and `wf build`. The skill is only a shortcut layer; `.workflow/**` remains the protocol source of truth.
+
 For Copilot, use dedicated GitHub prompt commands for common work: `/wf-route`, `/wf-clarify`, `/wf-explore`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync`. Use `workflow-lite.prompt.md` as fallback/router for mixed or full-protocol requests.
 
 ## Embedding Rule
