@@ -106,7 +106,7 @@ Do not treat native Plan/Implement output as workflow-managed execution unless t
 
 Do not treat path status as approval. A plan under `.session/threads/**` is executable only when the user invokes `build` with it and it is concrete enough to execute safely.
 
-Do not infer execution authorization from the `conceptual` lens or from any `Abstraction Level` label. The user invoking `build` with an explicit executable plan is the authorization; the plan still must name scope, target files, allowed changes, verification, and stop conditions.
+Do not infer execution authorization from any `Abstraction Level` label. The user invoking `build` with an explicit executable plan is the authorization; the plan still must name scope, target files, allowed changes, verification, and stop conditions.
 
 Do not execute `notes/**`. Exploration notes are disposable working memory and must be converted into a concrete plan under `.session/threads/**` or provided as an explicit executable plan before implementation.
 

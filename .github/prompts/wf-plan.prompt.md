@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite plan command for planning drafts, repo-aware plans, and external-agent handoffs.
-argument-hint: "Request=<planning request>; Lens=<none|strategy|conceptual|test|architecture|iteration|expand|language>; Output=<compact|full>"
+argument-hint: "Request=<planning request>; Lens=<none|architecture|test|language>; Output=<compact|full>"
 ---
 
 # wf-plan

@@ -8,7 +8,7 @@ Use dedicated workflow prompt commands for common Copilot work:
 
 - `/wf-route`: choose the smallest useful next path.
 - `/wf-clarify`: explain terms, prior answers, statements, assumptions, or request boundaries.
-- `/wf-shape`: discuss what-if, strategy, conceptual, or direction-setting work.
+- `/wf-shape`: discuss what-if, option-comparison, concept-level, or direction-setting work.
 - `/wf-plan`: produce a planning draft, repo-aware plan, or handoff.
 - `/wf-review`: review plans, diffs, docs/code drift, or artifacts.
 - `/wf-persist`: write `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
@@ -28,7 +28,7 @@ Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear tas
 Mode: <discuss|persist|execute>
 Output: <compact|normal|full>
 Task: <route|clarify|explore|shape|plan|persist|build|review|sync>
-Lens: <none|iteration|expand|consistency|distill|language|domain|strategy|conceptual|redteam|test|architecture|debug>
+Lens: <none|consistency|distill|language|domain|redteam|test|architecture|debug>
 Artifact: <required for persist unless target is explicit>
 Artifact State: <inbox|working|settled|superseded; for persist metadata>
 Thread: <thread-name; for persist thread target inference>
@@ -122,7 +122,7 @@ Persist Candidate:
 When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, and `review` for verdict.
 
 - `clarify = explain/restate/unpack`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
-- `shape = synthesis`: ambiguous, what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests.
+- `shape = synthesis`: ambiguous, what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
@@ -158,7 +158,7 @@ Discovery vs judgment rule:
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Candidate` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
-Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate direction, staged planning, and execution handoff. `shape` normally produces `concept` and records `Impact Surface` plus `Recommended Next Abstraction Level` when it may feed planning. `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one; inherit the shape recommendation when present, otherwise infer from the request and read-only preflight, defaulting to `phase-plan` when uncertain. `strategy` compares routes; `conceptual` controls the abstraction level when explicitly selected.
+Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate direction, staged planning, and execution handoff. `shape` normally produces `concept` and records `Impact Surface` plus `Recommended Next Abstraction Level` when it may feed planning. `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one; inherit the shape recommendation when present, otherwise infer from the request and read-only preflight, defaulting to `phase-plan` when uncertain. Option comparison is built into `shape`; abstraction level is core protocol.
 
 ## Write Boundaries
 

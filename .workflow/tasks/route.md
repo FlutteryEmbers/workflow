@@ -6,19 +6,7 @@ inputs:
   - user_goal
 outputs:
   - chat_route
-user_selectable_lenses:
-  - iteration
-  - expand
-  - consistency
-  - distill
-  - language
-  - domain
-  - strategy
-  - conceptual
-  - redteam
-  - test
-  - architecture
-  - debug
+user_selectable_lenses: []
 done_check:
   - next_task_is_named
   - write_path_is_clear
@@ -76,7 +64,7 @@ Boundary classes:
 Recommend the smallest path:
 
 - When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
-- Ambiguous what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests default to `shape`.
+- Ambiguous what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests default to `shape`.
 - Evidence-only requests such as reading code, finding entrypoints, checking docs, understanding behavior, or studying references go to `explore`.
 - Existence and discovery questions such as "does this repo have X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
 - Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
@@ -97,11 +85,11 @@ Recommend the smallest path:
 
 ## Lens Suggestions
 
-- Suggest `strategy` for route comparison or technical direction.
-- Suggest `conceptual` for concept-first planning, phase plans, low-level implementation plans, strong-model-to-weak-model handoff, or requests to avoid premature code-level detail.
+- Use `shape` built-in option comparison for route comparison or technical direction; do not suggest a separate strategy lens.
+- Use core `Abstraction Level` rules for concept-first planning, phase plans, implementation plans, strong-model-to-weak-model handoff, or requests to avoid premature code-level detail; do not suggest a separate conceptual lens.
 - Suggest `architecture` for boundaries, dependency direction, public surfaces, or constraints.
-- Suggest `domain` for terminology, rules, ownership, and conceptual model questions.
-- Suggest `iteration` for multi-turn work with changing background.
+- For terminology or rules questions outside review, suggest `language`, `clarify`, or `shape` depending on the request; reserve `domain` for review.
+- Use thread inference and `persist` rules for multi-turn work with changing background; do not suggest a separate iteration lens.
 - Suggest `redteam` when a thread artifact will drive implementation, a plan will enter `build` or external-agent Implement, the work touches architecture boundaries, permissions, security, data migration, irreversible changes, project docs, high-cost tradeoffs, or the user asks to find problems, critique, identify pitfalls, or judge reasonableness.
 - Do not enable `redteam` automatically; output it only as a suggested lens unless the user explicitly selected it.
 - Suggest `test` for verification planning.
@@ -110,7 +98,7 @@ Recommend the smallest path:
 - Do not suggest `consistency` for discovery questions like whether a capability exists, where it is implemented, or how reliable the evidence is.
 - Suggest `language` for terminology or output language.
 - Suggest `distill` for learning structure from strong reference material.
-- Suggest `expand` when a compact decision or plan needs examples, pseudocode, or split parts.
+- Use `Output: normal|full` or persist `Depth: detailed` when a compact decision or plan needs examples, pseudocode, or split parts; do not suggest a separate expand lens.
 
 ## Output Format
 

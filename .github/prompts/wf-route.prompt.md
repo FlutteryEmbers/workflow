@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite route command for choosing the smallest useful next path.
-argument-hint: "Request=<goal or mixed request>; Lens=<optional explicit lenses>"
+argument-hint: "Request=<goal or mixed request>; Lens=<none; route recommends lenses only>"
 ---
 
 # wf-route
@@ -10,7 +10,7 @@ Use Workflow Lite route semantics.
 Mode: discuss
 Output: compact
 Task: route
-Lens: ${input:lens:none}
+Lens: none
 
 Rules:
 - Chat only; do not write files.

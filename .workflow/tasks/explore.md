@@ -9,11 +9,10 @@ outputs:
   - persist_hint
   - full_persist_packet
 user_selectable_lenses:
-  - distill
   - architecture
   - debug
+  - distill
   - language
-  - domain
 done_check:
   - evidence_is_named
   - unknowns_are_listed
@@ -45,7 +44,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Do Not Use When
 
 - Do not use to make the final direction decision; use `shape`.
-- Do not use for ambiguous what-if, route-comparison, conceptual, or direction-setting requests unless the user primarily asks for evidence.
+- Do not use for ambiguous what-if, route-comparison, concept-level, or direction-setting requests unless the user primarily asks for evidence.
 - Do not use to judge whether a plan, diff, or implementation is acceptable; use `review`.
 - Do not use to decide whether docs or code should be modified; use `review` for verdicts and `sync` or `plan/build` only after that verdict.
 - Do not use to create executable steps; use `plan`.
@@ -116,7 +115,7 @@ Use this structure for non-trivial output:
 - `Potential Options`: candidate materials for `shape`; these are not final recommendations.
 - `Recommended Next Task`: usually `shape`, `review`, `plan`, `persist`, or `sync`.
 
-Lens use must not change task responsibility. `distill`, `architecture`, `debug`, `domain`, and `language` may improve evidence extraction, but `explore` must not present candidate interpretations as final synthesis or verdict.
+Lens use must not change task responsibility. `distill`, `architecture`, `debug`, and `language` may improve evidence extraction, but `explore` must not present candidate interpretations as final synthesis or verdict.
 
 Use this shape for conflict reliability notes:
 

@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite stable-object sync command for project docs or session archive summaries.
-argument-hint: "Sync Domain=<project-docs|session-archive>; Sync Object=<architecture|feature|reference|code-readme|archive-summary|all>; Scope=<area/thread>; Target Directory=<optional>; Target=<docs path, src README, or archive summary>; Source Of Truth=<source>; Request=<sync request>"
+argument-hint: "Sync Domain=<project-docs|session-archive>; Sync Object=<architecture|feature|reference|code-readme|archive-summary|all>; Lens=<none|consistency|architecture|distill|language>; Scope=<area/thread>; Target Directory=<optional>; Target=<docs path, src README, or archive summary>; Source Of Truth=<source>; Request=<sync request>"
 ---
 
 # wf-sync

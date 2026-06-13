@@ -22,10 +22,9 @@ outputs:
   - .session/archive/**/summary.md
 user_selectable_lenses:
   - consistency
+  - architecture
   - distill
   - language
-  - domain
-  - architecture
 done_check:
   - sync_domain_is_named
   - source_is_confirmed

@@ -2,12 +2,12 @@
 description: Workflow Lite shape discussion, compact by default.
 ---
 
-Use Workflow Lite for direction-setting and conceptual design.
+Use Workflow Lite for direction-setting and concept design.
 
 Mode: discuss
 Output: compact
 Task: shape
-Lens: none unless explicitly requested
+Lens: none unless explicitly requested; allowed: architecture, language
 
 Rules:
 - Do not edit files.
@@ -17,7 +17,7 @@ Rules:
 - Shape may consume the current chat goal directly or a `.session/inbox/**` brief with `Brief Type: external-goal`.
 - Do not require an inbox goal brief when the conversation already contains enough context.
 - If evidence is missing and could change the answer, recommend `explore -> shape`.
-- Output `Abstraction Level: concept` for conceptual shape work.
+- Output `Abstraction Level: concept` when concept structure may feed planning.
 - Include `Impact Surface` and `Recommended Next Abstraction Level` when this shape may feed planning.
 
 Request:

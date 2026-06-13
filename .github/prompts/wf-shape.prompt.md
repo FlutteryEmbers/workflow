@@ -1,6 +1,6 @@
 ---
-description: Workflow Lite shape command for what-if, strategy, conceptual, and direction-setting discussion.
-argument-hint: "Request=<direction question>; Lens=<none|strategy|conceptual|domain|architecture|iteration|expand|distill|language|redteam>"
+description: Workflow Lite shape command for what-if, option-comparison, concept-level, and direction-setting discussion.
+argument-hint: "Request=<direction question>; Lens=<none|architecture|language>"
 ---
 
 # wf-shape
@@ -20,11 +20,11 @@ Rules:
 - Shape may consume the current chat goal directly or a `.session/inbox/**` brief with `Brief Type: external-goal`.
 - Do not require an inbox goal brief when the conversation already contains enough context.
 - Provide provisional thinking when useful; do not present it as approval, readiness, or execution permission.
-- Output `Abstraction Level: concept` for conceptual shape work.
+- Output `Abstraction Level: concept` when concept structure may feed planning.
 - Include `Impact Surface` and `Recommended Next Abstraction Level` when this shape may feed planning.
 
 Request:
-${input:request:describe the what-if, strategy, concept, or direction-setting question}
+${input:request:describe the what-if, option, concept, or direction-setting question}
 
 Return:
 - User Intent

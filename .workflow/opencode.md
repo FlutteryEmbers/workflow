@@ -8,7 +8,7 @@ Output flow: use `Output: compact` for general discussion, `Output: normal` to r
 
 OpenCode may suggest `redteam` when risk triggers match, but must not auto-load or apply it. Use full `redteam` only when the user explicitly selected that lens or the prompt explicitly includes it.
 
-Use `conceptual` only when the user explicitly wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff. It is not loaded by default.
+Use core `Abstraction Level` rules when the user explicitly wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff.
 
 When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility.
 
@@ -28,7 +28,7 @@ Default to `Compatibility: preserve` and `Constraint Mode: respect`. Breaking co
 
 Task shortcut:
 
-- `shape = synthesis`: ambiguous, what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests.
+- `shape = synthesis`: ambiguous, what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
@@ -47,14 +47,14 @@ Compatibility / constraint rule:
 - `build` and bounded implement must stop on unplanned compatibility removal, alias removal, migration removal, fallback removal, or constraint bypass.
 - `prototype_exception` is temporary PoC scope, not a durable project constraint.
 
-Conceptual planning rule:
+Abstraction level rule:
 
-- `shape --lens conceptual` defaults to `Abstraction Level: concept`.
+- `shape` produces `Abstraction Level: concept`.
 - `shape` records `Impact Surface` and `Recommended Next Abstraction Level` when it may feed planning.
 - `plan` automatically chooses `Abstraction Level: phase-plan` or `implementation-plan` unless the user explicitly names one.
 - `plan` inherits a shape artifact's `Recommended Next Abstraction Level` when present; without that, infer from the request and read-only preflight, defaulting to `phase-plan` when uncertain.
 - `implementation-plan` is only for build-ready planning, external-agent handoff, weak-model handoff, or explicit execution preparation.
-- `strategy` compares options; `conceptual` controls abstraction level.
+- Option comparison is built into `shape`; abstraction level is core protocol.
 - `/wf-build` does not require an `Abstraction Level` label; it still requires an explicit executable plan.
 
 Exploration notes:
@@ -125,7 +125,7 @@ Default commands:
 - `/wf`: route a request and recommend the smallest path.
 - `/wf-clarify`: explain terms, prior answers, statements, assumptions, scope, and success criteria.
 - `/wf-explore`: extract read-only evidence from code, docs, references, or unfamiliar repos.
-- `/wf-shape`: discuss direction, what-if, strategy, or conceptual design.
+- `/wf-shape`: discuss direction, what-if, option comparison, or concept design.
 - `/wf-plan`: draft a repo-aware plan or external-agent handoff.
 - `/wf-review`: review a plan, diff, code/docs claim, or readiness question.
 - `/wf-persist`: persist `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
@@ -163,7 +163,7 @@ Use only the files needed for the current step.
 - `.workflow/tasks/route.md` for choosing a path.
 - `.workflow/tasks/clarify.md` for goal, scope, constraints, and success criteria.
 - `.workflow/tasks/explore.md` for read-only evidence extraction.
-- `.workflow/tasks/shape.md` for ambiguous, what-if, strategy, conceptual, or direction-setting work.
+- `.workflow/tasks/shape.md` for ambiguous, what-if, option-comparison, concept-level, or direction-setting work.
 - `.workflow/tasks/review.md` for plan audit or diff review.
 - `.workflow/tasks/plan.md` for a repo-aware handoff.
 - `.workflow/tasks/persist.md` for session artifact persistence.

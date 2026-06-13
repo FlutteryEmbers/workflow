@@ -8,6 +8,7 @@ Use Workflow Lite sync semantics.
 Mode: persist
 Task: sync
 Output: full
+Lens: none unless explicitly requested; allowed: consistency, architecture, distill, language
 
 Rules:
 - Write only stable-document targets for the selected domain: `docs/**`, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.

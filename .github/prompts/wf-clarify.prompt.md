@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite clarify command for terms, prior answers, statements, and request reframing.
-argument-hint: "Request=<term, statement, prior answer, or unclear request>; Lens=<none|language|domain|iteration>"
+argument-hint: "Request=<term, statement, prior answer, or unclear request>; Lens=<none|language>"
 ---
 
 # wf-clarify

@@ -9,13 +9,9 @@ outputs:
   - persist_hint
   - full_persist_packet
 user_selectable_lenses:
-  - iteration
-  - expand
-  - language
-  - strategy
-  - conceptual
-  - test
   - architecture
+  - test
+  - language
 done_check:
   - sequence_is_executable
   - constraints_are_named
@@ -87,7 +83,7 @@ User-selected lenses:
 
 ## Instructions
 
-Write the smallest useful plan for the user's current intent. In `Mode: discuss`, plans may be non-build-ready planning drafts when the user is still exploring sequencing, phases, or strategy. Only implementation handoff or build-ready plans must include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected when they matter.
+Write the smallest useful plan for the user's current intent. In `Mode: discuss`, plans may be non-build-ready planning drafts when the user is still exploring sequencing, phases, or options. Only implementation handoff or build-ready plans must include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected when they matter.
 
 For implementation handoff or build-ready planning, every major step must use `Step / Change / Verify / Risk / Stop Condition`. For planning drafts, use phases, work packages, dependencies, assumptions, risks, and what would be needed to turn the draft into an implementation handoff. If verification is unclear, mark the plan as a `Planning Draft` rather than treating it as ready for `build`.
 
@@ -120,12 +116,12 @@ Include stable-document follow-up only when the planned change clearly affects a
 
 If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend plan audit with `review --lens redteam,test`. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
 
-When the user explicitly selects `conceptual`, declare the current `Abstraction Level`:
+When the user asks for a phase plan, implementation plan, build-ready handoff, or weak-model handoff, declare the current `Abstraction Level`:
 
 - `phase-plan`: phases, work packages, dependencies, validation direction, sequencing options, and risks.
 - `implementation-plan`: target files, allowed changes, do-not-touch areas, step -> verify, stop conditions, and handoff notes for weak-model or OpenCode execution.
 
-Do not treat `strategy` as automatically enabling `conceptual`; if both are selected, `strategy` compares routes and `conceptual` controls the abstraction level.
+Abstraction Level is core protocol, not a lens. Option comparison belongs in `shape`; `plan` organizes the selected direction into phases or executable handoff detail.
 
 ## Discussion Freedom
 

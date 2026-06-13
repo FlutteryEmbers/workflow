@@ -8,7 +8,7 @@ Use Workflow Lite explore semantics.
 Mode: discuss
 Output: compact
 Task: explore
-Lens: none unless explicitly requested
+Lens: none unless explicitly requested; allowed: architecture, debug, distill, language
 
 Rules:
 - Do not edit files.

@@ -110,7 +110,7 @@ conversational source
 When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, and `review` for verdict.
 
 - `clarify = explain/restate/unpack`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
-- `shape = synthesis`: default for ambiguous, what-if, strategy, conceptual, direction-setting, entrypoint-selection, or "how should I think about this" requests.
+- `shape = synthesis`: default for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, or "how should I think about this" requests.
 - `explore = evidence`: use only when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, or dependencies.
 - `review = verdict`: use only when there is an existing target to judge, such as code, docs, plan, diff, decision, behavior claim, or thread artifact.
 - `plan = planning sequence`: use when the direction is chosen and the user needs phases, sequencing, repo-aware steps, or an executable handoff.
@@ -195,20 +195,48 @@ For stable documents:
 
 Lenses are user-selected. Copilot may suggest a lens, but must not apply it unless the user explicitly names it or adds its file as context.
 
+Non-review tasks may not use a lens as a task replacement. Option comparison belongs in `shape`; abstraction level belongs in core `shape` / `plan` protocol; multi-turn target selection belongs in thread inference and `persist`; expanded detail belongs in `Output` and `Depth`.
+
+Core selectable lenses:
+
 | Lens | Use When |
 | :--- | :--- |
-| `iteration` | Multi-turn discussion needs session state, goal changes, decisions, and open questions. |
-| `expand` | A decision or plan needs examples, pseudocode, smaller diagrams, or split parts. |
-| `consistency` | Session decisions, project docs, code, tests, README files, workflow artifacts, or archive summaries may conflict. |
-| `distill` | A strong reference document should be studied for reusable structure and writing principles. |
-| `language` | Full English, translation, terminology consistency, or project glossary updates are needed. |
-| `domain` | Terms, rules, ownership, boundaries, or conceptual model are unclear. |
-| `strategy` | Technical routes or design options need comparison. |
-| `conceptual` | Work should stay separated into concept, phase-plan, and implementation-plan handoff levels. |
-| `redteam` | The current recommendation needs deliberate critique. |
-| `test` | Behavior needs stronger verification. |
 | `architecture` | Structure, interfaces, dependencies, constraints, or durable tradeoffs matter. |
-| `debug` | A defect or uncertain behavior needs diagnosis. |
+| `consistency` | `sync` needs confirmed alignment projection after docs/code/session drift has been reviewed. |
+| `debug` | `explore` or `build` needs defect or uncertain runtime behavior diagnosis. |
+| `distill` | `explore` or `sync` needs reusable structure from strong reference material. |
+| `language` | Full English, translation, terminology consistency, or project glossary updates are needed. |
+| `test` | `plan` or `build` needs stronger verification and acceptance evidence. |
+
+Review-owned lenses remain available to `review`:
+
+| Lens | Use When |
+| :--- | :--- |
+| `redteam` | The current recommendation needs deliberate critique. |
+| `domain` | Terms, rules, ownership, boundaries, events, or conceptual model need a review verdict. |
+
+Folded into protocol:
+
+| Removed Lens | Current Home |
+| :--- | :--- |
+| `strategy` | `shape` option comparison and tradeoff synthesis. |
+| `conceptual` | Core `Abstraction Level`: `concept`, `phase-plan`, `implementation-plan`. |
+| `iteration` | Session/thread inference and `persist` target rules. |
+| `expand` | `Output: normal|full` and `Depth: detailed`. |
+
+Selectable lenses by task:
+
+| Task | Selectable Lenses |
+| :--- | :--- |
+| `shape` | `architecture`, `language` |
+| `plan` | `architecture`, `test`, `language` |
+| `explore` | `architecture`, `debug`, `distill`, `language` |
+| `sync` | `consistency`, `architecture`, `distill`, `language` |
+| `clarify` | `language` |
+| `persist` | `language` |
+| `build` | `test`, `debug` |
+| `review` | `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, `architecture` |
+| `route` | none; recommend lenses for the next task only |
 
 ## Mode And Write Boundaries
 
@@ -222,13 +250,13 @@ Lenses are user-selected. Copilot may suggest a lens, but must not apply it unle
 
 Native Plan/Implement is a separate external-agent write path.
 
-## Conceptual Planning Lens
+## Abstraction Level Core Rules
 
-Use `Lens: conceptual` only when the user explicitly wants concept design, phase planning, implementation planning, or a strong-model-to-weak-model handoff.
+Use `Abstraction Level: concept | phase-plan | implementation-plan` when the user wants concept design, phase planning, implementation planning, or a strong-model-to-weak-model handoff.
 
-- `shape --lens conceptual` defaults to `Abstraction Level: concept`.
-- `plan --lens conceptual` can produce `Abstraction Level: phase-plan` or `Abstraction Level: implementation-plan`.
-- `strategy` compares options; `conceptual` controls the abstraction level.
+- `shape` produces `Abstraction Level: concept`.
+- `plan` produces `Abstraction Level: phase-plan` or `Abstraction Level: implementation-plan`.
+- Option comparison is built into `shape`; abstraction level is core protocol.
 - `build` does not require an `Abstraction Level` label. It still only needs an explicit plan that is concrete enough to execute safely.
 
 ## Conversation-to-Artifact Output Flow
@@ -415,7 +443,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Explore code or reference material: `explore -> persist -> .session/inbox/**` or `.session/threads/{thread}/option_*.md`.
 - Disposable exploration note: `persist -> notes/{topic}.md` only with explicit target.
 - Shape a direction: `shape -> persist -> .session/threads/{thread}/shape_*.md`.
-- Ambiguous what-if or strategy: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
+- Ambiguous what-if or option comparison: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 - Existing target reasonableness: `review`, then `shape` or `plan` only if revision is needed.
 - Plan work or handoff: `plan -> persist -> .session/threads/{thread}/plan_*.md`.
 - Multi-turn design: `shape/review/explore discuss loop -> persist into one thread`.

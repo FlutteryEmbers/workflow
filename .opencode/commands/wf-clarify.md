@@ -7,7 +7,7 @@ Use Workflow Lite clarify semantics.
 Mode: discuss
 Output: compact
 Task: clarify
-Lens: none unless explicitly requested
+Lens: none unless explicitly requested; allowed: language
 
 Rules:
 - Do not edit files.

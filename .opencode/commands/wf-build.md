@@ -7,7 +7,7 @@ Use Workflow Lite build semantics.
 Mode: execute
 Output: compact unless blocked, partial, failed verification, pitfall found, scope expansion risk appears, or full output is requested
 Task: build
-Lens: none unless explicitly requested
+Lens: none unless explicitly requested; allowed: test, debug
 
 Rules:
 - This command is an explicit execution entrypoint. User invocation authorizes execution of the provided plan only.

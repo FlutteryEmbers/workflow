@@ -13,7 +13,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
-- Use `conceptual` only when the user explicitly wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff.
+- Use core `Abstraction Level` rules when the user wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff.
 - Codex may suggest `redteam` when risk triggers match, but must not auto-load or apply it.
 - Load templates only for `persist` or `sync` in `Mode: persist`.
 - Treat `.session/**` as working memory, not project source of truth.
@@ -26,7 +26,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 
 ## Task Boundary Shortcut
 
-- `shape = synthesis`: ambiguous, what-if, strategy, conceptual, direction-setting, or entrypoint-selection requests.
+- `shape = synthesis`: ambiguous, what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
@@ -66,7 +66,7 @@ Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate 
 - `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one.
 - `plan` inherits a shape artifact's `Recommended Next Abstraction Level` when present; without that, infer from the request and read-only preflight, defaulting to `phase-plan` when uncertain.
 - `implementation-plan` is only for build-ready planning, external-agent handoff, weak-model handoff, or explicit execution preparation.
-- `strategy` compares options; `conceptual` controls the level.
+- Option comparison is built into `shape`; abstraction level is core protocol.
 - `build` does not require an `Abstraction Level` label; it requires an explicit plan concrete enough to execute safely.
 
 ## Common Paths
@@ -175,7 +175,7 @@ Use `sync` for stable-document projection.
 ```text
 Mode: persist
 Task: sync
-Lens: <none|consistency|language|domain|architecture|distill>
+Lens: <none|consistency|language|architecture|distill>
 Sync Domain: <project-docs | session-archive>
 Sync Object: <architecture | feature | reference | code-readme | archive-summary | all>
 Scope: <area, code/docs scope, source thread, or archive scope>

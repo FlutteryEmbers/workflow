@@ -9,9 +9,7 @@ outputs:
   - persist_hint
   - full_persist_packet
 user_selectable_lenses:
-  - iteration
   - language
-  - domain
 done_check:
   - meaning_is_clear
   - scope_or_assumptions_are_named
@@ -78,9 +76,7 @@ Required:
 
 User-selected lenses:
 
-- Add #.workflow/lenses/iteration.md only if the user selects `iteration`.
 - Add #.workflow/lenses/language.md only if the user selects `language`.
-- Add #.workflow/lenses/domain.md only if the user selects `domain`.
 - Do not load all lenses by default. If no lens is named, use `Lens: none`.
 
 ## Instructions

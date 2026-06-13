@@ -19,7 +19,6 @@ outputs:
   - .session/threads/{thread}/{artifact}_{topic}.md
   - notes/{topic}.md
 user_selectable_lenses:
-  - iteration
   - language
 done_check:
   - artifact_kind_is_named

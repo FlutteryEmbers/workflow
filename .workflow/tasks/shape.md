@@ -1,7 +1,7 @@
 ---
 id: shape
 role: designer
-purpose: Default synthesis entry for ambiguous, what-if, strategy, conceptual, direction-setting, or session decision work in chat.
+purpose: Default synthesis entry for ambiguous, what-if, option-comparison, concept-level, direction-setting, or session decision work in chat.
 inputs:
   - clarified_context
 outputs:
@@ -9,15 +9,8 @@ outputs:
   - persist_hint
   - full_persist_packet
 user_selectable_lenses:
-  - iteration
-  - expand
-  - distill
-  - language
-  - domain
-  - strategy
-  - conceptual
-  - redteam
   - architecture
+  - language
 done_check:
   - decision_is_named
   - tradeoffs_are_visible
@@ -43,7 +36,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - Use when the user needs a direction, concept, architecture shape, or session decision.
 - Use for vision-driven PoC work where the initial request should be reframed into the smallest useful wedge.
-- Use by default when the request is ambiguous, what-if, strategy-oriented, conceptual, direction-setting, or unclear between `shape`, `explore`, and `review`.
+- Use by default when the request is ambiguous, what-if, option-comparison, concept-level, direction-setting, or unclear between `shape`, `explore`, and `review`.
 
 ## Do Not Use When
 
@@ -68,7 +61,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 Before shaping, classify the request:
 
-- `fits`: user asks to form a direction, concept, architecture, strategy, what-if recommendation, or session decision.
+- `fits`: user asks to form a direction, concept, architecture, option comparison, what-if recommendation, or session decision.
 - `fits_with_preflight`: user asks to shape based on current code, project docs, session context, external tools, references, repository fit, architecture entrypoints, implementation entrypoints, or how to start. In `Mode: discuss`, run default implicit preflight first, then shape.
 - `composite`: user asks to shape and persist; shape first, then route to `persist`.
 - `wrong_task`: user only asks whether current code/docs are reasonable; recommend `review`.
@@ -92,9 +85,9 @@ Can Shape Now?: <yes/no>
 
 If missing evidence could change the recommendation, still provide a provisional shape by default. Label it as provisional, name the assumptions, and state `What Would Change My Mind`. Stop and output `Recommended Segments: explore -> shape` only when the missing evidence would affect execution, project docs, source-of-truth judgment, irreversible choices, security, permissions, data migration, or another high-impact decision. If the user actually needs a verdict, stop and recommend `review`. If the target is fixed and the user needs steps, recommend `plan`.
 
-`Risk Check` is built-in safety, not the `redteam` lens. Use it to name risky assumptions, likely failure modes, and whether a follow-up `review --lens redteam` is recommended. Do not load `.workflow/lenses/redteam.md` unless the user explicitly selected it.
+`Risk Check` is built-in safety, not the `redteam` lens. Use it to name risky assumptions, likely failure modes, and whether a follow-up `review --lens redteam` is recommended. Do not load `.workflow/lenses/redteam.md` from `shape`.
 
-Lens use must not change task responsibility. `strategy`, `conceptual`, `domain`, `architecture`, `iteration`, `expand`, `distill`, and `language` may help synthesize direction, but `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`.
+Lens use must not change task responsibility. `architecture` and `language` may help synthesize direction, but `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`. Option comparison is built into `shape`; it does not require a separate lens. Abstraction Level is core protocol; it does not require a lens.
 
 ## Discussion Freedom
 
@@ -105,7 +98,7 @@ In `Mode: discuss`, the user remains responsible for final judgment. `shape` sho
 - Do not present provisional recommendations as approval, readiness, source of truth, or permission to execute.
 - Keep strict write and execution boundaries unchanged; discussion freedom does not allow file writes, stable-document sync, or implementation.
 
-When the user explicitly selects `conceptual`, output `Abstraction Level: concept`. Keep the result at concept level: goal, principles, boundaries, key tradeoffs, success criteria, non-goals, impact surface, and validation direction. Do not produce ordered implementation steps, target files, allowed changes, or step-level verification from `shape`.
+Always output `Abstraction Level: concept` when the shape may feed later planning. Keep the result at concept level: goal, principles, boundaries, key tradeoffs, success criteria, non-goals, impact surface, and validation direction. Do not produce ordered implementation steps, target files, allowed changes, or step-level verification from `shape`.
 
 ## Shape / Plan Boundary
 
@@ -185,7 +178,7 @@ User-selected lenses:
 
 ## Instructions
 
-Convert notes, external-goal briefs, current chat goals, what-if prompts, strategy questions, and discussion into a clear session direction. For vague or broad goals, first reframe the request. Name the smallest useful wedge that can validate the goal, the success criteria that would make it worth continuing, and the larger scope that is intentionally rejected for now.
+Convert notes, external-goal briefs, current chat goals, what-if prompts, option questions, and discussion into a clear session direction. For vague or broad goals, first reframe the request. Name the smallest useful wedge that can validate the goal, the success criteria that would make it worth continuing, and the larger scope that is intentionally rejected for now.
 
 You may provide a hypothesis-based recommendation when evidence is incomplete. Label it as provisional, name what `explore` or `review` would need to confirm, and include what would change the recommendation. Do not output approval, acceptance, or implementation readiness verdicts; route those to `review`.
 

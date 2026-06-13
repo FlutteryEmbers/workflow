@@ -7,6 +7,7 @@ Use Workflow Lite persistence semantics.
 Mode: persist
 Task: persist
 Output: full
+Lens: none unless explicitly requested; allowed: language
 
 Rules:
 - Write only `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
