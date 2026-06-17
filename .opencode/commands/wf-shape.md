@@ -7,7 +7,7 @@ Use Workflow Lite for direction-setting and concept design.
 Mode: discuss
 Output: compact
 Task: shape
-Lens: none unless explicitly requested; allowed: architecture, language
+Lens: none unless explicitly requested; allowed: architecture, language, expert
 
 Rules:
 - Do not edit files.
@@ -16,7 +16,7 @@ Rules:
 - Use `.workflow/tasks/shape.md` as the task contract if needed.
 - Use shape as the small discussion fallback only for concept direction, option framing, and next-step selection.
 - Shape may include lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, or non-executable planning sketch when that supports the direction.
-- Do not use shape for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, or implementation.
+- Do not use shape for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, explicit executable plan candidate, stable sync, writes, execution, or implementation.
 - Shape may consume the current chat goal directly or a `.session/inbox/**` brief with `Brief Type: external-goal`.
 - Do not require an inbox goal brief when the conversation already contains enough context.
 - If evidence is missing and could change the answer, recommend `explore -> shape`.
@@ -24,8 +24,8 @@ Rules:
 - If `Human Decision State: checkpoint`, output one `User Checkpoint` and stop before `Take`, `Impact Surface`, `Next`, or `Persist Candidate`.
 - If `Human Decision State: blocking`, stop and name the missing evidence or decision.
 - If `Human Decision State: assumed`, continue and record the default in `Assumed Decisions`.
-- Output `Abstraction Level: concept` when concept structure may feed planning.
-- Include `Impact Surface` and `Recommended Next Abstraction Level` when this shape may feed planning.
+- Keep output at concept level when concept structure may feed planning.
+- Include `Impact Surface` and `Recommended Next Task` when this shape may feed planning.
 
 Request:
 $ARGUMENTS
@@ -37,7 +37,6 @@ Return:
 - Adjacent Allowance Used
 - Decision State
 - User Checkpoint, only when checkpoint and then stop
-- Abstraction Level, when concept structure is relevant
 - Take, 3-5 bullets max
 - Risks/Unknowns, 0-3 bullets
 - Impact Surface, when planning may follow

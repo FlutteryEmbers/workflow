@@ -1,7 +1,7 @@
 ---
 id: plan
 role: designer
-purpose: Turn a chosen direction into a planning draft, repo-aware plan, or external-agent handoff in chat.
+purpose: Turn a chosen direction into a repo-aware plan, explicit executable plan candidate, or external-agent handoff in chat.
 inputs:
   - decision_or_target
 outputs:
@@ -13,9 +13,9 @@ user_selectable_lenses:
   - test
   - language
 done_check:
-  - sequence_is_executable
+  - sequence_is_coherent
   - constraints_are_named
-  - verification_is_defined
+  - verification_is_defined_or_gap_is_named
 ---
 
 # Plan Task
@@ -26,58 +26,59 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## Mode Rules
 
-- Start with `User Intent` unless the request is trivial; it must restate what the user wants, not summarize technical facts.
+- Start with `User Intent` unless the request is trivial; it must restate what the user wants planned, not summarize technical facts.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
 - If the user asks to persist, provides a target, requests a handoff, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
-- `Mode: execute` is not valid for this task; use `build` with an explicit executable plan.
+- `Mode: execute` is not valid for this task; use `build` with an explicit executable plan after review/authorization conditions are satisfied.
 - For native Plan/Implement, use the external-agent path.
 
 ## When To Use
 
-- Use when the target direction is chosen and the user needs repo-aware implementation steps, sequencing, or external-agent handoff.
-- Use when a plan must name success criteria, allowed changes, do-not-touch areas, verification, and stop conditions before any write.
+- Use when the target direction is chosen and the user needs repo-aware sequencing, explicit implementation steps, or external-agent handoff.
+- Use when a plan must name success criteria, scope, constraints, verification, and stop conditions before any write.
+- Use after `shape`, `review`, `explore`, or user-provided direction when there is enough basis to organize work.
 
 ## Do Not Use When
 
 - Do not use to invent the target direction; use `shape`.
 - Do not use to judge whether a plan, target, code, or diff is good; use `review`.
+- Do not use to identify formal blocking gaps or gate readiness; use `review`.
 - Do not use to implement the plan; use `build` or the external-agent path after review.
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update stable documents; use `sync`.
 
 ## Boundary Layers
 
-- `Core Responsibility`: organize a chosen direction into a phase plan, repo-aware implementation plan, or external-agent handoff without performing the work.
-- `Adjacent Allowance`: include planning draft status, readiness gaps, blocking questions, follow-up questions, critique/review recommendation, and what would make the plan implementation-ready.
-- `Forbidden Authority`: do not choose the core direction, issue a review verdict, write files, stable-sync documents, execute, implement, or imply execution authorization.
+- `Core Responsibility`: organize a chosen direction into a coherent plan or explicit executable plan candidate without performing the work.
+- `Adjacent Allowance`: include self-assessed plan readiness, known gaps, review focus, follow-up questions, critique/review recommendation, and recommended next task.
+- `Forbidden Authority`: do not choose the core direction, issue a review verdict, label formal blocking gaps, write files, stable-sync documents, execute, implement, or imply execution authorization.
 
-Adjacent allowance must stay planning-owned. If the primary need is direction choice, verdict, stable projection, or implementation, route to `shape`, `review`, `sync`, or `build`/external-agent.
+Adjacent allowance must stay planning-owned. If the primary need is direction choice, formal gap severity, verdict, stable projection, or implementation, route to `shape`, `review`, `sync`, or `build`/external-agent.
 
 ## Expected Output
 
-- A `Planning Draft` or implementation handoff appropriate to the user's requested level.
-- Build-ready handoffs include `Success Criteria`, `Allowed Changes`, `Do Not Touch`, and step-level `Verify`.
-- `Shape Summary` and `Impact Surface` at the start of every plan, even compact chat output.
-- Full persisted plans include expanded `Planning Basis` that records source shape/decision, locked decisions, assumed decisions, rejected options, blocking decisions, and the chosen abstraction level.
-- `Compatibility / Constraint Plan` that records the selected compatibility and constraint policy before execution.
-- `Output: compact` default: shape summary, compact impact surface, plan sketch, blocking questions, next step, and optional `Persist Candidate`.
-- `Recommended Next Task` through `Next`, without treating the plan as write or execution authorization.
-- `Output: full` / `Full Persist Packet` only when the plan should be persisted now, used as a handoff, needs build-ready detail, or `Output: full` is requested.
+- A coherent plan appropriate to the user's requested scope and current evidence.
+- `Plan Readiness`: `incomplete | reviewable | execution-candidate`.
+- `Known Gaps`: plan-owned missing inputs or weak spots; these are not formal blocking gaps.
+- `Review Focus`: what review should inspect before build, sync, or handoff.
+- `Compatibility / Constraint Plan` when compatibility or constraint policy affects execution.
+- `Output: compact` default: shape summary, impact surface, plan, readiness, known gaps, review focus, next step, and optional `Persist Candidate`.
+- `Output: full` / `Full Persist Packet` only when the plan should be persisted now, used as a handoff, needs explicit executable detail, or `Output: full` is requested.
 
 ## Task Boundary Check
 
 Before planning, classify the request:
 
-- `fits`: target direction is chosen and the user needs repo-aware implementation steps or handoff.
+- `fits`: target direction is chosen and the user needs repo-aware sequencing, explicit implementation steps, or handoff.
 - `fits_with_preflight`: plan depends on current code, project docs, session context, target-to-repo fit, target files, or verification readiness. In `Mode: discuss`, run default implicit preflight first.
 - `composite`: user asks to plan and persist; plan first, then route to `persist`.
 - `wrong_task`: target direction is not chosen; recommend `shape`.
-- `wrong_task`: user asks whether current implementation or target is reasonable; recommend `review`.
+- `wrong_task`: user asks whether current implementation, target, or plan is reasonable; recommend `review`.
 - `composite`: user asks to implement from target docs and current code without a confirmed source-of-truth verdict; recommend `review -> plan -> review -> external-agent/build -> review`.
 
-Default implicit preflight runs only in `Mode: discuss` and checks target stability, repo fit, target files, do-not-touch areas, and verification readiness. Plan may identify blockers and conflicts, but must not invent a new target. If the target is unstable, target and repo conflict, or verification is unclear, recommend `review` or `shape`.
+Default implicit preflight runs only in `Mode: discuss` and checks target stability, repo fit, target areas, constraints, and verification readiness. Plan may name known gaps and conflicts, but must not invent a new target or issue a formal review verdict.
 
 ## Copilot Add Context
 
@@ -93,65 +94,36 @@ User-selected lenses:
 
 ## Instructions
 
-Write the smallest useful plan for the user's current intent. In `Mode: discuss`, plans may be non-build-ready planning drafts when the user is still exploring sequencing, phases, or options inside an already selected direction. Do not use `plan` to compare or choose core directions; route that work to `shape`. Only implementation handoff or build-ready plans must include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected when they matter.
+Write the smallest useful plan for the user's current intent. Do not compare or choose core directions; route that work to `shape`. A plan may be large or staged when the work requires it, but do not classify plans into plan kinds.
 
-For implementation handoff or build-ready planning, every major step must use `Step / Change / Verify / Risk / Stop Condition`. For planning drafts, use phases, work packages, dependencies, assumptions, risks, and what would be needed to turn the draft into an implementation handoff. If verification is unclear, mark the plan as a `Planning Draft` rather than treating it as ready for `build`.
+Use `Plan Readiness` as plan self-assessment:
+
+- `incomplete`: the plan is missing key direction, evidence, scope, target, compatibility, source-of-truth, or verification inputs. Recommend `shape`, `explore`, `review`, or another `plan` pass based on `Known Gaps`.
+- `reviewable`: the plan is coherent enough for review, but should not be treated as an execution candidate yet. Large staged plans, high-risk plans, and plans with material known gaps usually belong here.
+- `execution-candidate`: the plan is explicit enough to be reviewed as possible build/external-agent input. This is not a build verdict; review owns readiness and blocking.
+
+Use `Known Gaps` for plan-owned gaps only. Do not output formal blocking fields or severity from plan. Formal blocking and severity belong to `review`.
+
+Use `Review Focus` to guide review. Examples: scope drift, verification adequacy, target boundaries, compatibility policy, source-of-truth risk, handoff clarity, and stop conditions.
 
 Every plan, including compact chat output, must summarize the shaped or chosen direction before planning execution. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Do not force a shape artifact just to plan.
 
 Every plan, including compact chat output, must include a short `Impact Surface`. Compact impact surface is a planning reader aid, not a full audit; include only `Scope Size`, `Affected Surfaces`, `Risk`, and `Reversal Cost`.
 
+Build handoff wording must use `explicit executable plan candidate`, not plan kind labels. `build` still requires an explicit executable plan plus review/authorization conditions; it must not infer authorization from `Plan Readiness`.
+
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Keep chat output modes to `compact`, `normal`, and `full`.
-
-## Abstraction Level Selection
-
-Choose `Abstraction Level` automatically unless the user explicitly names one:
-
-- If the user explicitly names `phase-plan` or `implementation-plan`, use that as the requested level, subject to readiness checks.
-- If a source shape artifact includes `Recommended Next Abstraction Level`, inherit it by default.
-- If no shape artifact is available, infer from the request and read-only preflight.
-- Default to `phase-plan` when uncertain.
-
-Use `phase-plan` for general planning, sequencing, staged work, roadmap-style requests, medium or large impact surfaces, medium or high reversal cost, medium or high execution risk, multiple affected surfaces, or any required user confirmation before implementation/build. `phase-plan` may include assumed decisions, but it is not direct build input.
-
-Use `implementation-plan` only for build-ready planning, external-agent handoff, weak-model handoff, or explicit execution preparation. It must include success criteria, target areas or files, allowed changes, do-not-touch areas, step-level verification, stop conditions, and compatibility / constraint policy.
-
-If `implementation-plan` is requested but readiness is incomplete, downgrade to `Abstraction Level: phase-plan` and include `What Would Make This Implementation-Ready`.
-
-Block build-ready `implementation-plan` when any of these are unresolved:
-
-- compatibility policy
-- source of truth
-- artifact boundaries
-- target areas or files
-- verification
-- high-risk assumption
-- source-of-truth, project-docs-truth, permissions, data, security, or architecture-constraint decision
-
-Include stable-document follow-up only when the planned change clearly affects architecture, public behavior, module responsibility, execution constraints, agent/human onboarding context, or thread closure. Do not force docs/archive impact analysis for small or temporary changes.
-
-If the plan depends on unverified assumptions, touches high-risk boundaries, or will enter `build` / external-agent Implement, recommend a critique review plus verification review. This is a suggestion only; do not load the `redteam` lens unless the user explicitly selected it.
-
-When the user asks for a phase plan, implementation plan, build-ready handoff, or weak-model handoff, declare the current `Abstraction Level`:
-
-- `phase-plan`: phases, work packages, dependencies, validation direction, sequencing options, and risks.
-- `implementation-plan`: target files, allowed changes, do-not-touch areas, step -> verify, stop conditions, and handoff notes for weak-model or OpenCode execution.
-
-Abstraction Level is core protocol, not a lens. Option comparison belongs in `shape`; `plan` organizes the selected direction into phases or executable handoff detail.
 
 ## Discussion Freedom
 
-In `Mode: discuss`, `plan` may output a `Planning Draft` before all execution details are known.
+In `Mode: discuss`, `plan` may output a plan that is not ready for execution.
 
-- `Planning Draft`: phases, sequencing, dependencies, assumptions, risks, and open decisions; not build-ready.
-- `Implementation Handoff`: target files, allowed changes, do-not-touch, step verification, stop conditions, and handoff notes.
-- Include `Confidence`, `Assumptions`, `Human Decision State`, and `What Would Make This Implementation-Ready` when the plan is still a draft.
-- Do not let a planning draft imply execution authorization.
-- Use `Blocking Questions` for questions that affect current readiness or next-step eligibility.
+- `Plan Readiness` is a self-assessment, not a gate verdict.
+- `Known Gaps` are plan-owned missing inputs or weak spots, not formal blockers.
+- `Review Focus` tells review what to inspect.
+- Include `Confidence`, `Assumptions`, and `Human Decision State` when the plan depends on incomplete evidence or user-owned choices.
+- Do not let any plan imply execution authorization.
 - Use `Follow-up Questions` only in normal/full outputs for non-blocking future considerations.
-- Do not list generic curiosity questions for completeness.
-- `implementation-plan` must have `Blocking Questions: none`.
-- `phase-plan` may have blocking questions, but each question must say what it blocks.
 
 ## Compatibility / Constraint Policy
 
@@ -160,15 +132,15 @@ Default policy:
 - `Compatibility: preserve`
 - `Constraint Mode: respect`
 
-`plan` must encode the selected policy into executable steps. It must not silently switch from `preserve` to `breaking`, remove migration/alias/fallback work, or introduce constraint exceptions unless the user explicitly requested them or the source decision already states them.
+`plan` must encode the selected policy into proposed steps. It must not silently switch from `preserve` to `breaking`, remove migration/alias/fallback work, or introduce constraint exceptions unless the user explicitly requested them or the source decision already states them.
 
 Use `Compatibility: breaking` only when explicitly requested by the user or explicit source. In that case, name removed compatibility, migration/alias decisions, cleanup, and stop conditions.
 
 Use `Constraint Mode: propose_override` or `prototype_exception` only when explicitly requested by the user or explicit source. In that case, name the exception scope, reason, cleanup or review trigger, and whether it must stay out of long-term `docs/**` until confirmed.
 
-If preserving compatibility makes the plan materially more complex, output a planning blocker or tradeoff instead of switching policy automatically.
+If preserving compatibility makes the plan materially more complex, output a known gap or tradeoff instead of switching policy automatically.
 
-Include:
+Include when relevant:
 
 ```text
 Compatibility / Constraint Plan
@@ -199,13 +171,15 @@ Impact Surface:
 - Risk: <low | medium | high>
 - Reversal Cost: <low | medium | high>
 Plan:
-- <3-6 steps or phases>
-Blocking Questions:
-- <none | question plus what it blocks>
-Abstraction Level: <phase-plan|implementation-plan>
-Planning Draft: <yes/no; if yes, say what is missing for build-ready handoff>
-Recommended Next Task: <review|persist plan|build|sync|shape|none>
-Next: <review | persist plan | build | sync | shape | none; use build only for implementation-plan with explicit executable scope and review/authorization conditions satisfied>
+- <3-6 steps, phases, or work packages>
+Plan Readiness: <incomplete|reviewable|execution-candidate>
+Readiness Rationale: <why this readiness applies>
+Known Gaps:
+- <none | missing direction, evidence, target, verification, source-of-truth, compatibility, or scope input>
+Review Focus:
+- <what review should inspect before build, sync, or handoff>
+Recommended Next Task: <shape|explore|review|plan|persist|sync|build|external-agent|none>
+Next: <one line; use build only after review/authorization conditions are satisfied>
 Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
@@ -228,32 +202,33 @@ Impact Surface:
 - Affected Surfaces: <surfaces>
 - Risk: <low | medium | high>
 - Reversal Cost: <low | medium | high>
-Refined Direction / Plan:
-- <target outcome, abstraction level, phase plan, key constraints, and readiness>
+Refined Plan:
+- <target outcome, sequence, constraints, and verification approach>
 Planning Basis:
-- <source shape/decision, locked decisions, assumed decisions, rejected options, blocking decisions>
-What Would Make This Implementation-Ready:
-- <target files, allowed changes, verification, stop conditions, or missing decision>
-Discussion Notes To Preserve:
-- <phase constraint, sequencing reason, user correction, accepted risk, example, or weak-model handoff detail>
-Blocking Questions:
-- <none | question plus what it blocks>
+- <source shape/decision, locked decisions, assumed decisions, rejected options, and known gaps>
+Plan Readiness:
+- <incomplete|reviewable|execution-candidate>
+Readiness Rationale:
+- <why this readiness applies>
+Known Gaps:
+- <none | missing or weak planning input>
+Review Focus:
+- <what review should inspect>
 Follow-up Questions:
 - <none | non-blocking future consideration>
 Recommended Next Task:
-- <review|persist plan|build|sync|shape|none>
+- <shape|explore|review|plan|persist|sync|build|external-agent|none>
 Persist Candidate:
 - Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an implementation/external-agent handoff. A full packet is still chat output; it becomes build input only when persisted as a plan or explicitly supplied by the user as the `Plan` for `build`:
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an explicit executable plan candidate / external-agent handoff. A full packet is still chat output; it becomes build input only when explicitly supplied by the user as the `Plan` for `build` or persisted as a plan and then selected for build:
 
 ```text
 Persist Packet:
 Artifact: plan
-Abstraction Level: <phase-plan | implementation-plan | none>
 Artifact State: working | settled | superseded
 Intent: handoff | decision | audit
 Depth: detailed
@@ -262,14 +237,12 @@ Topic: <topic>
 Suggested Target: .session/threads/<thread>/plan_<topic>.md
 Plan Summary:
 - Target Outcome: <what should be true after execution>
-- Recommended Path: <short sequence or phase summary>
-- Abstraction Level: <phase-plan | implementation-plan>
-- Readiness: <ready for build | ready for external-agent | needs review | needs more detail | blocked>
-- Next Action: <review | build | external-agent | sync | persist | shape | none>
+- Recommended Path: <short sequence, staged path, or work package summary>
+- Plan Readiness: <incomplete|reviewable|execution-candidate>
+- Readiness Rationale: <why this readiness applies>
+- Next Action: <shape | explore | review | plan | build | external-agent | sync | persist | none>
 - Main Risk: <main risk or none>
 - Source Basis: <chat | shape artifact | inbox brief | decision | project docs>
-Plan Snapshot:
-- <target outcome, execution target, phase count, readiness, key constraint, key stop condition, next use>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Selected Direction: <one-line direction>
@@ -281,73 +254,49 @@ Impact Surface:
 - Risk: <low | medium | high>
 - Reversal Cost: <low | medium | high>
 - Docs / Sync Impact: <none | suggested | required>
-- Build / Handoff Readiness: <ready | needs review | needs implementation-plan | blocked>
-Discussion Notes To Preserve:
-- <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
 Planning Basis:
 - Source Direction: <shape artifact, decision, user request, project doc, or inferred target>
-- Requested Abstraction Level: <phase-plan | implementation-plan | none>
-- Selected Abstraction Level: <phase-plan | implementation-plan>
-- Selection Reason: <shape recommendation | user request | inferred impact surface | readiness downgrade>
 - Locked Decisions: <confirmed decisions and sources>
 - Assumed Decisions: <recommended defaults and risk if wrong>
 - Rejected Options: <options rejected because they affect sequence, scope, or constraints; none if not relevant>
-- Blocking Decisions: <unresolved decisions blocking implementation-plan, or none>
-- Requires User Confirmation Before: <none | implementation-plan | build>
+- Known Gaps: <none | missing or weak planning input>
 Source Context:
 - <thread decision, target design, code/docs evidence, or planning discussion>
 Target Outcome:
 - <what should be true after execution>
-Key Points:
-- <sequence summary and main constraints>
-Decision-Relevant Facts:
-- <facts affecting execution order or scope>
-Phase Plan:
-- <phase> -> <goal, scope, allowed changes, constraints, verify, exit criteria, stop conditions>
-Phase Constraints:
-- <phase-level constraint or ordering rule that must survive persist>
-Decision Trail:
-- <why this sequence is preferred>
+Plan:
+- <steps, phases, or work packages with scope, constraints, verification, and stop conditions>
 Allowed Changes:
 - <paths, behavior, docs, tests, or prompts allowed to change>
 Do Not Touch:
 - <areas excluded from the plan>
-Compatibility:
-- <preserve | breaking>
-Constraint Mode:
-- <respect | propose_override | prototype_exception>
-Removed Compatibility:
-- <old path, alias, behavior, schema, prompt, or none>
-Migration / Alias:
-- <kept | removed | none | explicitly not provided>
-Constraint Exceptions:
-- <exception scope and reason, or none>
-Do Not Preserve:
-- <legacy behavior intentionally dropped, or none>
-Cleanup Required:
-- <old files, docs, prompts, tests, or none>
+Compatibility / Constraint Plan:
+- Compatibility: <preserve | breaking>
+- Constraint Mode: <respect | propose_override | prototype_exception>
+- Removed Compatibility: <old path, alias, behavior, schema, prompt, or none>
+- Migration / Alias: <kept | removed | none | explicitly not provided>
+- Constraint Exceptions: <exception scope and reason, or none>
+- Do Not Preserve: <legacy behavior intentionally dropped, or none>
+- Cleanup Required: <old files, docs, prompts, tests, or none>
+- Stop Conditions: <when to stop and return to plan/review>
 Step -> Verify:
 - <step> -> <verification>
-Stop Conditions:
-- <when to stop and return to plan/review>
+Review Focus:
+- <what review should inspect before build, sync, or handoff>
 Risks / Unknowns:
 - <execution risk or missing information>
-Blocking Questions:
-- <none | question plus what it blocks; implementation-plan requires none>
 Follow-up Questions:
 - <none | non-blocking future consideration>
-What Would Make This Implementation-Ready:
-- <missing target area, allowed change, verification, stop condition, or decision; none if already implementation-ready>
 Preserve From Discussion:
-- <phase boundaries, phase constraints, important examples/counterexamples, user corrections, accepted risks, or weak-model handoff details to preserve>
-Examples / Pseudocode:
-- <implementation sketch if useful>
+- <important examples/counterexamples, user corrections, accepted risks, or handoff details>
 Handoff Notes:
 - <minimal context for build or external-agent>
 Stable Document Follow-up:
 - <none | project-docs | session-archive; include target, sync domain, and reason only when future alignment or retrieval could drift>
 Next Use:
-- <persist | review | build | external-agent>
+- <persist | review | build | external-agent | sync>
+Recommended Next Task:
+- <shape | explore | review | plan | persist | sync | build | external-agent | none>
 ```
 
 If the plan is not worth preserving, output `Persist Candidate: none`.

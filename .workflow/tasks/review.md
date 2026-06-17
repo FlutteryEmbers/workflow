@@ -16,6 +16,7 @@ user_selectable_lenses:
   - domain
   - test
   - architecture
+  - expert
 done_check:
   - findings_are_actionable
   - decision_is_clear
@@ -40,6 +41,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 ## When To Use
 
 - Use when the user asks whether code, docs, a decision, a plan, a diff, or a behavior claim is reasonable, safe, acceptable, executable, consistent, or ready.
+- Use when the user asks what capability, behavior, documentation, plan, or system support is missing relative to a baseline; use `Review Type: gap-analysis`.
 - Use as a gateway before external-agent implementation and after external-agent diffs.
 
 ## Do Not Use When
@@ -61,7 +63,8 @@ Adjacent allowance must remain verdict-owned. If the user needs a full redesign,
 
 ## Expected Output
 
-- Findings first, then `Review Verdict`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
+- Findings first, then `Review Type`, `Review Verdict`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
+- `gap-analysis` output includes baseline, observed state, gap analysis, severity, why it matters, and recommended action.
 - `Output: compact` default: short verdict, key findings, and optional `Persist Candidate`.
 - `Full Persist Packet` only when the review should be persisted now, used as an audit handoff, or `Output: full` is requested.
 
@@ -70,6 +73,7 @@ Adjacent allowance must remain verdict-owned. If the user needs a full redesign,
 Before reviewing, classify the request:
 
 - `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, readiness, acceptability, consistency, safety, or reasonableness.
+- `fits`: user asks to identify missing capabilities, gaps, drift from expected behavior, or whether a system satisfies a target baseline.
 - `fits_with_preflight`: review verdict depends on code, docs, diff, session evidence, or external plan context. In `Mode: discuss`, run conditional implicit preflight first.
 - `composite`: user asks to review and persist; review first, then route to `persist`.
 - `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
@@ -78,7 +82,7 @@ Before reviewing, classify the request:
 
 Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become a second full review before the review, must not load templates, and must not write files.
 
-If evidence is insufficient for a verdict, output `Review Verdict: needs more evidence`, name the missing evidence, and recommend `explore` instead of inventing readiness or blocking conclusions.
+If evidence is insufficient for a verdict or gap analysis, output `Review Verdict: needs more evidence`, name the missing evidence or missing baseline, and recommend `explore` or `shape` instead of inventing readiness or blocking conclusions.
 
 Review acts as a gateway. Verdicts should recommend next task: `none`, `persist`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 
@@ -100,9 +104,18 @@ Inspect the target and report findings first. Keep review scope explicit. A revi
 
 Do not create a full replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions, `Repair Direction`, and a `Minimal Revision Sketch`, but it should not become a design synthesis task.
 
-Default review is normal verdict-oriented review. Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam` or asks for critique, counterarguments, failure paths, or a hostile read. Otherwise, you may output `Suggested Critique: explicit redteam critique` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
+Default review is `Review Type: verdict-review`. Use one primary review type per output:
 
-Lens use must not change task responsibility. `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, and `architecture` may deepen the verdict, but `review` must not become evidence-only `explore`, full synthesis-oriented `shape`, or executable `plan`.
+- `verdict-review`: default correctness, readiness, reasonableness, safety, or source-of-truth judgment.
+- `gap-analysis`: compare observed state against a baseline and identify missing capability, behavior, coverage, support, or alignment.
+- `plan-audit`: audit a plan before build or external-agent implementation.
+- `diff-review`: review an implementation diff against an explicit plan.
+
+Use `gap-analysis` when the user asks what is missing, where the gaps are, whether a system satisfies an expected capability, or why a workflow scenario is not supported. Gap analysis requires a `Baseline`. Baseline may come from explicit user goal, protocol purpose, documented promise, expected workflow scenario, or confirmed project standard. If no baseline is available, return `Review Verdict: needs more evidence` or route to `shape`.
+
+Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam` or asks for critique, counterarguments, failure paths, or a hostile read. Otherwise, you may output `Suggested Critique: explicit redteam critique` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
+
+Lens use must not change task responsibility. `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, `architecture`, and `expert` may deepen the verdict; `expert` may strengthen findings, evidence pressure, and revision specificity, but must not produce a full replacement design or implementation plan. `review` must not become evidence-only `explore`, full synthesis-oriented `shape`, or executable `plan`.
 
 ## Discussion Freedom
 
@@ -115,6 +128,7 @@ In `Mode: discuss`, review may help the human decide what to do next without tak
 
 For non-trivial reviews, include a readiness dashboard:
 
+- `Review Type`: `verdict-review | gap-analysis | plan-audit | diff-review`
 - `Review Verdict`: `ready | needs changes | needs more evidence | blocked | docs blocked`
 - `Confidence`: `high | medium | low`
 - `Readiness`: `0-10`
@@ -122,6 +136,31 @@ For non-trivial reviews, include a readiness dashboard:
 - `Non-blocking Gaps`: issues that can be tracked without blocking.
 - `Recommended Action`: `none | persist | sync project-docs | sync session-archive | shape | plan | build | external-agent`.
 - `Suggested Critique`: `explicit redteam critique` or `none`.
+
+## Gap Analysis
+
+Use this in discuss mode to audit missing capability, behavior, coverage, workflow support, docs/code alignment, or plan readiness against a baseline.
+
+Gap severity:
+
+- `high`: blocks next write, build, sync, source-of-truth decision, or core workflow scenario.
+- `medium`: does not block immediately but creates material rework, ambiguity, drift, user friction, or maintenance risk.
+- `low`: clarity, polish, convenience, or non-blocking completeness issue.
+
+Each gap must include:
+
+```text
+Gap Analysis:
+- Gap: <missing capability, behavior, evidence, or alignment>
+  Severity: <high|medium|low>
+  Evidence: <observed evidence>
+  Impact: <what scenario, user, workflow, or handoff is affected>
+  Why It Matters: <why this gap should or should not be solved now>
+  Recommended Action: <repair direction, next task, or none>
+  Recommended Next Task: <shape|explore|plan|sync|build|external-agent|persist|none>
+```
+
+`Blocking Gaps` derives from `high` severity. `Non-blocking Gaps` derives from `medium` and `low` severity. Do not use severity as a replacement for findings or evidence.
 
 ## External Plan Audit
 
@@ -138,6 +177,8 @@ Check scope, target files, do-not-touch areas, interface or data changes, verifi
 
 Also check that success criteria are explicit, every major step has a verification method, and the plan minimizes diff size.
 
+Plan audit owns formal blocking. Plans may provide `Plan Readiness`, `Known Gaps`, and `Review Focus`, but review decides `Blocking Gaps`, severity, and whether the plan can proceed.
+
 ## External Diff Review
 
 Use this in discuss mode after native external-agent implementation. Compare the diff against the explicit external plan and Project Docs Rules.
@@ -153,10 +194,14 @@ In `Mode: discuss`, default to:
 ```text
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
+Review Type: <verdict-review|gap-analysis|plan-audit|diff-review>
+Baseline: <expected state, review question, plan, or none>
 Take:
 - <3-6 bullets>
 Risks/Unknowns:
 - <0-3 bullets>
+Gap Analysis:
+- <only for gap-analysis; gap, severity, evidence, impact, why it matters, recommended action>
 Minimal Revision Sketch: <smallest repair direction or none>
 Recommended Next Task: <shape|plan|build|external-agent|sync|persist|explore|none>
 Persist Candidate: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
@@ -171,8 +216,14 @@ Use `Output: normal` when the user asks to organize, refine, or prepare the revi
 ```text
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
+Review Type:
+- <verdict-review|gap-analysis|plan-audit|diff-review>
+Baseline:
+- <expected state, review question, plan, or none>
 Refined Verdict:
 - <review verdict, key findings, required revisions, and recommended next task>
+Gap Analysis:
+- <only for gap-analysis; gap, severity, evidence, impact, why it matters, recommended action>
 Repair Direction:
 - <minimal direction of change, not full redesign>
 Discussion Notes To Preserve:
@@ -200,8 +251,12 @@ Topic: <topic>
 Suggested Target: .session/threads/<thread>/review_<topic>.md
 Source Context:
 - <plan, diff, code, docs, session artifact, or claim reviewed>
+Review Type:
+- <verdict-review | gap-analysis | plan-audit | diff-review>
 Review Question:
 - <what was being judged>
+Baseline:
+- <expected state, documented promise, user goal, workflow scenario, or none>
 Evidence Checked:
 - <files, docs, diffs, artifacts, or discussion evidence>
 Key Points:
@@ -212,6 +267,17 @@ Decision Trail:
 - <concern -> evidence -> verdict>
 Findings:
 - <finding with severity and evidence>
+Gap Analysis:
+- Gap: <missing capability, behavior, evidence, or alignment>
+  Severity: <high|medium|low>
+  Evidence: <observed evidence>
+  Impact: <what scenario, user, workflow, or handoff is affected>
+  Why It Matters: <why this gap should or should not be solved now>
+  Recommended Action: <repair direction, next task, or none>
+Blocking Gaps:
+- <high severity gaps, or none>
+Non-blocking Gaps:
+- <medium/low severity gaps, or none>
 What Is Still Reasonable:
 - <parts that should be preserved>
 Required Revisions:

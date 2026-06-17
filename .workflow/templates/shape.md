@@ -25,7 +25,6 @@
 
 ## Decision Snapshot
 
-- Abstraction Level: {{concept | none}}
 - Human Decision State: {{none | assumed | checkpoint | blocking}}
 - Decision State Reason: {{why this state applies}}
 - Assumed Default: {{recommended default or none}}
@@ -43,14 +42,14 @@
 - Affected Surfaces: {{workflow core | task docs | templates | adapters | project docs | source code | tests | other}}
 - Reversal Cost: {{low | medium | high}}
 - Execution Risk: {{low | medium | high}}
-- User Confirmation Needed Before: {{none | phase-plan | implementation-plan | build}}
-- Recommended Next Abstraction Level: {{phase-plan | implementation-plan}}
+- User Confirmation Needed Before: {{none | plan | review | build}}
+- Recommended Next Task: {{plan | review | persist | none}}
 
 ## Decision State
 
 - Locked Decisions: {{confirmed decisions and sources}}
 - Assumed Decisions: {{recommended defaults, why they are acceptable for advisory planning, and risk if wrong}}
-- Blocking Decisions: {{unresolved choices that prevent implementation-plan, or none}}
+- Open Decisions: {{unresolved choices that prevent planning or review, or none}}
 
 ## User Checkpoint
 

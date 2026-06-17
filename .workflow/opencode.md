@@ -4,15 +4,15 @@ OpenCode support is a thin adapter. It does not replace `.workflow/tasks/**`, `.
 
 Use OpenCode when it helps with context reading, plan drafting, or bounded implementation. Keep `.workflow/**` as the source of truth for task semantics, lenses, write boundaries, and Project Docs Rules.
 
-Output flow: use `Output: compact` for general discussion, `Output: normal` to refine before persist, and `Output: full` for artifacts, handoffs, audits, build-ready plans, or diff reviews.
+Output flow: use `Output: compact` for general discussion, `Output: normal` to refine before persist, and `Output: full` for artifacts, handoffs, audits, explicit executable plan candidates, or diff reviews.
 
-For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as the detailed commitment artifact for persist, implementation handoff, build-ready planning, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as the detailed commitment artifact for persist, implementation handoff, explicit executable plan candidate, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 
 OpenCode may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically. Use full `redteam` only when the user explicitly selected that lens, asked for critique, or the prompt explicitly includes it.
 
 Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 
-Use core `Abstraction Level` rules when the user explicitly wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff.
+Use `Plan Readiness` rules when the user explicitly wants planning, implementation handoff, or strong-model-to-weak-model handoff.
 
 When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. Do not use a lens as a skip mechanism.
 
@@ -25,7 +25,8 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, OpenCode may provi
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may output a non-build-ready `Planning Draft`, readiness gaps, and `What Would Make This Implementation-Ready`.
+- `plan` may output `Plan Readiness`, `Known Gaps`, `Review Focus`, and recommended next task.
+- `review` may output `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` for uncertain or consequential output.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -47,9 +48,9 @@ Task boundary layers:
 - `Adjacent Allowance`: small neighboring outputs allowed only when they support the core responsibility.
 - `Forbidden Authority`: boundaries the task must not cross.
 
-For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, or implementation.
+For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, explicit executable plan candidate, stable sync, writes, execution, or implementation.
 
-Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build-ready authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
+Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
 
 Discovery vs judgment rule:
 
@@ -65,15 +66,13 @@ Compatibility / constraint rule:
 - `build` and bounded implement must stop on unplanned compatibility removal, alias removal, migration removal, fallback removal, or constraint bypass.
 - `prototype_exception` is temporary PoC scope, not a durable project constraint.
 
-Abstraction level rule:
+Planning readiness rule:
 
-- `shape` produces `Abstraction Level: concept`.
-- `shape` records `Impact Surface` and `Recommended Next Abstraction Level` when it may feed planning.
-- `plan` automatically chooses `Abstraction Level: phase-plan` or `implementation-plan` unless the user explicitly names one.
-- `plan` inherits a shape artifact's `Recommended Next Abstraction Level` when present; without that, infer from the request and read-only preflight, defaulting to `phase-plan` when uncertain.
-- `implementation-plan` is only for build-ready planning, external-agent handoff, weak-model handoff, or explicit execution preparation.
-- Option comparison is built into `shape`; abstraction level is core protocol.
-- `/wf-build` does not require an `Abstraction Level` label; it still requires an explicit executable plan.
+- `shape` stays at concept level and may recommend `plan` or `review`.
+- `plan` outputs `Plan Readiness: incomplete | reviewable | execution-candidate`.
+- `plan` uses `Known Gaps` for plan-owned missing inputs and `Review Focus` for what review should inspect.
+- `review` owns formal `Blocking Gaps`, severity, and readiness verdicts.
+- `/wf-build` requires an explicit executable plan plus review/authorization conditions; it does not rely on a plan kind label.
 
 Exploration notes:
 

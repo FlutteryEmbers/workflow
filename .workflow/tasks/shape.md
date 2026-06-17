@@ -11,6 +11,7 @@ outputs:
 user_selectable_lenses:
   - architecture
   - language
+  - expert
 done_check:
   - decision_is_named
   - tradeoffs_are_visible
@@ -54,7 +55,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - `Core Responsibility`: form a concept-level direction, decision frame, option comparison, smallest useful wedge, and recommended next workflow task.
 - `Adjacent Allowance`: include lightweight clarification, lightweight compression of current chat or provided snippets, candidate evidence needs, risk sketch, and non-executable planning sketch when they support shaping the direction.
-- `Forbidden Authority`: do not perform formal evidence extraction, specified-source summary/distillation, gate verdict, approval, readiness judgment, source-of-truth judgment, implementation-ready plan, stable sync, file write, execution, or implementation.
+- `Forbidden Authority`: do not perform formal evidence extraction, specified-source summary/distillation, gate verdict, approval, readiness judgment, source-of-truth judgment, explicit executable plan candidate, stable sync, file write, execution, or implementation.
 
 Adjacent allowance must stay secondary to the shape. If the adjacent work becomes the main deliverable, route to the specialized task.
 
@@ -62,7 +63,7 @@ Adjacent allowance must stay secondary to the shape. If the adjacent work become
 
 - `Reframed Goal`, `Narrowest Useful Wedge`, `Success Criteria`, `Rejected Larger Scope`, tradeoffs, and recommended next step.
 - `Impact Surface` with scope size, affected surfaces, reversal cost, execution risk, confirmation point, and recommended next abstraction level.
-- `Locked Decisions`, `Assumed Decisions`, and `Blocking Decisions` when the shape may feed later planning.
+- `Locked Decisions`, `Assumed Decisions`, and `Open Decisions` when the shape may feed later planning.
 - `Compatibility / Constraint Check` with compatibility pressure, breaking option availability, constraint tension, suggested policy, and whether a human decision is needed.
 - `Output: compact` default: short recommendation, risks, and optional `Persist Candidate`.
 - `Full Persist Packet` only when the shape should be persisted now or `Output: full` is requested.
@@ -101,11 +102,11 @@ Can Shape Now?: <yes/no>
 
 If missing evidence could change the recommendation, still provide a provisional shape by default. Label it as provisional, name the assumptions, and state `What Would Change My Mind`. Stop and output `Recommended Segments: explore -> shape` only when the missing evidence would affect execution, project docs, source-of-truth judgment, irreversible choices, security, permissions, data migration, or another high-impact decision. If the user actually needs a verdict, stop and recommend `review`. If the target is fixed and the user needs steps, recommend `plan`.
 
-Use `fallback_fit` only in `Mode: discuss`. It allows a useful shape when the specialized task would be too heavy for the user's current intent. It does not authorize writes, stable projection, formal verdicts, build-ready sequencing, or implementation.
+Use `fallback_fit` only in `Mode: discuss`. It allows a useful shape when the specialized task would be too heavy for the user's current intent. It does not authorize writes, stable projection, formal verdicts, executable sequencing, or implementation.
 
 `Embedded Critique Check` is core protocol, not the `redteam` lens. Use it to name risky assumptions, likely failure paths, and whether a later explicit redteam critique is worth running. Do not load `.workflow/lenses/redteam.md` from `shape`, and do not output a formal review verdict.
 
-Lens use must not change task responsibility. `architecture` and `language` may help synthesize direction, but `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`. Option comparison is built into `shape`; it does not require a separate lens. Abstraction Level is core protocol; it does not require a lens.
+Lens use must not change task responsibility. `architecture`, `language`, and `expert` may help synthesize direction; `expert` may sharpen assumptions, tradeoffs, and recommendation density, but output must stay at concept level. `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`. Option comparison is built into `shape`; it does not require a separate lens.
 
 ## Discussion Freedom
 
@@ -142,10 +143,10 @@ User Checkpoint
     Why Choose This: <fit>
     Risk: <tradeoff>
 - Default If Skipped: <recommended default>
-- Continue After Selection: continue shape and update Locked/Assumed/Blocking Decisions
+- Continue After Selection: continue shape and update Locked/Assumed/Open Decisions
 ```
 
-Always output `Abstraction Level: concept` when the shape may feed later planning. Keep the result at concept level: goal, principles, boundaries, key tradeoffs, success criteria, non-goals, impact surface, and validation direction. Do not produce ordered implementation steps, target files, allowed changes, or step-level verification from `shape`.
+Keep shape output at concept level when it may feed later planning: goal, principles, boundaries, key tradeoffs, success criteria, non-goals, impact surface, and validation direction. Do not produce ordered implementation steps, target files, allowed changes, or step-level verification from `shape`.
 
 ## Shape / Plan Boundary
 
@@ -165,7 +166,7 @@ Use decision states when a shape may feed `plan`:
 
 - `Locked Decisions`: user-confirmed or explicit-source decisions that later planning may rely on.
 - `Assumed Decisions`: recommended defaults that can support advisory planning; include risk if wrong.
-- `Blocking Decisions`: unresolved choices that prevent a build-ready implementation plan.
+- `Open Decisions`: unresolved choices that prevent an explicit executable plan candidate.
 
 Use `Impact Surface` to guide later `plan` auto-selection:
 
@@ -175,11 +176,11 @@ Impact Surface
 - Affected Surfaces: workflow core | task docs | templates | adapters | project docs | source code | tests | other
 - Reversal Cost: low | medium | high
 - Execution Risk: low | medium | high
-- User Confirmation Needed Before: none | phase-plan | implementation-plan | build
-- Recommended Next Abstraction Level: phase-plan | implementation-plan
+- User Confirmation Needed Before: none | plan | review | build
+- Recommended Next Task: plan | review | persist | none
 ```
 
-Recommend `implementation-plan` only when the scope is small, reversal cost and execution risk are low, and no blocking decision affects source of truth, artifact boundaries, compatibility, architecture constraints, project-docs truth, permissions, data, or security. Otherwise recommend `phase-plan`.
+Recommend `plan` when the concept direction is selected enough to sequence work. Recommend `review` when the concept needs source-of-truth, readiness, or gap judgment before planning.
 
 ## Compatibility / Constraint Policy
 
@@ -259,8 +260,8 @@ Impact Surface:
 - Affected Surfaces: <workflow core|task docs|templates|adapters|project docs|source code|tests|other>
 - Reversal Cost: <low|medium|high>
 - Execution Risk: <low|medium|high>
-- User Confirmation Needed Before: <none|phase-plan|implementation-plan|build>
-- Recommended Next Abstraction Level: <phase-plan|implementation-plan>
+- User Confirmation Needed Before: <none|plan|review|build>
+- Recommended Next Task: <plan|review|persist|none>
 Recommended Next Task: <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
 Persist Candidate: Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
 ```
@@ -305,7 +306,6 @@ Output the full packet only when the user asks to persist, provides `Target`, or
 Persist Packet:
 Artifact: shape | decision
 Artifact ID: shape_<topic>
-Abstraction Level: <concept | none>
 Artifact State: working | settled | superseded
 Intent: exploration | decision | constraint
 Depth: detailed
@@ -335,15 +335,15 @@ Locked Decisions:
 - <confirmed decision and source>
 Assumed Decisions:
 - <recommended default, why it is acceptable for advisory planning, risk if wrong>
-Blocking Decisions:
-- <unresolved choice that prevents implementation-plan, or none>
+Open Decisions:
+- <unresolved choice that prevents planning or review, or none>
 Impact Surface:
 - Scope Size: <small|medium|large>
 - Affected Surfaces: <workflow core|task docs|templates|adapters|project docs|source code|tests|other>
 - Reversal Cost: <low|medium|high>
 - Execution Risk: <low|medium|high>
-- User Confirmation Needed Before: <none|phase-plan|implementation-plan|build>
-- Recommended Next Abstraction Level: <phase-plan|implementation-plan>
+- User Confirmation Needed Before: <none|plan|review|build>
+- Recommended Next Task: <plan|review|persist|none>
 Concept Structure:
 - <concept> -> <purpose, scope, constraints, validation, notes>
 Decision Trail:

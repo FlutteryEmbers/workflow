@@ -31,7 +31,7 @@ Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear tas
 Mode: <discuss|persist|execute>
 Output: <compact|normal|full>
 Task: <route|clarify|explore|distill|shape|plan|persist|build|review|sync>
-Lens: <none|consistency|language|domain|redteam|test|architecture|debug>
+Lens: <none|consistency|language|domain|redteam|test|architecture|debug|expert>
 Artifact: <required for persist unless target is explicit>
 Artifact State: <inbox|working|settled|superseded; for persist metadata>
 Thread: <thread-name; for persist thread target inference>
@@ -66,9 +66,9 @@ Protocol: `Output: compact | normal | full`.
 
 - `compact`: general discussion. Optimize the next turn, not archival completeness.
 - `normal`: refine. Prepare key structure and important context for later persist, without writing files.
-- `full`: artifact, handoff, audit, build-ready plan, diff review, or complex routing.
+- `full`: artifact, handoff, audit, explicit executable plan candidate, diff review, or complex routing.
 
-For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as the detailed commitment artifact for persist, implementation handoff, build-ready planning, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as the detailed commitment artifact for persist, implementation handoff, explicit executable plan candidate, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 
 Recommended flow:
 
@@ -122,7 +122,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Shape Summary`, `Impact Surface`, `Plan`, `Blocking Questions`, `Abstraction Level`, `Planning Draft`, `Next`, and `Persist Candidate`. Do not use generic open-question sections in plan output; use `Blocking Questions` and, for normal/full output, `Follow-up Questions`.
+For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Shape Summary`, `Impact Surface`, `Plan`, `Plan Readiness`, `Known Gaps`, `Review Focus`, `Next`, and `Persist Candidate`. Do not output formal blocking gaps from `plan`; review owns blocking and severity.
 
 ## Task Boundary Shortcut
 
@@ -143,9 +143,9 @@ Task boundary layers:
 - `Adjacent Allowance`: small neighboring outputs allowed only when they support the core responsibility.
 - `Forbidden Authority`: boundaries the task must not cross.
 
-For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, or implementation.
+For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, explicit executable plan candidate, stable sync, writes, execution, or implementation.
 
-Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build-ready authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
+Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
 
 ## Discussion Freedom
 
@@ -156,7 +156,8 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be use
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may output a non-build-ready `Planning Draft`, readiness gaps, and `What Would Make This Implementation-Ready`.
+- `plan` may output `Plan Readiness`, `Known Gaps`, `Review Focus`, and recommended next task.
+- `review` may output `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -180,7 +181,7 @@ Discovery vs judgment rule:
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Candidate` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
-Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate direction, staged planning, and execution handoff. `shape` normally produces `concept` and records `Impact Surface` plus `Recommended Next Abstraction Level` when it may feed planning. `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one; inherit the shape recommendation when present, otherwise infer from the request and read-only preflight, defaulting to `phase-plan` when uncertain. Option comparison is built into `shape`; abstraction level is core protocol.
+Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates. `shape` stays at concept level. `plan` outputs `Plan Readiness`, `Known Gaps`, and `Review Focus`; `review` owns formal `Blocking Gaps`, severity, and readiness verdicts.
 
 ## Write Boundaries
 

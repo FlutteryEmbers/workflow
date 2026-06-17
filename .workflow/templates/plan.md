@@ -23,10 +23,10 @@
 ## Plan Summary
 
 - Target Outcome: {{what should be true after execution}}
-- Recommended Path: {{short sequence or phase summary}}
-- Abstraction Level: {{phase-plan | implementation-plan}}
-- Readiness: {{ready for build | ready for external-agent | needs review | needs more detail | blocked}}
-- Next Action: {{review | build | external-agent | sync | persist | shape | none}}
+- Recommended Path: {{short sequence, staged path, or work package summary}}
+- Plan Readiness: {{incomplete | reviewable | execution-candidate}}
+- Readiness Rationale: {{why this readiness applies}}
+- Next Action: {{shape | explore | review | plan | build | external-agent | sync | persist | none}}
 - Main Risk: {{main risk or none}}
 - Source Basis: {{chat | shape artifact | inbox brief | decision | project docs}}
 
@@ -44,56 +44,38 @@
 - Risk: {{low | medium | high}}
 - Reversal Cost: {{low | medium | high}}
 - Docs / Sync Impact: {{none | suggested | required}}
-- Build / Handoff Readiness: {{ready | needs review | needs implementation-plan | blocked}}
-
-## Plan Snapshot
-
-- Abstraction Level: {{phase-plan | implementation-plan | none}}
-- Target Outcome: {{what should be true after execution}}
-- Execution Target: {{human | strong-agent | weak-agent | OpenCode | Codex | Copilot | none}}
-- Phase Count: {{number of phases or none}}
-- Readiness: {{ready for build | ready for external-agent | needs review | needs more detail}}
-- Key Constraint: {{most important constraint or do-not-touch item}}
-- Key Stop Condition: {{main reason to stop instead of expanding scope}}
-- Next Use: {{review | persist | build | external-agent | sync | none}}
 
 ## Planning Basis
 
 - Source Direction: {{shape artifact, decision, user request, project doc, or inferred target}}
-- Requested Abstraction Level: {{phase-plan | implementation-plan | none}}
-- Selected Abstraction Level: {{phase-plan | implementation-plan}}
-- Selection Reason: {{shape recommendation | user request | inferred impact surface | readiness downgrade}}
 - Locked Decisions: {{confirmed decisions and sources}}
 - Assumed Decisions: {{recommended defaults and risk if wrong}}
 - Rejected Options: {{options rejected because they affect sequence, scope, or constraints; none if not relevant}}
-- Blocking Decisions: {{unresolved decisions blocking implementation-plan, or none}}
-- Requires User Confirmation Before: {{none | implementation-plan | build}}
+- Known Gaps: {{none | missing or weak planning input}}
 
-## What Would Make This Implementation-Ready
+## Known Gaps
 
-- {{missing target area, allowed change, verification, stop condition, or decision; none if already implementation-ready}}
+- {{none | missing direction, evidence, target, verification, source-of-truth, compatibility, or scope input}}
+
+## Review Focus
+
+- {{what review should inspect before build, sync, or handoff}}
 
 ## Discussion Notes To Preserve
 
-{{preserve any discussion detail that would help future readers understand, revise, implement, or audit this plan. This may include user corrections, user preferences, examples, counterexamples, phase boundaries, phase constraints, why the sequence changed, accepted risks, or details a weaker model might otherwise miss. Do not preserve full transcript or conversational noise.}}
-
-## Phase Plan
-
-| Phase | Goal | Scope | Allowed Changes | Constraints | Verify | Exit Criteria | Stop Conditions |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| {{phase}} | {{phase goal}} | {{phase scope}} | {{allowed changes}} | {{phase constraints}} | {{verification}} | {{exit criteria}} | {{when to stop}} |
-
-## Target Direction
-
-{{source decision, goal, or target design}}
+{{preserve any discussion detail that would help future readers understand, revise, implement, or audit this plan. This may include user corrections, user preferences, examples, counterexamples, constraints, why the sequence changed, accepted risks, or details a weaker model might otherwise miss. Do not preserve full transcript or conversational noise.}}
 
 ## Source Context
 
 - {{thread decision, shape artifact, inbox brief, project doc, code path, or user correction}}
 
-## Inputs
+## Target Outcome
 
-- {{input artifact, source file, target docs, constraint, or external plan source}}
+{{what should be true after execution}}
+
+## Plan
+
+{{steps, phases, or work packages with scope, constraints, verification, and stop conditions}}
 
 ## Decision-Relevant Facts
 
@@ -108,21 +90,7 @@
 
 - Why This Sequence: {{reason}}
 - Rejected Sequencing: {{alternatives and why not}}
-- Blocking Questions: {{none | questions that affect current readiness or next-step eligibility, with what each blocks}}
 - Follow-up Questions: {{none | non-blocking future considerations}}
-
-## Execution Strategy
-
-{{why this implementation order is the safest or smallest useful path}}
-
-## Execution Readiness
-
-- Ready For Build: {{yes/no}}
-- Ready For External Agent: {{yes/no}}
-- Blocking Gaps: {{gap or none}}
-- Execution Readiness: {{ready for build | needs review | needs more detail}}
-
-> `phase-plan` is not direct build input. Convert it to `implementation-plan` before `build` or external-agent implementation.
 
 ## Success Criteria
 
@@ -155,36 +123,17 @@
 - Reusable Parts: {{what can be reused}}
 - Conflicts: {{where current repo shape conflicts with target direction}}
 
-## Dependencies Between Phases
-
-- {{phase dependency, ordering constraint, or parallelizable part}}
-
 ## Impact Map
 
 | Target | Files / Docs | Change | Risk |
 | :--- | :--- | :--- | :--- |
 | {{target}} | {{paths}} | {{add/change/remove}} | {{risk}} |
 
-## Execution Flow
-
-> Only keep this diagram if it improves readability.
-
-```mermaid
-flowchart TD
-    phase_one["Phase 1"] --> phase_two["Phase 2"]
-    phase_two --> verify_node["Verify"]
-    verify_node --> handoff_node["Handoff"]
-```
-
 ## Detailed Step Sequence
 
-| Phase | Step | Change | Verify | Risk | Stop Condition |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| {{phase}} | {{step}} | {{change}} | {{test, check, or manual verification}} | {{risk}} | {{when to stop and return to plan/review}} |
-
-## Decision Trail
-
-{{how the plan changed during discussion and why this sequence remains preferred}}
+| Step | Change | Verify | Risk | Stop Condition |
+| :--- | :--- | :--- | :--- | :--- |
+| {{step}} | {{change}} | {{test, check, or manual verification}} | {{risk}} | {{when to stop and return to plan/review}} |
 
 ## Verification
 
@@ -194,15 +143,9 @@ flowchart TD
 
 - {{condition that requires stopping instead of expanding scope}}
 
-## Blocking Questions
+## Risks / Unknowns
 
-- {{none | question that blocks readiness, execution, implementation-plan, build, sync, or source-of-truth decision}}
-
-> `implementation-plan` requires `Blocking Questions: none`. `phase-plan` may include blocking questions, but each question must say what it blocks.
-
-## Follow-up Questions
-
-- {{none | non-blocking future consideration}}
+- {{execution risk or missing information}}
 
 ## Rollback / Recovery
 
@@ -210,7 +153,7 @@ flowchart TD
 
 ## Handoff Contract
 
-{{success criteria, phase plan, allowed changes, do-not-touch areas, step verification, minimal diff constraints, and stop conditions for native Plan/Implement, if relevant}}
+{{success criteria, allowed changes, do-not-touch areas, verification, minimal diff constraints, and stop conditions for native Plan/Implement, if relevant}}
 
 ## Handoff Notes
 
@@ -240,6 +183,10 @@ flowchart TD
 - Alignment Success Criteria: {{what must remain aligned after sync}}
 - Existing Docs Structure: {{preserve or describe intended change}}
 - Safety: {{session-only residue, temporary PoC detail, low-level mirror content, and misleading details removed}}
+
+## Recommended Next Task
+
+{{shape | explore | review | plan | persist | sync | build | external-agent | none}}
 
 ## Next Use
 

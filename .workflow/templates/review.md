@@ -20,9 +20,17 @@
 
 {{code, docs, session decision, external plan, diff, or behavior claim}}
 
+## Review Type
+
+{{verdict-review | gap-analysis | plan-audit | diff-review}}
+
 ## Review Question
 
 {{what this review is trying to decide}}
+
+## Baseline
+
+{{expected state, documented promise, user goal, workflow scenario, external plan, or none}}
 
 ## Source Context
 
@@ -63,6 +71,7 @@
 
 ## Readiness
 
+- Review Type: {{verdict-review | gap-analysis | plan-audit | diff-review}}
 - Confidence: {{high | medium | low}}
 - Readiness: {{0-10}}
 - Blocking Gaps: {{must-fix before next write or implementation}}
@@ -76,6 +85,20 @@
 | Severity | Finding | Evidence | Recommended Action |
 | :--- | :--- | :--- | :--- |
 | {{severity}} | {{finding}} | {{evidence}} | {{action}} |
+
+## Gap Analysis
+
+{{required for Review Type: gap-analysis; optional otherwise}}
+
+| Gap | Severity | Evidence | Impact | Why It Matters | Recommended Action | Recommended Next Task |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| {{missing capability, behavior, evidence, or alignment}} | {{high | medium | low}} | {{observed evidence}} | {{affected scenario, user, workflow, or handoff}} | {{why this should or should not be solved now}} | {{repair direction or none}} | {{shape | explore | plan | sync | build | external-agent | persist | none}} |
+
+Severity rules:
+
+- `high`: blocks next write, build, sync, source-of-truth decision, or core workflow scenario.
+- `medium`: does not block immediately but creates material rework, ambiguity, drift, user friction, or maintenance risk.
+- `low`: clarity, polish, convenience, or non-blocking completeness issue.
 
 ## What Is Still Reasonable
 

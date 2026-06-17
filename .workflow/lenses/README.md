@@ -5,6 +5,7 @@ Lenses are user-selected thinking tools. They are not stages, modes, or automati
 Default to `Lens: none`. Add a lens only when the user explicitly names it or adds the file as context.
 
 - `language`: control output language, terminology consistency, and project glossary updates.
+- `expert`: increase analysis density, expose hidden assumptions, compare opposing professional views, and remove generic output.
 - `domain`: review-owned lens for terms, rules, ownership, boundaries, events, and conceptual model verdicts.
 - `redteam`: review-owned critique posture for failure paths, counterexamples, hidden costs, and boundary breaks.
 - `test`: strengthen verification and acceptance evidence.
@@ -15,7 +16,7 @@ Default to `Lens: none`. Add a lens only when the user explicitly names it or ad
 Folded concepts:
 
 - `strategy`: built into `shape` option comparison.
-- `conceptual`: built into core `Abstraction Level` rules.
+- `conceptual`: built into `shape` concept boundaries and `plan` readiness rules.
 - `iteration`: built into session/thread inference and `persist` rules.
 - `expand`: built into `Output` and `Depth` behavior.
 

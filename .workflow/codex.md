@@ -11,12 +11,12 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Default to `Mode: discuss`.
 - Default to `Output: compact` for general discussion; use `Output: normal` to refine before persist and `Output: full` for artifacts, handoffs, audits, or diff reviews.
 - For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact.
-- Treat `Output: full` plan output as the detailed commitment artifact for persist, build-ready planning, implementation handoff, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+- Treat `Output: full` plan output as the detailed commitment artifact for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 - When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
-- Use core `Abstraction Level` rules when the user wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff.
+- Use `Plan Readiness` rules when the user wants planning, implementation handoff, or strong-model-to-weak-model handoff.
 - Codex may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 - Load templates only for `persist` or `sync` in `Mode: persist`.
@@ -42,9 +42,9 @@ Task boundary layers:
 - `Adjacent Allowance`: small neighboring outputs allowed only when they support the core responsibility.
 - `Forbidden Authority`: boundaries the task must not cross.
 
-For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, or implementation.
+For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, explicit executable plan candidate, stable sync, writes, execution, or implementation.
 
-Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build-ready authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
+Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
 
 ## Discussion Freedom
 
@@ -55,7 +55,8 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
 - `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review`: `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
-- `plan`: non-build-ready `Planning Draft`, readiness gaps, `What Would Make This Implementation-Ready`.
+- `plan`: `Plan Readiness`, `Known Gaps`, `Review Focus`, and recommended next task.
+- `review`: `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -75,17 +76,15 @@ Discovery vs judgment rule:
 - `build` or native implement must stop if it needs unplanned compatibility removal or constraint override.
 - `prototype_exception` is temporary PoC scope, not a durable project constraint.
 
-## Conceptual Planning
+## Planning Readiness
 
-Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate direction, staged planning, and execution handoff.
+Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates.
 
-- `shape` usually produces `concept`.
-- `shape` records `Impact Surface` and `Recommended Next Abstraction Level` when it may feed planning.
-- `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one.
-- `plan` inherits a shape artifact's `Recommended Next Abstraction Level` when present; without that, infer from the request and read-only preflight, defaulting to `phase-plan` when uncertain.
-- `implementation-plan` is only for build-ready planning, external-agent handoff, weak-model handoff, or explicit execution preparation.
-- Option comparison is built into `shape`; abstraction level is core protocol.
-- `build` does not require an `Abstraction Level` label; it requires an explicit plan concrete enough to execute safely.
+- `shape` produces concept-level direction and may recommend `plan` or `review`.
+- `plan` outputs `Plan Readiness`, `Known Gaps`, and `Review Focus`.
+- `Plan Readiness` is self-assessment, not a gate verdict.
+- `review` owns formal `Blocking Gaps`, gap severity, and readiness verdicts.
+- `build` requires an explicit plan concrete enough to execute safely plus review/authorization conditions; it does not rely on a plan kind label.
 
 ## Common Paths
 

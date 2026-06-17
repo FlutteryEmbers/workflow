@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite fallback/router prompt for mixed requests and full protocol control.
-argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|distill|shape|plan|persist|build|review|sync>; Lens=<none|consistency|language|domain|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference|capture>; Depth=<compact|standard|detailed>; Sync Domain=<project-docs|session-archive>; Thread=<thread-name>; Target=<required for sync stable documents; optional for persist>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|distill|shape|plan|persist|build|review|sync>; Lens=<none|consistency|language|domain|redteam|test|architecture|debug|expert>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference|capture>; Depth=<compact|standard|detailed>; Sync Domain=<project-docs|session-archive>; Thread=<thread-name>; Target=<required for sync stable documents; optional for persist>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Fallback / Router Prompt
@@ -52,13 +52,14 @@ Request: ${input:request:describe the work}
 - Ambiguous what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests default to `shape`.
 - Evidence-only requests go to `explore`; verdict-only requests go to `review`.
 - Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. `distill` is a task, not a lens. Do not use any lens as a skip mechanism.
-- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Minimal Revision Sketch`, `Repair Direction`, non-build-ready `Planning Draft`, readiness gaps, and `What Would Change My Mind` as thinking material.
-- Discussion adjacency is allowed; authority is not. Adjacent output may recommend the next task, but write, sync, execute, implementation, source-of-truth, and build-ready authority still require the proper `Mode`, `Task`, target rules, prerequisites, and explicit executable plan.
+- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Minimal Revision Sketch`, `Repair Direction`, `Plan Readiness`, `Known Gaps`, `Review Focus`, and `What Would Change My Mind` as thinking material.
+- Discussion adjacency is allowed; authority is not. Adjacent output may recommend the next task, but write, sync, execute, implementation, source-of-truth, and build authority still require the proper `Mode`, `Task`, target rules, prerequisites, and explicit executable plan.
 - For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision State`.
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available; otherwise output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
-- Use `Abstraction Level: concept | phase-plan | implementation-plan` to separate direction, staged planning, and execution handoff. `shape` normally produces `concept` and records `Impact Surface` plus `Recommended Next Abstraction Level` when it may feed planning. `plan` automatically chooses `phase-plan` or `implementation-plan` unless the user explicitly names one; default to `phase-plan` when uncertain. `build` does not require this label and still relies on explicit plan executability.
-- `plan compact` must summarize the chosen direction first, then give a compact impact surface and plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. `Output: full` is the detailed commitment artifact for persist, build-ready planning, implementation handoff, or external-agent handoff.
+- Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning output. This is plan self-assessment, not a review verdict.
+- `plan compact` must summarize the chosen direction first, then give a compact impact surface, plan sketch, known gaps, and review focus. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. `Output: full` is the detailed commitment artifact for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff.
+- `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, and gap analysis. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
 - Read-only preflight is allowed only in `Mode: discuss`; do not load templates, write files, run implementation, or apply unselected deep lenses during preflight.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 - Implicit preflight defaults to `shape`, `plan`, and `sync`; conditional preflight applies to `review`, `build`, and `explore`; no implicit preflight runs for `clarify` or `route`.
@@ -150,10 +151,12 @@ Impact Surface:
 - Reversal Cost: <low | medium | high>
 Plan:
 - <3-6 steps or phases>
-Blocking Questions:
-- <none | question plus what it blocks>
-Abstraction Level: <phase-plan | implementation-plan>
-Planning Draft: <yes/no>
+Plan Readiness: <incomplete|reviewable|execution-candidate>
+Readiness Rationale: <why this readiness applies>
+Known Gaps:
+- <none | missing direction, evidence, target, verification, source-of-truth, compatibility, or scope input>
+Review Focus:
+- <what review should inspect before build, sync, or handoff>
 Next: <review | persist plan | build | sync | shape | none>
 Persist Candidate: <none or one line; candidate only, do not write>
 ```
@@ -173,7 +176,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Shape Summary` and `Impact Surface`, and use `Blocking Questions` / `Follow-up Questions` instead of generic open-question sections.
+For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Shape Summary`, `Impact Surface`, `Plan Readiness`, `Known Gaps`, and `Review Focus`. Do not output formal blocking gaps from `plan`.
 
 Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 

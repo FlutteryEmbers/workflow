@@ -1,5 +1,5 @@
 ---
-description: Workflow Lite plan command for planning drafts, repo-aware plans, and external-agent handoffs.
+description: Workflow Lite plan command for repo-aware plans and external-agent handoffs.
 argument-hint: "Request=<planning request>; Lens=<none|architecture|test|language>; Output=<compact|full>"
 ---
 
@@ -17,15 +17,13 @@ Rules:
 - Do not load templates.
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/plan.md` as the task contract.
-- Planning drafts are allowed; do not force build-ready detail unless the user asks for handoff or `Output: full`.
-- A planning draft may name readiness gaps and next task, but it does not authorize writing, sync, execution, or implementation.
+- Use `Plan Readiness: incomplete | reviewable | execution-candidate` as plan self-assessment.
+- A plan may name known gaps and next task, but it does not authorize writing, sync, execution, or implementation.
 - Compact plan output must still summarize shape/chosen direction and include a compact impact surface.
 - Use `Shape Summary: Source=chat` when there is no persisted shape artifact.
-- Use `Output: full` for persisted plans, implementation handoffs, build-ready plans, or external-agent handoffs.
-- Choose `Abstraction Level: phase-plan` or `implementation-plan` automatically unless the user explicitly names one.
-- Inherit a source shape artifact's `Recommended Next Abstraction Level` when present; otherwise infer from the request and default to `phase-plan` when uncertain.
-- If `implementation-plan` is requested but readiness is incomplete, downgrade to `phase-plan` and list `What Would Make This Implementation-Ready`.
-- Replace generic open questions with `Blocking Questions`; use `Follow-up Questions` only in full or refine output.
+- Use `Output: full` for persisted plans, implementation handoffs, explicit executable plan candidates, or external-agent handoffs.
+- Do not output formal `Blocking Gaps` or severity; review owns formal blocking and gap severity.
+- Use `Known Gaps` for plan-owned missing inputs and `Review Focus` for what review should inspect.
 
 Request:
 ${input:request:describe the chosen direction and planning need}
@@ -35,10 +33,10 @@ Return:
 - Shape Summary
 - Impact Surface
 - Plan
-- Blocking Questions
-- Abstraction Level
-- Planning Draft: yes/no
-- What Would Make This Implementation-Ready, when relevant
+- Plan Readiness
+- Readiness Rationale
+- Known Gaps
+- Review Focus
 - Recommended Next Task
 - Next
 - Persist Candidate, candidate only and do not write

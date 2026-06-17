@@ -1,6 +1,6 @@
 ---
-description: Workflow Lite review command for verdicts, audits, diff reviews, and docs/code drift judgment.
-argument-hint: "Request=<target to review>; Lens=<none|redteam|consistency|test|architecture|debug|language|domain>"
+description: Workflow Lite review command for verdicts, gap analysis, audits, diff reviews, and docs/code drift judgment.
+argument-hint: "Request=<target to review>; Lens=<none|redteam|consistency|test|architecture|debug|language|domain|expert>"
 ---
 
 # wf-review
@@ -17,6 +17,8 @@ Rules:
 - Do not load templates.
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/review.md` as the task contract.
+- Use `Review Type: verdict-review | gap-analysis | plan-audit | diff-review`.
+- Use `gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
 - Treat `redteam` as an explicit critique posture: failure paths, counterarguments, hidden costs, and boundary breaks. Review still owns the verdict.
 - Give verdict and minimal repair direction when useful; do not create a full replacement design.
 - You may include repair direction and minimal revision sketch, but do not create an implementation plan, write, sync, execute, or implement.
@@ -27,9 +29,14 @@ ${input:request:describe the plan, diff, docs/code drift, claim, or artifact to 
 Return:
 - User Intent
 - Current Read, optional
+- Review Type
+- Baseline, when relevant
 - Findings or Take
+- Gap Analysis, when Review Type is gap-analysis
 - Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
 - Confidence
+- Blocking Gaps
+- Non-blocking Gaps
 - Minimal Revision Sketch
 - Recommended Action
 - Recommended Next Task

@@ -131,11 +131,11 @@ Every task has three boundary layers:
 - `Adjacent Allowance`: small neighboring outputs allowed only when they support the core responsibility.
 - `Forbidden Authority`: capabilities the task must never claim.
 
-For example, `shape` core responsibility is concept direction. Its adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. Its forbidden authority includes formal evidence extraction, specified-source summary, gate verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, and implementation.
+For example, `shape` core responsibility is concept direction. Its adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. Its forbidden authority includes formal evidence extraction, specified-source summary, gate verdict, source-of-truth judgment, explicit executable plan candidate, stable sync, writes, execution, and implementation.
 
 Adjacent allowance reduces task-switching friction; it does not replace the specialized task. If the adjacent work becomes the primary deliverable, route to the specialized task.
 
-Discussion adjacency is allowed; authority is not. Adjacent output in `Mode: discuss` may suggest the next task or make the current task more actionable, but write, sync, execute, implementation, source-of-truth, and build-ready authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
+Discussion adjacency is allowed; authority is not. Adjacent output in `Mode: discuss` may suggest the next task or make the current task more actionable, but write, sync, execute, implementation, source-of-truth, and build authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
 
 When no task fits exactly, use nearest-fit fallback:
 
@@ -147,36 +147,30 @@ When no task fits exactly, use nearest-fit fallback:
 
 `composite` is a normal routing outcome, not a failure. Composite requests should return segmented prompts with stop points. Do not silently execute later write, sync, build, or external-agent segments.
 
-## Shape / Plan Boundary
+## Shape / Plan / Review Boundary
 
-Workflow Lite separates task responsibility from abstraction level.
+Workflow Lite separates concept shaping, planning, and gate judgment.
 
-- Task axis: `shape` decides what the direction is, what it is not, and why; `plan` organizes an already selected or explicitly assumed direction into phases or executable steps.
-- Abstraction level: `concept`, `phase-plan`, and `implementation-plan`.
-- Concept design is a shape-level artifact. It defines the model, boundaries, goals, non-goals, tradeoffs, and success criteria. It is not executable.
-- A plan is a plan-level artifact. It defines phases or executable work, with verification and stop conditions at the level needed for the user's next step.
+- `shape` decides what the direction is, what it is not, and why. It stays at concept level.
+- `plan` organizes an already selected or explicitly assumed direction into a coherent plan or explicit executable plan candidate. It does not classify plan kinds.
+- `review` owns verdicts, formal blocking gaps, severity, source-of-truth judgment, and whether a plan can proceed.
 
 `shape` may name the next workflow task, the smallest conceptual wedge, and the approximate impact surface. It must not output ordered implementation steps, target files, or step-level verification.
 
 `plan` assumes the direction is selected or proceeds from a clearly marked recommended assumption. It must not reopen the core direction. If the main uncertainty is still which direction to choose, return to `shape`.
 
-## Abstraction Levels
+Every plan output uses:
 
-- `concept`: direction, model, boundaries, principles, tradeoffs, non-goals, success criteria, and validation direction. Default for `shape`.
-- `phase-plan`: phases, work packages, dependencies, sequencing, phase verification, risks, and what would make the plan implementation-ready. Default for general `plan` requests.
-- `implementation-plan`: target areas or files, allowed changes, do-not-touch areas, step-level verify, stop conditions, and handoff notes. Use only for build-ready planning, external-agent handoff, weak-model handoff, or explicit execution preparation.
+- `Plan Readiness: incomplete | reviewable | execution-candidate`
+- `Readiness Rationale`
+- `Known Gaps`
+- `Review Focus`
 
-Unless the user explicitly names an abstraction level, `plan` chooses it automatically:
-
-- Prefer the `Recommended Next Abstraction Level` from the source shape artifact.
-- Without a shape artifact, infer from the request and read-only preflight.
-- Default to `phase-plan` when uncertain.
-- Use `implementation-plan` only when the direction is stable, target areas/files and verification are clear, and no blocking decision affects execution boundaries.
-- If the user asks for handoff or build-ready output but implementation readiness is incomplete, downgrade to `phase-plan` and list `What Would Make This Implementation-Ready`.
+`Plan Readiness` is self-assessment, not a gate verdict. `Known Gaps` are plan-owned gaps, not formal blockers. `Review Focus` tells `review` what to inspect. `Blocking Gaps`, severity, and build/sync readiness verdicts belong to `review`.
 
 ## Impact Surface
 
-Shape artifacts should include a lightweight impact surface so later planning can choose the right abstraction level without asking the user first:
+Shape artifacts should include a lightweight impact surface so later planning can size the work and understand risk without asking the user first:
 
 ```text
 Impact Surface:
@@ -184,17 +178,16 @@ Impact Surface:
 - Affected Surfaces: workflow core | task docs | templates | adapters | project docs | source code | tests | other
 - Reversal Cost: low | medium | high
 - Execution Risk: low | medium | high
-- User Confirmation Needed Before: none | phase-plan | implementation-plan | build
-- Recommended Next Abstraction Level: phase-plan | implementation-plan
+- User Confirmation Needed Before: none | plan | review | build
 ```
 
-Default to `implementation-plan` only for small, low-risk, low-reversal work with no blocking decision and no unresolved source-of-truth, artifact-boundary, compatibility, architecture-constraint, project-docs-truth, permissions, data, or security question. Default to `phase-plan` for medium or large scope, medium or high reversal cost, medium or high execution risk, multiple affected surfaces, or any confirmation needed before implementation/build.
+Use `Plan Readiness: execution-candidate` only when the plan is explicit enough to be reviewed as possible build or external-agent input. Use `reviewable` for large, staged, or high-risk plans. Use `incomplete` when direction, evidence, target, compatibility, source of truth, or verification is missing.
 
 Use these decision states across shape and plan:
 
 - `Locked Decisions`: confirmed by the user or an explicit source.
 - `Assumed Decisions`: recommended defaults that can support advisory planning; note risk if wrong.
-- `Blocking Decisions`: unresolved choices that prevent a build-ready implementation plan.
+- `Open Decisions`: unresolved choices that prevent an explicit executable plan candidate.
 
 ## Discussion Freedom
 
@@ -205,7 +198,8 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is think
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may provide a non-build-ready `Planning Draft`, readiness gaps, and `What Would Make This Implementation-Ready`.
+- `plan` may provide `Plan Readiness`, `Known Gaps`, `Review Focus`, and readiness rationale.
+- `review` may provide `Gap Analysis` with `Severity: high | medium | low`, `Blocking Gaps`, and `Non-blocking Gaps`.
 - Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 
 These freedoms do not loosen write or execution boundaries. `persist`, `sync`, and `build` keep their existing target and prerequisite rules.
@@ -268,6 +262,7 @@ Core selectable lenses:
 | `architecture` | Structure, interfaces, dependencies, constraints, or durable tradeoffs matter. |
 | `consistency` | `sync` needs confirmed alignment projection after docs/code/session drift has been reviewed. |
 | `debug` | `explore` or `build` needs defect or uncertain runtime behavior diagnosis. |
+| `expert` | `shape` or `review` needs high-density expert reasoning, hidden assumptions, opposing views, or anti-generic output. |
 | `language` | Full English, translation, terminology consistency, or project glossary updates are needed. |
 | `test` | `plan` or `build` needs stronger verification and acceptance evidence. |
 
@@ -283,7 +278,7 @@ Folded into protocol:
 | Removed Lens | Current Home |
 | :--- | :--- |
 | `strategy` | `shape` option comparison and tradeoff synthesis. |
-| `conceptual` | Core `Abstraction Level`: `concept`, `phase-plan`, `implementation-plan`. |
+| `conceptual` | Core `shape` concept boundary and `plan` readiness rules. |
 | `iteration` | Session/thread inference and `persist` target rules. |
 | `expand` | `Output: normal|full` and `Depth: detailed`. |
 | `distill` | `Task: distill` user-directed summaries and distillation. |
@@ -292,7 +287,7 @@ Selectable lenses by task:
 
 | Task | Selectable Lenses |
 | :--- | :--- |
-| `shape` | `architecture`, `language` |
+| `shape` | `architecture`, `language`, `expert` |
 | `plan` | `architecture`, `test`, `language` |
 | `explore` | `architecture`, `debug`, `language` |
 | `distill` | `language` |
@@ -300,7 +295,7 @@ Selectable lenses by task:
 | `clarify` | `language` |
 | `persist` | `language` |
 | `build` | `test`, `debug` |
-| `review` | `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, `architecture` |
+| `review` | `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, `architecture`, `expert` |
 | `route` | none; recommend lenses for the next task only |
 
 ## Mode And Write Boundaries
@@ -317,14 +312,15 @@ Native Plan/Implement is a separate external-agent write path.
 
 `build` is a workflow-aware bounded executor, not a general implementation agent. Its special responsibility is bounded execution plus environment contract, command provenance, retry discipline, execution trace, and discovery capture. External-agent implementation may produce general changes; `build` must apply the explicit workflow plan, limit trial-and-error, record verification evidence, and surface reusable execution discoveries without writing session memory directly.
 
-## Abstraction Level Core Rules
+## Plan Readiness Core Rules
 
-Use `Abstraction Level: concept | phase-plan | implementation-plan` when the user wants concept design, phase planning, implementation planning, or a strong-model-to-weak-model handoff.
+Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning output.
 
-- `shape` produces `Abstraction Level: concept`.
-- `plan` produces `Abstraction Level: phase-plan` or `Abstraction Level: implementation-plan`.
-- Option comparison is built into `shape`; abstraction level is core protocol.
-- `build` does not require an `Abstraction Level` label. It still only needs an explicit plan that is concrete enough to execute safely.
+- `incomplete`: key direction, evidence, target, compatibility, source-of-truth, or verification inputs are missing.
+- `reviewable`: coherent enough for review, but not self-claimed as execution candidate.
+- `execution-candidate`: explicit enough to be reviewed as possible build or external-agent input.
+
+`Plan Readiness` is not a build verdict. `review` decides `Review Verdict`, `Blocking Gaps`, severity, and recommended next task.
 
 ## Conversation-to-Artifact Output Flow
 
@@ -334,7 +330,7 @@ Protocol: `Output: compact | normal | full`.
 
 - `compact`: general discussion. Optimize the next turn, not archival completeness.
 - `normal`: refine. Prepare key structure and important context for later persist, without writing files.
-- `full`: artifact, handoff, audit, diff review, build-ready plan, or complex routing.
+- `full`: artifact, handoff, audit, diff review, explicit executable plan candidate, or complex routing.
 
 Daily path:
 
@@ -352,7 +348,7 @@ Compact output starts with `User Intent`, may include `Current Read`, and uses s
 
 - `shape compact`: reason about direction and choose or recommend a concept.
 - `plan compact`: summarize the shaped/chosen direction, show a compact `Impact Surface`, then give the plan sketch.
-- `plan full`: detailed commitment artifact for persist, handoff, build-ready planning, or external-agent use.
+- `plan full`: detailed commitment artifact for persist, handoff, explicit executable plan candidate, or external-agent use.
 
 Every `plan` output, including compact chat output, must include:
 
@@ -360,7 +356,9 @@ Every `plan` output, including compact chat output, must include:
 Shape Summary
 Impact Surface
 Plan
-Blocking Questions
+Plan Readiness
+Known Gaps
+Review Focus
 Next
 ```
 
@@ -368,7 +366,7 @@ Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Comp
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Do not add a detailed chat output mode; use `Output: full` for detailed artifacts and handoffs.
 
-Plans should not use generic open-question sections. Use `Blocking Questions` for questions that affect current readiness or next-step eligibility, and `Follow-up Questions` for non-blocking future considerations. `implementation-plan` requires `Blocking Questions: none`; `phase-plan` may include blocking questions when each says what it blocks.
+Plans should not use generic open-question sections. Use `Known Gaps` for plan-owned missing inputs or weak spots, `Review Focus` for what review should inspect, and `Follow-up Questions` only for non-blocking future considerations. Formal `Blocking Gaps` belong to `review`.
 
 ## Task Boundary Router
 

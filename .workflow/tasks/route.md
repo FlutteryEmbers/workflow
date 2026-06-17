@@ -83,6 +83,7 @@ Recommend the smallest path:
 - Evidence-only requests such as reading code, finding entrypoints, checking docs, understanding behavior, or studying references go to `explore`.
 - Existence and discovery questions such as "does this repo have X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
 - Summary and distillation requests such as "summarize this folder", "distill this thread", "extract structure", or "make an archive summary draft" go to `distill`.
+- Gap and missing-capability requests such as "what is missing", "where are the gaps", "does this satisfy the goal", "audit feature gaps", or "audit workflow support" go to `review` with `Review Type: gap-analysis`; if evidence is insufficient, route `explore -> review`.
 - Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
 - Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
 - Typical session flow: `external or conversational goal -> shape -> plan -> review -> build/external-agent -> review -> sync`.
@@ -106,7 +107,7 @@ Recommend the smallest path:
 ## Lens Suggestions
 
 - Use `shape` built-in option comparison for route comparison or technical direction; do not suggest a separate strategy lens.
-- Use core `Abstraction Level` rules for concept-first planning, phase plans, implementation plans, strong-model-to-weak-model handoff, or requests to avoid premature code-level detail; do not suggest a separate conceptual lens.
+- Use core `Plan Readiness` rules for planning, executable plan candidates, strong-model-to-weak-model handoff, or requests to avoid premature code-level detail; do not suggest a separate conceptual lens.
 - Suggest `architecture` for boundaries, dependency direction, public surfaces, or constraints.
 - For terminology or rules questions outside review, suggest `language`, `clarify`, or `shape` depending on the request; reserve `domain` for review.
 - Use thread inference and `persist` rules for multi-turn work with changing background; do not suggest a separate iteration lens.
