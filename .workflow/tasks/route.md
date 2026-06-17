@@ -36,6 +36,14 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Do not use to perform analysis, planning, review, persist, sync, or implementation itself.
 - Do not use to apply lenses; only recommend them.
 
+## Boundary Layers
+
+- `Core Responsibility`: classify intent and recommend the smallest useful task path, write path, lenses, context, and next prompt.
+- `Adjacent Allowance`: include boundary mismatch, allowed scope, segmented prompts, stop points, and lens suggestions when they help the user choose the next task.
+- `Forbidden Authority`: do not perform the routed task, apply lenses, run evidence preflight, write files, sync stable documents, execute, implement, or grant permissions to later segments.
+
+Adjacent allowance must stay routing-owned. If the user needs actual analysis, verdict, planning, persistence, sync, or implementation, route to that task and stop.
+
 ## Expected Output
 
 - Always chat-only.
@@ -55,6 +63,7 @@ Boundary classes:
 
 - `fits`: the selected task can handle the request.
 - `fits_with_preflight`: the selected task can handle it after read-only preflight in `Mode: discuss`.
+- `fallback_fit`: no task fits exactly, but the selected task can handle the primary user intent with only allowed adjacent output.
 - `composite`: multiple tasks are needed.
 - `wrong_task`: another task is the proper entrypoint.
 - `missing_prerequisite`: target, explicit plan, source of truth, or Project Docs Rules safety is missing.
@@ -63,8 +72,14 @@ Boundary classes:
 
 Recommend the smallest path:
 
-- When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
+- When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
+- If no task fits exactly, choose the nearest task by primary user intent. Default gray-area discussion to `shape` only when the primary intent is concept direction, option framing, or next-step selection.
+- Nearest-fit fallback must output `Boundary Mismatch` and `Allowed Scope`; it may perform only the chosen task's core responsibility plus allowed adjacent output.
 - Ambiguous what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests default to `shape`.
+- "I do not know how to proceed" goes to `shape`.
+- "Roughly compress the current discussion, then give direction" goes to `shape` if the compression is lightweight and current-context only; use `distill -> shape` if a specified source summary matters.
+- "Look at the risks, then give direction" goes to `shape` if this is a risk sketch; use `review` if the user needs a formal verdict, readiness judgment, or source-of-truth decision.
+- "Give me rough steps" goes to `shape` if this means a conceptual planning sketch; use `plan` if sequencing, executable handoff, target files, or verification steps are needed.
 - Evidence-only requests such as reading code, finding entrypoints, checking docs, understanding behavior, or studying references go to `explore`.
 - Existence and discovery questions such as "does this repo have X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
 - Summary and distillation requests such as "summarize this folder", "distill this thread", "extract structure", or "make an archive summary draft" go to `distill`.
@@ -86,6 +101,7 @@ Recommend the smallest path:
 - Code or repository change through workflow: `build` with `Mode: execute` and an explicit executable plan.
 - Vague implementation intent without an explicit executable plan: `plan -> review`, then `build` or external-agent only after the plan is concrete enough.
 - Discussion chains should end with `Persist Candidate` when the result is worth preserving. `persist` consumes the candidate, recent discussion, or full packet; the original discussion task does not write files.
+- Do not recommend any lens as a skip or override mechanism. Lenses may strengthen analysis only; they do not change task responsibility, write permission, execute permission, or sync permission.
 
 ## Lens Suggestions
 
@@ -111,6 +127,9 @@ For normal requests, keep the route compact:
 
 ```text
 Interpreted goal: <one sentence>
+Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite, when useful>
+Boundary Mismatch: <none or why no task fits exactly, when fallback_fit>
+Allowed Scope: <core responsibility plus any allowed adjacent output, when fallback_fit>
 Recommended path: <task -> task>
 Lens: <none or explicit lenses>
 Next prompt: <copyable prompt>
@@ -120,7 +139,9 @@ Use the full format only for `Output: full`, composite routing, wrong-task corre
 
 ```text
 Interpreted goal: <one sentence>
-Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
+Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
+Boundary Mismatch: <none or why no task fits exactly>
+Allowed Scope: <core responsibility plus any allowed adjacent output>
 Recommended path: <task -> task>
 Mode: <discuss|persist|execute>
 Write Path: <workflow-managed|external-agent>

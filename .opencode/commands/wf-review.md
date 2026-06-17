@@ -14,6 +14,7 @@ Rules:
 - Do not edit files.
 - Review the target against the stated question or explicit plan.
 - Treat `redteam` as an explicit critique posture: failure paths, counterarguments, hidden costs, and boundary breaks. Review still owns the verdict.
+- You may include repair direction and minimal revision sketch, but do not create an implementation plan, write, sync, execute, or implement.
 - For external plan audit or diff review, use `Output: full`.
 - Use `.workflow/tasks/review.md` as the task contract if needed.
 
@@ -26,5 +27,7 @@ Return:
 - Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
 - Take, 3-5 bullets max
 - Risks/Unknowns, 0-3 bullets
+- Minimal Revision Sketch
+- Recommended Next Task
 - Next
 - Persist Candidate, candidate only and do not write

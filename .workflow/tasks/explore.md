@@ -51,6 +51,14 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to update project docs; use `sync`.
 - Do not use to summarize or distill specified source material; use `distill`.
 
+## Boundary Layers
+
+- `Core Responsibility`: extract source-backed evidence about what exists, where it is, how it appears to work, and how reliable the evidence is.
+- `Adjacent Allowance`: include candidate interpretations, likely entrypoints, borrowable ideas, potential options, reliability follow-up, and a recommended next task when they help the user use the evidence.
+- `Forbidden Authority`: do not choose the final direction, issue a verdict, decide source of truth, write a repair plan, create implementation sequencing, stable-sync documents, write files, execute, or implement.
+
+Adjacent allowance must stay evidence-grounded. If the adjacent output becomes the main deliverable, route to `shape`, `review`, `distill`, or `plan`.
+
 ## Expected Output
 
 - `Sources Checked`, `Observed Facts`, `Evidence Map`, `Reliability Notes`, `Unknowns`, `Constraints Found`, `Potential Options`, and `Recommended Next Task`.
@@ -148,6 +156,7 @@ Risks/Unknowns:
 - <0-3 bullets>
 Candidate Interpretations:
 - <0-3 plausible interpretations, not final direction>
+Recommended Next Task: <shape|review|plan|persist|distill|none>
 Persist Candidate: Artifact=<note|option>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
@@ -155,7 +164,7 @@ Use `Persist Candidate: none` when the exploration is not worth preserving.
 
 ## Normal Refine Output
 
-Use `Output: normal` when the user asks to整理, refine, or prepare evidence for persist without writing files:
+Use `Output: normal` when the user asks to organize, refine, or prepare evidence for persist without writing files:
 
 ```text
 User Intent: <one line about what the user wants to understand>
@@ -168,6 +177,8 @@ Discussion Notes To Preserve:
 - <source, reliability note, contradiction, example, or constraint worth preserving>
 Open Questions:
 - <missing source or evidence gap>
+Recommended Next Task:
+- <shape|review|plan|persist|distill|none>
 Persist Candidate:
 - Artifact=<note|option>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```

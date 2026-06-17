@@ -14,6 +14,7 @@ Rules:
 - Do not treat this as OpenCode implementation.
 - Create a planning draft or repo-aware plan only after the direction is chosen.
 - Non-build-ready planning drafts are allowed; label what is missing for implementation handoff.
+- A planning draft may name readiness gaps and next task, but it does not authorize writing, sync, execution, or implementation.
 - Use `Output: full` when the plan is intended as an implementation handoff.
 - Compact plan output must still summarize shape/chosen direction and include a compact impact surface.
 - Use `Shape Summary: Source=chat` when there is no persisted shape artifact.
@@ -37,5 +38,6 @@ Return:
 - Abstraction Level
 - Planning Draft, yes/no
 - What Would Make This Implementation-Ready, when relevant
+- Recommended Next Task
 - Next
 - Persist Candidate, candidate only and do not write

@@ -1,7 +1,7 @@
 ---
 id: shape
 role: designer
-purpose: Default synthesis entry for ambiguous, what-if, option-comparison, concept-level, direction-setting, or session decision work in chat.
+purpose: Default discussion fallback, concept organizer, and next-task router for ambiguous, what-if, option-comparison, concept-level, direction-setting, or session decision work in chat.
 inputs:
   - clarified_context
 outputs:
@@ -37,6 +37,9 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Use when the user needs a direction, concept, architecture shape, or session decision.
 - Use for vision-driven PoC work where the initial request should be reframed into the smallest useful wedge.
 - Use by default when the request is ambiguous, what-if, option-comparison, concept-level, direction-setting, or unclear between `shape`, `explore`, and `review`.
+- Use as the small fallback when the user's intent is unclear but not primarily explanation, evidence extraction, specified-source summary, verdict, write, sync, execution, or implementation.
+- Use when the user asks how to think about something, what paths exist, or what the next useful move should be.
+- Use when a request mixes adjacent discussion needs but has not reached formal `plan`, `review`, `build`, or external-agent readiness.
 
 ## Do Not Use When
 
@@ -47,6 +50,14 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update project docs directly; use `sync`.
 
+## Boundary Layers
+
+- `Core Responsibility`: form a concept-level direction, decision frame, option comparison, smallest useful wedge, and recommended next workflow task.
+- `Adjacent Allowance`: include lightweight clarification, lightweight compression of current chat or provided snippets, candidate evidence needs, risk sketch, and non-executable planning sketch when they support shaping the direction.
+- `Forbidden Authority`: do not perform formal evidence extraction, specified-source summary/distillation, gate verdict, approval, readiness judgment, source-of-truth judgment, implementation-ready plan, stable sync, file write, execution, or implementation.
+
+Adjacent allowance must stay secondary to the shape. If the adjacent work becomes the main deliverable, route to the specialized task.
+
 ## Expected Output
 
 - `Reframed Goal`, `Narrowest Useful Wedge`, `Success Criteria`, `Rejected Larger Scope`, tradeoffs, and recommended next step.
@@ -56,16 +67,21 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Output: compact` default: short recommendation, risks, and optional `Persist Candidate`.
 - `Full Persist Packet` only when the shape should be persisted now or `Output: full` is requested.
 - `Triage` only when task boundary, evidence readiness, or verdict/planning need is unclear.
+- `Boundary Fit`, `Adjacent Allowance Used`, and `Recommended Next Task` when the request uses `shape` as the small fallback.
 
 ## Task Boundary Check
 
 Before shaping, classify the request:
 
 - `fits`: user asks to form a direction, concept, architecture, option comparison, what-if recommendation, or session decision.
+- `fallback_fit`: primary intent is direction-shaping, but the request includes lightweight adjacent clarification, compression, candidate evidence needs, risk sketch, or planning sketch.
 - `fits_with_preflight`: user asks to shape based on current code, project docs, session context, external tools, references, repository fit, architecture entrypoints, implementation entrypoints, or how to start. In `Mode: discuss`, run default implicit preflight first, then shape.
 - `composite`: user asks to shape and persist; shape first, then route to `persist`.
 - `wrong_task`: user only asks whether current code/docs are reasonable; recommend `review`.
+- `wrong_task`: user primarily asks for evidence extraction, source discovery, or how something works; recommend `explore`.
+- `wrong_task`: user primarily asks to summarize, distill, compress, or extract structure from a specified source; recommend `distill`.
 - `wrong_task`: user has a fixed target and wants implementation steps; recommend `plan`.
+- `wrong_task`: user asks to write, stable-sync, execute, implement, or modify repository files; recommend `persist`, `sync`, `plan -> review -> build`, or external-agent depending on target and plan readiness.
 - `composite`: user asks to evaluate reasonableness and then design a replacement; recommend `review -> shape`.
 
 Default implicit preflight runs only in `Mode: discuss`. Use it as triage plus evidence check before shaping.
@@ -85,6 +101,8 @@ Can Shape Now?: <yes/no>
 
 If missing evidence could change the recommendation, still provide a provisional shape by default. Label it as provisional, name the assumptions, and state `What Would Change My Mind`. Stop and output `Recommended Segments: explore -> shape` only when the missing evidence would affect execution, project docs, source-of-truth judgment, irreversible choices, security, permissions, data migration, or another high-impact decision. If the user actually needs a verdict, stop and recommend `review`. If the target is fixed and the user needs steps, recommend `plan`.
 
+Use `fallback_fit` only in `Mode: discuss`. It allows a useful shape when the specialized task would be too heavy for the user's current intent. It does not authorize writes, stable projection, formal verdicts, build-ready sequencing, or implementation.
+
 `Embedded Critique Check` is core protocol, not the `redteam` lens. Use it to name risky assumptions, likely failure paths, and whether a later explicit redteam critique is worth running. Do not load `.workflow/lenses/redteam.md` from `shape`, and do not output a formal review verdict.
 
 Lens use must not change task responsibility. `architecture` and `language` may help synthesize direction, but `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`. Option comparison is built into `shape`; it does not require a separate lens. Abstraction Level is core protocol; it does not require a lens.
@@ -94,6 +112,7 @@ Lens use must not change task responsibility. `architecture` and `language` may 
 In `Mode: discuss`, the user remains responsible for final judgment. `shape` should provide useful thinking material instead of over-blocking.
 
 - You may output `Provisional Recommendation`, `Candidate Options`, `Best Guess`, and `What Would Change My Mind`.
+- When `Boundary Fit: fallback_fit`, you may also output lightweight clarification, lightweight compression, candidate evidence needs, risk sketch, or a non-executable planning sketch.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the recommendation is uncertain or consequential.
 - Do not present provisional recommendations as approval, readiness, source of truth, or permission to execute.
 - Keep strict write and execution boundaries unchanged; discussion freedom does not allow file writes, stable-document sync, or implementation.
@@ -221,6 +240,8 @@ In `Mode: discuss`, default to:
 ```text
 User Intent: <one line about what the user wants shaped>
 Current Read: <optional one line about relevant code/docs/discussion facts>
+Boundary Fit: <fits|fallback_fit|composite|wrong_task|missing_prerequisite>
+Adjacent Allowance Used: <none|clarification|compression|evidence-needs|risk-sketch|planning-sketch>
 Decision State:
 - Human Decision State: <none|assumed|checkpoint|blocking>
 - Decision State Reason: <why this state applies>
@@ -240,6 +261,7 @@ Impact Surface:
 - Execution Risk: <low|medium|high>
 - User Confirmation Needed Before: <none|phase-plan|implementation-plan|build>
 - Recommended Next Abstraction Level: <phase-plan|implementation-plan>
+Recommended Next Task: <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
 Persist Candidate: Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
 ```
 
@@ -247,11 +269,13 @@ Use `Persist Candidate: none` when the shape is not worth preserving.
 
 ## Normal Refine Output
 
-Use `Output: normal` when the user asks to整理, refine, or prepare the discussion for persist without writing files:
+Use `Output: normal` when the user asks to organize, refine, or prepare the discussion for persist without writing files:
 
 ```text
 User Intent: <one line about what the user wants shaped>
 Current Read: <optional one line about relevant code/docs/discussion facts>
+Boundary Fit: <fits|fallback_fit|composite|wrong_task|missing_prerequisite>
+Adjacent Allowance Used: <none|clarification|compression|evidence-needs|risk-sketch|planning-sketch>
 Decision State:
 - Human Decision State: <none|assumed|checkpoint|blocking>
 - Decision State Reason: <why this state applies>
@@ -267,6 +291,8 @@ Discussion Notes To Preserve:
 - <phase boundary, constraint, user correction, example, counterexample, accepted risk, or weak-model handoff detail>
 Open Questions:
 - <question that could change the shape>
+Recommended Next Task:
+- <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
 Persist Candidate:
 - Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
 ```
@@ -293,6 +319,10 @@ Decision State:
 - Decision State Reason: <why this state applies>
 - Assumed Default: <recommended default or none>
 - Checkpoint Needed: no
+Boundary Fit:
+- <fits|fallback_fit|composite|wrong_task|missing_prerequisite>
+Adjacent Allowance Used:
+- <none|clarification|compression|evidence-needs|risk-sketch|planning-sketch>
 Discussion Notes To Preserve:
 - <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
 Source Context:
@@ -344,6 +374,8 @@ Validation Approach:
 - <how this shape can be tested or falsified>
 Next Use:
 - <persist | review | plan | sync>
+Recommended Next Task:
+- <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
 ```
 
 `Artifact ID` is a lightweight reference anchor for later `persist` requests. It is not a file path and does not change artifact kind or directory rules.

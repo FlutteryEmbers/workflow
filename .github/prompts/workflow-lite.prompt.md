@@ -42,15 +42,18 @@ Request: ${input:request:describe the work}
 - Default to `Output: compact`.
 - Start with `User Intent` unless the request is trivial; this must describe what the user wants, not the technical diagnosis.
 - Run a lightweight Task Boundary Check before acting.
-- Classify boundary as `fits`, `fits_with_preflight`, `composite`, `wrong_task`, or `missing_prerequisite` when the request is not straightforward.
+- Classify boundary as `fits`, `fits_with_preflight`, `fallback_fit`, `composite`, `wrong_task`, or `missing_prerequisite` when the request is not straightforward.
+- If no task fits exactly, choose the nearest task by primary user intent. Default gray-area discussion to `shape` only for concept direction, option framing, or next-step selection.
+- For `fallback_fit`, output `Boundary Mismatch`, `Allowed Scope`, `Adjacent Allowance Used`, and `Recommended Next Task`; do not cross the selected task's forbidden authority.
 - If composite, output segmented prompts with stop points instead of forcing the request into one task.
 - When unsure, start with `shape`.
 - Meaning, explanation, restatement, difference, assumption, hidden scope, or prior AI answer unpacking requests go to `clarify`.
 - Summary, folder summary, source distillation, and archive-summary draft requests go to `distill`.
 - Ambiguous what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests default to `shape`.
 - Evidence-only requests go to `explore`; verdict-only requests go to `review`.
-- Lenses may strengthen the selected task, but must not change task responsibility. `distill` is a task, not a lens.
-- Discussion freedom applies only in `Mode: discuss`: AI may provide `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Minimal Revision Sketch`, and `What Would Change My Mind` as thinking material.
+- Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. `distill` is a task, not a lens. Do not use any lens as a skip mechanism.
+- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Minimal Revision Sketch`, `Repair Direction`, non-build-ready `Planning Draft`, readiness gaps, and `What Would Change My Mind` as thinking material.
+- Discussion adjacency is allowed; authority is not. Adjacent output may recommend the next task, but write, sync, execute, implementation, source-of-truth, and build-ready authority still require the proper `Mode`, `Task`, target rules, prerequisites, and explicit executable plan.
 - For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision State`.
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available; otherwise output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
@@ -175,7 +178,9 @@ For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/task
 Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 
 ```text
-Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
+Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
+Boundary Mismatch: <none or why no task fits exactly>
+Allowed Scope: <core responsibility plus any allowed adjacent output>
 Reason: <one sentence>
 Recommended Path: <task -> task>
 Next Prompt: <copyable prompt>

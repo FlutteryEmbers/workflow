@@ -17,6 +17,9 @@ Rules:
 - Do not load templates.
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/shape.md` as the task contract.
+- Use shape as the small discussion fallback only for concept direction, option framing, and next-step selection.
+- Shape may include lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, or non-executable planning sketch when that supports the direction.
+- Do not use shape for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, or implementation.
 - Shape may consume the current chat goal directly or a `.session/inbox/**` brief with `Brief Type: external-goal`.
 - Do not require an inbox goal brief when the conversation already contains enough context.
 - Provide provisional thinking when useful; do not present it as approval, readiness, or execution permission.
@@ -33,6 +36,8 @@ ${input:request:describe the what-if, option, concept, or direction-setting ques
 Return:
 - User Intent
 - Current Read, optional
+- Boundary Fit
+- Adjacent Allowance Used
 - Decision State
 - User Checkpoint, only when checkpoint and then stop
 - Abstraction Level, when concept structure is relevant
@@ -40,4 +45,5 @@ Return:
 - Risks/Unknowns
 - Provisional Recommendation
 - Impact Surface, when planning may follow
+- Recommended Next Task
 - Persist Candidate, candidate only and do not write

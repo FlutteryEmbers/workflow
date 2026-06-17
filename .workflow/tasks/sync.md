@@ -78,6 +78,14 @@ Rejected targets:
 - Do not change source code or workflow system files; use `build` or the external-agent path.
 - Do not generate general-purpose summaries or distillations; use `distill`.
 
+## Boundary Layers
+
+- `Core Responsibility`: project confirmed outcomes into allowed stable-document targets for project docs, code-adjacent README files, or session archive summaries.
+- `Adjacent Allowance`: describe sync domain, target candidates, blockers, prerequisites, alignment/archive set, and projection shape in chat.
+- `Forbidden Authority`: do not decide source of truth, sequence repairs, perform general summaries, edit source code, write active session artifacts, execute, or implement.
+
+Adjacent discussion output from any task does not grant sync authority. `sync` writes only in `Mode: persist`, only to allowed stable-document targets, and only after sync prerequisites and target boundaries pass validation.
+
 ## Expected Output
 
 - `Mode: discuss`: sync domain, target or alignment/archive set, prerequisites, blockers, and next prompt.

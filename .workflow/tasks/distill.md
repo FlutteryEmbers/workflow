@@ -51,9 +51,18 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Do not create implementation steps; use `plan`.
 - Do not write `.session/**`, `notes/**`, `docs/**`, `.session/archive/**`, or source files; use `persist`, `sync`, or `build`.
 
+## Boundary Layers
+
+- `Core Responsibility`: summarize or distill the user-selected source and focus while separating observed facts, inferences, and unknowns.
+- `Adjacent Allowance`: include next use, persist candidate, review suggestion, source-scope caveat, or sync/archive handoff hint when they help the user use the summary.
+- `Forbidden Authority`: do not discover broad source scope, judge accuracy, decide source of truth, choose direction, create implementation sequencing, stable-sync documents, write files, execute, or implement.
+
+Adjacent allowance must stay secondary to the distillation. If the user primarily wants accuracy judgment, source-of-truth decision, or archive writing, route to `review` or `sync`.
+
 ## Expected Output
 
 - A user-directed summary with `Source Scope`, `Summary Focus`, `Summary Type`, `Observed`, `Inferred`, `Unknown`, and `Next Use`.
+- `Recommended Next Task` when the summary naturally leads to `persist`, `review`, `shape`, `plan`, or `sync`.
 - `Output: compact` default: short summary and optional `Persist Candidate`.
 - `Output: normal`: structured summary for review, shape, plan, sync, or persist.
 - `Full Persist Packet` only when the distillation should be persisted now or `Output: full` is requested.
@@ -125,6 +134,7 @@ Inferred:
 Unknown:
 - <missing source, weak evidence, or none>
 Next Use: <persist | review | shape | plan | sync | none>
+Recommended Next Task: <persist|review|shape|plan|sync|none>
 Persist Candidate: Artifact=distillation; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
@@ -154,6 +164,8 @@ Omitted / Out Of Scope:
 - <excluded source or dimensions>
 Next Use:
 - <persist | review | shape | plan | sync | none>
+Recommended Next Task:
+- <persist|review|shape|plan|sync|none>
 Persist Candidate:
 - Artifact=distillation; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
@@ -192,6 +204,8 @@ Omitted / Out Of Scope:
 Risks / Caveats:
 - <summary limitations, weak evidence, or conflict notes>
 Next Use:
+- <persist | review | shape | plan | sync | none>
+Recommended Next Task:
 - <persist | review | shape | plan | sync | none>
 ```
 

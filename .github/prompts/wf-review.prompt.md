@@ -19,6 +19,7 @@ Rules:
 - Use `.workflow/tasks/review.md` as the task contract.
 - Treat `redteam` as an explicit critique posture: failure paths, counterarguments, hidden costs, and boundary breaks. Review still owns the verdict.
 - Give verdict and minimal repair direction when useful; do not create a full replacement design.
+- You may include repair direction and minimal revision sketch, but do not create an implementation plan, write, sync, execute, or implement.
 
 Request:
 ${input:request:describe the plan, diff, docs/code drift, claim, or artifact to review}
@@ -31,4 +32,5 @@ Return:
 - Confidence
 - Minimal Revision Sketch
 - Recommended Action
+- Recommended Next Task
 - Persist Candidate, candidate only and do not write

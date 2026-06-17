@@ -53,6 +53,14 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - Do not modify source code, `.workflow/**`, `.github/**`, or other repository artifacts; use `build` or external-agent.
 - Do not persist full transcripts by default.
 
+## Boundary Layers
+
+- `Core Responsibility`: persist supplied or inferred session artifacts into allowed active session targets or explicit disposable notes with high fidelity.
+- `Adjacent Allowance`: reshape supplied content into the correct artifact form, preserve conflicts, improve traceability, and name missing source or target prerequisites.
+- `Forbidden Authority`: do not make new design, planning, review, source-of-truth, sync, implementation, or execution judgments; do not write outside allowed persist targets.
+
+Adjacent discussion output from `clarify`, `explore`, `distill`, `shape`, `review`, or `plan` does not grant persist authority. `persist` may write only in `Mode: persist`, only to allowed active session targets or explicit `notes/**`, and only after target-boundary validation.
+
 ## Persist Inputs
 
 - `Artifact`: `brief | note | shape | option | plan | review | decision | distillation | expanded`.

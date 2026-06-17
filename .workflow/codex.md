@@ -25,25 +25,37 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Use explicit `.session/threads/{thread}/plan_{topic}.md` files for workflow-managed build input.
 - Treat explicit `notes/**` targets as disposable exploration notes, not project docs or execution sources.
 - Treat `docs/**` as code-aligned project docs and apply Project Docs Rules before writing.
-- Lenses may strengthen the selected task, but must not change task responsibility.
+- Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. Do not use a lens as a skip mechanism.
 - Default to `Compatibility: preserve` and `Constraint Mode: respect`; breaking compatibility or constraint exceptions require explicit user or explicit-source intent.
 
 ## Task Boundary Shortcut
 
-- `shape = synthesis`: ambiguous, what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests.
+- `shape = synthesis`: small discussion fallback for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, "how should I think about this", or next-step selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
 - `distill = summary`: user-directed summary, folder summary, source distillation, or archive-summary draft for specified source material.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
 
+Task boundary layers:
+
+- `Core Responsibility`: the task's main job.
+- `Adjacent Allowance`: small neighboring outputs allowed only when they support the core responsibility.
+- `Forbidden Authority`: boundaries the task must not cross.
+
+For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, or implementation.
+
+Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build-ready authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
+
 ## Discussion Freedom
 
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide useful provisional thinking without treating it as approval.
 
-- `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`.
-- `explore`: `Candidate Interpretations`, `Likely Entry Points`, `Borrowable Ideas`.
-- `review`: `Minimal Revision Sketch`, `Repair Direction`.
-- `plan`: non-build-ready `Planning Draft` when execution detail is not requested yet.
+- `clarify`: lightweight next-task hint.
+- `explore`: `Candidate Interpretations`, `Likely Entry Points`, `Borrowable Ideas`, recommended next task.
+- `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
+- `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
+- `review`: `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
+- `plan`: non-build-ready `Planning Draft`, readiness gaps, `What Would Make This Implementation-Ready`.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 

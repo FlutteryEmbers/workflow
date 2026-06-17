@@ -48,6 +48,14 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 - Do not use for native external-agent implementation; use the external-agent path and then `review`.
 - Do not use to persist session artifacts or project docs directly.
 
+## Boundary Layers
+
+- `Core Responsibility`: apply an explicit executable workflow-managed plan with bounded execution, verification evidence, and execution trace.
+- `Adjacent Allowance`: report readiness gaps, missing prerequisites, pitfalls, reusable execution discoveries, and recommended review or persist follow-up.
+- `Forbidden Authority`: do not create or approve the plan, expand scope, infer authorization from a planning draft, sync stable documents, persist session artifacts, or execute without `Mode: execute` and an explicit executable `Plan`.
+
+Adjacent discussion output from `clarify`, `explore`, `distill`, `shape`, `review`, or `plan` does not grant build authority. `build` may modify repository artifacts only in `Mode: execute`, only with an explicit executable `Plan`, and only inside that plan's scope.
+
 ## Expected Output
 
 - `Mode: discuss`: missing prerequisite or build-readiness guidance only.

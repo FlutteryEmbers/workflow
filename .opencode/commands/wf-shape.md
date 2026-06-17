@@ -14,6 +14,9 @@ Rules:
 - Do not load templates.
 - Do not output a full `Persist Packet` unless requested.
 - Use `.workflow/tasks/shape.md` as the task contract if needed.
+- Use shape as the small discussion fallback only for concept direction, option framing, and next-step selection.
+- Shape may include lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, or non-executable planning sketch when that supports the direction.
+- Do not use shape for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, or implementation.
 - Shape may consume the current chat goal directly or a `.session/inbox/**` brief with `Brief Type: external-goal`.
 - Do not require an inbox goal brief when the conversation already contains enough context.
 - If evidence is missing and could change the answer, recommend `explore -> shape`.
@@ -30,6 +33,8 @@ $ARGUMENTS
 Return:
 - User Intent
 - Current Read, optional
+- Boundary Fit
+- Adjacent Allowance Used
 - Decision State
 - User Checkpoint, only when checkpoint and then stop
 - Abstraction Level, when concept structure is relevant
@@ -37,4 +42,5 @@ Return:
 - Risks/Unknowns, 0-3 bullets
 - Impact Surface, when planning may follow
 - Next
+- Recommended Next Task
 - Persist Candidate, candidate only and do not write

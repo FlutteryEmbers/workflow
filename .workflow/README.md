@@ -115,13 +115,37 @@ conversational source
 When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 
 - `clarify = explain/restate/unpack`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
-- `shape = synthesis`: default for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, or "how should I think about this" requests.
+- `shape = synthesis`: default small fallback for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, "how should I think about this", or "what should happen next" requests.
 - `explore = evidence`: use only when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, or dependencies.
 - `distill = summary`: use when the user asks to summarize, distill, compress, or extract structure from specified files, folders, threads, docs, discussion, or reference material.
 - `review = verdict`: use only when there is an existing target to judge, such as code, docs, plan, diff, decision, behavior claim, or thread artifact.
 - `plan = planning sequence`: use when the direction is chosen and the user needs phases, sequencing, repo-aware steps, or an executable handoff.
 
 `shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` may give candidate interpretations and borrowable ideas, but not final direction. `distill` may summarize and separate observed, inferred, and unknown content, but not judge accuracy or source of truth. `review` may give a minimal revision sketch, but not a full replacement design.
+
+## Task Boundary Layers
+
+Every task has three boundary layers:
+
+- `Core Responsibility`: the task's main job and required output.
+- `Adjacent Allowance`: small neighboring outputs allowed only when they support the core responsibility.
+- `Forbidden Authority`: capabilities the task must never claim.
+
+For example, `shape` core responsibility is concept direction. Its adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. Its forbidden authority includes formal evidence extraction, specified-source summary, gate verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, and implementation.
+
+Adjacent allowance reduces task-switching friction; it does not replace the specialized task. If the adjacent work becomes the primary deliverable, route to the specialized task.
+
+Discussion adjacency is allowed; authority is not. Adjacent output in `Mode: discuss` may suggest the next task or make the current task more actionable, but write, sync, execute, implementation, source-of-truth, and build-ready authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
+
+When no task fits exactly, use nearest-fit fallback:
+
+- Choose the task whose `Core Responsibility` matches the primary user intent.
+- Default gray-area discussion to `shape` only when the primary intent is concept direction or next-step framing.
+- Output `Boundary Fit: fallback_fit`, the `Adjacent Allowance Used`, and `Recommended Next Task`.
+- Perform only the selected task's core responsibility plus allowed adjacent output.
+- Never cross `Forbidden Authority`.
+
+`composite` is a normal routing outcome, not a failure. Composite requests should return segmented prompts with stop points. Do not silently execute later write, sync, build, or external-agent segments.
 
 ## Shape / Plan Boundary
 
@@ -176,11 +200,12 @@ Use these decision states across shape and plan:
 
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is thinking material for the user, not final authorization.
 
-- `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, and `What Would Change My Mind`.
-- `explore` may provide `Candidate Interpretations`, `Likely Entry Points`, and `Borrowable Ideas`.
-- `distill` may provide `Observed`, `Inferred`, `Unknown`, and a `Persist Candidate: Artifact=distillation`.
-- `review` may provide `Minimal Revision Sketch` and `Repair Direction`.
-- `plan` may provide a non-build-ready `Planning Draft`.
+- `clarify` may provide a lightweight next-task hint.
+- `explore` may provide `Candidate Interpretations`, `Likely Entry Points`, `Borrowable Ideas`, and recommended next task.
+- `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
+- `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
+- `review` may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
+- `plan` may provide a non-build-ready `Planning Draft`, readiness gaps, and `What Would Make This Implementation-Ready`.
 - Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 
 These freedoms do not loosen write or execution boundaries. `persist`, `sync`, and `build` keep their existing target and prerequisite rules.
@@ -234,7 +259,7 @@ For stable documents:
 
 Lenses are user-selected. Copilot may suggest a lens, but must not apply it unless the user explicitly names it or adds its file as context.
 
-Non-review tasks may not use a lens as a task replacement. Option comparison belongs in `shape`; abstraction level belongs in core `shape` / `plan` protocol; multi-turn target selection belongs in thread inference and `persist`; expanded detail belongs in `Output` and `Depth`.
+Non-review tasks may not use a lens as a task replacement. No task may use a lens to bypass permissions. Lenses may strengthen analysis only; they do not change task responsibility, write permission, execute permission, or sync permission. Option comparison belongs in `shape`; abstraction level belongs in core `shape` / `plan` protocol; multi-turn target selection belongs in thread inference and `persist`; expanded detail belongs in `Output` and `Depth`.
 
 Core selectable lenses:
 
@@ -351,13 +376,14 @@ Before acting, classify whether the request fits the selected task:
 
 - `fits`: the task can handle it directly.
 - `fits_with_preflight`: the task can handle it after a read-only preflight.
+- `fallback_fit`: no task fits exactly, but the selected task can handle the primary user intent with only allowed adjacent output.
 - `composite`: multiple tasks are needed.
 - `wrong_task`: another task is the proper entrypoint.
 - `missing_prerequisite`: required target, explicit plan, source of truth, or project docs safety is missing.
 
 Composite requests should return segmented prompts with stop points. Do not silently switch tasks or automatically run later write/implementation segments.
 
-Boundary classes are handled explicitly: `fits` performs the selected task, `fits_with_preflight` runs only the allowed read-only preflight before continuing or routing, `composite` returns segmented prompts, and `wrong_task` / `missing_prerequisite` stop with a recommended path.
+Boundary classes are handled explicitly: `fits` performs the selected task, `fits_with_preflight` runs only the allowed read-only preflight before continuing or routing, `fallback_fit` performs only the selected task's core responsibility plus allowed adjacent output, `composite` returns segmented prompts, and `wrong_task` / `missing_prerequisite` stop with a recommended path.
 
 ## Persist-Centered Session Writes
 

@@ -51,6 +51,14 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update stable documents; use `sync`.
 
+## Boundary Layers
+
+- `Core Responsibility`: provide a verdict on a target, claim, plan, diff, source-of-truth question, readiness state, or alignment question.
+- `Adjacent Allowance`: include minimal revision sketch, repair direction, blocking/non-blocking gaps, suggested critique, and recommended next action when they make the verdict actionable.
+- `Forbidden Authority`: do not create a full replacement design, produce an implementation plan, perform evidence-only discovery as the main work, stable-sync documents, write files, execute, or implement.
+
+Adjacent allowance must remain verdict-owned. If the user needs a full redesign, sequencing, or implementation, route to `shape`, `plan`, or `build`/external-agent after review.
+
 ## Expected Output
 
 - Findings first, then `Review Verdict`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
@@ -150,6 +158,7 @@ Take:
 Risks/Unknowns:
 - <0-3 bullets>
 Minimal Revision Sketch: <smallest repair direction or none>
+Recommended Next Task: <shape|plan|build|external-agent|sync|persist|explore|none>
 Persist Candidate: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
 ```
 
@@ -157,7 +166,7 @@ Use `Persist Candidate: none` when the review is not worth preserving.
 
 ## Normal Refine Output
 
-Use `Output: normal` when the user asks to整理, refine, or prepare the review for persist without writing files:
+Use `Output: normal` when the user asks to organize, refine, or prepare the review for persist without writing files:
 
 ```text
 User Intent: <one line about what the user wants reviewed>
@@ -170,6 +179,8 @@ Discussion Notes To Preserve:
 - <review question clarification, evidence priority, accepted risk, verdict change reason, or user concern>
 Open Questions:
 - <question that blocks readiness, execution, or sync>
+Recommended Next Task:
+- <shape|plan|build|external-agent|sync|persist|explore|none>
 Persist Candidate:
 - Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
 ```

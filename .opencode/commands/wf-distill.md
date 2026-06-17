@@ -14,6 +14,7 @@ Rules:
 - Summarize only the requested source and focus.
 - Separate `Observed`, `Inferred`, and `Unknown`.
 - Do not judge accuracy, source of truth, or readiness; route those to `review`.
+- You may include next use, persist candidate, review suggestion, or sync/archive handoff hint, but do not write or judge source-of-truth.
 - Do not write `.session/**`, `docs/**`, or `.session/archive/**`.
 - Use `.workflow/tasks/distill.md` as the task contract if needed.
 
@@ -30,4 +31,5 @@ Return:
 - Inferred
 - Unknown
 - Next Use
+- Recommended Next Task
 - Persist Candidate, candidate only and do not write

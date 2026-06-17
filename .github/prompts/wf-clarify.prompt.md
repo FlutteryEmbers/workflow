@@ -18,6 +18,7 @@ Rules:
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/clarify.md` as the task contract.
 - Explain or restate meaning; do not judge correctness, reasonableness, readiness, or conflicts.
+- You may include a lightweight next-task hint, but do not perform evidence audit, summary, verdict, planning, write, sync, or execution.
 - Always include exactly one short `Example`.
 - If the user asks whether something is correct, reasonable, conflicting, safe, or ready, route to `/wf-review`.
 
@@ -31,5 +32,6 @@ Return:
 - In This Workflow
 - Common Confusion
 - Example
+- Recommended Next Task
 - Next
 - Persist Candidate, candidate only and do not write

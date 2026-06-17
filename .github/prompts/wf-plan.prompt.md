@@ -18,6 +18,7 @@ Rules:
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/plan.md` as the task contract.
 - Planning drafts are allowed; do not force build-ready detail unless the user asks for handoff or `Output: full`.
+- A planning draft may name readiness gaps and next task, but it does not authorize writing, sync, execution, or implementation.
 - Compact plan output must still summarize shape/chosen direction and include a compact impact surface.
 - Use `Shape Summary: Source=chat` when there is no persisted shape artifact.
 - Use `Output: full` for persisted plans, implementation handoffs, build-ready plans, or external-agent handoffs.
@@ -38,5 +39,6 @@ Return:
 - Abstraction Level
 - Planning Draft: yes/no
 - What Would Make This Implementation-Ready, when relevant
+- Recommended Next Task
 - Next
 - Persist Candidate, candidate only and do not write

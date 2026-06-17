@@ -18,6 +18,7 @@ Rules:
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/explore.md` as the task contract.
 - Extract evidence only; do not give a final verdict, choose the final direction, or create a plan.
+- You may include candidate interpretations, likely entrypoints, and recommended next task, but keep them evidence-grounded and non-authoritative.
 - Route user-directed summary or distillation requests to `/wf-distill`.
 - Do not default to the `consistency` lens for discovery questions.
 - Treat external or unfamiliar repo conflicts as reliability risks, not repair tasks.
@@ -30,5 +31,7 @@ Return:
 - Current Read, optional
 - Take, 3-5 bullets max
 - Risks/Unknowns, 0-3 bullets
+- Candidate Interpretations, optional
+- Recommended Next Task
 - Next
 - Persist Candidate, candidate only and do not write

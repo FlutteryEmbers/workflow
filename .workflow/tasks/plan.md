@@ -47,6 +47,14 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update stable documents; use `sync`.
 
+## Boundary Layers
+
+- `Core Responsibility`: organize a chosen direction into a phase plan, repo-aware implementation plan, or external-agent handoff without performing the work.
+- `Adjacent Allowance`: include planning draft status, readiness gaps, blocking questions, follow-up questions, critique/review recommendation, and what would make the plan implementation-ready.
+- `Forbidden Authority`: do not choose the core direction, issue a review verdict, write files, stable-sync documents, execute, implement, or imply execution authorization.
+
+Adjacent allowance must stay planning-owned. If the primary need is direction choice, verdict, stable projection, or implementation, route to `shape`, `review`, `sync`, or `build`/external-agent.
+
 ## Expected Output
 
 - A `Planning Draft` or implementation handoff appropriate to the user's requested level.
@@ -55,6 +63,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Full persisted plans include expanded `Planning Basis` that records source shape/decision, locked decisions, assumed decisions, rejected options, blocking decisions, and the chosen abstraction level.
 - `Compatibility / Constraint Plan` that records the selected compatibility and constraint policy before execution.
 - `Output: compact` default: shape summary, compact impact surface, plan sketch, blocking questions, next step, and optional `Persist Candidate`.
+- `Recommended Next Task` through `Next`, without treating the plan as write or execution authorization.
 - `Output: full` / `Full Persist Packet` only when the plan should be persisted now, used as a handoff, needs build-ready detail, or `Output: full` is requested.
 
 ## Task Boundary Check
@@ -195,6 +204,7 @@ Blocking Questions:
 - <none | question plus what it blocks>
 Abstraction Level: <phase-plan|implementation-plan>
 Planning Draft: <yes/no; if yes, say what is missing for build-ready handoff>
+Recommended Next Task: <review|persist plan|build|sync|shape|none>
 Next: <review | persist plan | build | sync | shape | none; use build only for implementation-plan with explicit executable scope and review/authorization conditions satisfied>
 Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
@@ -203,7 +213,7 @@ Use `Persist Candidate: none` when the plan is not worth preserving.
 
 ## Normal Refine Output
 
-Use `Output: normal` when the user asks to整理, refine, or prepare the plan for persist without writing files:
+Use `Output: normal` when the user asks to organize, refine, or prepare the plan for persist without writing files:
 
 ```text
 User Intent: <one line about what the user wants planned>
@@ -230,6 +240,8 @@ Blocking Questions:
 - <none | question plus what it blocks>
 Follow-up Questions:
 - <none | non-blocking future consideration>
+Recommended Next Task:
+- <review|persist plan|build|sync|shape|none>
 Persist Candidate:
 - Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```

@@ -14,16 +14,18 @@ Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; 
 
 Use core `Abstraction Level` rules when the user explicitly wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff.
 
-When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility.
+When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. Do not use a lens as a skip mechanism.
 
 ## Discussion Freedom
 
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, OpenCode may provide provisional thinking while the user keeps final responsibility.
 
-- `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, and `What Would Change My Mind`.
-- `explore` may output `Candidate Interpretations`, `Likely Entry Points`, and `Borrowable Ideas`.
-- `review` may output `Minimal Revision Sketch` and `Repair Direction`.
-- `plan` may output a non-build-ready `Planning Draft`.
+- `clarify` may output a lightweight next-task hint.
+- `explore` may output `Candidate Interpretations`, `Likely Entry Points`, `Borrowable Ideas`, and recommended next task.
+- `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
+- `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
+- `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
+- `plan` may output a non-build-ready `Planning Draft`, readiness gaps, and `What Would Make This Implementation-Ready`.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` for uncertain or consequential output.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -33,11 +35,21 @@ Default to `Compatibility: preserve` and `Constraint Mode: respect`. Breaking co
 
 Task shortcut:
 
-- `shape = synthesis`: ambiguous, what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests.
+- `shape = synthesis`: small discussion fallback for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, "how should I think about this", or next-step selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
 - `distill = summary`: user-directed summary, folder summary, source distillation, or archive-summary draft for specified source material.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
+
+Task boundary layers:
+
+- `Core Responsibility`: the task's main job.
+- `Adjacent Allowance`: small neighboring outputs allowed only when they support the core responsibility.
+- `Forbidden Authority`: boundaries the task must not cross.
+
+For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, or implementation.
+
+Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build-ready authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
 
 Discovery vs judgment rule:
 

@@ -129,23 +129,34 @@ For `Task: plan`, replace the generic compact/normal body with plan-specific str
 When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 
 - `clarify = explain/restate/unpack`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
-- `shape = synthesis`: ambiguous, what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests.
+- `shape = synthesis`: small discussion fallback for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, "how should I think about this", or next-step selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
 - `distill = summary`: user-selected files, folders, threads, docs, discussion, or reference material summarized with observed, inferred, and unknown content separated.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
 
-Lenses may strengthen the selected task, but must not change task responsibility.
+Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. Do not use a lens as a skip mechanism.
+
+Task boundary layers:
+
+- `Core Responsibility`: the task's main job.
+- `Adjacent Allowance`: small neighboring outputs allowed only when they support the core responsibility.
+- `Forbidden Authority`: boundaries the task must not cross.
+
+For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, implementation-ready plan, stable sync, writes, execution, or implementation.
+
+Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build-ready authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
 
 ## Discussion Freedom
 
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be useful before all evidence is complete.
 
-- `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, and `What Would Change My Mind`.
-- `explore` may output `Candidate Interpretations`, `Likely Entry Points`, and `Borrowable Ideas`.
-- `distill` may output `Observed`, `Inferred`, `Unknown`, and `Persist Candidate: Artifact=distillation`.
-- `review` may output `Minimal Revision Sketch` and `Repair Direction`.
-- `plan` may output a non-build-ready `Planning Draft`.
+- `clarify` may output a lightweight next-task hint.
+- `explore` may output `Candidate Interpretations`, `Likely Entry Points`, `Borrowable Ideas`, and recommended next task.
+- `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
+- `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
+- `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
+- `plan` may output a non-build-ready `Planning Draft`, readiness gaps, and `What Would Make This Implementation-Ready`.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -241,11 +252,12 @@ Before acting, classify the request when it is not obviously a fit:
 
 - `fits`: the current task can handle it directly.
 - `fits_with_preflight`: the current task can handle it after a read-only preflight.
+- `fallback_fit`: no task fits exactly, but the selected task can handle the primary user intent with only allowed adjacent output.
 - `composite`: the request needs multiple tasks.
 - `wrong_task`: another task is the proper entrypoint.
 - `missing_prerequisite`: required target, explicit plan, source of truth, or project docs safety is missing.
 
-If not `fits`, do not force-fit the request.
+If not `fits` or `fallback_fit`, do not force-fit the request.
 
 ## Composite Task Segmentation
 

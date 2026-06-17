@@ -41,14 +41,25 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 ## Do Not Use When
 
 - Do not use to choose a direction; use `shape`.
+- Do not use to gather or audit source evidence; use `explore`.
+- Do not use to summarize specified source material; use `distill`.
 - Do not use to evaluate whether code, docs, plans, diffs, or prior AI answers are correct, reasonable, conflicting, safe, or ready; use `review`.
 - Do not use to produce implementation steps; use `plan`.
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update project docs; use `sync`.
 
+## Boundary Layers
+
+- `Core Responsibility`: clarify meaning, request boundaries, assumptions, scope, success criteria, and differences without judging correctness.
+- `Adjacent Allowance`: include a lightweight next-task hint when the clarification reveals whether the user likely needs `explore`, `distill`, `shape`, `review`, `plan`, `persist`, or `sync`.
+- `Forbidden Authority`: do not perform evidence audit, specified-source summary, direction choice, gate verdict, implementation sequencing, stable sync, file write, execution, or implementation.
+
+Adjacent allowance must stay secondary to the clarification. If the user primarily wants the hinted next task, route there.
+
 ## Expected Output
 
 - Concise semantic unpack, clarified request, assumptions, scope boundaries, and open questions.
+- `Recommended Next Task` or `Next` when the clarification naturally exposes the next workflow step.
 - `Output: compact` default: short answer and optional `Persist Candidate`.
 - `Full Persist Packet` only when the clarification should be persisted now or `Output: full` is requested.
 
@@ -58,6 +69,8 @@ Before clarifying, classify obvious boundary problems:
 
 - `fits`: user asks for meaning, restatement, explanation, difference, assumptions, scope, staged requirements, or acceptance notes.
 - `composite`: user asks to clarify and persist; clarify first, then route to `persist`.
+- `wrong_task`: user asks to gather evidence, inspect files, or discover how something works; recommend `explore`.
+- `wrong_task`: user asks to summarize or distill specified source material; recommend `distill`.
 - `wrong_task`: user asks whether something is correct, reasonable, conflicting, safe, ready, or worth changing; recommend `review`.
 - `wrong_task`: user asks to form a direction or decision; recommend `shape`.
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
@@ -112,7 +125,8 @@ Plain Meaning: <plain-language explanation>
 In This Workflow: <what it means in this workflow, or not workflow-specific>
 Common Confusion: <likely confusion or none>
 Example: <one minimal example; use contrast when helpful>
-Next: <how to use this clarification or which task to use next>
+Recommended Next Task: <clarify|explore|distill|shape|review|plan|persist|sync|none>
+Next: <how to use this clarification or why that next task fits>
 Persist Candidate: Artifact=<brief|note>; Artifact State=inbox; Topic=<topic>; Suggested Target=.session/inbox/<artifact>_<topic>.md
 ```
 
@@ -120,7 +134,7 @@ Use `Persist Candidate: none` when the clarification is not worth preserving.
 
 ## Normal Refine Output
 
-Use `Output: normal` when the user asks to整理, refine, or prepare for persist without writing files:
+Use `Output: normal` when the user asks to organize, refine, or prepare for persist without writing files:
 
 ```text
 User Intent: <one line about what the user wants clarified>
@@ -141,6 +155,8 @@ Related Concepts:
 - <related term or task boundary>
 Clarifying Question:
 - <none or one high-impact question>
+Recommended Next Task:
+- <clarify|explore|distill|shape|review|plan|persist|sync|none>
 Discussion Notes To Preserve:
 - <user correction, staged requirement, constraint, example, meaning boundary, or non-goal worth preserving>
 Open Questions:
@@ -179,6 +195,8 @@ Risks / Unknowns:
 - <unknowns or assumptions>
 Next Use:
 - <explore | shape | plan | persist | sync>
+Recommended Next Task:
+- <explore | distill | shape | review | plan | persist | sync | none>
 ```
 
 If the clarification is not worth preserving, output `Persist Candidate: none`.
