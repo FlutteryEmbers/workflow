@@ -60,7 +60,7 @@ Rejected targets:
 
 - `.session/threads/**`, `.session/inbox/**`: use `persist`.
 - `notes/**`: use `persist` with an explicit notes target.
-- source code, `.workflow/**`, `.github/**`, prompts, templates, and other repository artifacts: use `plan -> review -> build` or the external-agent path after an explicit executable plan exists.
+- source code, `.workflow/**`, `.github/**`, prompts, templates, and other repository artifacts: use `plan -> optional review -> build` or the external-agent path after an explicit executable plan exists; recommend review for material risk.
 
 ## When To Use
 
@@ -101,7 +101,7 @@ Before syncing, classify the request:
 - `wrong_task`: request asks to decide docs architecture, artifact ownership, or long-term boundary; recommend `shape`.
 - `wrong_task`: request asks to sequence repairs or create a multi-target work plan; recommend `plan`.
 - `wrong_task`: request targets `.session/threads/**`, `.session/inbox/**`, or `notes/**`; recommend `persist`.
-- `wrong_task`: request targets code, `.workflow/**`, `.github/**`, prompts, templates, or unrelated files; recommend `plan -> review -> build` or external-agent after an explicit executable plan exists.
+- `wrong_task`: request targets code, `.workflow/**`, `.github/**`, prompts, templates, or unrelated files; recommend `plan -> optional review -> build` or external-agent after an explicit executable plan exists.
 - `missing_prerequisite`: `Sync Domain` is missing and cannot be inferred from target.
 - `missing_prerequisite`: `Target`, `Target Directory`, `Scope`, and existing docs convention are all missing.
 - `missing_prerequisite`: `project-docs` lacks source, scope, sync object, target or target directory or existing convention, source of truth, alignment success criteria, or Project Docs Rules safety.

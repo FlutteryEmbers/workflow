@@ -42,7 +42,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 - Use when the user asks whether code, docs, a decision, a plan, a diff, or a behavior claim is reasonable, safe, acceptable, executable, consistent, or ready.
 - Use when the user asks what capability, behavior, documentation, plan, or system support is missing relative to a baseline; use `Review Type: gap-analysis`.
-- Use as a gateway before external-agent implementation and after external-agent diffs.
+- Use as a recommended risk/gap audit before external-agent implementation and after external-agent diffs.
 
 ## Do Not Use When
 
@@ -59,7 +59,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - `Adjacent Allowance`: include minimal revision sketch, repair direction, blocking/non-blocking gaps, suggested critique, and recommended next action when they make the verdict actionable.
 - `Forbidden Authority`: do not create a full replacement design, produce an implementation plan, perform evidence-only discovery as the main work, stable-sync documents, write files, execute, or implement.
 
-Adjacent allowance must remain verdict-owned. If the user needs a full redesign, sequencing, or implementation, route to `shape`, `plan`, or `build`/external-agent after review.
+Adjacent allowance must remain verdict-owned. If the user needs a full redesign, sequencing, or implementation, route to `shape`, `plan`, or `build`/external-agent as the next task.
 
 ## Expected Output
 
@@ -84,7 +84,7 @@ Conditional implicit preflight for `review` only checks review target, review qu
 
 If evidence is insufficient for a verdict or gap analysis, output `Review Verdict: needs more evidence`, name the missing evidence or missing baseline, and recommend `explore` or `shape` instead of inventing readiness or blocking conclusions.
 
-Review acts as a gateway. Verdicts should recommend next task: `none`, `persist`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
+Review provides verdicts and risk/gap gates when requested or when the selected path uses review. Verdicts should recommend next task: `none`, `persist`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 
 ## Copilot Add Context
 

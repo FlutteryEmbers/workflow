@@ -25,7 +25,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, OpenCode may provi
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may output `Plan Readiness`, `Known Gaps`, `Review Focus`, and recommended next task.
+- `plan` may output `Plan Readiness`, `Known Gaps`, `Review Focus`, `Review Recommended`, and recommended next task.
 - `review` may output `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` for uncertain or consequential output.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
@@ -70,9 +70,9 @@ Planning readiness rule:
 
 - `shape` stays at concept level and may recommend `plan` or `review`.
 - `plan` outputs `Plan Readiness: incomplete | reviewable | execution-candidate`.
-- `plan` uses `Known Gaps` for plan-owned missing inputs and `Review Focus` for what review should inspect.
+- `plan` uses `Known Gaps` for plan-owned missing inputs, `Review Focus` for what review should inspect, and `Review Recommended` for risk posture.
 - `review` owns formal `Blocking Gaps`, severity, and readiness verdicts.
-- `/wf-build` requires an explicit executable plan plus review/authorization conditions; it does not rely on a plan kind label.
+- `/wf-build` requires explicit user invocation and an explicit executable plan; review is recommended for material risk, but missing review is not by itself a build blocker.
 
 Exploration notes:
 
@@ -97,7 +97,7 @@ Use this when OpenCode native Plan can draft an implementation plan.
 
 - Treat the result as a draft external plan.
 - Do not edit files during native Plan.
-- Audit the draft with `review` before implementation.
+- Audit the draft with `review` before implementation when risk is material.
 - Use `persist` to persist handoff plans to `.session/threads/{thread}/plan_{topic}.md`.
 
 ### Level 3: Bounded Implementer

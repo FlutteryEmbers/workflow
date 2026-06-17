@@ -82,7 +82,7 @@ Before shaping, classify the request:
 - `wrong_task`: user primarily asks for evidence extraction, source discovery, or how something works; recommend `explore`.
 - `wrong_task`: user primarily asks to summarize, distill, compress, or extract structure from a specified source; recommend `distill`.
 - `wrong_task`: user has a fixed target and wants implementation steps; recommend `plan`.
-- `wrong_task`: user asks to write, stable-sync, execute, implement, or modify repository files; recommend `persist`, `sync`, `plan -> review -> build`, or external-agent depending on target and plan readiness.
+- `wrong_task`: user asks to write, stable-sync, execute, implement, or modify repository files; recommend `persist`, `sync`, `plan -> optional review -> build`, or external-agent depending on target and plan readiness.
 - `composite`: user asks to evaluate reasonableness and then design a replacement; recommend `review -> shape`.
 
 Default implicit preflight runs only in `Mode: discuss`. Use it as triage plus evidence check before shaping.

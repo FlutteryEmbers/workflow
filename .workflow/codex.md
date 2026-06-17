@@ -55,7 +55,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
 - `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review`: `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
-- `plan`: `Plan Readiness`, `Known Gaps`, `Review Focus`, and recommended next task.
+- `plan`: `Plan Readiness`, `Known Gaps`, `Review Focus`, `Review Recommended`, and recommended next task.
 - `review`: `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
@@ -81,10 +81,10 @@ Discovery vs judgment rule:
 Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates.
 
 - `shape` produces concept-level direction and may recommend `plan` or `review`.
-- `plan` outputs `Plan Readiness`, `Known Gaps`, and `Review Focus`.
+- `plan` outputs `Plan Readiness`, `Known Gaps`, `Review Focus`, and `Review Recommended`.
 - `Plan Readiness` is self-assessment, not a gate verdict.
 - `review` owns formal `Blocking Gaps`, gap severity, and readiness verdicts.
-- `build` requires an explicit plan concrete enough to execute safely plus review/authorization conditions; it does not rely on a plan kind label.
+- `build` requires explicit user invocation and a plan concrete enough to execute safely; review is recommended for material risk, but missing review is not by itself a build blocker.
 
 ## Common Paths
 

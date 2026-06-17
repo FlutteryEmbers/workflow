@@ -82,7 +82,7 @@ Request: ${input:request:describe the work}
 - `Task: sync` in `Mode: persist` may write only stable-document targets for its selected `Sync Domain: project-docs | session-archive`.
 - In `Mode: execute`, require `Task: build` and an explicit executable plan.
 - If using Codex/Copilot native Plan -> Implement, set `Write Path: external-agent`; external-agent is not a Mode.
-- For `Write Path: external-agent`, audit the native plan before implementation and review the diff after implementation.
+- For `Write Path: external-agent`, recommend native plan audit before implementation and diff review afterward when risk is material.
 - Block instead of writing when `Mode: execute` lacks `Plan`, the target is outside the mode boundary, or instructions conflict.
 - For `Task: build`, establish `Execution Environment Contract` before verification: CWD, repo root, OS/shell, package manager or runner, available scripts, command source, and retry budget.
 - Build verification commands require `Command Provenance`: plan, repo script, Makefile, project docs, CI, or confirmed repo fact. Do not blindly retry path/cwd/shell/quoting variants; default retry budget is 2 for the same failure class.
@@ -157,7 +157,8 @@ Known Gaps:
 - <none | missing direction, evidence, target, verification, source-of-truth, compatibility, or scope input>
 Review Focus:
 - <what review should inspect before build, sync, or handoff>
-Next: <review | persist plan | build | sync | shape | none>
+Review Recommended: <no|yes|strongly>
+Next: <review | build with explicit invocation | persist plan | sync | shape | none>
 Persist Candidate: <none or one line; candidate only, do not write>
 ```
 
@@ -176,7 +177,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Shape Summary`, `Impact Surface`, `Plan Readiness`, `Known Gaps`, and `Review Focus`. Do not output formal blocking gaps from `plan`.
+For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Shape Summary`, `Impact Surface`, `Plan Readiness`, `Known Gaps`, `Review Focus`, and `Review Recommended`. Do not output formal blocking gaps from `plan`.
 
 Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 

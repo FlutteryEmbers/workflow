@@ -104,7 +104,7 @@ conversational source
 | `explore` | `designer` | chat | Understand code, materials, behavior, feasibility, or reference structure. |
 | `distill` | `analyst` | chat | Generate a user-directed summary or distillation of specified source material. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, or session decision. |
-| `plan` | `designer` | chat | Turn a chosen direction into a planning draft, repo-aware plan, or external-agent handoff. |
+| `plan` | `designer` | chat | Turn a chosen direction into a repo-aware plan, explicit executable plan candidate, or external-agent handoff. |
 | `persist` | `steward` | active session artifacts | Persist high-fidelity structured inbox, thread, or capture artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
 | `build` | `builder` | repository changes | Apply an explicit workflow-managed plan with bounded execution and traceable verification. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
@@ -165,8 +165,9 @@ Every plan output uses:
 - `Readiness Rationale`
 - `Known Gaps`
 - `Review Focus`
+- `Review Recommended: no | yes | strongly`
 
-`Plan Readiness` is self-assessment, not a gate verdict. `Known Gaps` are plan-owned gaps, not formal blockers. `Review Focus` tells `review` what to inspect. `Blocking Gaps`, severity, and build/sync readiness verdicts belong to `review`.
+`Plan Readiness` is self-assessment, not a gate verdict. `Known Gaps` are plan-owned gaps, not formal blockers. `Review Focus` tells `review` what to inspect. `Review Recommended` communicates risk posture; it is not a build blocker by itself. When review is invoked, `Blocking Gaps`, severity, and build/sync readiness verdicts belong to `review`.
 
 ## Impact Surface
 
@@ -304,7 +305,7 @@ Selectable lenses by task:
 - `Task: persist` in `Mode: persist`: writes active session artifacts to `.session/inbox/**` or `.session/threads/**`.
 - `Task: sync` in `Mode: persist`: writes stable documents only: allowed project docs targets, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - `Mode: execute`: uses `Task: build` with an explicit executable plan.
-- External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan audit before implementation and diff review afterward.
+- External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan audit before implementation and diff review afterward as recommended risk controls.
 
 `Mode: execute` is workflow-managed execution only.
 
@@ -320,7 +321,7 @@ Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning
 - `reviewable`: coherent enough for review, but not self-claimed as execution candidate.
 - `execution-candidate`: explicit enough to be reviewed as possible build or external-agent input.
 
-`Plan Readiness` is not a build verdict. `review` decides `Review Verdict`, `Blocking Gaps`, severity, and recommended next task.
+`Plan Readiness` is not a build verdict. When invoked, `review` decides `Review Verdict`, `Blocking Gaps`, severity, and recommended next task. Missing review is not by itself a `build` blocker.
 
 ## Conversation-to-Artifact Output Flow
 
@@ -359,6 +360,7 @@ Plan
 Plan Readiness
 Known Gaps
 Review Focus
+Review Recommended
 Next
 ```
 
@@ -461,7 +463,7 @@ These rules are core protocol, not optional lenses:
 - `Stop On Scope Expansion`: if execution reveals that scope must expand, stop and return to `plan` or `review`.
 - `Execution Environment Contract`: before verification, `build` records cwd, repo root, OS/shell, package manager or runner, command source, and retry budget.
 - `Command Provenance`: verification commands should come from the plan, repo scripts, Makefile, project docs, or confirmed repo facts. Do not keep guessing commands or paths.
-- `Readiness Before Write`: external-agent plans and diffs should be reviewed before further implementation or stable-document sync.
+- `Risk Review Before Write`: external-agent plans and diffs should be reviewed before further implementation or stable-document sync when risk, ambiguity, or source-of-truth impact is material.
 
 This project borrows prompt discipline from agent prompt repositories, but it does not copy role-command systems and does not add a root Claude-specific instruction file by default.
 
@@ -544,8 +546,8 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Existing target reasonableness: `review`, then `shape` or `plan` only if revision is needed.
 - Plan work or handoff: `plan -> persist -> .session/threads/{thread}/plan_*.md`.
 - Multi-turn design: `shape/review/explore discuss loop -> persist into one thread`.
-- Native implementation: external-agent native Plan -> `review` audit -> native Implement -> `review` diff.
-- Workflow-managed implementation: `plan -> review -> build`.
+- Native implementation: external-agent native Plan -> optional `review` audit -> native Implement -> recommended `review` diff.
+- Workflow-managed implementation: `plan -> optional review -> build` when the user invokes execute with an explicit executable plan.
 - Build result capture: `build -> Execution Trace -> optional persist inbox capture/thread audit note -> optional review/sync promotion`.
 - Project-docs sync: `review -> plan -> sync -> docs/**`.
 - Code-adjacent README sync: `review -> plan -> sync -> src/**/README.md`.
@@ -575,8 +577,8 @@ Recommended Copilot chain:
 - Use `/wf`, `/wf-clarify`, `/wf-explore`, `/wf-distill`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync` as thin OpenCode slash commands.
 - Keep `.workflow/**` as the source of truth; do not create a separate OpenCode workflow.
 - Use OpenCode first as a read-only context helper when its context management or model quality is uncertain.
-- Treat OpenCode native Plan output as an external plan draft until it is reviewed or explicitly chosen for implementation.
-- Audit OpenCode plans with `review` before implementation and review diffs afterward.
+- Treat OpenCode native Plan output as an external plan draft until it is explicitly chosen for implementation; review is recommended for material risk.
+- Audit OpenCode plans with `review` before implementation when risk is material, and review diffs afterward.
 - `/wf-build` is a high-risk write command for explicit plans only. It should block when `Plan:` is missing or not executable enough.
 - `/wf-build` defaults to compact `Execution Trace`; it does not write `.session/**`. Persist current-work-item audit traces as `Artifact: note` with `Intent: audit`, and reusable execution discoveries as inbox notes with `Intent: capture`.
 - OpenCode bounded implementation should execute only explicit narrow segments.

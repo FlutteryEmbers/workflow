@@ -27,6 +27,7 @@
 - Plan Readiness: {{incomplete | reviewable | execution-candidate}}
 - Readiness Rationale: {{why this readiness applies}}
 - Next Action: {{shape | explore | review | plan | build | external-agent | sync | persist | none}}
+- Review Recommended: {{no | yes | strongly}}
 - Main Risk: {{main risk or none}}
 - Source Basis: {{chat | shape artifact | inbox brief | decision | project docs}}
 
@@ -187,6 +188,10 @@
 ## Recommended Next Task
 
 {{shape | explore | review | plan | persist | sync | build | external-agent | none}}
+
+## Review Recommended
+
+{{no | yes | strongly; use yes/strongly for material risk, high reversal cost, ambiguous verification, breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, or multi-surface work}}
 
 ## Next Use
 

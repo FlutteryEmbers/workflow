@@ -31,7 +31,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
 - If the user asks to persist, provides a target, requests a handoff, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
-- `Mode: execute` is not valid for this task; use `build` with an explicit executable plan after review/authorization conditions are satisfied.
+- `Mode: execute` is not valid for this task; use `build` with explicit user invocation and an executable plan validated by `build`.
 - For native Plan/Implement, use the external-agent path.
 
 ## When To Use
@@ -45,7 +45,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to invent the target direction; use `shape`.
 - Do not use to judge whether a plan, target, code, or diff is good; use `review`.
 - Do not use to identify formal blocking gaps or gate readiness; use `review`.
-- Do not use to implement the plan; use `build` or the external-agent path after review.
+- Do not use to implement the plan; use `build` with explicit user invocation and an executable plan, or use the external-agent path.
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update stable documents; use `sync`.
 
@@ -76,7 +76,7 @@ Before planning, classify the request:
 - `composite`: user asks to plan and persist; plan first, then route to `persist`.
 - `wrong_task`: target direction is not chosen; recommend `shape`.
 - `wrong_task`: user asks whether current implementation, target, or plan is reasonable; recommend `review`.
-- `composite`: user asks to implement from target docs and current code without a confirmed source-of-truth verdict; recommend `review -> plan -> review -> external-agent/build -> review`.
+- `composite`: user asks to implement from target docs and current code without a concrete executable plan; recommend `review -> plan -> optional review -> external-agent/build -> review`.
 
 Default implicit preflight runs only in `Mode: discuss` and checks target stability, repo fit, target areas, constraints, and verification readiness. Plan may name known gaps and conflicts, but must not invent a new target or issue a formal review verdict.
 
@@ -110,7 +110,9 @@ Every plan, including compact chat output, must summarize the shaped or chosen d
 
 Every plan, including compact chat output, must include a short `Impact Surface`. Compact impact surface is a planning reader aid, not a full audit; include only `Scope Size`, `Affected Surfaces`, `Risk`, and `Reversal Cost`.
 
-Build handoff wording must use `explicit executable plan candidate`, not plan kind labels. `build` still requires an explicit executable plan plus review/authorization conditions; it must not infer authorization from `Plan Readiness`.
+Build handoff wording must use `explicit executable plan candidate`, not plan kind labels. `build` requires explicit user invocation plus executable plan validation; review is recommended for material risk but is not a universal hard gate. `build` must not infer authorization from `Plan Readiness`.
+
+When recommending `build`, include `Review Recommended: yes | no | strongly`. Use `no` only for low-risk explicit plans. Use `yes` or `strongly` for medium/high risk, breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, multi-surface work, high reversal cost, or ambiguous verification. For unclear plans, recommend `plan` or `review`, not `build`.
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Keep chat output modes to `compact`, `normal`, and `full`.
 
@@ -179,7 +181,8 @@ Known Gaps:
 Review Focus:
 - <what review should inspect before build, sync, or handoff>
 Recommended Next Task: <shape|explore|review|plan|persist|sync|build|external-agent|none>
-Next: <one line; use build only after review/authorization conditions are satisfied>
+Review Recommended: <no|yes|strongly>
+Next: <review | build with explicit invocation | persist plan | sync | shape | none>
 Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
@@ -218,6 +221,8 @@ Follow-up Questions:
 - <none | non-blocking future consideration>
 Recommended Next Task:
 - <shape|explore|review|plan|persist|sync|build|external-agent|none>
+Review Recommended:
+- <no|yes|strongly>
 Persist Candidate:
 - Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
@@ -241,6 +246,7 @@ Plan Summary:
 - Plan Readiness: <incomplete|reviewable|execution-candidate>
 - Readiness Rationale: <why this readiness applies>
 - Next Action: <shape | explore | review | plan | build | external-agent | sync | persist | none>
+- Review Recommended: <no | yes | strongly>
 - Main Risk: <main risk or none>
 - Source Basis: <chat | shape artifact | inbox brief | decision | project docs>
 Shape Summary:
@@ -297,6 +303,8 @@ Next Use:
 - <persist | review | build | external-agent | sync>
 Recommended Next Task:
 - <shape | explore | review | plan | persist | sync | build | external-agent | none>
+Review Recommended:
+- <no | yes | strongly>
 ```
 
 If the plan is not worth preserving, output `Persist Candidate: none`.

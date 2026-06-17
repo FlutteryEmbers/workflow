@@ -18,7 +18,7 @@ done_check:
 
 # Build Task
 
-`build` is the workflow-managed execution task. Native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents is the external-agent write path; it does not use `build`, but its plan should be audited before implementation and its diff should be reviewed afterward.
+`build` is the workflow-managed execution task. Native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents is the external-agent write path; it does not use `build`; plan audit before implementation and diff review afterward are recommended risk controls.
 
 `build` is special because it is not a general implementation agent. It is a workflow-aware bounded executor: it applies the explicit plan, limits command/path trial-and-error, records command provenance, produces an execution trace, and surfaces reusable execution discoveries through persist candidates.
 
@@ -28,7 +28,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 
 ## Mode Rules
 
-- Start with `## Execution Intent` in `Mode: execute`, naming the explicit plan, selected lenses, scope, and key constraints.
+- Start with `## Execution Intent` in `Mode: execute`, naming the explicit plan, selected lenses, scope, key constraints, `Review Status`, and `Risk Notice`.
 - Ask instead of editing when the plan is missing, scope is unclear, not executable enough, or requested edits exceed the plan.
 - `Mode: discuss` is default: explain the build approach or missing prerequisites in chat, do not write files.
 - `Mode: persist`: not valid for this task; use `persist` for session artifacts or `sync` for project docs / code-adjacent README.
@@ -51,14 +51,14 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 ## Boundary Layers
 
 - `Core Responsibility`: apply an explicit executable workflow-managed plan with bounded execution, verification evidence, and execution trace.
-- `Adjacent Allowance`: report readiness gaps, missing prerequisites, pitfalls, reusable execution discoveries, and recommended review or persist follow-up.
-- `Forbidden Authority`: do not create or approve the plan, expand scope, infer authorization from a planning draft, sync stable documents, persist session artifacts, or execute without `Mode: execute` and an explicit executable `Plan`.
+- `Adjacent Allowance`: report executability gaps, missing prerequisites, pitfalls, reusable execution discoveries, and recommended review or persist follow-up.
+- `Forbidden Authority`: do not create or approve the plan, expand scope, infer authorization from `Plan Readiness`, adjacent discussion output, review suggestions, plan path status, or any label, sync stable documents, persist session artifacts, or execute without `Mode: execute` and an explicit executable `Plan`.
 
 Adjacent discussion output from `clarify`, `explore`, `distill`, `shape`, `review`, or `plan` does not grant build authority. `build` may modify repository artifacts only in `Mode: execute`, only with an explicit executable `Plan`, and only inside that plan's scope.
 
 ## Expected Output
 
-- `Mode: discuss`: missing prerequisite or build-readiness guidance only.
+- `Mode: discuss`: missing prerequisite or executability guidance only.
 - `Mode: execute` with `Output: compact`: minimal diff inside the plan scope plus compact `Execution Trace`.
 - `Mode: execute` with `Output: full`, blocked, partial, failed verification, pitfall found, scope-expansion risk, reusable execution discovery, or user-requested trace persistence: full `Execution Trace`.
 
@@ -67,19 +67,19 @@ Adjacent discussion output from `clarify`, `explore`, `distill`, `shape`, `revie
 Before building, classify the request:
 
 - `fits`: `Mode: execute` includes an explicit plan and requested edits stay inside that plan.
-- `fits_with_preflight`: in `Mode: discuss`, user asks whether a plan is ready to build; run conditional implicit preflight for plan readiness only.
+- `fits_with_preflight`: in `Mode: discuss`, user asks whether a plan is executable; run conditional implicit preflight for execution prerequisites only.
 - `missing_prerequisite`: `Plan` is missing, unclear, or not executable enough.
 - `missing_prerequisite`: `Plan` points to `notes/**`; disposable exploration notes are not executable sources.
 - `composite`: user asks to implement from target docs/current code without a concrete plan or confirmed source-of-truth verdict; recommend `review -> plan -> review -> external-agent/build -> review`.
 - `wrong_task`: user asks to persist session artifacts; recommend `persist`.
 - `wrong_task`: user asks to update project docs; recommend `sync`.
 
-Conditional implicit preflight for `build` is allowed only in `Mode: discuss` and only checks readiness: plan, scope, target files, allowed changes, do-not-touch areas, step verification, stop conditions, and compatibility / constraint policy. In `Mode: execute`, do not run implicit preflight; instead perform execution plan validation. If the plan is missing, unclear, or not executable enough, block without editing.
+Conditional implicit preflight for `build` is allowed only in `Mode: discuss` and only checks executability: plan, scope, target files or target areas, allowed changes, do-not-touch areas, step verification, stop conditions, and compatibility / constraint policy. In `Mode: execute`, do not run implicit preflight; instead perform execution plan validation. If the plan is missing, unclear, or not executable enough, block without editing.
 
 Boundary handling:
 
 - `fits`: validate the explicit plan, then execute only inside plan scope.
-- `fits_with_preflight`: in `Mode: discuss`, run readiness preflight and report build-readiness only.
+- `fits_with_preflight`: in `Mode: discuss`, run execution-prerequisite preflight and report executability only.
 - `composite`: output the recommended segmented path; do not modify files.
 - `wrong_task` or `missing_prerequisite`: stop and return Boundary, Reason, Recommended Path, and Next Prompt.
 
@@ -102,6 +102,8 @@ User-selected lenses:
 In `Mode: execute`, validate and implement the explicit plan. The user invoking `build` is the execution authorization; the task's job is to enforce plan scope and executability. Read relevant artifacts first, keep edits inside the plan's scope, and stop if the plan requires unplanned interface, config, data, architecture, documentation, or workflow behavior changes.
 
 `build` records execution facts, not review verdicts. It may report pitfalls and likely sources observed during execution, but it must not decide whether the plan was correct, whether the diff is acceptable, or whether docs should change. Route those judgments to `review`.
+
+Missing review is not by itself a build blocker. Report `Review Status: reviewed | not reviewed | unknown` and a `Risk Notice` instead. Use `Risk Notice: review recommended` for material uncertainty or medium-risk plans. Use `Risk Notice: review strongly recommended` for breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, multi-surface plans, high reversal cost, or ambiguous verification. Continue execution only when the explicit plan is executable and the user invoked `Mode: execute`.
 
 Before editing, check the plan's compatibility and constraint policy:
 
@@ -147,7 +149,7 @@ Do not treat native Plan/Implement output as workflow-managed execution unless t
 
 Do not treat path status as approval. A plan under `.session/threads/**` is executable only when the user invokes `build` with it and it is concrete enough to execute safely.
 
-Do not infer execution authorization from `Plan Readiness` or any plan label. The user invoking `build` with an explicit executable plan is the authorization; the plan still must name scope, target files, allowed changes, verification, and stop conditions.
+Do not infer execution authorization from `Plan Readiness`, adjacent discussion output, review suggestions, plan path status, or any plan label. The user invoking `build` with an explicit executable plan is the authorization; the plan still must name scope, target files or target areas, allowed changes, verification, and stop conditions.
 
 Do not execute `notes/**`. Exploration notes are disposable working memory and must be converted into a concrete plan under `.session/threads/**` or provided as an explicit executable plan before implementation.
 
@@ -170,6 +172,8 @@ Default compact output:
 ```text
 Execution Trace:
 - Result: completed | partial | blocked
+- Review Status: reviewed | not reviewed | unknown
+- Risk Notice: none | review recommended | review strongly recommended
 - Changed: <count and short description>
 - Verification: passed | failed | not run | blocked
 - Environment: CWD=<path>; Command Source=<plan | script | Makefile | docs | CI | repo fact | none>; Retry Budget=<used>/<limit>
@@ -184,6 +188,8 @@ Use full output only when `Output: full`, the build is blocked or partial, verif
 Execution Trace:
 - Plan Used: <plan path or inline plan>
 - Result: completed | partial | blocked
+- Review Status: reviewed | not reviewed | unknown
+- Risk Notice: none | review recommended | review strongly recommended
 - Execution Environment Contract:
   - CWD: <path>
   - Repo Root: <path>

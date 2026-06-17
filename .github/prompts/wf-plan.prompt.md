@@ -24,6 +24,7 @@ Rules:
 - Use `Output: full` for persisted plans, implementation handoffs, explicit executable plan candidates, or external-agent handoffs.
 - Do not output formal `Blocking Gaps` or severity; review owns formal blocking and gap severity.
 - Use `Known Gaps` for plan-owned missing inputs and `Review Focus` for what review should inspect.
+- Include `Review Recommended: no | yes | strongly`; review is recommended for material risk but is not a universal build gate.
 
 Request:
 ${input:request:describe the chosen direction and planning need}
@@ -38,5 +39,6 @@ Return:
 - Known Gaps
 - Review Focus
 - Recommended Next Task
+- Review Recommended
 - Next
 - Persist Candidate, candidate only and do not write

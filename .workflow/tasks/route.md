@@ -86,7 +86,7 @@ Recommend the smallest path:
 - Gap and missing-capability requests such as "what is missing", "where are the gaps", "does this satisfy the goal", "audit feature gaps", or "audit workflow support" go to `review` with `Review Type: gap-analysis`; if evidence is insufficient, route `explore -> review`.
 - Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
 - Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
-- Typical session flow: `external or conversational goal -> shape -> plan -> review -> build/external-agent -> review -> sync`.
+- Default careful session flow: `external or conversational goal -> shape -> plan -> optional review -> build/external-agent -> recommended review -> sync`.
 - Long or reusable external goal sources: `persist` as `Artifact: brief`, `Brief Type: external-goal`, then `shape` consumes the inbox brief.
 - Current conversational goals: `shape` directly, then persist the shaped concept only when worth preserving.
 - New background or staged requirements: `clarify` or `explore` -> `persist` to `.session/inbox/**`.
@@ -99,8 +99,10 @@ Recommend the smallest path:
 - Completed thread archive summary: `review/plan -> sync` with `Sync Domain: session-archive` -> `.session/archive/<thread>/summary.md`.
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
 - Project docs alignment: `review -> plan -> sync` with `Sync Domain: project-docs` -> `docs/**` or `src/**/README.md`.
-- Code or repository change through workflow: `build` with `Mode: execute` and an explicit executable plan.
+- Code or repository change through workflow: `build` with `Mode: execute`, explicit user invocation, and an explicit executable plan.
+- Direct build path: `build` when the user invokes execute with an explicit executable plan; missing review is a risk notice, not a build blocker.
 - Vague implementation intent without an explicit executable plan: `plan -> review`, then `build` or external-agent only after the plan is concrete enough.
+- Recommend `review` before build for breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, multi-surface plans, high reversal cost, or ambiguous verification.
 - Discussion chains should end with `Persist Candidate` when the result is worth preserving. `persist` consumes the candidate, recent discussion, or full packet; the original discussion task does not write files.
 - Do not recommend any lens as a skip or override mechanism. Lenses may strengthen analysis only; they do not change task responsibility, write permission, execute permission, or sync permission.
 

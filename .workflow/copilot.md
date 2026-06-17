@@ -11,7 +11,7 @@ Use dedicated workflow prompt commands for common Copilot work:
 - `/wf-explore`: extract read-only evidence from code, docs, behavior, dependencies, or references.
 - `/wf-distill`: summarize or distill specified files, folders, threads, discussion, docs, or references.
 - `/wf-shape`: discuss what-if, option-comparison, concept-level, or direction-setting work.
-- `/wf-plan`: produce a planning draft, repo-aware plan, or handoff.
+- `/wf-plan`: produce a repo-aware plan, explicit executable plan candidate, or handoff.
 - `/wf-review`: review plans, diffs, docs/code drift, or artifacts.
 - `/wf-persist`: write `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
 - `/wf-build`: execute an explicit workflow-managed plan with bounded execution and `Execution Trace`.
@@ -122,7 +122,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Shape Summary`, `Impact Surface`, `Plan`, `Plan Readiness`, `Known Gaps`, `Review Focus`, `Next`, and `Persist Candidate`. Do not output formal blocking gaps from `plan`; review owns blocking and severity.
+For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Shape Summary`, `Impact Surface`, `Plan`, `Plan Readiness`, `Known Gaps`, `Review Focus`, `Review Recommended`, `Next`, and `Persist Candidate`. Do not output formal blocking gaps from `plan`; review owns blocking and severity.
 
 ## Task Boundary Shortcut
 
@@ -156,7 +156,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be use
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may output `Plan Readiness`, `Known Gaps`, `Review Focus`, and recommended next task.
+- `plan` may output `Plan Readiness`, `Known Gaps`, `Review Focus`, `Review Recommended`, and recommended next task.
 - `review` may output `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
@@ -181,7 +181,7 @@ Discovery vs judgment rule:
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Candidate` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
-Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates. `shape` stays at concept level. `plan` outputs `Plan Readiness`, `Known Gaps`, and `Review Focus`; `review` owns formal `Blocking Gaps`, severity, and readiness verdicts.
+Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates. `shape` stays at concept level. `plan` outputs `Plan Readiness`, `Known Gaps`, `Review Focus`, and `Review Recommended`; `review` owns formal `Blocking Gaps`, severity, and readiness verdicts.
 
 ## Write Boundaries
 
@@ -189,7 +189,7 @@ Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate 
 - `persist` persist: write `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**` disposable exploration notes.
 - `sync` persist: write only stable-document targets for `Sync Domain: project-docs | session-archive`.
 - `execute`: may modify broader repository artifacts only when the explicit plan says so.
-- `external-agent`: native Plan/Implement may write files directly, but the native plan must be audited before implementation and the diff must be reviewed afterward.
+- `external-agent`: native Plan/Implement may write files directly; plan audit before implementation and diff review afterward are recommended risk controls.
 - `build` outputs an `Execution Trace`; it does not write `.session/**`. Persist current-work-item audit output with `Task: persist`, `Artifact: note`, and `Intent: audit`; persist reusable execution discoveries as inbox notes with `Intent: capture`.
 
 ## Compatibility / Constraint Policy
@@ -265,7 +265,7 @@ If not `fits` or `fallback_fit`, do not force-fit the request.
 Common segmentations:
 
 - Judge current code/docs and decide what to do: `review -> Persist Candidate -> shape/plan -> persist`.
-- Implement a feature from target docs and current code: `plan -> Persist Candidate -> persist thread plan -> review -> external-agent/build -> review`.
+- Implement a feature from target docs and current code: `plan -> Persist Candidate -> persist thread plan -> optional review -> external-agent/build -> recommended review`.
 - Move settled thread conclusions into project docs: `shape/plan/review -> Persist Candidate -> persist thread artifact -> sync`.
 - Distill a reference and improve workflow: `distill -> Persist Candidate -> shape -> persist thread artifact -> plan -> build`.
 - Ambiguous what-if or entrypoint selection: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
