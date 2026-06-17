@@ -12,7 +12,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Default to `Output: compact` for general discussion; use `Output: normal` to refine before persist and `Output: full` for artifacts, handoffs, audits, or diff reviews.
 - For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact.
 - Treat `Output: full` plan output as the detailed commitment artifact for persist, build-ready planning, implementation handoff, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
-- When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict.
+- When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
@@ -32,6 +32,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 
 - `shape = synthesis`: ambiguous, what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
+- `distill = summary`: user-directed summary, folder summary, source distillation, or archive-summary draft for specified source material.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
 
@@ -91,7 +92,7 @@ Use for design discussion, code understanding, route selection, critique, planni
 
 ```text
 Mode: discuss
-Task: <route|clarify|explore|shape|plan|review|sync>
+Task: <route|clarify|explore|distill|shape|plan|review|sync>
 Lens: <none or explicit lenses>
 Context:
 - .workflow/tasks/<task>.md
@@ -103,6 +104,8 @@ Request:
 ```
 
 Do not add templates. Do not write files.
+
+Use `Task: distill` instead of `explore` when the user asks to summarize, compress, or extract structure from specified source material. `distill` outputs `Observed`, `Inferred`, `Unknown`, and a candidate `Artifact: distillation`; use `review` for accuracy/source-of-truth judgments and `persist` to save the result.
 
 ### Persist Session Artifact
 
@@ -182,7 +185,7 @@ Use `sync` for stable-document projection.
 ```text
 Mode: persist
 Task: sync
-Lens: <none|consistency|language|architecture|distill>
+Lens: <none|consistency|language|architecture>
 Sync Domain: <project-docs | session-archive>
 Sync Object: <architecture | feature | reference | code-readme | archive-summary | all>
 Scope: <area, code/docs scope, source thread, or archive scope>
@@ -203,7 +206,7 @@ When creating a new `architecture`, `feature`, or `reference` docs target, add `
 
 If the source is only `.session/inbox/**` or `notes/**`, require explicit source-of-truth confirmation before writing project docs.
 
-For `session-archive`, require `Source Thread`, `Thread Status`, `Archive Purpose`, `Summary Scope`, `Next Retrieval Use`, and target `.session/archive/<thread>/summary.md`. Do not edit active `.session/threads/**`.
+For `session-archive`, require `Source Thread`, `Thread Status`, `Archive Purpose`, `Summary Scope`, `Next Retrieval Use`, and target `.session/archive/<thread>/summary.md`. Do not edit active `.session/threads/**`. A prior `distill archive-summary-draft` is optional; when archive prerequisites are complete, `sync` may generate the final archive summary inline.
 
 ## Copyable Prompts
 

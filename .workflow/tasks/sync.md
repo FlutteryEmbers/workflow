@@ -23,7 +23,6 @@ outputs:
 user_selectable_lenses:
   - consistency
   - architecture
-  - distill
   - language
 done_check:
   - sync_domain_is_named
@@ -77,6 +76,7 @@ Rejected targets:
 - Do not sequence repairs across files; use `plan`.
 - Do not maintain active thread metadata, move/rename thread files, or repair `.session/threads/**`; use `persist` or an explicit plan for repository changes.
 - Do not change source code or workflow system files; use `build` or the external-agent path.
+- Do not generate general-purpose summaries or distillations; use `distill`.
 
 ## Expected Output
 
@@ -158,6 +158,8 @@ Required:
 
 `session-archive` must not move, rename, delete, or edit active thread files. Batch archive generation requires an explicit plan; single-thread archive sync is the default.
 
+`session-archive` may generate the final archive summary inline when archive prerequisites are complete. A prior `distill archive-summary-draft` is allowed but not required.
+
 ## Templates
 
 - Project-docs sync: `.workflow/templates/sync.md`
@@ -221,6 +223,7 @@ Any write to `.session/archive/**` must:
 - Exclude full transcripts and low-value chat noise.
 - Avoid presenting unconfirmed discussion as project fact.
 - Output `archive blocked` and do not write `.session/archive/**` when source thread, thread status, archive purpose, summary scope, next retrieval use, or target is unclear.
+- Do not block only because an archive-summary draft is missing; generate the final archive summary inline from the named source thread when prerequisites are complete.
 
 ## Instructions
 
@@ -247,7 +250,6 @@ For `session-archive`, default to one source thread and one archive summary targ
 - With `consistency`, sync only confirmed outcomes. If code may be wrong, route to `review -> plan -> build` or external-agent implementation, then `review` again before sync; if intent is unclear, route to `shape`; if archive sources conflict, mark unresolved items or route to `review --lens consistency`.
 - With `architecture`, project constraints go to the user/project-selected architecture target or target directory.
 - With `language`, settled terminology goes to the user/project-selected reference target or target directory.
-- With `distill`, reference-derived structures go to project docs after they are confirmed as project knowledge.
 
 ## User Input
 

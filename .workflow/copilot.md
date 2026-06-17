@@ -9,6 +9,7 @@ Use dedicated workflow prompt commands for common Copilot work:
 - `/wf-route`: choose the smallest useful next path.
 - `/wf-clarify`: explain terms, prior answers, statements, assumptions, or request boundaries.
 - `/wf-explore`: extract read-only evidence from code, docs, behavior, dependencies, or references.
+- `/wf-distill`: summarize or distill specified files, folders, threads, discussion, docs, or references.
 - `/wf-shape`: discuss what-if, option-comparison, concept-level, or direction-setting work.
 - `/wf-plan`: produce a planning draft, repo-aware plan, or handoff.
 - `/wf-review`: review plans, diffs, docs/code drift, or artifacts.
@@ -19,7 +20,7 @@ Use dedicated workflow prompt commands for common Copilot work:
 Recommended daily chain:
 
 ```text
-/wf-clarify -> /wf-explore -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-build -> /wf-sync
+/wf-clarify -> /wf-explore or /wf-distill -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-build -> /wf-sync
 ```
 
 Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear task boundaries, or full protocol control. Prompt commands are shortcuts only; `.workflow/tasks/**` remains the source of truth.
@@ -29,8 +30,8 @@ Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear tas
 ```text
 Mode: <discuss|persist|execute>
 Output: <compact|normal|full>
-Task: <route|clarify|explore|shape|plan|persist|build|review|sync>
-Lens: <none|consistency|distill|language|domain|redteam|test|architecture|debug>
+Task: <route|clarify|explore|distill|shape|plan|persist|build|review|sync>
+Lens: <none|consistency|language|domain|redteam|test|architecture|debug>
 Artifact: <required for persist unless target is explicit>
 Artifact State: <inbox|working|settled|superseded; for persist metadata>
 Thread: <thread-name; for persist thread target inference>
@@ -125,11 +126,12 @@ For `Task: plan`, replace the generic compact/normal body with plan-specific str
 
 ## Task Boundary Shortcut
 
-When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, and `review` for verdict.
+When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 
 - `clarify = explain/restate/unpack`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
 - `shape = synthesis`: ambiguous, what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
+- `distill = summary`: user-selected files, folders, threads, docs, discussion, or reference material summarized with observed, inferred, and unknown content separated.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
 
@@ -141,6 +143,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be use
 
 - `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, and `What Would Change My Mind`.
 - `explore` may output `Candidate Interpretations`, `Likely Entry Points`, and `Borrowable Ideas`.
+- `distill` may output `Observed`, `Inferred`, `Unknown`, and `Persist Candidate: Artifact=distillation`.
 - `review` may output `Minimal Revision Sketch` and `Repair Direction`.
 - `plan` may output a non-build-ready `Planning Draft`.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
@@ -251,7 +254,7 @@ Common segmentations:
 - Judge current code/docs and decide what to do: `review -> Persist Candidate -> shape/plan -> persist`.
 - Implement a feature from target docs and current code: `plan -> Persist Candidate -> persist thread plan -> review -> external-agent/build -> review`.
 - Move settled thread conclusions into project docs: `shape/plan/review -> Persist Candidate -> persist thread artifact -> sync`.
-- Distill a reference and improve workflow: `explore --lens distill -> Persist Candidate -> shape -> persist thread artifact -> plan -> build`.
+- Distill a reference and improve workflow: `distill -> Persist Candidate -> shape -> persist thread artifact -> plan -> build`.
 - Ambiguous what-if or entrypoint selection: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 - Understand code/docs mismatches as discovery: `explore -> Persist Candidate -> persist note`, with `Reliability Notes`; use `review --lens consistency` only for source-of-truth judgments.
 

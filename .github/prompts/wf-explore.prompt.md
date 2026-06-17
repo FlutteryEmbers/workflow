@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite explore command for read-only evidence extraction.
-argument-hint: "Request=<code, docs, behavior, entrypoint, dependency, or reference to explore>; Lens=<none|architecture|debug|distill|language>"
+argument-hint: "Request=<code, docs, behavior, entrypoint, dependency, or reference to explore>; Lens=<none|architecture|debug|language>"
 ---
 
 # wf-explore
@@ -18,6 +18,7 @@ Rules:
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/explore.md` as the task contract.
 - Extract evidence only; do not give a final verdict, choose the final direction, or create a plan.
+- Route user-directed summary or distillation requests to `/wf-distill`.
 - Do not default to the `consistency` lens for discovery questions.
 - Treat external or unfamiliar repo conflicts as reliability risks, not repair tasks.
 

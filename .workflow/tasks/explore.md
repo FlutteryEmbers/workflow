@@ -11,7 +11,6 @@ outputs:
 user_selectable_lenses:
   - architecture
   - debug
-  - distill
   - language
 done_check:
   - evidence_is_named
@@ -50,6 +49,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Do not use to create executable steps; use `plan`.
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update project docs; use `sync`.
+- Do not use to summarize or distill specified source material; use `distill`.
 
 ## Expected Output
 
@@ -68,6 +68,7 @@ Before exploring, classify obvious boundary problems:
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
 - `wrong_task`: user asks to judge a target or diff; recommend `review`.
 - `wrong_task`: user asks to update project docs; recommend `sync`.
+- `wrong_task`: user asks to summarize, distill, or compress specified source material; recommend `distill`.
 
 Conditional implicit preflight for `explore` only checks boundary, source, scope, and evidence type. Do not duplicate exploration inside preflight; once the boundary is clear, proceed with normal evidence extraction or recommend the right task.
 
@@ -120,7 +121,7 @@ Use this structure for non-trivial output:
 - `Potential Options`: candidate materials for `shape`; these are not final recommendations.
 - `Recommended Next Task`: usually `shape`, `review`, `plan`, or `persist`. Recommend `sync` only when the user explicitly asks for stable-document projection and the required review/source-of-truth prerequisites are already clear.
 
-Lens use must not change task responsibility. `distill`, `architecture`, `debug`, and `language` may improve evidence extraction, but `explore` must not present candidate interpretations as final synthesis or verdict.
+Lens use must not change task responsibility. `architecture`, `debug`, and `language` may improve evidence extraction, but `explore` must not present candidate interpretations as final synthesis or verdict.
 
 Use this shape for conflict reliability notes:
 
@@ -147,7 +148,7 @@ Risks/Unknowns:
 - <0-3 bullets>
 Candidate Interpretations:
 - <0-3 plausible interpretations, not final direction>
-Persist Candidate: Artifact=<note|option|distillation>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+Persist Candidate: Artifact=<note|option>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
 Use `Persist Candidate: none` when the exploration is not worth preserving.
@@ -168,7 +169,7 @@ Discussion Notes To Preserve:
 Open Questions:
 - <missing source or evidence gap>
 Persist Candidate:
-- Artifact=<note|option|distillation>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+- Artifact=<note|option>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
 ## Full Persist Packet
@@ -177,7 +178,7 @@ Output the full packet only when the user asks to persist, provides `Target`, or
 
 ```text
 Persist Packet:
-Artifact: note | option | distillation
+Artifact: note | option
 Artifact State: inbox | working | settled | superseded
 Intent: exploration | audit | reference
 Depth: standard | detailed

@@ -1,6 +1,6 @@
 ---
 name: workflow-lite-shortcuts
-description: "Route Workflow Lite short task phrases to repo-local task files. Use when the user says `wf route`, `wf clarify`, `wf explore`, `wf shape`, `wf plan`, `wf review`, `wf persist`, `wf build`, `wf sync`, `workflow <task>`, `use workflow task <task>`, or asks for a Workflow Lite task shortcut in a repo that contains `.workflow/tasks/**`."
+description: "Route Workflow Lite short task phrases to repo-local task files. Use when the user says `wf route`, `wf clarify`, `wf explore`, `wf distill`, `wf shape`, `wf plan`, `wf review`, `wf persist`, `wf build`, `wf sync`, `workflow <task>`, `use workflow task <task>`, or asks for a Workflow Lite task shortcut in a repo that contains `.workflow/tasks/**`."
 ---
 
 # Workflow Lite Shortcuts
@@ -12,6 +12,7 @@ Use this skill as a thin shortcut layer over a repo-local Workflow Lite installa
 - `wf route` -> read `.workflow/tasks/route.md`
 - `wf clarify` -> read `.workflow/tasks/clarify.md`
 - `wf explore` -> read `.workflow/tasks/explore.md`
+- `wf distill` -> read `.workflow/tasks/distill.md`
 - `wf shape` -> read `.workflow/tasks/shape.md`
 - `wf plan` -> read `.workflow/tasks/plan.md`
 - `wf review` -> read `.workflow/tasks/review.md`

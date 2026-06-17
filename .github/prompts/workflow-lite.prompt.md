@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite fallback/router prompt for mixed requests and full protocol control.
-argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|shape|plan|persist|build|review|sync>; Lens=<none|consistency|distill|language|domain|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference|capture>; Depth=<compact|standard|detailed>; Sync Domain=<project-docs|session-archive>; Thread=<thread-name>; Target=<required for sync stable documents; optional for persist>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|distill|shape|plan|persist|build|review|sync>; Lens=<none|consistency|language|domain|redteam|test|architecture|debug>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference|capture>; Depth=<compact|standard|detailed>; Sync Domain=<project-docs|session-archive>; Thread=<thread-name>; Target=<required for sync stable documents; optional for persist>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Fallback / Router Prompt
@@ -10,6 +10,7 @@ Use this full-protocol prompt when the request is mixed, the right task is uncle
 For common daily Copilot work, prefer dedicated workflow prompt commands:
 
 - `/wf-route`
+- `/wf-distill`
 - `/wf-shape`
 - `/wf-plan`
 - `/wf-review`
@@ -22,7 +23,7 @@ For common daily Copilot work, prefer dedicated workflow prompt commands:
 Mode: ${input:mode:discuss}
 Output: ${input:output:compact|normal|full}
 Write Path: ${input:write_path:workflow-managed|external-agent}
-Task: ${input:task:route|clarify|explore|shape|plan|persist|build|review|sync}
+Task: ${input:task:route|clarify|explore|distill|shape|plan|persist|build|review|sync}
 Lens: ${input:lens:none; comma-separated lenses allowed only when explicitly selected}
 Intent: ${input:intent:required for persist; otherwise none}
 Depth: ${input:depth:compact|standard|detailed; optional for persist}
@@ -45,9 +46,10 @@ Request: ${input:request:describe the work}
 - If composite, output segmented prompts with stop points instead of forcing the request into one task.
 - When unsure, start with `shape`.
 - Meaning, explanation, restatement, difference, assumption, hidden scope, or prior AI answer unpacking requests go to `clarify`.
+- Summary, folder summary, source distillation, and archive-summary draft requests go to `distill`.
 - Ambiguous what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests default to `shape`.
 - Evidence-only requests go to `explore`; verdict-only requests go to `review`.
-- Lenses may strengthen the selected task, but must not change task responsibility.
+- Lenses may strengthen the selected task, but must not change task responsibility. `distill` is a task, not a lens.
 - Discussion freedom applies only in `Mode: discuss`: AI may provide `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Minimal Revision Sketch`, and `What Would Change My Mind` as thinking material.
 - For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision State`.
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.

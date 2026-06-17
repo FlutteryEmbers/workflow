@@ -8,7 +8,9 @@
 graph TD
     R["route"] --> C["clarify"]
     C --> E["explore"]
+    C --> D["distill"]
     E --> S["shape"]
+    D --> S
     S --> P["plan"]
     P --> W["persist session artifact"]
     P --> B["build or external-agent"]
@@ -100,6 +102,7 @@ conversational source
 | `route` | `analyst` | chat | Recommend the smallest useful next path. |
 | `clarify` | `analyst` | chat | Explain terms, prior answers, statements, assumptions, scope, and success criteria. |
 | `explore` | `designer` | chat | Understand code, materials, behavior, feasibility, or reference structure. |
+| `distill` | `analyst` | chat | Generate a user-directed summary or distillation of specified source material. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, or session decision. |
 | `plan` | `designer` | chat | Turn a chosen direction into a planning draft, repo-aware plan, or external-agent handoff. |
 | `persist` | `steward` | active session artifacts | Persist high-fidelity structured inbox, thread, or capture artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
@@ -109,15 +112,16 @@ conversational source
 
 ## Task Boundary Shortcut
 
-When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, and `review` for verdict.
+When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 
 - `clarify = explain/restate/unpack`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
 - `shape = synthesis`: default for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, or "how should I think about this" requests.
 - `explore = evidence`: use only when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, or dependencies.
+- `distill = summary`: use when the user asks to summarize, distill, compress, or extract structure from specified files, folders, threads, docs, discussion, or reference material.
 - `review = verdict`: use only when there is an existing target to judge, such as code, docs, plan, diff, decision, behavior claim, or thread artifact.
 - `plan = planning sequence`: use when the direction is chosen and the user needs phases, sequencing, repo-aware steps, or an executable handoff.
 
-`shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` may give candidate interpretations and borrowable ideas, but not final direction. `review` may give a minimal revision sketch, but not a full replacement design.
+`shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` may give candidate interpretations and borrowable ideas, but not final direction. `distill` may summarize and separate observed, inferred, and unknown content, but not judge accuracy or source of truth. `review` may give a minimal revision sketch, but not a full replacement design.
 
 ## Shape / Plan Boundary
 
@@ -174,6 +178,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is think
 
 - `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, and `What Would Change My Mind`.
 - `explore` may provide `Candidate Interpretations`, `Likely Entry Points`, and `Borrowable Ideas`.
+- `distill` may provide `Observed`, `Inferred`, `Unknown`, and a `Persist Candidate: Artifact=distillation`.
 - `review` may provide `Minimal Revision Sketch` and `Repair Direction`.
 - `plan` may provide a non-build-ready `Planning Draft`.
 - Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
@@ -238,7 +243,6 @@ Core selectable lenses:
 | `architecture` | Structure, interfaces, dependencies, constraints, or durable tradeoffs matter. |
 | `consistency` | `sync` needs confirmed alignment projection after docs/code/session drift has been reviewed. |
 | `debug` | `explore` or `build` needs defect or uncertain runtime behavior diagnosis. |
-| `distill` | `explore` or `sync` needs reusable structure from strong reference material. |
 | `language` | Full English, translation, terminology consistency, or project glossary updates are needed. |
 | `test` | `plan` or `build` needs stronger verification and acceptance evidence. |
 
@@ -257,6 +261,7 @@ Folded into protocol:
 | `conceptual` | Core `Abstraction Level`: `concept`, `phase-plan`, `implementation-plan`. |
 | `iteration` | Session/thread inference and `persist` target rules. |
 | `expand` | `Output: normal|full` and `Depth: detailed`. |
+| `distill` | `Task: distill` user-directed summaries and distillation. |
 
 Selectable lenses by task:
 
@@ -264,8 +269,9 @@ Selectable lenses by task:
 | :--- | :--- |
 | `shape` | `architecture`, `language` |
 | `plan` | `architecture`, `test`, `language` |
-| `explore` | `architecture`, `debug`, `distill`, `language` |
-| `sync` | `consistency`, `architecture`, `distill`, `language` |
+| `explore` | `architecture`, `debug`, `language` |
+| `distill` | `language` |
+| `sync` | `consistency`, `architecture`, `language` |
 | `clarify` | `language` |
 | `persist` | `language` |
 | `build` | `test`, `debug` |
@@ -312,6 +318,8 @@ compact discussion -> normal refine -> full persist
 ```
 
 Discussion tasks should not output full `Persist Packet` by default. Use `Persist Candidate` unless the user asks to persist, asks for `Output: full`, or needs a handoff/audit.
+
+`distill` is the summary task. It summarizes only the user-selected source and focus, separates `Observed`, `Inferred`, and `Unknown`, and does not write files. Save its result through `persist Artifact=distillation`. Use `review` to judge summary accuracy or source-of-truth status.
 
 Compact output starts with `User Intent`, may include `Current Read`, and uses short `Take`, limited risks, one `Next`, and at most one-line `Persist Candidate`. Normal refine output should include `Discussion Notes To Preserve` for phase boundaries, constraints, examples, accepted risks, and user corrections.
 
@@ -505,6 +513,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Long or reusable external goal: `persist external-goal brief -> shape -> persist shape`.
 - Conversational goal: `shape -> persist shape`.
 - Explore code or reference material: `explore -> persist -> .session/inbox/**` or `.session/threads/{thread}/option_*.md`.
+- Summarize a file, folder, thread, discussion, docs, or reference: `distill -> optional persist Artifact=distillation`.
 - Disposable exploration note: `persist -> notes/{topic}.md` only with explicit target.
 - Shape a direction: `shape -> persist -> .session/threads/{thread}/shape_*.md`.
 - Ambiguous what-if or option comparison: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
@@ -516,12 +525,13 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Build result capture: `build -> Execution Trace -> optional persist inbox capture/thread audit note -> optional review/sync promotion`.
 - Project-docs sync: `review -> plan -> sync -> docs/**`.
 - Code-adjacent README sync: `review -> plan -> sync -> src/**/README.md`.
-- Thread archive summary: `review/plan -> sync -> .session/archive/<thread>/summary.md`.
+- Archive summary draft: `distill archive-summary-draft -> optional review -> sync session-archive`.
+- Thread archive summary: `review/plan -> sync -> .session/archive/<thread>/summary.md`; `sync` may generate the final archive summary inline when archive prerequisites are complete.
 - Close a completed work item: `review/plan -> sync session-archive -> .session/archive/<thread>/summary.md`.
 
 ## Using With Copilot
 
-- Prefer dedicated GitHub prompt commands for common Copilot work: `/wf-route`, `/wf-clarify`, `/wf-explore`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync`.
+- Prefer dedicated GitHub prompt commands for common Copilot work: `/wf-route`, `/wf-clarify`, `/wf-explore`, `/wf-distill`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync`.
 - Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear task boundaries, or full protocol control.
 - Add one task file from `.workflow/tasks/` when manually using Add Context.
 - Add selected lenses only when explicitly named.
@@ -532,13 +542,13 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 Recommended Copilot chain:
 
 ```text
-/wf-clarify -> /wf-explore -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-build -> /wf-sync
+/wf-clarify -> /wf-explore or /wf-distill -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-build -> /wf-sync
 ```
 
 ## Using With OpenCode
 
 - Use `.workflow/opencode.md` as the OpenCode adapter guide.
-- Use `/wf`, `/wf-clarify`, `/wf-explore`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync` as thin OpenCode slash commands.
+- Use `/wf`, `/wf-clarify`, `/wf-explore`, `/wf-distill`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync` as thin OpenCode slash commands.
 - Keep `.workflow/**` as the source of truth; do not create a separate OpenCode workflow.
 - Use OpenCode first as a read-only context helper when its context management or model quality is uncertain.
 - Treat OpenCode native Plan output as an external plan draft until it is reviewed or explicitly chosen for implementation.
@@ -552,7 +562,7 @@ Recommended Copilot chain:
 
 - Codex support is manual. This project does not add `AGENTS.md` by default.
 - Optional Codex shortcut skill source lives at `skills/workflow-lite-shortcuts/`.
-- Install or link that skill into `$CODEX_HOME/skills` or `~/.codex/skills` to use short task phrases such as `wf shape`, `wf plan`, `wf review`, and `wf build`.
+- Install or link that skill into `$CODEX_HOME/skills` or `~/.codex/skills` to use short task phrases such as `wf distill`, `wf shape`, `wf plan`, `wf review`, and `wf build`.
 - The skill is only a shortcut layer. It maps a requested task to `.workflow/tasks/<task>.md` and does not replace `.workflow/**`.
 - Add or read `.workflow/codex.md` when you want Codex to follow Workflow Lite.
 - Do not load all `.workflow/**`; use one task, explicitly selected lenses, and relevant context.

@@ -1,94 +1,69 @@
-# Distillation
+# Distillation / Summary
 
 ## Persist Metadata
 
 - Artifact: distillation
-- Topic: {{source}}
+- Topic: {{topic}}
 - Artifact State: {{inbox | working | settled | superseded}}
 - Thread: {{thread-name or none}}
-- Intent: {{exploration | audit | reference}}
+- Intent: {{summary | exploration | audit | reference}}
 - Depth: {{detailed}}
-- Source: {{reference document | folder | discussion}}
+- Source: {{file | folder | document | thread | discussion | reference material}}
 - Target: {{.session/...}}
 - Last Updated: {{date}}
 
-## Source
+## Source Scope
 
-{{document, repo, folder, handbook, RFC, ADR, project docs, or knowledge base}}
+{{source paths, thread artifacts, docs, discussion, or user-provided material}}
 
-## What This Is
+## Summary Focus
 
-{{brief description of the reference}}
+{{what the user asked to summarize, intended audience, and next use}}
 
-## Source Context
+## Summary Type
 
-- {{reference path, section, repo, discussion, or user-provided sample}}
+{{structure-summary | folder-summary | content-summary | decision-summary | interface-summary | risk-summary | archive-summary-draft}}
 
-## Decision-Relevant Facts
+## Key Points
 
-- {{fact about structure, reader journey, or maintainability that affects adoption}}
+- {{main summary point}}
 
-## Assumptions vs Facts
+## Observed
 
-- Fact: {{observed source structure}}
-- Assumption: {{interpretation about why it works}}
+- {{source-backed fact}}
 
-## Observed Structure
+## Inferred
 
-- {{structure element}}
+- {{interpretation and source basis, or none}}
 
-## Reader Journey
+## Unknown
 
-{{how the reader moves through the material}}
+- {{missing evidence, scope gap, unresolved conflict, or none}}
 
-## Information Types
+## Source Map
 
-- {{concept, decision, example, rule, reference, how-to, etc.}}
+- {{source}} -> {{what it contributes to the summary}}
 
-## Why It Works
+## Structured Summary
 
-{{structural reason, not just content summary}}
+{{summary organized for the requested next use}}
 
-## Decision Trail
+## Important Details
 
-{{how observation became a transferable recommendation}}
+- {{detail that should survive persist or downstream use}}
 
-## Transferable Structures
+## Omitted / Out Of Scope
 
-- {{what can transfer into session decisions or project docs}}
+- {{excluded source, dimension, or detail}}
 
-## Transfer Criteria
+## Risks / Caveats
 
-- {{when this structure should be adopted or adapted}}
+- {{weak evidence, ambiguity, conflict, or summary limitation}}
 
-## Non-Transferable Context
+## Archive Summary Draft
 
-- {{what should not be copied}}
-
-## Concrete Adaptation
-
-{{specific adaptation for Workflow Lite, `.session/**`, project docs, or templates}}
-
-## Before / After
-
-- Before: {{current local structure or output weakness}}
-- After: {{target structure after applying the distilled idea}}
-
-## Apply To Workflow Lite
-
-- Inbox material: {{suggested `.session/inbox/**` use or none}}
-- Thread artifacts: {{suggested `.session/threads/{thread}/**` use or none}}
-- Project docs: {{suggested use or none}}
-- Workflow prompts: {{suggested change or none}}
-
-## Adoption Recommendation
-
-{{adopt | adapt | reject | revisit}}
-
-## Open Questions
-
-- {{question}}
+{{only for Summary Type: archive-summary-draft; draft content for later review or sync session-archive. This is not a stable archive write.}}
 
 ## Next Use
 
-{{shape, plan, persist, sync, build, or none}}
+{{persist | review | shape | plan | sync | none}}

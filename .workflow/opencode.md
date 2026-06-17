@@ -14,7 +14,7 @@ Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; 
 
 Use core `Abstraction Level` rules when the user explicitly wants concept-first planning, phase planning, low-level implementation planning, or strong-model-to-weak-model handoff.
 
-When unsure, start with `shape`. Use `explore` for evidence and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility.
+When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict. Lenses may strengthen the selected task, but must not change task responsibility.
 
 ## Discussion Freedom
 
@@ -35,6 +35,7 @@ Task shortcut:
 
 - `shape = synthesis`: ambiguous, what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests.
 - `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
+- `distill = summary`: user-directed summary, folder summary, source distillation, or archive-summary draft for specified source material.
 - `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
 
@@ -132,6 +133,7 @@ Default commands:
 - `/wf`: route a request and recommend the smallest path.
 - `/wf-clarify`: explain terms, prior answers, statements, assumptions, scope, and success criteria.
 - `/wf-explore`: extract read-only evidence from code, docs, references, or unfamiliar repos.
+- `/wf-distill`: summarize or distill specified source material.
 - `/wf-shape`: discuss direction, what-if, option comparison, or concept design.
 - `/wf-plan`: draft a repo-aware plan or external-agent handoff.
 - `/wf-review`: review a plan, diff, code/docs claim, or readiness question.
@@ -156,6 +158,7 @@ Examples:
 ```text
 /wf-clarify source of truth 在这个 workflow 里是什么意思？
 /wf-explore 帮我看这个第三方 repo 是否有调用链入口
+/wf-distill 总结 .workflow/tasks 目录的职责
 /wf-shape 这个 thread 命名规则应该怎么收敛？
 /wf-review Audit this plan before implementation: <plan>
 /wf-persist Artifact: shape Thread: workflow-thread-naming Topic: thread_inference Source: last discussion
@@ -170,6 +173,7 @@ Use only the files needed for the current step.
 - `.workflow/tasks/route.md` for choosing a path.
 - `.workflow/tasks/clarify.md` for goal, scope, constraints, and success criteria.
 - `.workflow/tasks/explore.md` for read-only evidence extraction.
+- `.workflow/tasks/distill.md` for user-directed summaries and distillation.
 - `.workflow/tasks/shape.md` for ambiguous, what-if, option-comparison, concept-level, or direction-setting work.
 - `.workflow/tasks/review.md` for plan audit or diff review.
 - `.workflow/tasks/plan.md` for a repo-aware handoff.

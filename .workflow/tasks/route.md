@@ -67,12 +67,14 @@ Recommend the smallest path:
 - Ambiguous what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests default to `shape`.
 - Evidence-only requests such as reading code, finding entrypoints, checking docs, understanding behavior, or studying references go to `explore`.
 - Existence and discovery questions such as "does this repo have X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
+- Summary and distillation requests such as "summarize this folder", "distill this thread", "extract structure", or "make an archive summary draft" go to `distill`.
 - Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
 - Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
 - Typical session flow: `external or conversational goal -> shape -> plan -> review -> build/external-agent -> review -> sync`.
 - Long or reusable external goal sources: `persist` as `Artifact: brief`, `Brief Type: external-goal`, then `shape` consumes the inbox brief.
 - Current conversational goals: `shape` directly, then persist the shaped concept only when worth preserving.
 - New background or staged requirements: `clarify` or `explore` -> `persist` to `.session/inbox/**`.
+- User-directed summary or distillation: `distill` -> optional `persist Artifact=distillation`, `review`, `shape`, `plan`, or `sync`.
 - Reusable execution discovery or build environment lesson: `build -> Persist Candidate -> persist` as `Artifact: note`, `Artifact State: inbox`, `Intent: capture`.
 - Target direction, option, architecture, or concept: `shape` -> `persist` to `.session/threads/{thread}/shape_{topic}.md`.
 - Repo-aware implementation sequence or handoff: `plan` -> `persist` to `.session/threads/{thread}/plan_{topic}.md`.
@@ -100,7 +102,7 @@ Recommend the smallest path:
 - Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across explicit session sources, project docs, code, tests, code-adjacent README files, workflow artifacts, prompts, templates, or archive summaries.
 - Do not suggest `consistency` for discovery questions like whether a capability exists, where it is implemented, or how reliable the evidence is.
 - Suggest `language` for terminology or output language.
-- Suggest `distill` for learning structure from strong reference material.
+- Recommend `distill` as a task when the user wants a summary, folder summary, source distillation, or archive-summary draft.
 - Use `Output: normal|full` or persist `Depth: detailed` when a compact decision or plan needs examples, pseudocode, or split parts; do not suggest a separate expand lens.
 
 ## Output Format
