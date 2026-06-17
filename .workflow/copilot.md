@@ -68,7 +68,7 @@ Protocol: `Output: compact | normal | full`.
 - `normal`: refine. Prepare key structure and important context for later persist, without writing files.
 - `full`: artifact, handoff, audit, explicit executable plan candidate, diff review, or complex routing.
 
-For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as the detailed commitment artifact for persist, implementation handoff, explicit executable plan candidate, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as a minimal handoff packet for persist, implementation handoff, explicit executable plan candidate, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 
 Recommended flow:
 
@@ -91,7 +91,7 @@ In `Mode: discuss`, do not output a full `Persist Packet` by default. Use `Persi
 Persist Candidate: Artifact=<artifact>; Thread=<thread>; Topic=<topic>; Suggested Target=<path>
 ```
 
-Full `Persist Packet` is allowed only when the user asks to persist, says `Output: full`, asks for a handoff/audit, or the current response is the source for a following `Task: persist`.
+Full `Persist Packet` is allowed only when the user asks to persist, says `Output: full`, asks for a handoff/audit, or the current response is the source for a following `Task: persist`. It is handoff input, not the final artifact schema.
 
 Compact format:
 
@@ -158,6 +158,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be use
 - `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
 - `plan` may output `Plan Readiness`, `Known Gaps`, `Review Focus`, `Review Recommended`, and recommended next task.
 - `review` may output `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
+- `review plan-audit` may output `Blocking Questions` with severity, blocks, evidence, impact, why it matters, `Answer Needed`, and recommended next task.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -181,7 +182,7 @@ Discovery vs judgment rule:
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Candidate` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
-Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates. `shape` stays at concept level. `plan` outputs `Plan Readiness`, `Known Gaps`, `Review Focus`, and `Review Recommended`; `review` owns formal `Blocking Gaps`, severity, and readiness verdicts.
+Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates. `shape` stays at concept level. `plan` outputs `Plan Readiness`, `Known Gaps`, `Review Focus`, and `Review Recommended`; `review` owns formal `Blocking Questions`, `Blocking Gaps`, severity, and readiness verdicts.
 
 ## Write Boundaries
 

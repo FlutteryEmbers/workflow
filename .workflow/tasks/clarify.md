@@ -167,36 +167,21 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`:
+Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load the matching template and shape the final artifact.
 
 ```text
 Persist Packet:
 Artifact: brief | note
-Artifact State: inbox
-Intent: summary | exploration
-Depth: compact | standard
+Thread: <thread or none>
 Topic: <topic>
 Suggested Target: .session/inbox/<artifact>_<topic>.md
-Source Context:
-- <user goal, background, term, prior AI answer, statement, or staged requirement source>
-Key Points:
-- <clarified meaning, goal, scope, acceptance signal, or constraint>
-Clarified Meaning:
-- <plain meaning and workflow-specific meaning>
-Assumptions To Confirm:
-- <assumption or none>
-Scope Boundary:
-- <in scope, out of scope, or not applicable>
-Example:
-- <minimal example used to explain the term, statement, or request>
-Non-Goals:
-- <non-goals or excluded scope>
-Risks / Unknowns:
-- <unknowns or assumptions>
-Next Use:
-- <explore | shape | plan | persist | sync>
-Recommended Next Task:
-- <explore | distill | shape | review | plan | persist | sync | none>
+Source Summary: <term, statement, prior answer, goal, background, or staged requirement clarified>
+Key Fields:
+- Clarified Meaning: <plain meaning and workflow-specific meaning>
+- Scope Boundary: <in scope, out of scope, or not applicable>
+- Assumptions To Confirm: <assumption or none>
+- Non-Goals: <non-goals or excluded scope>
+Next Use: <explore | shape | plan | persist | sync | none>
 ```
 
 If the clarification is not worth preserving, output `Persist Candidate: none`.

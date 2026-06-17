@@ -107,8 +107,9 @@ Persisted artifacts must be more structured than chat without losing the reasoni
 ## Source Handling
 
 - Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Packet`; explicit `Persist Candidate`; source artifacts from the inferred same work item; recent discussion that matches the target work item.
-- Prefer an explicit `Persist Packet` when present.
+- Prefer an explicit `Persist Packet` when present. Treat it as source handoff input, not as the final artifact schema.
 - If no `Persist Packet` exists, synthesize one from `Persist Candidate`, recent discussion, source artifacts, user corrections, and selected files.
+- `persist` is the artifact shaping owner: load the matching template for the selected `Artifact`, map packet fields into it, and fill missing template sections by inference, summary, or `unknown` / `none`.
 - Discuss output budget does not reduce artifact fidelity. Even if the prior answer used `Output: compact`, generate the persisted artifact at the requested or default `Depth`.
 - If source material conflicts, preserve the conflict and mark the source of truth as unresolved.
 - Do not use `persist` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
@@ -200,6 +201,8 @@ If the user explicitly provides a target path, respect it unless it violates wri
 - Include why the artifact exists, why the recommendation changed, what evidence mattered, why options were rejected, what remains unresolved, and how the artifact should be used next.
 
 ## Template Selection
+
+Load only the matching template for the artifact being written. Discussion task packet fields do not replace these templates.
 
 - `brief`: `.workflow/templates/brief.md`
 - `note`: `.workflow/templates/note.md`

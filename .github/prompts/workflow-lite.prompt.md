@@ -58,8 +58,9 @@ Request: ${input:request:describe the work}
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available; otherwise output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 - Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning output. This is plan self-assessment, not a review verdict.
-- `plan compact` must summarize the chosen direction first, then give a compact impact surface, plan sketch, known gaps, and review focus. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. `Output: full` is the detailed commitment artifact for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff.
+- `plan compact` must summarize the chosen direction first, then give a compact impact surface, plan sketch, known gaps, and review focus. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. `Output: full` is a minimal handoff packet for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
 - `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, and gap analysis. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
+- For `Review Type: plan-audit`, output `Blocking Questions` with severity, blocks, evidence, impact, why it matters, and `Answer Needed`. `Answer Needed` describes missing input only; it must not propose a design, choose a direction, sequence implementation, or rewrite the plan.
 - Read-only preflight is allowed only in `Mode: discuss`; do not load templates, write files, run implementation, or apply unselected deep lenses during preflight.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 - Implicit preflight defaults to `shape`, `plan`, and `sync`; conditional preflight applies to `review`, `build`, and `explore`; no implicit preflight runs for `clarify` or `route`.
@@ -115,6 +116,7 @@ Request: ${input:request:describe the work}
 
 Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only for `persist` or `sync` in `Mode: persist`.
+Discussion task `Full Persist Packet` output is handoff input, not a final artifact schema.
 For new `architecture | feature | reference` docs targets, add `project_doc.md`; for `code-readme`, add `code_readme.md`; for archive summaries, add `archive_summary.md`. For existing docs, preserve the target structure.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
 Add relevant `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.

@@ -300,82 +300,24 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`. Do not output a full persist packet when `Human Decision State` is `checkpoint` or `blocking`.
+Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load the matching template and shape the final artifact. Do not output a full persist packet when `Human Decision State` is `checkpoint` or `blocking`.
 
 ```text
 Persist Packet:
 Artifact: shape | decision
 Artifact ID: shape_<topic>
-Artifact State: working | settled | superseded
-Intent: exploration | decision | constraint
-Depth: detailed
 Thread: <thread>
 Topic: <topic>
 Suggested Target: .session/threads/<thread>/shape_<topic>.md or .session/threads/<thread>/decision_<topic>.md
-Decision Snapshot:
-- <current recommendation, core boundary, narrowest wedge, success criteria, key risk, next use>
-Decision State:
-- Human Decision State: <none|assumed>
-- Decision State Reason: <why this state applies>
-- Assumed Default: <recommended default or none>
-- Checkpoint Needed: no
-Boundary Fit:
-- <fits|fallback_fit|composite|wrong_task|missing_prerequisite>
-Adjacent Allowance Used:
-- <none|clarification|compression|evidence-needs|risk-sketch|planning-sketch>
-Discussion Notes To Preserve:
-- <discussion detail worth preserving because it affects understanding, revision, implementation, or audit>
-Source Context:
-- <current chat goal, external-goal brief, session artifact, code/docs evidence, or user correction>
-Key Points:
-- <current recommendation and core boundaries>
-Decision-Relevant Facts:
-- <facts that materially affect the direction>
-Locked Decisions:
-- <confirmed decision and source>
-Assumed Decisions:
-- <recommended default, why it is acceptable for advisory planning, risk if wrong>
-Open Decisions:
-- <unresolved choice that prevents planning or review, or none>
-Impact Surface:
-- Scope Size: <small|medium|large>
-- Affected Surfaces: <workflow core|task docs|templates|adapters|project docs|source code|tests|other>
-- Reversal Cost: <low|medium|high>
-- Execution Risk: <low|medium|high>
-- User Confirmation Needed Before: <none|plan|review|build>
-- Recommended Next Task: <plan|review|persist|none>
-Concept Structure:
-- <concept> -> <purpose, scope, constraints, validation, notes>
-Decision Trail:
-- <initial direction -> revisions -> current direction>
-Options Considered:
-- <option and short description>
-Why This Option:
-- <reason the recommendation is preferred>
-Why Not Others:
-- <rejected option and reason>
-Rejected Options:
-- <larger scopes or directions intentionally not chosen>
-Risks / Unknowns:
-- <risky assumptions, missing evidence, or follow-up review needs>
-Compatibility:
-- <preserve | breaking; note if explicitly requested>
-Constraint Mode:
-- <respect | propose_override | prototype_exception; note if explicitly requested>
-Compatibility / Constraint Notes:
-- <pressure, breaking option, constraint tension, human decision needed>
-Operating Constraints:
-- <scope, boundary, do-not-assume, compatibility, constraint mode, human decision needed>
-Preserve From Discussion:
-- <phase boundaries, phase constraints, important examples/counterexamples, user corrections, accepted risks, or weak-model handoff details to preserve>
-Examples / Pseudocode:
-- <example scenario, conceptual flow, or pseudocode if useful>
-Validation Approach:
-- <how this shape can be tested or falsified>
-Next Use:
-- <persist | review | plan | sync>
-Recommended Next Task:
-- <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
+Source Summary: <current chat goal, external-goal brief, session artifact, evidence, or user correction>
+Key Fields:
+- Recommendation: <current direction, core boundary, and narrowest useful wedge>
+- Decision State: <Human Decision State, reason, assumed default, and open decisions>
+- Impact Surface: <scope size, affected surfaces, reversal cost, execution risk, and confirmation need>
+- Concept Structure: <purpose, scope, constraints, validation, and notes>
+- Options / Rejections: <options considered and why the recommendation is preferred>
+- Compatibility / Constraint Notes: <preserve/breaking and respect/override/exception summary>
+Next Use: <persist | review | plan | sync | none>
 ```
 
 `Artifact ID` is a lightweight reference anchor for later `persist` requests. It is not a file path and does not change artifact kind or directory rules.

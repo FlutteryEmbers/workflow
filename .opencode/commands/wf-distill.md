@@ -23,7 +23,7 @@ $ARGUMENTS
 
 Return:
 - User Intent
-- Source Scope
+- Source
 - Summary Focus
 - Summary Type
 - Summary

@@ -11,7 +11,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Default to `Mode: discuss`.
 - Default to `Output: compact` for general discussion; use `Output: normal` to refine before persist and `Output: full` for artifacts, handoffs, audits, or diff reviews.
 - For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact.
-- Treat `Output: full` plan output as the detailed commitment artifact for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+- Treat `Output: full` plan output as a minimal handoff packet for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 - When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
@@ -19,7 +19,8 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Use `Plan Readiness` rules when the user wants planning, implementation handoff, or strong-model-to-weak-model handoff.
 - Codex may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
-- Load templates only for `persist` or `sync` in `Mode: persist`.
+- Load templates only for `persist` or `sync` in `Mode: persist`; discussion tasks must not copy final artifact templates.
+- For `persist`, load only the matching template for the selected artifact; a discussion `Persist Packet` is handoff input, not the final artifact schema.
 - Treat `.session/**` as working memory, not project source of truth.
 - Treat `.session/threads/**` as session working memory grouped by small closable work item.
 - Use explicit `.session/threads/{thread}/plan_{topic}.md` files for workflow-managed build input.
@@ -57,6 +58,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `review`: `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
 - `plan`: `Plan Readiness`, `Known Gaps`, `Review Focus`, `Review Recommended`, and recommended next task.
 - `review`: `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
+- `review plan-audit`: `Blocking Questions` with severity, blocks, evidence, impact, why it matters, `Answer Needed`, and recommended next task.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -83,7 +85,7 @@ Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate 
 - `shape` produces concept-level direction and may recommend `plan` or `review`.
 - `plan` outputs `Plan Readiness`, `Known Gaps`, `Review Focus`, and `Review Recommended`.
 - `Plan Readiness` is self-assessment, not a gate verdict.
-- `review` owns formal `Blocking Gaps`, gap severity, and readiness verdicts.
+- `review` owns formal `Blocking Questions`, `Blocking Gaps`, gap severity, and readiness verdicts.
 - `build` requires explicit user invocation and a plan concrete enough to execute safely; review is recommended for material risk, but missing review is not by itself a build blocker.
 
 ## Common Paths
@@ -297,7 +299,7 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this Codex native plan before implementation with explicit critique posture. Return ready, needs changes, blocked, or docs blocked.
+Audit this Codex native plan before implementation with explicit critique posture. Return ready, needs changes, blocked, or docs blocked. For plan-audit blockers, include Blocking Questions with Answer Needed.
 ```
 
 ### Bounded Implement

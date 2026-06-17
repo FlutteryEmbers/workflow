@@ -185,47 +185,22 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`:
+Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load the matching template and shape the final artifact.
 
 ```text
 Persist Packet:
 Artifact: note | option
-Artifact State: inbox | working | settled | superseded
-Intent: exploration | audit | reference
-Depth: standard | detailed
 Thread: <thread or none>
 Topic: <topic>
 Suggested Target: .session/inbox/<artifact>_<topic>.md or .session/threads/<thread>/<artifact>_<topic>.md
-Source Context:
-- <code paths, docs, references, or discussion sources checked>
-Key Points:
-- <main finding or structure discovered>
-Decision-Relevant Facts:
-- <facts that affect shape, plan, review, or sync>
-Decision Trail:
-- <how evidence led to the current interpretation>
-Rejected Options:
-- <interpretations or sources ruled out>
-Sources Checked:
-- <source list>
-Observed Facts:
-- <source-backed fact>
-Evidence Map:
-- <source -> fact -> implication>
-Candidate Interpretations:
-- <plausible explanation, likely entrypoint, or borrowable idea; not final direction>
-Reliability Notes:
-- <claim, evidence, conflict, reliability, possible explanation, and suggested follow-up>
-Constraints Found:
-- <constraint or boundary found>
-Potential Options:
-- <candidate material for shape, not final choice>
-Risks / Unknowns:
-- <unknowns, weak evidence, or follow-up checks>
-Examples / Pseudocode:
-- <example, code path, or pseudocode if useful>
-Next Use:
-- <shape | plan | review | persist | sync>
+Source Summary: <code paths, docs, references, or materials explored>
+Key Fields:
+- Evidence Summary: <main source-backed facts>
+- Sources Checked: <source list>
+- Candidate Interpretations: <plausible explanations or entrypoints; not final direction>
+- Reliability Notes: <evidence strength, conflicts, and unknowns>
+- Constraints Found: <constraint or boundary found>
+Next Use: <shape | plan | review | persist | sync | none>
 ```
 
 If the exploration is not worth preserving, output `Persist Candidate: none`.

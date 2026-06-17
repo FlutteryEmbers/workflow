@@ -61,7 +61,7 @@ Adjacent allowance must stay secondary to the distillation. If the user primaril
 
 ## Expected Output
 
-- A user-directed summary with `Source Scope`, `Summary Focus`, `Summary Type`, `Observed`, `Inferred`, `Unknown`, and `Next Use`.
+- A user-directed summary with `Source`, `Summary Focus`, `Summary Type`, `Observed`, `Inferred`, `Unknown`, and `Next Use`.
 - `Recommended Next Task` when the summary naturally leads to `persist`, `review`, `shape`, `plan`, or `sync`.
 - `Output: compact` default: short summary and optional `Persist Candidate`.
 - `Output: normal`: structured summary for review, shape, plan, sync, or persist.
@@ -122,7 +122,7 @@ In `Mode: discuss`, default to:
 
 ```text
 User Intent: <one line about what the user wants summarized>
-Source Scope: <source files, folder, thread, docs, or discussion>
+Source: <source files, folder, thread, docs, or discussion>
 Summary Focus: <what dimension is being summarized>
 Summary Type: <structure-summary|folder-summary|content-summary|decision-summary|interface-summary|risk-summary|archive-summary-draft>
 Summary:
@@ -146,7 +146,7 @@ Use `Output: normal` when the user asks to organize, refine, or prepare the summ
 
 ```text
 User Intent: <one line>
-Source Scope:
+Source Boundaries:
 - <source paths, thread, docs, or discussion boundaries>
 Summary Focus:
 - <focus and audience>
@@ -172,41 +172,22 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a durable distillation handoff:
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a durable distillation handoff. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load the matching template and shape the final artifact.
 
 ```text
 Persist Packet:
 Artifact: distillation
-Artifact State: inbox | working | settled | superseded
-Intent: summary | exploration | audit | reference
-Depth: detailed
 Thread: <thread or none>
 Topic: <topic>
 Suggested Target: .session/inbox/distillation_<topic>.md or .session/threads/<thread>/distillation_<topic>.md
-Source Context:
-- <source paths, thread artifacts, docs, discussion, or user-provided material>
-Summary Focus:
-- <requested focus, audience, and next use>
-Summary Type:
-- <structure-summary | folder-summary | content-summary | decision-summary | interface-summary | risk-summary | archive-summary-draft>
-Key Points:
-- <main summary points>
-Observed:
-- <directly supported facts>
-Inferred:
-- <interpretations and source basis>
-Unknown:
-- <missing evidence, scope gaps, or unresolved conflicts>
-Source Map:
-- <source -> contribution to summary>
-Omitted / Out Of Scope:
-- <excluded materials or dimensions>
-Risks / Caveats:
-- <summary limitations, weak evidence, or conflict notes>
-Next Use:
-- <persist | review | shape | plan | sync | none>
-Recommended Next Task:
-- <persist | review | shape | plan | sync | none>
+Source Summary: <source paths, thread artifacts, docs, discussion, or user-provided material>
+Key Fields:
+- Summary Focus: <requested focus, audience, and next use>
+- Summary Type: <structure-summary | folder-summary | content-summary | decision-summary | interface-summary | risk-summary | archive-summary-draft>
+- Key Points: <main summary points>
+- Observed / Inferred / Unknown: <short distinction for persist to expand>
+- Archive Summary Draft: <only when requested>
+Next Use: <persist | review | shape | plan | sync | none>
 ```
 
 If the distillation is not worth preserving, output `Persist Candidate: none`.

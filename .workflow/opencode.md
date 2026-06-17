@@ -6,7 +6,9 @@ Use OpenCode when it helps with context reading, plan drafting, or bounded imple
 
 Output flow: use `Output: compact` for general discussion, `Output: normal` to refine before persist, and `Output: full` for artifacts, handoffs, audits, explicit executable plan candidates, or diff reviews.
 
-For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as the detailed commitment artifact for persist, implementation handoff, explicit executable plan candidate, or external-agent handoff. `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as a minimal handoff packet for persist, implementation handoff, explicit executable plan candidate, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+
+For `persist`, load only the matching template for the selected artifact; a discussion `Persist Packet` is handoff input, not the final artifact schema.
 
 OpenCode may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically. Use full `redteam` only when the user explicitly selected that lens, asked for critique, or the prompt explicitly includes it.
 
@@ -27,6 +29,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, OpenCode may provi
 - `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
 - `plan` may output `Plan Readiness`, `Known Gaps`, `Review Focus`, `Review Recommended`, and recommended next task.
 - `review` may output `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
+- `review plan-audit` may output `Blocking Questions` with severity, blocks, evidence, impact, why it matters, `Answer Needed`, and recommended next task.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` for uncertain or consequential output.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -71,7 +74,7 @@ Planning readiness rule:
 - `shape` stays at concept level and may recommend `plan` or `review`.
 - `plan` outputs `Plan Readiness: incomplete | reviewable | execution-candidate`.
 - `plan` uses `Known Gaps` for plan-owned missing inputs, `Review Focus` for what review should inspect, and `Review Recommended` for risk posture.
-- `review` owns formal `Blocking Gaps`, severity, and readiness verdicts.
+- `review` owns formal `Blocking Questions`, `Blocking Gaps`, severity, and readiness verdicts.
 - `/wf-build` requires explicit user invocation and an explicit executable plan; review is recommended for material risk, but missing review is not by itself a build blocker.
 
 Exploration notes:
@@ -295,6 +298,7 @@ Audit this OpenCode plan draft before implementation with explicit critique post
 
 Return:
 Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
+Blocking Questions: include severity, blocks, evidence, impact, why it matters, Answer Needed, and recommended next task when Review Type is plan-audit
 
 Check:
 - Scope and target files

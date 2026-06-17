@@ -30,7 +30,7 @@ ${input:request:describe the summary or distillation needed}
 
 Return:
 - User Intent
-- Source Scope
+- Source
 - Summary Focus
 - Summary Type
 - Summary

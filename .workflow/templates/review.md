@@ -100,6 +100,16 @@ Severity rules:
 - `medium`: does not block immediately but creates material rework, ambiguity, drift, user friction, or maintenance risk.
 - `low`: clarity, polish, convenience, or non-blocking completeness issue.
 
+## Plan Audit
+
+{{required for Review Type: plan-audit; optional otherwise}}
+
+| Question | Severity | Blocks | Evidence | Impact | Why It Matters | Answer Needed | Recommended Next Task |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| {{user-answerable missing input question}} | {{high | medium | low}} | {{build | external-agent | sync | source-of-truth decision | plan persistence | none}} | {{where the plan is missing, weak, or contradictory}} | {{what could go wrong or what cannot proceed}} | {{why the user should answer before proceeding}} | {{decision, fact, boundary, evidence, or source needed; not a proposed design}} | {{shape | explore | plan | review | build | external-agent | sync | persist | none}} |
+
+`Answer Needed` describes missing input only. It must not propose a design, choose a direction, sequence implementation, or rewrite the plan.
+
 ## What Is Still Reasonable
 
 - {{part of the target that can remain unchanged}}
@@ -110,7 +120,7 @@ Severity rules:
 
 ## Open Questions
 
-- {{question that prevents readiness, execution, or stable-document sync}}
+- {{ordinary review uncertainty; do not use this for plan-audit formal blocking questions}}
 
 ## Failure Or Risk Path
 

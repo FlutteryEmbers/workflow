@@ -229,82 +229,24 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an explicit executable plan candidate / external-agent handoff. A full packet is still chat output; it becomes build input only when explicitly supplied by the user as the `Plan` for `build` or persisted as a plan and then selected for build:
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an explicit executable plan candidate / external-agent handoff. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load `.workflow/templates/plan.md` and shape the final artifact. A packet becomes build input only when explicitly supplied by the user as the `Plan` for `build` or persisted as a plan and then selected for build:
 
 ```text
 Persist Packet:
 Artifact: plan
-Artifact State: working | settled | superseded
-Intent: handoff | decision | audit
-Depth: detailed
 Thread: <thread>
 Topic: <topic>
 Suggested Target: .session/threads/<thread>/plan_<topic>.md
-Plan Summary:
+Source Summary: <source shape/decision, user request, repo context, or project docs basis>
+Key Fields:
 - Target Outcome: <what should be true after execution>
-- Recommended Path: <short sequence, staged path, or work package summary>
+- Plan: <steps, phases, or work packages with scope, constraints, verification, and stop conditions>
 - Plan Readiness: <incomplete|reviewable|execution-candidate>
-- Readiness Rationale: <why this readiness applies>
-- Next Action: <shape | explore | review | plan | build | external-agent | sync | persist | none>
-- Review Recommended: <no | yes | strongly>
-- Main Risk: <main risk or none>
-- Source Basis: <chat | shape artifact | inbox brief | decision | project docs>
-Shape Summary:
-- Source: <chat | shape artifact | inbox brief | decision | project docs>
-- Selected Direction: <one-line direction>
-- Key Decisions: <decisions that shape execution>
-- Assumptions: <defaults and risk if wrong>
-Impact Surface:
-- Scope Size: <small | medium | large>
-- Affected Surfaces: <surfaces>
-- Risk: <low | medium | high>
-- Reversal Cost: <low | medium | high>
-- Docs / Sync Impact: <none | suggested | required>
-Planning Basis:
-- Source Direction: <shape artifact, decision, user request, project doc, or inferred target>
-- Locked Decisions: <confirmed decisions and sources>
-- Assumed Decisions: <recommended defaults and risk if wrong>
-- Rejected Options: <options rejected because they affect sequence, scope, or constraints; none if not relevant>
 - Known Gaps: <none | missing or weak planning input>
-Source Context:
-- <thread decision, target design, code/docs evidence, or planning discussion>
-Target Outcome:
-- <what should be true after execution>
-Plan:
-- <steps, phases, or work packages with scope, constraints, verification, and stop conditions>
-Allowed Changes:
-- <paths, behavior, docs, tests, or prompts allowed to change>
-Do Not Touch:
-- <areas excluded from the plan>
-Compatibility / Constraint Plan:
-- Compatibility: <preserve | breaking>
-- Constraint Mode: <respect | propose_override | prototype_exception>
-- Removed Compatibility: <old path, alias, behavior, schema, prompt, or none>
-- Migration / Alias: <kept | removed | none | explicitly not provided>
-- Constraint Exceptions: <exception scope and reason, or none>
-- Do Not Preserve: <legacy behavior intentionally dropped, or none>
-- Cleanup Required: <old files, docs, prompts, tests, or none>
-- Stop Conditions: <when to stop and return to plan/review>
-Step -> Verify:
-- <step> -> <verification>
-Review Focus:
-- <what review should inspect before build, sync, or handoff>
-Risks / Unknowns:
-- <execution risk or missing information>
-Follow-up Questions:
-- <none | non-blocking future consideration>
-Preserve From Discussion:
-- <important examples/counterexamples, user corrections, accepted risks, or handoff details>
-Handoff Notes:
-- <minimal context for build or external-agent>
-Stable Document Follow-up:
-- <none | project-docs | session-archive; include target, sync domain, and reason only when future alignment or retrieval could drift>
-Next Use:
-- <persist | review | build | external-agent | sync>
-Recommended Next Task:
-- <shape | explore | review | plan | persist | sync | build | external-agent | none>
-Review Recommended:
-- <no | yes | strongly>
+- Review Focus: <what review should inspect before build, sync, or handoff>
+- Review Recommended: <no | yes | strongly>
+- Compatibility / Constraint Policy: <preserve/breaking and respect/override/exception summary>
+Next Use: <persist | review | build | external-agent | sync | none>
 ```
 
 If the plan is not worth preserving, output `Persist Candidate: none`.

@@ -19,6 +19,8 @@ Rules:
 - Use `.workflow/tasks/review.md` as the task contract.
 - Use `Review Type: verdict-review | gap-analysis | plan-audit | diff-review`.
 - Use `gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
+- For `Review Type: plan-audit`, include `Blocking Questions` with severity, blocks, evidence, impact, why it matters, `Answer Needed`, and recommended next task.
+- `Answer Needed` must describe missing input only; do not propose a design, choose a direction, sequence implementation, or rewrite the plan.
 - Treat `redteam` as an explicit critique posture: failure paths, counterarguments, hidden costs, and boundary breaks. Review still owns the verdict.
 - Give verdict and minimal repair direction when useful; do not create a full replacement design.
 - You may include repair direction and minimal revision sketch, but do not create an implementation plan, write, sync, execute, or implement.
@@ -33,6 +35,7 @@ Return:
 - Baseline, when relevant
 - Findings or Take
 - Gap Analysis, when Review Type is gap-analysis
+- Blocking Questions, when Review Type is plan-audit
 - Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
 - Confidence
 - Blocking Gaps
