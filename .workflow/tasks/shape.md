@@ -55,7 +55,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - `Compatibility / Constraint Check` with compatibility pressure, breaking option availability, constraint tension, suggested policy, and whether a human decision is needed.
 - `Output: compact` default: short recommendation, risks, and optional `Persist Candidate`.
 - `Full Persist Packet` only when the shape should be persisted now or `Output: full` is requested.
-- `Triage` when the request may actually need evidence, verdict, or executable planning first.
+- `Triage` only when task boundary, evidence readiness, or verdict/planning need is unclear.
 
 ## Task Boundary Check
 
@@ -70,7 +70,7 @@ Before shaping, classify the request:
 
 Default implicit preflight runs only in `Mode: discuss`. Use it as triage plus evidence check before shaping.
 
-Output this before the shape when the request is not trivial:
+Output this before the shape when task boundary, evidence readiness, or verdict/planning need is unclear:
 
 ```text
 Triage: <direction|evidence|verdict|plan>
@@ -273,7 +273,7 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a handoff artifact. Do not output a full persist packet when `Human Decision State` is `checkpoint` or `blocking`.
+Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`. Do not output a full persist packet when `Human Decision State` is `checkpoint` or `blocking`.
 
 ```text
 Persist Packet:

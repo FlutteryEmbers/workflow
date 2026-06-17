@@ -71,7 +71,12 @@ Before exploring, classify obvious boundary problems:
 
 Conditional implicit preflight for `explore` only checks boundary, source, scope, and evidence type. Do not duplicate exploration inside preflight; once the boundary is clear, proceed with normal evidence extraction or recommend the right task.
 
-If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
+Boundary handling:
+
+- `fits`: extract evidence in chat.
+- `fits_with_preflight`: run the boundary/source/scope/evidence-type preflight, then either extract evidence or route to the right task.
+- `composite`: explore first, then output the `persist` follow-up prompt; do not write files.
+- `wrong_task` or `missing_prerequisite`: stop and return Boundary, Reason, Recommended Path, and Next Prompt.
 
 ## Copilot Add Context
 
@@ -113,7 +118,7 @@ Use this structure for non-trivial output:
 - `Likely Entry Points`: probable files, APIs, flows, or docs to inspect next.
 - `Borrowable Ideas`: patterns or structures that may be useful later, without recommending adoption.
 - `Potential Options`: candidate materials for `shape`; these are not final recommendations.
-- `Recommended Next Task`: usually `shape`, `review`, `plan`, `persist`, or `sync`.
+- `Recommended Next Task`: usually `shape`, `review`, `plan`, or `persist`. Recommend `sync` only when the user explicitly asks for stable-document projection and the required review/source-of-truth prerequisites are already clear.
 
 Lens use must not change task responsibility. `distill`, `architecture`, `debug`, and `language` may improve evidence extraction, but `explore` must not present candidate interpretations as final synthesis or verdict.
 
@@ -154,7 +159,7 @@ Use `Output: normal` when the user asks to整理, refine, or prepare evidence fo
 ```text
 User Intent: <one line about what the user wants to understand>
 Current Read: <optional one line about the strongest source-backed fact>
-Refined Direction / Plan:
+Refined Evidence:
 - <evidence summary, reliability status, and recommended next task>
 Candidate Interpretations:
 - <plausible explanation, borrowable idea, or likely entrypoint to preserve>
@@ -168,7 +173,7 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a handoff artifact:
+Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`:
 
 ```text
 Persist Packet:

@@ -61,7 +61,7 @@ Rejected targets:
 
 - `.session/threads/**`, `.session/inbox/**`: use `persist`.
 - `notes/**`: use `persist` with an explicit notes target.
-- source code, `.workflow/**`, `.github/**`, prompts, templates, and other repository artifacts: use `plan -> build` or the external-agent path.
+- source code, `.workflow/**`, `.github/**`, prompts, templates, and other repository artifacts: use `plan -> review -> build` or the external-agent path after an explicit executable plan exists.
 
 ## When To Use
 
@@ -93,15 +93,19 @@ Before syncing, classify the request:
 - `wrong_task`: request asks to decide docs architecture, artifact ownership, or long-term boundary; recommend `shape`.
 - `wrong_task`: request asks to sequence repairs or create a multi-target work plan; recommend `plan`.
 - `wrong_task`: request targets `.session/threads/**`, `.session/inbox/**`, or `notes/**`; recommend `persist`.
-- `wrong_task`: request targets code, `.workflow/**`, `.github/**`, prompts, templates, or unrelated files; recommend `plan -> build` or external-agent.
+- `wrong_task`: request targets code, `.workflow/**`, `.github/**`, prompts, templates, or unrelated files; recommend `plan -> review -> build` or external-agent after an explicit executable plan exists.
 - `missing_prerequisite`: `Sync Domain` is missing and cannot be inferred from target.
 - `missing_prerequisite`: `Target`, `Target Directory`, `Scope`, and existing docs convention are all missing.
 - `missing_prerequisite`: `project-docs` lacks source, scope, sync object, target or target directory or existing convention, source of truth, alignment success criteria, or Project Docs Rules safety.
 - `missing_prerequisite`: `session-archive` lacks source thread, thread status, archive purpose, summary scope, next retrieval use, or archive target.
 
-Default implicit preflight runs only in `Mode: discuss`. In `Mode: persist`, do not preflight; block with `docs blocked` or `archive blocked` when prerequisites are missing.
+Default implicit preflight runs only in `Mode: discuss`. In `Mode: persist`, do not run discovery-style preflight, but always validate sync prerequisites before writing. Block with `docs blocked` or `archive blocked` when prerequisites are missing.
 
-If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
+Boundary handling:
+
+- `fits`: in `Mode: persist`, validate prerequisites and write only allowed stable-document targets; in `Mode: discuss`, describe the sync target and prerequisites.
+- `fits_with_preflight`: in `Mode: discuss`, run read-only preflight, then return an Alignment Set, archive target, prerequisites, blockers, or the next prompt.
+- `wrong_task` or `missing_prerequisite`: stop and return Boundary, Reason, Recommended Path, and Next Prompt.
 
 ## Sync Domains
 
@@ -129,7 +133,7 @@ Required:
 
 `sync` may create a missing stable document when the sync object, source of truth, target or target directory or existing convention, and alignment criteria are clear. Creating a document does not violate sync semantics; deciding the docs taxonomy, source of truth, or long-term ownership does.
 
-`Sync Object: all` may produce an Alignment Set in `Mode: discuss`. In `Mode: persist`, it requires a confirmed Alignment Set or explicit plan, defaults to at most 3 targets, and must not mix `project-docs` and `session-archive` writes unless the plan explicitly segments them.
+`Sync Object: all` may produce an Alignment Set in `Mode: discuss`. In `Mode: persist`, it requires a confirmed Alignment Set or explicit plan with each target named and confirmed. It must not mix `project-docs` and `session-archive` writes unless the plan explicitly segments them.
 
 ### session-archive
 
@@ -222,7 +226,7 @@ Any write to `.session/archive/**` must:
 
 `review` makes judgments. `shape` decides unclear source-of-truth or artifact-boundary questions. `plan` sequences repair work. `sync` performs stable-document projection only.
 
-For `project-docs`, if `Target` exists, update only that target. If `Target Directory` exists, create or update the sync object document inside that directory only when naming is clear from scope or a confirmed Alignment Set. If `Scope` exists without a target, target directory, or convention, inspect related docs/code and output an `Alignment Set` of at most 3 target candidates. If more than 3 targets are needed, split the work into batches and do not write them all at once.
+For `project-docs`, if `Target` exists, update only that target. If `Target Directory` exists, create or update the sync object document inside that directory only when naming is clear from scope or a confirmed Alignment Set. If placement requires designing docs taxonomy, source of truth, or long-term ownership, route to `shape`. If `Scope` exists without a target, target directory, or convention, inspect related docs/code and output an `Alignment Set` of at most 3 target candidates. Do not write scope-based targets until the Alignment Set is confirmed.
 
 For `session-archive`, default to one source thread and one archive summary target. If more than one thread must be archived, require an explicit plan that names the batch and stop conditions.
 
@@ -240,7 +244,7 @@ For `session-archive`, default to one source thread and one archive summary targ
 - Include `Blocked Items` for unsupported sync objects, workflow-internal targets, unclear source of truth, missing alignment criteria, unsafe target selection, missing archive prerequisites, or unsupported targets.
 - Include `Follow-up Review Needed` when source-of-truth judgment is required.
 - Project docs source from session must be explicit, usually `.session/threads/**`; inbox notes and exploration notes require explicit source-of-truth confirmation.
-- With `consistency`, sync only confirmed outcomes. If code may be wrong, route to `plan -> build` or external-agent implementation; if intent is unclear, route to `shape`; if archive sources conflict, mark unresolved items or route to `review --lens consistency`.
+- With `consistency`, sync only confirmed outcomes. If code may be wrong, route to `review -> plan -> build` or external-agent implementation, then `review` again before sync; if intent is unclear, route to `shape`; if archive sources conflict, mark unresolved items or route to `review --lens consistency`.
 - With `architecture`, project constraints go to the user/project-selected architecture target or target directory.
 - With `language`, settled terminology goes to the user/project-selected reference target or target directory.
 - With `distill`, reference-derived structures go to project docs after they are confirmed as project knowledge.

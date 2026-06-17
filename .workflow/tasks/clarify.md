@@ -65,7 +65,11 @@ Before clarifying, classify obvious boundary problems:
 
 No implicit preflight runs in `clarify`. Only run Task Boundary Check; do not scan evidence before clarifying.
 
-If not `fits`, do not write files. Return Boundary, Reason, Recommended Path, and Next Prompt.
+Boundary handling:
+
+- `fits`: clarify in chat.
+- `composite`: clarify first, then output the `persist` follow-up prompt; do not write files.
+- `wrong_task` or `missing_prerequisite`: stop and return Boundary, Reason, Recommended Path, and Next Prompt.
 
 ## Copilot Add Context
 
@@ -147,7 +151,7 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a handoff artifact:
+Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`:
 
 ```text
 Persist Packet:

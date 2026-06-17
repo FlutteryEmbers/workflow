@@ -69,7 +69,7 @@ Recommend the smallest path:
 - Existence and discovery questions such as "does this repo have X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
 - Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
 - Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
-- Typical session flow: `external or conversational goal -> shape/thread artifact -> build/external-agent -> review -> sync`.
+- Typical session flow: `external or conversational goal -> shape -> plan -> review -> build/external-agent -> review -> sync`.
 - Long or reusable external goal sources: `persist` as `Artifact: brief`, `Brief Type: external-goal`, then `shape` consumes the inbox brief.
 - Current conversational goals: `shape` directly, then persist the shaped concept only when worth preserving.
 - New background or staged requirements: `clarify` or `explore` -> `persist` to `.session/inbox/**`.
@@ -82,6 +82,7 @@ Recommend the smallest path:
 - Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
 - Project docs alignment: `review -> plan -> sync` with `Sync Domain: project-docs` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute` and an explicit executable plan.
+- Vague implementation intent without an explicit executable plan: `plan -> review`, then `build` or external-agent only after the plan is concrete enough.
 - Discussion chains should end with `Persist Candidate` when the result is worth preserving. `persist` consumes the candidate, recent discussion, or full packet; the original discussion task does not write files.
 
 ## Lens Suggestions

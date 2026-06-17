@@ -5,7 +5,7 @@ purpose: Persist high-fidelity structured session artifacts and untriaged knowle
 inputs:
   - artifact
   - brief_type
-  - status
+  - artifact_state
   - intent
   - depth
   - thread
@@ -22,7 +22,7 @@ user_selectable_lenses:
   - language
 done_check:
   - artifact_kind_is_named
-  - status_is_clear
+  - artifact_state_is_clear
   - target_boundary_is_valid
 ---
 
@@ -63,7 +63,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - `Thread`: kebab-case small closable work item directory name.
 - `Topic`: short file-safe topic.
 - `Source`: `Persist Packet`, `Persist Candidate`, recent discussion, existing artifact, user input, file path, or selected context.
-- `Target Directory`: optional directory such as `.session/threads/workflow-thread-naming/`; when present, generate `{artifact}_{topic}.md` under it.
+- `Target Directory`: optional allowed directory such as `.session/threads/workflow-thread-naming/`; when present, generate `{artifact}_{topic}.md` under it after target-boundary validation.
 - `Target`: optional explicit path. Explicit target wins over inferred path.
 - `Target: notes/**`: explicit only; used for disposable exploration notes.
 
@@ -144,9 +144,9 @@ If review feedback is not explicit enough to apply mechanically, route back to `
 
 ## Target Rules
 
-- Infer `.session/inbox/{artifact}_{topic}.md` for `Artifact State: inbox`.
+- Infer `.session/inbox/{artifact}_{topic}.md` for `Artifact State: inbox` only when no explicit target, target directory, thread, or safer same-work-item target is available.
 - Infer `.session/threads/{thread}/{artifact}_{topic}.md` when `Thread`, `Artifact`, and `Topic` are available.
-- If `Target Directory` is provided, infer `{target_directory}/{artifact}_{topic}.md`.
+- If `Target Directory` is provided, infer `{target_directory}/{artifact}_{topic}.md` only after validating that the directory is active `.session/inbox/**`, active `.session/threads/**`, or explicit `notes/**`.
 - If the user references `Artifact ID: shape_<topic>` without an explicit thread, use it as source context and infer the target by same-work-item fit.
 - Never infer `notes/**`. Write `notes/**` only when the user explicitly provides that target.
 - Respect explicit active `.session/inbox/**` or `.session/threads/**` targets even when the file name does not follow the recommended prefix; include a naming note instead of blocking.
@@ -163,7 +163,8 @@ If review feedback is not explicit enough to apply mechanically, route back to `
 - `notes/**` may be overwritten, deleted, parked, discarded, or promoted later.
 - Useful conclusions from `notes/**` should be promoted through normal workflow: persist to `.session/threads/**`, or sync confirmed project context to `docs/**`.
 - Optional note metadata may be used when helpful: `status`, `source`, `updated`, `promoted_to`.
-- `notes/**` is suitable for `Artifact: brief | note | shape | option | review | distillation | expanded`; do not use it for implementation plans or project docs.
+- `notes/**` is suitable for `Artifact: brief | note | shape | option | review | distillation | expanded`; do not use it for implementation plans, project docs, or gate verdicts.
+- Review-like content in `notes/**` must be labeled disposable and non-gating. Use `.session/threads/**` for review artifacts that may gate plan, build, sync, or source-of-truth decisions.
 
 ## Inbox Capture Rule
 
@@ -208,12 +209,12 @@ If the user explicitly provides a target path, respect it unless it violates wri
 - Add `Persist Metadata` to the artifact.
 - Include `Thread Inference Note` when thread selection depends on same-work-item assumptions, source context, or low-confidence inference.
 - Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
-- `Artifact State` is metadata only. `settled` does not authorize execution, does not mean approved, and does not choose directories.
+- `Artifact State` is metadata and inference input only. It may help infer an inbox target when no stronger target anchor exists, but it does not authorize execution, does not mean approved, and does not permit writes outside the target boundary.
 - Thread artifacts are active session working memory; code-aligned project docs and session archive summaries still go through `sync`.
 - The persisted artifact should be denser and more durable than chat. It must not be a low-context bullet summary when detailed reasoning is available.
-- For `notes/**`, compact or standard depth is acceptable. Preserve useful conclusion, evidence, and next use, but do not treat the note as an implementation source.
+- For `notes/**`, compact or standard depth is acceptable. Preserve useful conclusion, evidence, and next use, but do not treat the note as an implementation source or gating review verdict.
 - For inbox capture, compact or standard depth is acceptable. Preserve source, evidence, reusable lesson, future use, and promotion candidate; do not present it as source of truth.
 
 ## User Input
 
-{{artifact, status, intent, depth, thread, topic, source, target directory, target, and persist request}}
+{{artifact, artifact state, intent, depth, thread, topic, source, target directory, target, and persist request}}

@@ -349,6 +349,8 @@ Before acting, classify whether the request fits the selected task:
 
 Composite requests should return segmented prompts with stop points. Do not silently switch tasks or automatically run later write/implementation segments.
 
+Boundary classes are handled explicitly: `fits` performs the selected task, `fits_with_preflight` runs only the allowed read-only preflight before continuing or routing, `composite` returns segmented prompts, and `wrong_task` / `missing_prerequisite` stop with a recommended path.
+
 ## Persist-Centered Session Writes
 
 Discussion tasks do not write files. They should end with short `Persist Candidate` when the current output is worth preserving. Full `Persist Packet` is only for `Output: full`, explicit persist requests, or handoff/audit responses.
@@ -358,7 +360,7 @@ Discussion tasks do not write files. They should end with short `Persist Candida
 - `persist` may also write explicit `notes/**` disposable exploration notes.
 - `persist` consumes `Persist Candidate`, `Persist Packet`, recent discussion, existing artifacts, or source files.
 - `persist` can infer targets for `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`.
-- `Thread`, `Target Directory`, and same-work-item fit guide where related artifacts are grouped.
+- `Artifact State`, `Thread`, `Target Directory`, and same-work-item fit guide where related artifacts are grouped; none of them authorize writes outside active `.session/inbox/**`, active `.session/threads/**`, or explicit `notes/**`.
 - Explicit active `.session/inbox/**` and `.session/threads/**` targets are respected even when the file name does not follow the recommended prefix.
 - `notes/**` must be explicit and is never inferred.
 - Targets outside active `.session/inbox/**`, `.session/threads/**`, and `notes/**` are routed instead of rejected: `docs/**`, `src/**/README.md`, and `.session/archive/<thread>/summary.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
@@ -383,6 +385,7 @@ Default depth is `standard` for `brief` and `note`, and `detailed` for `shape`, 
 - Use `Target: notes/{topic}.md` only when the user explicitly wants a disposable exploration note.
 - `notes/**` is not project docs and does not use Project Docs Rules.
 - `notes/**` is not an execution source for `build` or external-agent implementation.
+- `notes/**` does not carry gate verdicts. Review-like notes must be labeled disposable and non-gating; gate reviews belong in `.session/threads/**`.
 - `persist` must not infer `notes/**`; default persist inference remains `.session/inbox/**` or `.session/threads/**`.
 - Useful conclusions from `notes/**` should be promoted through normal workflow: persist to `.session/threads/**`, or sync confirmed project context to `docs/**`.
 - `notes/INDEX.md` is optional. Consider it only when there are more than five active notes.
@@ -402,7 +405,7 @@ With shape-first routing:
 - `explore` preflight is source/scope/evidence-type check only.
 - `review` preflight is target/question/evidence-readiness check only.
 
-Implicit preflight must not load templates, write files, run implementation, run tests, perform sync, apply unselected lenses, or do a full repository scan. In `Mode: persist` and `Mode: execute`, do not run implicit preflight; block when prerequisites are missing.
+Implicit preflight must not load templates, write files, run implementation, run tests, perform sync, apply unselected lenses, or do a full repository scan. In `Mode: persist` and `Mode: execute`, do not run implicit preflight; validate prerequisites and block when they are missing. `build` execution plan validation is required in `Mode: execute`, but it is not implicit preflight.
 
 ## Embedded Critique Check
 
@@ -456,7 +459,7 @@ Task behavior:
 - `Sync Domain: project-docs`: write `docs/**` or explicit `src/**/README.md`.
 - `Sync Domain: session-archive`: write `.session/archive/<thread>/summary.md`.
 
-Docs maintenance usually follows `review --lens consistency -> plan --lens consistency -> sync`. If source of truth or artifact ownership is unclear, use `review --lens consistency -> shape -> plan -> sync`.
+Docs maintenance usually follows `review --lens consistency -> plan --lens consistency -> sync`. If source of truth or artifact ownership is unclear, use `review --lens consistency -> shape -> plan -> sync`. If code may be wrong, repair code through `review -> plan -> build/external-agent -> review` before stable-document sync.
 
 Any write to `docs/**` must:
 
@@ -473,13 +476,13 @@ Allowed Project Docs Sync Objects:
 - `feature`
 - `reference`
 - `code-readme`: `src/**/README.md`
-- `all`: produces an Alignment Set; writing requires confirmed targets or an explicit plan
+- `all`: produces an Alignment Set; writing requires a confirmed Alignment Set or explicit plan with each target named and confirmed
 
 No Workflow-Internal Docs Leakage: do not create `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` by default. Do not sync `.workflow/**`, task/lens/template/prompt usage, session operation mechanics, AI workflow instructions, or Workflow Lite internal rules into `docs/**`.
 
 `docs/**` is updated only when drift would cause future code/docs alignment mistakes. Do not use it as a transcript, exploration log, temporary PoC journal, workflow usage guide, or low-level implementation mirror.
 
-`Target` and `Target Directory` are project/user-selected placement. If neither is explicit, sync may use an existing docs convention or return an Alignment Set with suggested targets. Creating a missing docs file is allowed when source of truth, sync object, target selection, and alignment criteria are clear. Deciding the docs taxonomy, source of truth, or long-term ownership is not sync work; route that to `shape`.
+`Target` and `Target Directory` are project/user-selected placement. If neither is explicit, sync may use an existing docs convention or return an Alignment Set with suggested targets. Creating a missing docs file is allowed when source of truth, sync object, target selection, and alignment criteria are clear. Scope-based targets from an Alignment Set must be confirmed before writing. Deciding the docs taxonomy, source of truth, or long-term ownership is not sync work; route that to `shape`.
 
 ## Archive Rules
 
@@ -509,7 +512,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Plan work or handoff: `plan -> persist -> .session/threads/{thread}/plan_*.md`.
 - Multi-turn design: `shape/review/explore discuss loop -> persist into one thread`.
 - Native implementation: external-agent native Plan -> `review` audit -> native Implement -> `review` diff.
-- Workflow-managed implementation: `plan -> build`.
+- Workflow-managed implementation: `plan -> review -> build`.
 - Build result capture: `build -> Execution Trace -> optional persist inbox capture/thread audit note -> optional review/sync promotion`.
 - Project-docs sync: `review -> plan -> sync -> docs/**`.
 - Code-adjacent README sync: `review -> plan -> sync -> src/**/README.md`.

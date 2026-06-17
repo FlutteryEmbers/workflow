@@ -65,7 +65,7 @@ Before reviewing, classify the request:
 - `fits_with_preflight`: review verdict depends on code, docs, diff, session evidence, or external plan context. In `Mode: discuss`, run conditional implicit preflight first.
 - `composite`: user asks to review and persist; review first, then route to `persist`.
 - `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
-- `wrong_task`: user asks to implement steps from a chosen direction; recommend `plan` or `build`.
+- `wrong_task`: user asks to implement steps from a chosen direction; recommend `plan`, or `build` only when an explicit executable plan already exists.
 - `wrong_task`: user asks to update project docs, code-adjacent README, or session archive summary; recommend `sync`.
 
 Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become a second full review before the review, must not load templates, and must not write files.
@@ -162,7 +162,7 @@ Use `Output: normal` when the user asks to整理, refine, or prepare the review 
 ```text
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
-Refined Direction / Plan:
+Refined Verdict:
 - <review verdict, key findings, required revisions, and recommended next task>
 Repair Direction:
 - <minimal direction of change, not full redesign>

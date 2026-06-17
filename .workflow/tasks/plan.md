@@ -66,7 +66,7 @@ Before planning, classify the request:
 - `composite`: user asks to plan and persist; plan first, then route to `persist`.
 - `wrong_task`: target direction is not chosen; recommend `shape`.
 - `wrong_task`: user asks whether current implementation or target is reasonable; recommend `review`.
-- `composite`: user asks to implement from target docs and current code; recommend `plan -> review -> external-agent/build -> review`.
+- `composite`: user asks to implement from target docs and current code without a confirmed source-of-truth verdict; recommend `review -> plan -> review -> external-agent/build -> review`.
 
 Default implicit preflight runs only in `Mode: discuss` and checks target stability, repo fit, target files, do-not-touch areas, and verification readiness. Plan may identify blockers and conflicts, but must not invent a new target. If the target is unstable, target and repo conflict, or verification is unclear, recommend `review` or `shape`.
 
@@ -84,7 +84,7 @@ User-selected lenses:
 
 ## Instructions
 
-Write the smallest useful plan for the user's current intent. In `Mode: discuss`, plans may be non-build-ready planning drafts when the user is still exploring sequencing, phases, or options. Only implementation handoff or build-ready plans must include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected when they matter.
+Write the smallest useful plan for the user's current intent. In `Mode: discuss`, plans may be non-build-ready planning drafts when the user is still exploring sequencing, phases, or options inside an already selected direction. Do not use `plan` to compare or choose core directions; route that work to `shape`. Only implementation handoff or build-ready plans must include target files, success criteria, allowed changes, do-not-touch areas, step-level verification, rollback or recovery notes, stop conditions, and target docs affected when they matter.
 
 For implementation handoff or build-ready planning, every major step must use `Step / Change / Verify / Risk / Stop Condition`. For planning drafts, use phases, work packages, dependencies, assumptions, risks, and what would be needed to turn the draft into an implementation handoff. If verification is unclear, mark the plan as a `Planning Draft` rather than treating it as ready for `build`.
 
@@ -195,7 +195,7 @@ Blocking Questions:
 - <none | question plus what it blocks>
 Abstraction Level: <phase-plan|implementation-plan>
 Planning Draft: <yes/no; if yes, say what is missing for build-ready handoff>
-Next: <review | persist plan | build | sync | shape | none>
+Next: <review | persist plan | build | sync | shape | none; use build only for implementation-plan with explicit executable scope and review/authorization conditions satisfied>
 Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
@@ -236,7 +236,7 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an implementation/external-agent handoff:
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an implementation/external-agent handoff. A full packet is still chat output; it becomes build input only when persisted as a plan or explicitly supplied by the user as the `Plan` for `build`:
 
 ```text
 Persist Packet:

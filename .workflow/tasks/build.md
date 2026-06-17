@@ -62,13 +62,18 @@ Before building, classify the request:
 - `fits_with_preflight`: in `Mode: discuss`, user asks whether a plan is ready to build; run conditional implicit preflight for plan readiness only.
 - `missing_prerequisite`: `Plan` is missing, unclear, or not executable enough.
 - `missing_prerequisite`: `Plan` points to `notes/**`; disposable exploration notes are not executable sources.
-- `composite`: user asks to implement from target docs/current code without a concrete plan; recommend `plan -> review -> external-agent/build -> review`.
+- `composite`: user asks to implement from target docs/current code without a concrete plan or confirmed source-of-truth verdict; recommend `review -> plan -> review -> external-agent/build -> review`.
 - `wrong_task`: user asks to persist session artifacts; recommend `persist`.
 - `wrong_task`: user asks to update project docs; recommend `sync`.
 
-Conditional implicit preflight for `build` is allowed only in `Mode: discuss` and only checks readiness: plan, scope, target files, allowed changes, do-not-touch areas, step verification, stop conditions, and compatibility / constraint policy. In `Mode: execute`, do not preflight; if the plan is missing or unclear, block without editing.
+Conditional implicit preflight for `build` is allowed only in `Mode: discuss` and only checks readiness: plan, scope, target files, allowed changes, do-not-touch areas, step verification, stop conditions, and compatibility / constraint policy. In `Mode: execute`, do not run implicit preflight; instead perform execution plan validation. If the plan is missing, unclear, or not executable enough, block without editing.
 
-If not `fits`, do not modify files. Return Boundary, Reason, Recommended Path, and Next Prompt.
+Boundary handling:
+
+- `fits`: validate the explicit plan, then execute only inside plan scope.
+- `fits_with_preflight`: in `Mode: discuss`, run readiness preflight and report build-readiness only.
+- `composite`: output the recommended segmented path; do not modify files.
+- `wrong_task` or `missing_prerequisite`: stop and return Boundary, Reason, Recommended Path, and Next Prompt.
 
 ## Copilot Add Context
 
@@ -86,7 +91,7 @@ User-selected lenses:
 
 ## Instructions
 
-In `Mode: execute`, implement the explicit plan. The user invoking `build` is the execution authorization; the task's job is to enforce plan scope and executability. Read relevant artifacts first, keep edits inside the plan's scope, and stop if the plan requires unplanned interface, config, data, architecture, documentation, or workflow behavior changes.
+In `Mode: execute`, validate and implement the explicit plan. The user invoking `build` is the execution authorization; the task's job is to enforce plan scope and executability. Read relevant artifacts first, keep edits inside the plan's scope, and stop if the plan requires unplanned interface, config, data, architecture, documentation, or workflow behavior changes.
 
 `build` records execution facts, not review verdicts. It may report pitfalls and likely sources observed during execution, but it must not decide whether the plan was correct, whether the diff is acceptable, or whether docs should change. Route those judgments to `review`.
 
@@ -138,9 +143,9 @@ Do not infer execution authorization from any `Abstraction Level` label. The use
 
 Do not execute `notes/**`. Exploration notes are disposable working memory and must be converted into a concrete plan under `.session/threads/**` or provided as an explicit executable plan before implementation.
 
-Build may update code, docs, prompts, templates, or workflow artifacts only when the plan explicitly names them. Do not modify `.workflow/**`, `.session/**`, `docs/**`, or `src/**/README.md` unless the plan names those targets.
+Build may update code, prompts, templates, workflow artifacts, or explicitly planned docs edits only when the plan names them. Do not modify `.workflow/**`, `.session/**`, `docs/**`, or `src/**/README.md` unless the plan names those targets.
 
-When writing `docs/**`, the plan must explicitly name the docs targets and include Project Docs conditions: source, scope, sync object, source of truth, target selection, alignment success criteria, existing docs structure, and safety. If these conditions are missing, do not modify `docs/**`; output `Docs Follow-up` and recommend `sync`.
+By default, build does not perform stable-document projection. When writing `docs/**` or `src/**/README.md`, the plan must explicitly name concrete docs edits and include Project Docs conditions: source, scope, sync object, source of truth, target selection, alignment success criteria, existing docs structure, and safety. If these conditions are missing, do not modify `docs/**` or `src/**/README.md`; output `Docs Follow-up` and recommend `sync`.
 
 After implementation, output `Docs Follow-up` only when the change clearly affects architecture, public behavior, module responsibility, execution constraints, or agent/human onboarding context. Do not invent docs work for small or temporary changes.
 
