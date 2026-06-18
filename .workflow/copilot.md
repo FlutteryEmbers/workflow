@@ -126,13 +126,13 @@ For `Task: plan`, replace the generic compact/normal body with plan-specific str
 
 ## Task Boundary Shortcut
 
-When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
+When unsure, start with `shape`. Use `clarify` for semantic unpacking, `explore` for evidence acquisition and non-mutating probes, `distill` for user-directed summaries, and `review` for verdict.
 
-- `clarify = explain/restate/unpack`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
+- `clarify = semantic unpacking`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
 - `shape = synthesis`: small discussion fallback for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, "how should I think about this", or next-step selection requests.
-- `explore = evidence`: code/docs/reference/behavior/entrypoint/dependency fact gathering.
+- `explore = evidence acquisition + non-mutating probe`: code/docs/reference/behavior/entrypoint/dependency evidence mapping, reliability notes, and temporary non-mutating probes.
 - `distill = summary`: user-selected files, folders, threads, docs, discussion, or reference material summarized with observed, inferred, and unknown content separated.
-- `review = verdict`: existing target reasonableness, readiness, conflict, safety, or acceptance checks.
+- `review = verdict / gap-analysis`: existing target reasonableness, readiness, conflict, safety, acceptance checks, or baseline gap review.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
 
 Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. Do not use a lens as a skip mechanism.
@@ -141,7 +141,9 @@ Task boundary layers:
 
 - `Core Responsibility`: the task's main job.
 - `Adjacent Allowance`: small neighboring outputs allowed only when they support the core responsibility.
-- `Forbidden Authority`: boundaries the task must not cross.
+- `Hard Authority Boundaries`: boundaries the task must not cross.
+
+Prefer Output Shape over prohibition. User-selected task is respected; authority is not expanded. Use `Scope Interpretation` when a request partially fits another output shape.
 
 For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, explicit executable plan candidate, stable sync, writes, execution, or implementation.
 
@@ -152,7 +154,7 @@ Discussion adjacency is allowed; authority is not. Adjacent output may make the 
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be useful before all evidence is complete.
 
 - `clarify` may output a lightweight next-task hint.
-- `explore` may output `Candidate Interpretations`, `Likely Entry Points`, `Borrowable Ideas`, and recommended next task.
+- `explore` may output `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.

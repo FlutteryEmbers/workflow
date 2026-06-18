@@ -101,7 +101,7 @@ conversational source
 | :--- | :--- | :--- | :--- |
 | `route` | `analyst` | chat | Recommend the smallest useful next path. |
 | `clarify` | `analyst` | chat | Explain terms, prior answers, statements, assumptions, scope, and success criteria. |
-| `explore` | `designer` | chat | Understand code, materials, behavior, feasibility, or reference structure. |
+| `explore` | `designer` | chat | Acquire evidence with discovery inventory, evidence mapping, reliability notes, or non-mutating probes. |
 | `distill` | `analyst` | chat | Generate a user-directed summary or distillation of specified source material. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, or session decision. |
 | `plan` | `designer` | chat | Turn a chosen direction into a repo-aware plan, explicit executable plan candidate, or external-agent handoff. |
@@ -114,14 +114,14 @@ conversational source
 
 When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 
-- `clarify = explain/restate/unpack`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
+- `clarify = semantic unpacking`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
 - `shape = synthesis`: default small fallback for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, "how should I think about this", or "what should happen next" requests.
-- `explore = evidence`: use only when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, or dependencies.
+- `explore = evidence acquisition + non-mutating probe`: use only when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, dependencies, or temporary non-mutating probes.
 - `distill = summary`: use when the user asks to summarize, distill, compress, or extract structure from specified files, folders, threads, docs, discussion, or reference material.
-- `review = verdict`: use only when there is an existing target to judge, such as code, docs, plan, diff, decision, behavior claim, or thread artifact.
+- `review = verdict / gap-analysis`: use only when there is an existing target or baseline to judge, such as code, docs, plan, diff, decision, behavior claim, missing capability, or thread artifact.
 - `plan = planning sequence`: use when the direction is chosen and the user needs phases, sequencing, repo-aware steps, or an executable handoff.
 
-`shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` may give candidate interpretations and borrowable ideas, but not final direction. `distill` may summarize and separate observed, inferred, and unknown content, but not judge accuracy or source of truth. `review` may give a minimal revision sketch, but not a full replacement design.
+`shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` may say "evidence was found" or "no evidence was found", run non-mutating probes, and provide candidate interpretations, but not final direction, severity, source-of-truth judgment, repair recommendation, or gap-analysis. `distill` may summarize and separate observed, inferred, and unknown content, but not judge accuracy or source of truth. `review` may give a minimal revision sketch, but not a full replacement design.
 
 ## Task Boundary Layers
 
@@ -129,9 +129,29 @@ Every task has three boundary layers:
 
 - `Core Responsibility`: the task's main job and required output.
 - `Adjacent Allowance`: small neighboring outputs allowed only when they support the core responsibility.
-- `Forbidden Authority`: capabilities the task must never claim.
+- `Hard Authority Boundaries`: capabilities the task must never claim.
 
-For example, `shape` core responsibility is concept direction. Its adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. Its forbidden authority includes formal evidence extraction, specified-source summary, gate verdict, source-of-truth judgment, explicit executable plan candidate, stable sync, writes, execution, and implementation.
+## Output Shape Over Prohibition
+
+Task selection is flexible; task authority is not. A user-selected task is respected whenever possible, but authority is not expanded. The selected task should answer using its own `Output Shape` instead of frequently rejecting the request as the wrong task.
+
+- `clarify` uses a meaning-shaped output: meaning, assumptions, scope, example, next.
+- `explore` uses an evidence-shaped output: observed facts, evidence map, probes, reliability, missing evidence, follow-up targets.
+- `shape` uses a direction-shaped output: current read, decision state, options, provisional recommendation, what would change the recommendation.
+- `review` uses a verdict-shaped output: review question, evidence checked, verdict, gaps, readiness, recommended action.
+
+Use `Scope Interpretation` when the requested task and user wording are in a gray area:
+
+```text
+Scope Interpretation:
+- Requested Task: <task named or implied by user>
+- Output Shape Used: <meaning|evidence|direction|verdict|plan|persist|sync|build>
+- Effective Scope: <what this task can answer now>
+- Out-of-Shape Material: <what belongs to another task, or none>
+- Recommended Next Task: <task or none>
+```
+
+For example, `review this system has X` can use review's verdict shape with a bounded evidence check. `review how X is implemented` should use an evidence-shaped response or recommend `explore` unless the user asks for a verdict. `explore whether this plan is reasonable` should output evidence and candidate review targets, not a verdict.
 
 Adjacent allowance reduces task-switching friction; it does not replace the specialized task. If the adjacent work becomes the primary deliverable, route to the specialized task.
 
@@ -141,9 +161,9 @@ When no task fits exactly, use nearest-fit fallback:
 
 - Choose the task whose `Core Responsibility` matches the primary user intent.
 - Default gray-area discussion to `shape` only when the primary intent is concept direction or next-step framing.
-- Output `Boundary Fit: fallback_fit`, the `Adjacent Allowance Used`, and `Recommended Next Task`.
+- Output `Scope Interpretation`, the `Adjacent Allowance Used`, and `Recommended Next Task`.
 - Perform only the selected task's core responsibility plus allowed adjacent output.
-- Never cross `Forbidden Authority`.
+- Never cross `Hard Authority Boundaries`.
 
 `composite` is a normal routing outcome, not a failure. Composite requests should return segmented prompts with stop points. Do not silently execute later write, sync, build, or external-agent segments.
 
@@ -196,7 +216,7 @@ Use these decision states across shape and plan:
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is thinking material for the user, not final authorization.
 
 - `clarify` may provide a lightweight next-task hint.
-- `explore` may provide `Candidate Interpretations`, `Likely Entry Points`, `Borrowable Ideas`, and recommended next task.
+- `explore` may provide `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
@@ -242,6 +262,7 @@ For repository conflicts:
 
 - Discovery question: conflict = reliability risk. Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
 - Judgment question: conflict = possible source-of-truth issue. Use `review --lens consistency` when the user asks what is correct, acceptable, ready, or worth changing.
+- `explore` can say "no evidence found for X"; `review` decides whether that means the system lacks X, whether it matters, and what should change.
 - Do not infer repo ownership. Use the user's question type to choose `explore` vs `review`.
 
 For stable documents:
@@ -395,12 +416,12 @@ Before acting, classify whether the request fits the selected task:
 - `fits_with_preflight`: the task can handle it after a read-only preflight.
 - `fallback_fit`: no task fits exactly, but the selected task can handle the primary user intent with only allowed adjacent output.
 - `composite`: multiple tasks are needed.
-- `wrong_task`: another task is the proper entrypoint.
+- `wrong_task`: another task is the proper entrypoint and the selected task cannot produce a useful in-shape answer.
 - `missing_prerequisite`: required target, explicit plan, source of truth, or project docs safety is missing.
 
 Composite requests should return segmented prompts with stop points. Do not silently switch tasks or automatically run later write/implementation segments.
 
-Boundary classes are handled explicitly: `fits` performs the selected task, `fits_with_preflight` runs only the allowed read-only preflight before continuing or routing, `fallback_fit` performs only the selected task's core responsibility plus allowed adjacent output, `composite` returns segmented prompts, and `wrong_task` / `missing_prerequisite` stop with a recommended path.
+Boundary classes are handled explicitly: `fits` performs the selected task, `fits_with_preflight` runs only the allowed read-only preflight before continuing or routing, `fallback_fit` performs only the selected task's output shape plus allowed adjacent output, `composite` returns segmented prompts, and `wrong_task` / `missing_prerequisite` stop with a recommended path. Prefer `fallback_fit` with `Scope Interpretation` over `wrong_task` when the selected task can still provide a useful in-shape response.
 
 ## Persist-Centered Session Writes
 
@@ -453,10 +474,10 @@ Implicit preflight is a same-response, read-only check that can run automaticall
 With shape-first routing:
 
 - `shape` preflight is triage plus evidence check: decide whether to shape now, recommend `explore -> shape`, or route to `review`.
-- `explore` preflight is source/scope/evidence-type check only.
+- `explore` preflight is source/scope/evidence-type/probe-safety check only.
 - `review` preflight is target/question/evidence-readiness check only.
 
-Implicit preflight must not load templates, write files, run implementation, run tests, perform sync, apply unselected lenses, or do a full repository scan. In `Mode: persist` and `Mode: execute`, do not run implicit preflight; validate prerequisites and block when they are missing. `build` execution plan validation is required in `Mode: execute`, but it is not implicit preflight.
+Implicit preflight must not load templates, write files, run implementation, run build verification, perform sync, apply unselected lenses, or do a full repository scan. `explore` may run non-mutating probes only after the explore boundary is clear and only to establish evidence. In `Mode: persist` and `Mode: execute`, do not run implicit preflight; validate prerequisites and block when they are missing. `build` execution plan validation is required in `Mode: execute`, but it is not implicit preflight.
 
 ## Embedded Critique Check
 
@@ -555,7 +576,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Stage requirements or background: `clarify -> persist -> .session/inbox/**`.
 - Long or reusable external goal: `persist external-goal brief -> shape -> persist shape`.
 - Conversational goal: `shape -> persist shape`.
-- Explore code or reference material: `explore -> persist -> .session/inbox/**` or `.session/threads/{thread}/option_*.md`.
+- Explore code or reference material: `explore Evidence Mapping/Probe -> persist -> .session/inbox/**` or `.session/threads/{thread}/option_*.md`.
 - Summarize a file, folder, thread, discussion, docs, or reference: `distill -> optional persist Artifact=distillation`.
 - Disposable exploration note: `persist -> notes/{topic}.md` only with explicit target.
 - Shape a direction: `shape -> persist -> .session/threads/{thread}/shape_*.md`.

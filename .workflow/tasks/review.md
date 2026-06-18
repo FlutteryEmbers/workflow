@@ -57,9 +57,24 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 - `Core Responsibility`: provide a verdict on a target, claim, plan, diff, source-of-truth question, readiness state, or alignment question.
 - `Adjacent Allowance`: include minimal revision sketch, repair direction, blocking/non-blocking gaps, suggested critique, and recommended next action when they make the verdict actionable.
-- `Forbidden Authority`: do not create a full replacement design, produce an implementation plan, perform evidence-only discovery as the main work, stable-sync documents, write files, execute, or implement.
+- `Hard Authority Boundaries`: no durable writes, no stable sync, no implementation or write-path execution, no full replacement design, and no implementation plan.
 
-Adjacent allowance must remain verdict-owned. If the user needs a full redesign, sequencing, or implementation, route to `shape`, `plan`, or `build`/external-agent as the next task.
+Review output must remain verdict-shaped. It may perform a bounded evidence check over named or directly relevant sources to support the verdict, but it does not output a full discovery inventory.
+
+## Output Shape
+
+`Output Shape: Review Verdict`
+
+Review output is shaped around judgment:
+
+- `Review Question`
+- `Evidence Checked`
+- `Review Type`
+- `Review Verdict`
+- `Blocking Gaps`
+- `Non-blocking Gaps`
+- `Recommended Action`
+- `Recommended Next Task`
 
 ## Expected Output
 
@@ -70,17 +85,16 @@ Adjacent allowance must remain verdict-owned. If the user needs a full redesign,
 
 ## Task Boundary Check
 
-Before reviewing, classify the request:
+Before reviewing, classify the request. Prefer an in-shape verdict response over `wrong_task` when the user-selected task can still judge a bounded claim.
 
 - `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, readiness, acceptability, consistency, safety, or reasonableness.
 - `fits`: user asks to identify missing capabilities, gaps, drift from expected behavior, or whether a system satisfies a target baseline.
 - `fits_with_preflight`: review verdict depends on code, docs, diff, session evidence, or external plan context. In `Mode: discuss`, run conditional implicit preflight first.
+- `fallback_fit`: user asks for broad implementation discovery, but review can answer a bounded claim or verdict over named sources.
 - `composite`: user asks to review and persist; review first, then route to `persist`.
-- `wrong_task`: user asks to create a new direction without evaluation; recommend `shape`.
-- `wrong_task`: user asks to implement steps from a chosen direction; recommend `plan`, or `build` only when an explicit executable plan already exists.
-- `wrong_task`: user asks to update project docs, code-adjacent README, or session archive summary; recommend `sync`.
+- `wrong_task`: user asks for writing, stable sync, implementation, or full implementation discovery that cannot be answered as a bounded verdict.
 
-Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become a second full review before the review, must not load templates, and must not write files.
+Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become open-ended discovery, must not load templates, and must not write files.
 
 If evidence is insufficient for a verdict or gap analysis, output `Review Verdict: needs more evidence`, name the missing evidence or missing baseline, and recommend `explore` or `shape` instead of inventing readiness or blocking conclusions.
 

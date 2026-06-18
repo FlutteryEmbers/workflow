@@ -43,16 +43,19 @@ Request: ${input:request:describe the work}
 - Start with `User Intent` unless the request is trivial; this must describe what the user wants, not the technical diagnosis.
 - Run a lightweight Task Boundary Check before acting.
 - Classify boundary as `fits`, `fits_with_preflight`, `fallback_fit`, `composite`, `wrong_task`, or `missing_prerequisite` when the request is not straightforward.
+- User-selected task is respected; authority is not expanded.
 - If no task fits exactly, choose the nearest task by primary user intent. Default gray-area discussion to `shape` only for concept direction, option framing, or next-step selection.
-- For `fallback_fit`, output `Boundary Mismatch`, `Allowed Scope`, `Adjacent Allowance Used`, and `Recommended Next Task`; do not cross the selected task's forbidden authority.
+- For `fallback_fit`, output `Scope Interpretation`, `Adjacent Allowance Used`, and `Recommended Next Task`; do not cross the selected task's hard authority boundaries.
+- Prefer `fits -> fits_with_preflight -> fallback_fit -> composite -> wrong_task`; use `wrong_task` only when the selected task cannot provide a useful in-shape response.
 - If composite, output segmented prompts with stop points instead of forcing the request into one task.
 - When unsure, start with `shape`.
 - Meaning, explanation, restatement, difference, assumption, hidden scope, or prior AI answer unpacking requests go to `clarify`.
 - Summary, folder summary, source distillation, and archive-summary draft requests go to `distill`.
 - Ambiguous what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests default to `shape`.
-- Evidence-only requests go to `explore`; verdict-only requests go to `review`.
+- Evidence-only requests, discovery inventory, source-backed fact checks, and non-mutating probes go to `explore`; verdict, source-of-truth, missing-capability, and baseline-satisfaction requests go to `review`.
+- Each task should answer using its own `Output Shape`: clarify=meaning, explore=evidence, shape=direction, review=verdict, plan=plan.
 - Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. `distill` is a task, not a lens. Do not use any lens as a skip mechanism.
-- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Minimal Revision Sketch`, `Repair Direction`, `Plan Readiness`, `Plan Blockers`, `Review Focus`, and `What Would Change My Mind` as thinking material.
+- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Evidence Probes`, `Missing Evidence`, `Follow-up Targets`, `Minimal Revision Sketch`, `Repair Direction`, `Plan Readiness`, `Plan Blockers`, `Review Focus`, and `What Would Change My Mind` as thinking material.
 - Discussion adjacency is allowed; authority is not. Adjacent output may recommend the next task, but write, sync, execute, implementation, source-of-truth, and build authority still require the proper `Mode`, `Task`, target rules, prerequisites, and explicit executable plan.
 - For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision State`.
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
@@ -60,6 +63,7 @@ Request: ${input:request:describe the work}
 - Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning output. This is plan self-assessment, not a review verdict. `execution-candidate` is the terminal complete state for plan: plan-complete enough for review, build executability check, or external-agent handoff.
 - `plan compact` must summarize the chosen direction first, then give a compact impact surface, plan sketch, conditional plan blockers, and conditional review focus. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. `Output: full` is a minimal handoff packet for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
 - `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, and gap analysis. Review owns verdict and blocking risk, but does not redefine plan completion. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
+- `explore` can say "evidence found" or "no evidence found"; `review` decides what that evidence means against a baseline. `explore` may run non-mutating probes only to establish evidence and must report `Probe`, `Command or Method`, `Observed Result`, `Reliability`, and `Side Effect Check`.
 - Review plans under `verdict-review` when the question is about plan quality, executability, readiness, fit, or risk. When a plan asks review to diagnose a system problem, use `verdict-review` or `gap-analysis` based on the question.
 - For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block an `execution-candidate` plan for optional improvement only.
 - Read-only preflight is allowed only in `Mode: discuss`; do not load templates, write files, run implementation, or apply unselected deep lenses during preflight.
@@ -188,8 +192,12 @@ Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prere
 
 ```text
 Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-Boundary Mismatch: <none or why no task fits exactly>
-Allowed Scope: <core responsibility plus any allowed adjacent output>
+Scope Interpretation:
+- Requested Task: <task named or implied by user>
+- Output Shape Used: <meaning|evidence|direction|verdict|plan|persist|sync|build>
+- Effective Scope: <what this task can answer now>
+- Out-of-Shape Material: <what belongs to another task, or none>
+- Recommended Next Task: <task or none>
 Reason: <one sentence>
 Recommended Path: <task -> task>
 Next Prompt: <copyable prompt>

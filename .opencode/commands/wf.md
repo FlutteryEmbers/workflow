@@ -15,7 +15,8 @@ Rules:
 - Do not apply lenses; route may recommend lenses for the next task only.
 - Do not use any lens as a skip mechanism.
 - Recommend the smallest useful workflow path.
-- If no task fits exactly, use nearest-fit fallback by primary user intent and output `Boundary Mismatch` plus `Allowed Scope`.
+- User-selected task is respected; authority is not expanded.
+- If no task fits exactly, use nearest-fit fallback by primary user intent and output `Scope Interpretation`.
 - Use `.workflow/tasks/route.md` as the task contract if needed.
 
 Request:
@@ -24,8 +25,7 @@ $ARGUMENTS
 Return:
 - Interpreted goal
 - Boundary, when useful
-- Boundary Mismatch, when using fallback_fit
-- Allowed Scope, when using fallback_fit
+- Scope Interpretation, when using fallback_fit
 - Recommended path
 - Lens recommendation, or `none`
 - Context to add next

@@ -40,7 +40,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 
 - `Core Responsibility`: classify intent and recommend the smallest useful task path, write path, lenses, context, and next prompt.
 - `Adjacent Allowance`: include boundary mismatch, allowed scope, segmented prompts, stop points, and lens suggestions when they help the user choose the next task.
-- `Forbidden Authority`: do not perform the routed task, apply lenses, run evidence preflight, write files, sync stable documents, execute, implement, or grant permissions to later segments.
+- `Hard Authority Boundaries`: do not perform the routed task, apply lenses, run evidence preflight, write files, sync stable documents, execute, implement, or grant permissions to later segments.
 
 Adjacent allowance must stay routing-owned. If the user needs actual analysis, verdict, planning, persistence, sync, or implementation, route to that task and stop.
 
@@ -54,7 +54,7 @@ Adjacent allowance must stay routing-owned. If the user needs actual analysis, v
 
 `route` handles both active guidance and correction routing.
 
-- Use `Boundary Assessment` when the user has selected a task but the request appears composite, wrong-task, or missing prerequisites.
+- Use `Scope Interpretation` when the user has selected a task but the request partially fits another output shape.
 - Output `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 - Do not silently switch tasks or execute later segments.
 - No implicit preflight runs in `route`. Do not scan evidence; only recommend which later task should run implicit preflight.
@@ -65,25 +65,30 @@ Boundary classes:
 - `fits_with_preflight`: the selected task can handle it after read-only preflight in `Mode: discuss`.
 - `fallback_fit`: no task fits exactly, but the selected task can handle the primary user intent with only allowed adjacent output.
 - `composite`: multiple tasks are needed.
-- `wrong_task`: another task is the proper entrypoint.
+- `wrong_task`: another task is the proper entrypoint and the selected task cannot provide a useful in-shape response.
 - `missing_prerequisite`: target, explicit plan, source of truth, or Project Docs Rules safety is missing.
 
 ## Routing Model
 
 Recommend the smallest path:
 
-- When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
-- If no task fits exactly, choose the nearest task by primary user intent. Default gray-area discussion to `shape` only when the primary intent is concept direction, option framing, or next-step selection.
-- Nearest-fit fallback must output `Boundary Mismatch` and `Allowed Scope`; it may perform only the chosen task's core responsibility plus allowed adjacent output.
+- When unsure, start with `shape`. Use `clarify` for semantic unpacking, `explore` for evidence acquisition and non-mutating probes, `distill` for user-directed summaries, and `review` for verdict or gap-analysis.
+- User-selected task is respected; authority is not expanded. If no task fits exactly, choose the nearest task by primary user intent and output `Scope Interpretation`.
+- Prefer `fits -> fits_with_preflight -> fallback_fit -> composite -> wrong_task`. Use `wrong_task` only when the selected task cannot provide a useful in-shape response.
+- Nearest-fit fallback must output `Scope Interpretation`; it may perform only the chosen task's output shape plus allowed adjacent output.
 - Ambiguous what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests default to `shape`.
 - "I do not know how to proceed" goes to `shape`.
 - "Roughly compress the current discussion, then give direction" goes to `shape` if the compression is lightweight and current-context only; use `distill -> shape` if a specified source summary matters.
 - "Look at the risks, then give direction" goes to `shape` if this is a risk sketch; use `review` if the user needs a formal verdict, readiness judgment, or source-of-truth decision.
 - "Give me rough steps" goes to `shape` if this means a conceptual planning sketch; use `plan` if sequencing, executable handoff, target files, or verification steps are needed.
-- Evidence-only requests such as reading code, finding entrypoints, checking docs, understanding behavior, or studying references go to `explore`.
-- Existence and discovery questions such as "does this repo have X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
+- Meaning questions such as "what does this term/rule/sentence mean" go to `clarify`.
+- Evidence-only requests such as reading code, finding entrypoints, checking docs, understanding behavior, studying references, or running a non-mutating probe go to `explore`.
+- Existence and discovery questions such as "does this repo have evidence for X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
+- "review this system has X" can use `review` as a claim verdict with bounded evidence check.
+- "review how X is implemented" should use an evidence-shaped response or recommend `explore` unless the user asks for a verdict.
+- "explore whether this plan is reasonable" should use `explore` evidence shape plus `Candidate Review Targets`, not a verdict.
 - Summary and distillation requests such as "summarize this folder", "distill this thread", "extract structure", or "make an archive summary draft" go to `distill`.
-- Gap and missing-capability requests such as "what is missing", "where are the gaps", "does this satisfy the goal", "audit feature gaps", or "audit workflow support" go to `review` with `Review Type: gap-analysis`; if evidence is insufficient, route `explore -> review`.
+- Gap and missing-capability requests such as "what is missing", "where are the gaps", "does this satisfy the goal", "audit feature gaps", or "audit workflow support" go to `review` with `Review Type: gap-analysis`; if evidence is insufficient, route `explore -> review`. "No evidence found for X" is explore; "X is a gap that matters" is review.
 - Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
 - Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
 - Default careful session flow: `external or conversational goal -> shape -> plan -> optional review -> build/external-agent -> recommended review -> sync`.
@@ -120,7 +125,7 @@ Recommend the smallest path:
 - Suggest `test` for verification planning.
 - Suggest `debug` for defects or uncertain runtime behavior.
 - Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across explicit session sources, project docs, code, tests, code-adjacent README files, workflow artifacts, prompts, templates, or archive summaries.
-- Do not suggest `consistency` for discovery questions like whether a capability exists, where it is implemented, or how reliable the evidence is.
+- Do not suggest `consistency` for discovery questions like whether evidence for a capability exists, where it is implemented, or how reliable the evidence is.
 - Suggest `language` for terminology or output language.
 - Recommend `distill` as a task when the user wants a summary, folder summary, source distillation, or archive-summary draft.
 - Use `Output: normal|full` or persist `Depth: detailed` when a compact decision or plan needs examples, pseudocode, or split parts; do not suggest a separate expand lens.
@@ -132,8 +137,12 @@ For normal requests, keep the route compact:
 ```text
 Interpreted goal: <one sentence>
 Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite, when useful>
-Boundary Mismatch: <none or why no task fits exactly, when fallback_fit>
-Allowed Scope: <core responsibility plus any allowed adjacent output, when fallback_fit>
+Scope Interpretation:
+- Requested Task: <task named or implied by user>
+- Output Shape Used: <meaning|evidence|direction|verdict|plan|persist|sync|build>
+- Effective Scope: <what this task can answer now>
+- Out-of-Shape Material: <what belongs to another task, or none>
+- Recommended Next Task: <task or none>
 Recommended path: <task -> task>
 Lens: <none or explicit lenses>
 Next prompt: <copyable prompt>
@@ -144,8 +153,12 @@ Use the full format only for `Output: full`, composite routing, wrong-task corre
 ```text
 Interpreted goal: <one sentence>
 Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-Boundary Mismatch: <none or why no task fits exactly>
-Allowed Scope: <core responsibility plus any allowed adjacent output>
+Scope Interpretation:
+- Requested Task: <task named or implied by user>
+- Output Shape Used: <meaning|evidence|direction|verdict|plan|persist|sync|build>
+- Effective Scope: <what this task can answer now>
+- Out-of-Shape Material: <what belongs to another task, or none>
+- Recommended Next Task: <task or none>
 Recommended path: <task -> task>
 Mode: <discuss|persist|execute>
 Write Path: <workflow-managed|external-agent>

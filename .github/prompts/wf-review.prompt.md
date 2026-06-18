@@ -17,6 +17,9 @@ Rules:
 - Do not load templates.
 - Load selected lenses only when explicitly named.
 - Use `.workflow/tasks/review.md` as the task contract.
+- Output Shape: Review Verdict.
+- Use verdict-shaped fields: review question, evidence checked, review type, verdict, gaps, readiness, recommended action.
+- User-selected review is respected when a bounded claim can be judged; authority is not expanded.
 - Use `Review Type: verdict-review | gap-analysis | diff-review`.
 - Use `gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
 - Review plans under `verdict-review` when the question is about plan quality, executability, readiness, fit, or risk.
