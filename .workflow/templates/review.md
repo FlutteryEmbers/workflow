@@ -22,7 +22,7 @@
 
 ## Review Type
 
-{{verdict-review | gap-analysis | plan-audit | diff-review}}
+{{verdict-review | gap-analysis | diff-review}}
 
 ## Review Question
 
@@ -69,16 +69,25 @@
 
 {{ready | needs changes | needs more evidence | blocked | docs blocked}}
 
+## Plan Verdict Rules
+
+{{only when Review Target is a plan}}
+
+- Ready Meaning: `Review Verdict: ready` means no blocking gaps for the intended next use.
+- Plan Complete Input: `Plan Readiness: execution-candidate` is plan-complete input; review may still return ready.
+- Optional Improvements: {{non-blocking sequencing, polish, or risk-reduction suggestions; none if not relevant}}
+- Blocking Standard: {{target/scope, verification, source-of-truth, compatibility/constraint, safety, docs projection, or executability blocker}}
+
 ## Readiness
 
-- Review Type: {{verdict-review | gap-analysis | plan-audit | diff-review}}
+- Review Type: {{verdict-review | gap-analysis | diff-review}}
 - Confidence: {{high | medium | low}}
 - Readiness: {{0-10}}
 - Blocking Gaps: {{must-fix before next write or implementation}}
 - Non-blocking Gaps: {{can track without blocking}}
 - Recommended Action: {{none | persist | sync project-docs | sync session-archive | shape | plan | build | external-agent}}
 - Can Promote Source: {{yes/no}}
-- Can Execute Plan: {{yes/no}}
+- Can Execute Plan: {{yes | no | not-applicable; only meaningful when Review Target is a plan}}
 
 ## Findings
 
@@ -100,16 +109,6 @@ Severity rules:
 - `medium`: does not block immediately but creates material rework, ambiguity, drift, user friction, or maintenance risk.
 - `low`: clarity, polish, convenience, or non-blocking completeness issue.
 
-## Plan Audit
-
-{{required for Review Type: plan-audit; optional otherwise}}
-
-| Question | Severity | Blocks | Evidence | Impact | Why It Matters | Answer Needed | Recommended Next Task |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| {{user-answerable missing input question}} | {{high | medium | low}} | {{build | external-agent | sync | source-of-truth decision | plan persistence | none}} | {{where the plan is missing, weak, or contradictory}} | {{what could go wrong or what cannot proceed}} | {{why the user should answer before proceeding}} | {{decision, fact, boundary, evidence, or source needed; not a proposed design}} | {{shape | explore | plan | review | build | external-agent | sync | persist | none}} |
-
-`Answer Needed` describes missing input only. It must not propose a design, choose a direction, sequence implementation, or rewrite the plan.
-
 ## What Is Still Reasonable
 
 - {{part of the target that can remain unchanged}}
@@ -120,7 +119,7 @@ Severity rules:
 
 ## Open Questions
 
-- {{ordinary review uncertainty; do not use this for plan-audit formal blocking questions}}
+- {{ordinary review uncertainty}}
 
 ## Failure Or Risk Path
 

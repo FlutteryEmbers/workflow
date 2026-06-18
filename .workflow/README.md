@@ -163,11 +163,12 @@ Every plan output uses:
 
 - `Plan Readiness: incomplete | reviewable | execution-candidate`
 - `Readiness Rationale`
-- `Known Gaps`
-- `Review Focus`
+- `Plan Blockers` when readiness is `incomplete`
+- `Review Focus` when readiness is `reviewable | execution-candidate`
+- optional `Diagnostic Review Request`
 - `Review Recommended: no | yes | strongly`
 
-`Plan Readiness` is self-assessment, not a gate verdict. `Known Gaps` are plan-owned gaps, not formal blockers. `Review Focus` tells `review` what to inspect. `Review Recommended` communicates risk posture; it is not a build blocker by itself. When review is invoked, `Blocking Gaps`, severity, and build/sync readiness verdicts belong to `review`.
+`Plan Readiness` is self-assessment, not a gate verdict. `execution-candidate` is the terminal complete state for plan: the plan is plan-complete enough to be used as review input, build executability-check input, or external-agent handoff. `Plan Blockers` are plan-owned blockers without severity and appear only when the plan is incomplete. `Review Focus` tells `review` what to inspect only after the plan is reviewable or an execution candidate. `Diagnostic Review Request` asks review to diagnose a system or protocol question through `verdict-review` or `gap-analysis`. `Review Recommended` communicates risk posture; it is not a build blocker by itself. When review is invoked, review owns verdict and blocking risk, but does not redefine plan completion.
 
 ## Impact Surface
 
@@ -182,7 +183,7 @@ Impact Surface:
 - User Confirmation Needed Before: none | plan | review | build
 ```
 
-Use `Plan Readiness: execution-candidate` only when the plan is explicit enough to be reviewed as possible build or external-agent input. Use `reviewable` for large, staged, or high-risk plans. Use `incomplete` when direction, evidence, target, compatibility, source of truth, or verification is missing.
+Use `Plan Readiness: execution-candidate` only when the plan is explicit enough to be reviewed as possible build or external-agent input. It is plan-complete, not a review verdict or execution authorization. Use `reviewable` for large, staged, or high-risk plans that are coherent enough for review but not yet execution input. Use `incomplete` when direction, evidence, target, compatibility, source of truth, or verification is missing.
 
 Use these decision states across shape and plan:
 
@@ -199,9 +200,8 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is think
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may provide `Plan Readiness`, `Known Gaps`, `Review Focus`, and readiness rationale.
+- `plan` may provide `Plan Readiness`, `Plan Blockers`, `Review Focus`, `Diagnostic Review Request`, and readiness rationale.
 - `review` may provide `Gap Analysis` with `Severity: high | medium | low`, `Blocking Gaps`, and `Non-blocking Gaps`.
-- `review plan-audit` may provide `Blocking Questions` with severity, blocks, evidence, impact, why it matters, `Answer Needed`, and recommended next task.
 - Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 
 These freedoms do not loosen write or execution boundaries. `persist`, `sync`, and `build` keep their existing target and prerequisite rules.
@@ -306,7 +306,7 @@ Selectable lenses by task:
 - `Task: persist` in `Mode: persist`: writes active session artifacts to `.session/inbox/**` or `.session/threads/**`.
 - `Task: sync` in `Mode: persist`: writes stable documents only: allowed project docs targets, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - `Mode: execute`: uses `Task: build` with an explicit executable plan.
-- External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan audit before implementation and diff review afterward as recommended risk controls.
+- External-agent path: native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents, with plan review before implementation and diff review afterward as recommended risk controls.
 
 `Mode: execute` is workflow-managed execution only.
 
@@ -320,9 +320,16 @@ Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning
 
 - `incomplete`: key direction, evidence, target, compatibility, source-of-truth, or verification inputs are missing.
 - `reviewable`: coherent enough for review, but not self-claimed as execution candidate.
-- `execution-candidate`: explicit enough to be reviewed as possible build or external-agent input.
+- `execution-candidate`: terminal complete state for plan; explicit enough to be reviewed as possible build or external-agent input.
 
-`Plan Readiness` is not a build verdict. When invoked, `review` decides `Review Verdict`, `Blocking Questions`, `Blocking Gaps`, severity, and recommended next task. Missing review is not by itself a `build` blocker.
+`Plan Readiness` is not a build verdict. `Plan Blockers` belong to incomplete plans and have no severity. When invoked, `review` decides `Review Verdict`, `Blocking Gaps`, severity, and recommended next task; review does not redefine plan completion. Missing review is not by itself a `build` blocker.
+
+Closed loop paths:
+
+- `plan incomplete -> shape/explore/user-answer/plan`
+- `plan reviewable -> review or persist`
+- `plan execution-candidate -> optional review or build with explicit invocation`
+- `plan execution-candidate + Review Verdict: ready -> build/external-agent`
 
 ## Conversation-to-Artifact Output Flow
 
@@ -367,8 +374,9 @@ Shape Summary
 Impact Surface
 Plan
 Plan Readiness
-Known Gaps
+Plan Blockers
 Review Focus
+Diagnostic Review Request
 Review Recommended
 Next
 ```
@@ -377,7 +385,7 @@ Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Comp
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Do not add a detailed chat output mode; use `Output: full` for detailed artifacts and handoffs.
 
-Plans should not use generic open-question sections. Use `Known Gaps` for plan-owned missing inputs or weak spots, `Review Focus` for what review should inspect, and `Follow-up Questions` only for non-blocking future considerations. Formal `Blocking Questions`, `Blocking Gaps`, and severity belong to `review`.
+Plans should not use generic open-question sections. Use `Plan Blockers` for plan-owned missing inputs or weak spots only when readiness is `incomplete`; use `Review Focus` only when readiness is `reviewable | execution-candidate`; use `Follow-up Questions` only for non-blocking future considerations. Formal `Blocking Gaps` and severity belong to `review`.
 
 ## Task Boundary Router
 

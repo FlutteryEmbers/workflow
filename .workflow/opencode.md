@@ -27,9 +27,9 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, OpenCode may provi
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may output `Plan Readiness`, `Known Gaps`, `Review Focus`, `Review Recommended`, and recommended next task.
+- `plan` may output `Plan Readiness`, conditional `Plan Blockers`, conditional `Review Focus`, optional `Diagnostic Review Request`, `Review Recommended`, and recommended next task.
 - `review` may output `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
-- `review plan-audit` may output `Blocking Questions` with severity, blocks, evidence, impact, why it matters, `Answer Needed`, and recommended next task.
+- Review plans under `verdict-review`; use `gap-analysis` when the plan asks review to diagnose a system or protocol gap against a baseline.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` for uncertain or consequential output.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -73,8 +73,10 @@ Planning readiness rule:
 
 - `shape` stays at concept level and may recommend `plan` or `review`.
 - `plan` outputs `Plan Readiness: incomplete | reviewable | execution-candidate`.
-- `plan` uses `Known Gaps` for plan-owned missing inputs, `Review Focus` for what review should inspect, and `Review Recommended` for risk posture.
-- `review` owns formal `Blocking Questions`, `Blocking Gaps`, severity, and readiness verdicts.
+- `plan` uses `Plan Blockers` for incomplete plans, `Review Focus` for reviewable or execution-candidate plans, optional `Diagnostic Review Request` for system diagnosis, and `Review Recommended` for risk posture.
+- `execution-candidate` is the terminal complete state for plan: plan-complete enough for review, build executability check, or external-agent handoff.
+- `review` owns formal `Blocking Gaps`, severity, and verdicts. Review owns verdict and blocking risk, but does not redefine plan completion.
+- For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block an `execution-candidate` plan for optional improvement only.
 - `/wf-build` requires explicit user invocation and an explicit executable plan; review is recommended for material risk, but missing review is not by itself a build blocker.
 
 Exploration notes:
@@ -189,7 +191,7 @@ Use only the files needed for the current step.
 - `.workflow/tasks/explore.md` for read-only evidence extraction.
 - `.workflow/tasks/distill.md` for user-directed summaries and distillation.
 - `.workflow/tasks/shape.md` for ambiguous, what-if, option-comparison, concept-level, or direction-setting work.
-- `.workflow/tasks/review.md` for plan audit or diff review.
+- `.workflow/tasks/review.md` for plan review or diff review.
 - `.workflow/tasks/plan.md` for a repo-aware handoff.
 - `.workflow/tasks/persist.md` for session artifact persistence.
 - `.workflow/tasks/build.md` for explicit-plan execution rules.
@@ -287,18 +289,17 @@ Request:
 Persist this as a disposable exploration note. Do not treat it as project docs or an execution source.
 ```
 
-### Plan Audit
+### Plan Review
 
 ```text
 Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this OpenCode plan draft before implementation with explicit critique posture.
+Review this OpenCode plan draft before implementation with explicit critique posture.
 
 Return:
 Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
-Blocking Questions: include severity, blocks, evidence, impact, why it matters, Answer Needed, and recommended next task when Review Type is plan-audit
 
 Check:
 - Scope and target files

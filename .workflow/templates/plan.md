@@ -26,7 +26,8 @@
 - Recommended Path: {{short sequence, staged path, or work package summary}}
 - Plan Readiness: {{incomplete | reviewable | execution-candidate}}
 - Readiness Rationale: {{why this readiness applies}}
-- Next Action: {{shape | explore | review | plan | build | external-agent | sync | persist | none}}
+- Completion Meaning: {{for execution-candidate: terminal complete state for plan; plan-complete enough for review, build executability check, or external-agent handoff}}
+- Next Action: {{shape | explore | user-answer | review | plan | build | external-agent | sync | persist | none}}
 - Review Recommended: {{no | yes | strongly}}
 - Main Risk: {{main risk or none}}
 - Source Basis: {{chat | shape artifact | inbox brief | decision | project docs}}
@@ -52,15 +53,23 @@
 - Locked Decisions: {{confirmed decisions and sources}}
 - Assumed Decisions: {{recommended defaults and risk if wrong}}
 - Rejected Options: {{options rejected because they affect sequence, scope, or constraints; none if not relevant}}
-- Known Gaps: {{none | missing or weak planning input}}
+- Plan Blockers: {{only for Plan Readiness: incomplete; none | missing or weak planning input}}
 
-## Known Gaps
+## Plan Blockers
 
-- {{none | missing direction, evidence, target, verification, source-of-truth, compatibility, or scope input}}
+- {{only for Plan Readiness: incomplete; none | missing direction, evidence, target, verification, source-of-truth, compatibility, or scope input}}
 
 ## Review Focus
 
-- {{what review should inspect before build, sync, or handoff}}
+- {{only for Plan Readiness: reviewable | execution-candidate; what review should inspect before build, sync, or handoff}}
+
+## Diagnostic Review Request
+
+{{optional; only when review should diagnose whether a system, protocol, docs, or code problem exists}}
+
+- Question: {{what review should determine}}
+- Target: {{system, protocol, docs, code, artifact, or scenario to inspect}}
+- Intended Use For Answer: {{how the answer will change the plan}}
 
 ## Discussion Notes To Preserve
 

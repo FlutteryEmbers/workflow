@@ -52,7 +52,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Boundary Layers
 
 - `Core Responsibility`: organize a chosen direction into a coherent plan or explicit executable plan candidate without performing the work.
-- `Adjacent Allowance`: include self-assessed plan readiness, known gaps, review focus, follow-up questions, critique/review recommendation, and recommended next task.
+- `Adjacent Allowance`: include self-assessed plan readiness, plan blockers when incomplete, review focus when reviewable, follow-up questions, critique/review recommendation, and recommended next task.
 - `Forbidden Authority`: do not choose the core direction, issue a review verdict, label formal blocking gaps, write files, stable-sync documents, execute, implement, or imply execution authorization.
 
 Adjacent allowance must stay planning-owned. If the primary need is direction choice, formal gap severity, verdict, stable projection, or implementation, route to `shape`, `review`, `sync`, or `build`/external-agent.
@@ -61,10 +61,10 @@ Adjacent allowance must stay planning-owned. If the primary need is direction ch
 
 - A coherent plan appropriate to the user's requested scope and current evidence.
 - `Plan Readiness`: `incomplete | reviewable | execution-candidate`.
-- `Known Gaps`: plan-owned missing inputs or weak spots; these are not formal blocking gaps.
-- `Review Focus`: what review should inspect before build, sync, or handoff.
+- `Plan Blockers`: plan-owned missing inputs or weak spots; these appear only when `Plan Readiness: incomplete` and are not formal review gaps.
+- `Review Focus`: what review should inspect before build, sync, or handoff; appears only when readiness is `reviewable | execution-candidate`.
 - `Compatibility / Constraint Plan` when compatibility or constraint policy affects execution.
-- `Output: compact` default: shape summary, impact surface, plan, readiness, known gaps, review focus, next step, and optional `Persist Candidate`.
+- `Output: compact` default: shape summary, impact surface, plan, readiness, conditional plan blockers, conditional review focus, next step, and optional `Persist Candidate`.
 - `Output: full` / `Full Persist Packet` only when the plan should be persisted now, used as a handoff, needs explicit executable detail, or `Output: full` is requested.
 
 ## Task Boundary Check
@@ -78,7 +78,7 @@ Before planning, classify the request:
 - `wrong_task`: user asks whether current implementation, target, or plan is reasonable; recommend `review`.
 - `composite`: user asks to implement from target docs and current code without a concrete executable plan; recommend `review -> plan -> optional review -> external-agent/build -> review`.
 
-Default implicit preflight runs only in `Mode: discuss` and checks target stability, repo fit, target areas, constraints, and verification readiness. Plan may name known gaps and conflicts, but must not invent a new target or issue a formal review verdict.
+Default implicit preflight runs only in `Mode: discuss` and checks target stability, repo fit, target areas, constraints, and verification readiness. Plan may name plan blockers and conflicts, but must not invent a new target or issue a formal review verdict.
 
 ## Copilot Add Context
 
@@ -98,31 +98,43 @@ Write the smallest useful plan for the user's current intent. Do not compare or 
 
 Use `Plan Readiness` as plan self-assessment:
 
-- `incomplete`: the plan is missing key direction, evidence, scope, target, compatibility, source-of-truth, or verification inputs. Recommend `shape`, `explore`, `review`, or another `plan` pass based on `Known Gaps`.
-- `reviewable`: the plan is coherent enough for review, but should not be treated as an execution candidate yet. Large staged plans, high-risk plans, and plans with material known gaps usually belong here.
-- `execution-candidate`: the plan is explicit enough to be reviewed as possible build/external-agent input. This is not a build verdict; review owns readiness and blocking.
+- `incomplete`: the plan is missing key direction, evidence, scope, target, compatibility, source-of-truth, or verification inputs. Output `Plan Blockers`, recommend `shape`, `explore`, `user-answer`, or another `plan` pass, and do not output `Review Focus`.
+- `reviewable`: the plan is coherent enough for review, but should not be treated as an execution candidate yet. Large staged plans, high-risk plans, and plans with material unresolved inputs usually belong here.
+- `execution-candidate`: the terminal complete state for plan. The plan is plan-complete enough to be used as build executability-check input, external-agent handoff, or review target. This is not a review verdict, build verdict, or execution authorization.
 
-Use `Known Gaps` for plan-owned gaps only. Do not output formal blocking fields or severity from plan. Formal blocking and severity belong to `review`.
+Use `Plan Blockers` for plan-owned gaps only when the plan is incomplete. Do not output formal blocking fields or severity from plan. Formal blocking, severity, and source-of-truth judgment belong to `review`.
 
-Use `Review Focus` to guide review. Examples: scope drift, verification adequacy, target boundaries, compatibility policy, source-of-truth risk, handoff clarity, and stop conditions.
+Use `Review Focus` only when `Plan Readiness` is `reviewable` or `execution-candidate`. Examples: scope drift, verification adequacy, target boundaries, compatibility policy, source-of-truth risk, handoff clarity, and stop conditions.
+
+Use `Diagnostic Review Request` only when the plan needs `review` to diagnose whether a system, protocol, docs, or code problem exists. Keep it lightweight:
+
+```text
+Diagnostic Review Request:
+- Question: <what review should determine>
+- Target: <system, protocol, docs, code, artifact, or scenario to inspect>
+- Intended Use For Answer: <how the answer will change the plan>
+```
+
+Route diagnostic review requests to `review` with `Review Type: verdict-review` or `gap-analysis` based on the question. Do not infer a separate plan-review type.
 
 Every plan, including compact chat output, must summarize the shaped or chosen direction before planning execution. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Do not force a shape artifact just to plan.
 
 Every plan, including compact chat output, must include a short `Impact Surface`. Compact impact surface is a planning reader aid, not a full audit; include only `Scope Size`, `Affected Surfaces`, `Risk`, and `Reversal Cost`.
 
-Build handoff wording must use `explicit executable plan candidate`, not plan kind labels. `build` requires explicit user invocation plus executable plan validation; review is recommended for material risk but is not a universal hard gate. `build` must not infer authorization from `Plan Readiness`.
+Build handoff wording must use `explicit executable plan candidate`, not plan kind labels. `build` requires explicit user invocation plus executable plan validation; review is recommended for material risk but is not a universal hard gate. `build` must not infer authorization from `Plan Readiness`, and review must not redefine plan completion.
 
-When recommending `build`, include `Review Recommended: yes | no | strongly`. Use `no` only for low-risk explicit plans. Use `yes` or `strongly` for medium/high risk, breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, multi-surface work, high reversal cost, or ambiguous verification. For unclear plans, recommend `plan` or `review`, not `build`.
+When recommending `build`, include `Review Recommended: yes | no | strongly`. Use `no` only for low-risk explicit plans. Use `yes` or `strongly` for medium/high risk, breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, multi-surface work, high reversal cost, or ambiguous verification. For unclear plans, recommend `plan` or `review`, not `build`. For `Plan Readiness: execution-candidate`, recommended next tasks may include `review`, `build with explicit invocation`, `external-agent`, or `persist`.
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Keep chat output modes to `compact`, `normal`, and `full`.
 
 ## Discussion Freedom
 
-In `Mode: discuss`, `plan` may output a plan that is not ready for execution.
+In `Mode: discuss`, `plan` may output incomplete, reviewable, or execution-candidate plans.
 
 - `Plan Readiness` is a self-assessment, not a gate verdict.
-- `Known Gaps` are plan-owned missing inputs or weak spots, not formal blockers.
-- `Review Focus` tells review what to inspect.
+- `execution-candidate` is plan-complete for intended execution input, subject to optional review and build executability validation.
+- `Plan Blockers` are plan-owned missing inputs or weak spots and appear only for `Plan Readiness: incomplete`.
+- `Review Focus` tells review what to inspect and appears only for `Plan Readiness: reviewable | execution-candidate`.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the plan depends on incomplete evidence or user-owned choices.
 - Do not let any plan imply execution authorization.
 - Use `Follow-up Questions` only in normal/full outputs for non-blocking future considerations.
@@ -140,7 +152,7 @@ Use `Compatibility: breaking` only when explicitly requested by the user or expl
 
 Use `Constraint Mode: propose_override` or `prototype_exception` only when explicitly requested by the user or explicit source. In that case, name the exception scope, reason, cleanup or review trigger, and whether it must stay out of long-term `docs/**` until confirmed.
 
-If preserving compatibility makes the plan materially more complex, output a known gap or tradeoff instead of switching policy automatically.
+If preserving compatibility makes the plan materially more complex, output a plan blocker or tradeoff instead of switching policy automatically.
 
 Include when relevant:
 
@@ -176,13 +188,15 @@ Plan:
 - <3-6 steps, phases, or work packages>
 Plan Readiness: <incomplete|reviewable|execution-candidate>
 Readiness Rationale: <why this readiness applies>
-Known Gaps:
+Plan Blockers:
 - <none | missing direction, evidence, target, verification, source-of-truth, compatibility, or scope input>
 Review Focus:
-- <what review should inspect before build, sync, or handoff>
-Recommended Next Task: <shape|explore|review|plan|persist|sync|build|external-agent|none>
+- <omit when incomplete; only for reviewable/execution-candidate; what review should inspect before build, sync, or handoff>
+Diagnostic Review Request:
+- <optional; Question, Target, Intended Use For Answer>
+Recommended Next Task: <shape|explore|user-answer|review|plan|persist|sync|build|external-agent|none>
 Review Recommended: <no|yes|strongly>
-Next: <review | build with explicit invocation | persist plan | sync | shape | none>
+Next: <shape | explore | user-answer | plan | review | build with explicit invocation | persist plan | sync | none>
 Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
@@ -208,19 +222,21 @@ Impact Surface:
 Refined Plan:
 - <target outcome, sequence, constraints, and verification approach>
 Planning Basis:
-- <source shape/decision, locked decisions, assumed decisions, rejected options, and known gaps>
+- <source shape/decision, locked decisions, assumed decisions, rejected options, and planning blockers if incomplete>
 Plan Readiness:
 - <incomplete|reviewable|execution-candidate>
 Readiness Rationale:
 - <why this readiness applies>
-Known Gaps:
+Plan Blockers:
 - <none | missing or weak planning input>
 Review Focus:
-- <what review should inspect>
+- <omit when incomplete; only for reviewable/execution-candidate; what review should inspect>
+Diagnostic Review Request:
+- <optional; Question, Target, Intended Use For Answer>
 Follow-up Questions:
 - <none | non-blocking future consideration>
 Recommended Next Task:
-- <shape|explore|review|plan|persist|sync|build|external-agent|none>
+- <shape|explore|user-answer|review|plan|persist|sync|build|external-agent|none>
 Review Recommended:
 - <no|yes|strongly>
 Persist Candidate:
@@ -242,8 +258,9 @@ Key Fields:
 - Target Outcome: <what should be true after execution>
 - Plan: <steps, phases, or work packages with scope, constraints, verification, and stop conditions>
 - Plan Readiness: <incomplete|reviewable|execution-candidate>
-- Known Gaps: <none | missing or weak planning input>
-- Review Focus: <what review should inspect before build, sync, or handoff>
+- Plan Blockers: <only for incomplete; none | missing or weak planning input>
+- Review Focus: <omit when incomplete; only for reviewable/execution-candidate; what review should inspect before build, sync, or handoff>
+- Diagnostic Review Request: <optional; Question, Target, Intended Use For Answer>
 - Review Recommended: <no | yes | strongly>
 - Compatibility / Constraint Policy: <preserve/breaking and respect/override/exception summary>
 Next Use: <persist | review | build | external-agent | sync | none>

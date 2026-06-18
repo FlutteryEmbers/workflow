@@ -108,10 +108,26 @@ Default review is `Review Type: verdict-review`. Use one primary review type per
 
 - `verdict-review`: default correctness, readiness, reasonableness, safety, or source-of-truth judgment.
 - `gap-analysis`: compare observed state against a baseline and identify missing capability, behavior, coverage, support, or alignment.
-- `plan-audit`: audit a workflow-managed build plan or external-agent plan before implementation.
 - `diff-review`: review an implementation diff against an explicit plan.
 
 Use `gap-analysis` when the user asks what is missing, where the gaps are, whether a system satisfies an expected capability, or why a workflow scenario is not supported. Gap analysis requires a `Baseline`. Baseline may come from explicit user goal, protocol purpose, documented promise, expected workflow scenario, or confirmed project standard. If no baseline is available, return `Review Verdict: needs more evidence` or route to `shape`.
+
+Review a plan under `verdict-review` when the question is about plan quality, executability, readiness, fit, risk, or whether the plan can be used as a source for build/external-agent work. When a plan asks review to diagnose whether a system problem exists, choose `verdict-review` or `gap-analysis` based on the review question; do not infer a separate plan-review mode.
+
+Plan-specific missing-input question lists are not a stable review output field. If evidence is insufficient, use `Review Verdict: needs more evidence`, `Blocking Gaps`, or ordinary `Open Questions`.
+
+## Plan Verdict Rules
+
+Use these rules when the review target is a plan:
+
+- `Review Verdict: ready`: no blocking gaps for the plan's intended next use. If the target plan has `Plan Readiness: execution-candidate`, review may return `Review Verdict: ready`, `Blocking Gaps: none`, and `Can Execute Plan: yes`.
+- `Review Verdict: needs changes`: the direction is usable, but the plan text must change before the intended next use.
+- `Review Verdict: needs more evidence`: evidence or baseline is insufficient to judge the plan.
+- `Review Verdict: blocked`: a high-severity blocker prevents the intended next use.
+
+Do not block an `execution-candidate` plan for optional improvement only. Alternative sequencing, style preferences, extra detail, polish, or optional risk reduction belongs in `Non-blocking Gaps`, `Recommended Action`, or `Minimal Revision Sketch` unless it affects target scope, verification, source of truth, compatibility / constraint policy, safety, or executability.
+
+Treat these as typical blocking gaps for plan verdicts: missing target or scope, missing verification, source-of-truth conflict, out-of-scope write risk, unclear compatibility / constraint policy, unsafe docs projection, or steps that cannot be executed without inventing decisions.
 
 Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam` or asks for critique, counterarguments, failure paths, or a hostile read. Otherwise, you may output `Suggested Critique: explicit redteam critique` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
 
@@ -128,13 +144,14 @@ In `Mode: discuss`, review may help the human decide what to do next without tak
 
 For non-trivial reviews, include a readiness dashboard:
 
-- `Review Type`: `verdict-review | gap-analysis | plan-audit | diff-review`
+- `Review Type`: `verdict-review | gap-analysis | diff-review`
 - `Review Verdict`: `ready | needs changes | needs more evidence | blocked | docs blocked`
 - `Confidence`: `high | medium | low`
 - `Readiness`: `0-10`
 - `Blocking Gaps`: issues that must be resolved before the next write or implementation step.
 - `Non-blocking Gaps`: issues that can be tracked without blocking.
 - `Recommended Action`: `none | persist | sync project-docs | sync session-archive | shape | plan | build | external-agent`.
+- `Can Execute Plan`: `yes | no | not-applicable`; use only when the review target is a plan.
 - `Suggested Critique`: `explicit redteam critique` or `none`.
 
 ## Gap Analysis
@@ -162,71 +179,6 @@ Gap Analysis:
 
 `Blocking Gaps` derives from `high` severity. `Non-blocking Gaps` derives from `medium` and `low` severity. Do not use severity as a replacement for findings or evidence.
 
-## Plan Audit
-
-Use this in discuss mode when `Review Type: plan-audit` to audit a workflow-managed `build` plan or an external-agent plan before implementation.
-
-Decision values:
-
-- `ready`: safe to implement as written.
-- `needs changes`: direction is valid but the plan needs edits.
-- `blocked`: critical scope, safety, verification, or source-of-truth information is missing.
-- `docs blocked`: the target touches project docs and source, scope, sync object, source of truth, target selection, alignment success criteria, or Project Docs Rules are unclear.
-
-Plan audit checks whether a plan is understandable, bounded, executable, and reviewable enough for its intended next use. It does not rewrite the plan, choose a new direction, create a replacement design, sequence implementation, or produce an implementation plan.
-
-Audit dimensions:
-
-- Intent Fit: does the plan match the user goal and selected direction?
-- Scope Boundary: are target files or areas, allowed changes, and do-not-touch areas clear?
-- Executability: can `build` or an external agent execute without inventing product decisions?
-- Verification: does each major step have a verification method or accepted verification gap?
-- Stop Conditions: does the plan say when to stop instead of expanding scope?
-- Compatibility / Constraint Policy: are breaking changes and constraint exceptions explicit?
-- Risk Posture: does `Review Recommended` or risk level match the actual impact surface?
-- Known Gaps Escalation: should any `Known Gaps` become formal `Blocking Gaps`?
-- Review Focus Coverage: does `Review Focus` cover the actual risks review should inspect?
-
-For `plan-audit`, output `Blocking Questions` when the plan is not ready for its intended next use. These questions must be user-answerable and must describe missing input, not prescribe a solution.
-
-```text
-Blocking Questions:
-- Question: <user-answerable question>
-  Severity: <high|medium|low>
-  Blocks: <build|external-agent|sync|source-of-truth decision|plan persistence|none>
-  Evidence: <where the plan is missing, weak, or contradictory>
-  Impact: <what could go wrong or what cannot proceed>
-  Why It Matters: <why the user should answer this before proceeding>
-  Answer Needed: <decision, fact, boundary, evidence, or source needed>
-  Recommended Next Task: <shape|explore|plan|review|build|external-agent|sync|persist|none>
-```
-
-`Answer Needed` must describe the missing input required to answer the question. It must not propose a design, choose a direction, sequence implementation, or rewrite the plan. Route those needs to `shape` or `plan`.
-
-Allowed `Answer Needed` examples:
-
-- `name the target files or target modules`
-- `confirm whether compatibility may be breaking`
-- `provide the command or manual check that proves success`
-- `choose source of truth between the plan and docs/foo.md`
-
-Forbidden `Answer Needed` examples:
-
-- `split routing into three modules`
-- `use strategy A instead of strategy B`
-- `implement adapter X first, then migrate templates`
-- `redesign the persistence model`
-
-Plan-audit severity:
-
-- `high`: blocks build, external-agent implementation, sync, source-of-truth decision, or risks out-of-scope writes.
-- `medium`: does not block immediate discussion, but creates material rework, ambiguity, drift, or verification weakness.
-- `low`: clarity, polish, convenience, or non-blocking completeness issue.
-
-`Blocking Gaps` derives from high-severity `Blocking Questions` and high-severity findings. `Non-blocking Gaps` derives from medium/low questions and findings. If all questions are medium/low and the user explicitly invokes `build`, treat them as risk notices rather than universal hard blockers; `build` still performs executability validation.
-
-Plan audit owns formal blocking. Plans may provide `Plan Readiness`, `Known Gaps`, `Review Focus`, and `Review Recommended`, but review decides `Blocking Questions`, `Blocking Gaps`, severity, and whether the plan can proceed.
-
 ## External Diff Review
 
 Use this in discuss mode after native external-agent implementation. Compare the diff against the explicit external plan and Project Docs Rules.
@@ -242,7 +194,7 @@ In `Mode: discuss`, default to:
 ```text
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
-Review Type: <verdict-review|gap-analysis|plan-audit|diff-review>
+Review Type: <verdict-review|gap-analysis|diff-review>
 Baseline: <expected state, review question, plan, or none>
 Take:
 - <3-6 bullets>
@@ -250,8 +202,6 @@ Risks/Unknowns:
 - <0-3 bullets>
 Gap Analysis:
 - <only for gap-analysis; gap, severity, evidence, impact, why it matters, recommended action>
-Blocking Questions:
-- <only for plan-audit; question, severity, blocks, evidence, impact, why it matters, answer needed>
 Minimal Revision Sketch: <smallest repair direction or none>
 Recommended Next Task: <shape|plan|build|external-agent|sync|persist|explore|none>
 Persist Candidate: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
@@ -267,21 +217,19 @@ Use `Output: normal` when the user asks to organize, refine, or prepare the revi
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
 Review Type:
-- <verdict-review|gap-analysis|plan-audit|diff-review>
+- <verdict-review|gap-analysis|diff-review>
 Baseline:
 - <expected state, review question, plan, or none>
 Refined Verdict:
 - <review verdict, key findings, required revisions, and recommended next task>
 Gap Analysis:
 - <only for gap-analysis; gap, severity, evidence, impact, why it matters, recommended action>
-Blocking Questions:
-- <only for plan-audit; question, severity, blocks, evidence, impact, why it matters, answer needed>
 Repair Direction:
 - <minimal direction of change, not full redesign>
 Discussion Notes To Preserve:
 - <review question clarification, evidence priority, accepted risk, verdict change reason, or user concern>
 Open Questions:
-- <ordinary review uncertainty; do not use this for plan-audit formal blocking questions>
+- <ordinary review uncertainty>
 Recommended Next Task:
 - <shape|plan|build|external-agent|sync|persist|explore|none>
 Persist Candidate:
@@ -300,7 +248,7 @@ Topic: <topic>
 Suggested Target: .session/threads/<thread>/review_<topic>.md
 Source Summary: <plan, diff, code, docs, session artifact, or claim reviewed>
 Key Fields:
-- Review Type: <verdict-review | gap-analysis | plan-audit | diff-review>
+- Review Type: <verdict-review | gap-analysis | diff-review>
 - Review Question: <what was being judged>
 - Baseline: <expected state, documented promise, user goal, workflow scenario, or none>
 - Review Verdict: <ready | needs changes | needs more evidence | blocked | docs blocked>

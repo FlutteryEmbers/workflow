@@ -52,15 +52,16 @@ Request: ${input:request:describe the work}
 - Ambiguous what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests default to `shape`.
 - Evidence-only requests go to `explore`; verdict-only requests go to `review`.
 - Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. `distill` is a task, not a lens. Do not use any lens as a skip mechanism.
-- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Minimal Revision Sketch`, `Repair Direction`, `Plan Readiness`, `Known Gaps`, `Review Focus`, and `What Would Change My Mind` as thinking material.
+- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Minimal Revision Sketch`, `Repair Direction`, `Plan Readiness`, `Plan Blockers`, `Review Focus`, and `What Would Change My Mind` as thinking material.
 - Discussion adjacency is allowed; authority is not. Adjacent output may recommend the next task, but write, sync, execute, implementation, source-of-truth, and build authority still require the proper `Mode`, `Task`, target rules, prerequisites, and explicit executable plan.
 - For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision State`.
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available; otherwise output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
-- Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning output. This is plan self-assessment, not a review verdict.
-- `plan compact` must summarize the chosen direction first, then give a compact impact surface, plan sketch, known gaps, and review focus. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. `Output: full` is a minimal handoff packet for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
-- `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, and gap analysis. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
-- For `Review Type: plan-audit`, output `Blocking Questions` with severity, blocks, evidence, impact, why it matters, and `Answer Needed`. `Answer Needed` describes missing input only; it must not propose a design, choose a direction, sequence implementation, or rewrite the plan.
+- Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning output. This is plan self-assessment, not a review verdict. `execution-candidate` is the terminal complete state for plan: plan-complete enough for review, build executability check, or external-agent handoff.
+- `plan compact` must summarize the chosen direction first, then give a compact impact surface, plan sketch, conditional plan blockers, and conditional review focus. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. `Output: full` is a minimal handoff packet for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
+- `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, and gap analysis. Review owns verdict and blocking risk, but does not redefine plan completion. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
+- Review plans under `verdict-review` when the question is about plan quality, executability, readiness, fit, or risk. When a plan asks review to diagnose a system problem, use `verdict-review` or `gap-analysis` based on the question.
+- For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block an `execution-candidate` plan for optional improvement only.
 - Read-only preflight is allowed only in `Mode: discuss`; do not load templates, write files, run implementation, or apply unselected deep lenses during preflight.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 - Implicit preflight defaults to `shape`, `plan`, and `sync`; conditional preflight applies to `review`, `build`, and `explore`; no implicit preflight runs for `clarify` or `route`.
@@ -83,7 +84,7 @@ Request: ${input:request:describe the work}
 - `Task: sync` in `Mode: persist` may write only stable-document targets for its selected `Sync Domain: project-docs | session-archive`.
 - In `Mode: execute`, require `Task: build` and an explicit executable plan.
 - If using Codex/Copilot native Plan -> Implement, set `Write Path: external-agent`; external-agent is not a Mode.
-- For `Write Path: external-agent`, recommend native plan audit before implementation and diff review afterward when risk is material.
+- For `Write Path: external-agent`, recommend native plan review before implementation and diff review afterward when risk is material.
 - Block instead of writing when `Mode: execute` lacks `Plan`, the target is outside the mode boundary, or instructions conflict.
 - For `Task: build`, establish `Execution Environment Contract` before verification: CWD, repo root, OS/shell, package manager or runner, available scripts, command source, and retry budget.
 - Build verification commands require `Command Provenance`: plan, repo script, Makefile, project docs, CI, or confirmed repo fact. Do not blindly retry path/cwd/shell/quoting variants; default retry budget is 2 for the same failure class.
@@ -155,10 +156,12 @@ Plan:
 - <3-6 steps or phases>
 Plan Readiness: <incomplete|reviewable|execution-candidate>
 Readiness Rationale: <why this readiness applies>
-Known Gaps:
+Plan Blockers:
 - <none | missing direction, evidence, target, verification, source-of-truth, compatibility, or scope input>
 Review Focus:
-- <what review should inspect before build, sync, or handoff>
+- <omit when incomplete; only for reviewable/execution-candidate; what review should inspect before build, sync, or handoff>
+Diagnostic Review Request:
+- <optional; Question, Target, Intended Use For Answer>
 Review Recommended: <no|yes|strongly>
 Next: <review | build with explicit invocation | persist plan | sync | shape | none>
 Persist Candidate: <none or one line; candidate only, do not write>
@@ -179,7 +182,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Shape Summary`, `Impact Surface`, `Plan Readiness`, `Known Gaps`, `Review Focus`, and `Review Recommended`. Do not output formal blocking gaps from `plan`.
+For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Shape Summary`, `Impact Surface`, `Plan Readiness`, conditional `Plan Blockers`, conditional `Review Focus`, optional `Diagnostic Review Request`, and `Review Recommended`. Do not output formal blocking gaps from `plan`.
 
 Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 
@@ -211,14 +214,14 @@ Stop Points:
 
 ## External-Agent Review Formats
 
-Plan audit:
+Plan review:
 
 ```text
 Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this external plan before native implementation with explicit critique posture. Return Review Verdict: ready, needs changes, needs more evidence, blocked, or docs blocked.
+Review this external plan before native implementation with explicit critique posture. Return Review Verdict: ready, needs changes, needs more evidence, blocked, or docs blocked.
 ```
 
 Diff review:

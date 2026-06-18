@@ -56,9 +56,9 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
 - `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review`: `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
-- `plan`: `Plan Readiness`, `Known Gaps`, `Review Focus`, `Review Recommended`, and recommended next task.
+- `plan`: `Plan Readiness`, conditional `Plan Blockers`, conditional `Review Focus`, optional `Diagnostic Review Request`, `Review Recommended`, and recommended next task.
 - `review`: `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
-- `review plan-audit`: `Blocking Questions` with severity, blocks, evidence, impact, why it matters, `Answer Needed`, and recommended next task.
+- Review plans under `verdict-review`; use `gap-analysis` when the plan asks review to diagnose a system or protocol gap against a baseline.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -80,12 +80,13 @@ Discovery vs judgment rule:
 
 ## Planning Readiness
 
-Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates.
+Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates. `execution-candidate` is the terminal complete state for plan: plan-complete enough for review, build executability check, or external-agent handoff.
 
 - `shape` produces concept-level direction and may recommend `plan` or `review`.
-- `plan` outputs `Plan Readiness`, `Known Gaps`, `Review Focus`, and `Review Recommended`.
+- `plan` outputs `Plan Readiness`, `Plan Blockers` when incomplete, `Review Focus` when reviewable or execution-candidate, optional `Diagnostic Review Request`, and `Review Recommended`.
 - `Plan Readiness` is self-assessment, not a gate verdict.
-- `review` owns formal `Blocking Questions`, `Blocking Gaps`, gap severity, and readiness verdicts.
+- `review` owns formal `Blocking Gaps`, gap severity, and verdicts. Review owns verdict and blocking risk, but does not redefine plan completion.
+- For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block an `execution-candidate` plan for optional improvement only.
 - `build` requires explicit user invocation and a plan concrete enough to execute safely; review is recommended for material risk, but missing review is not by itself a build blocker.
 
 ## Common Paths
@@ -291,7 +292,7 @@ Plan requirements:
 - Open questions
 ```
 
-### Plan Audit
+### Plan Review
 
 ```text
 Use .workflow/codex.md as the Codex adapter.
@@ -299,7 +300,7 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Audit this Codex native plan before implementation with explicit critique posture. Return ready, needs changes, blocked, or docs blocked. For plan-audit blockers, include Blocking Questions with Answer Needed.
+Review this Codex native plan before implementation with explicit critique posture. Use Review Type: verdict-review. Return ready, needs changes, needs more evidence, blocked, or docs blocked.
 ```
 
 ### Bounded Implement

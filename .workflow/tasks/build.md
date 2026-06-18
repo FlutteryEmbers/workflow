@@ -18,7 +18,7 @@ done_check:
 
 # Build Task
 
-`build` is the workflow-managed execution task. Native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents is the external-agent write path; it does not use `build`; plan audit before implementation and diff review afterward are recommended risk controls.
+`build` is the workflow-managed execution task. Native Plan -> Implement from Codex, Copilot, OpenCode, or similar agents is the external-agent write path; it does not use `build`; plan review before implementation and diff review afterward are recommended risk controls.
 
 `build` is special because it is not a general implementation agent. It is a workflow-aware bounded executor: it applies the explicit plan, limits command/path trial-and-error, records command provenance, produces an execution trace, and surfaces reusable execution discoveries through persist candidates.
 

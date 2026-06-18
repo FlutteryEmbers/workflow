@@ -97,9 +97,10 @@ Recommend the smallest path:
 - Session artifact write: `persist` -> active `.session/inbox/**` or `.session/threads/**`.
 - Active thread metadata or thread file maintenance: `persist` -> `.session/threads/**`.
 - Completed thread archive summary: `review/plan -> sync` with `Sync Domain: session-archive` -> `.session/archive/<thread>/summary.md`.
-- Native external-agent implementation: external-agent path -> `review` plan audit -> native Implement -> `review` diff.
+- Native external-agent implementation: external-agent path -> `review` plan review -> native Implement -> `review` diff.
 - Project docs alignment: `review -> plan -> sync` with `Sync Domain: project-docs` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute`, explicit user invocation, and an explicit executable plan.
+- Plan readiness loop: `plan incomplete -> shape/explore/user-answer/plan`; `plan reviewable -> review or persist`; `plan execution-candidate -> optional review or build with explicit invocation`; `plan execution-candidate + Review Verdict: ready -> build/external-agent`.
 - Direct build path: `build` when the user invokes execute with an explicit executable plan; missing review is a risk notice, not a build blocker.
 - Vague implementation intent without an explicit executable plan: `plan -> review`, then `build` or external-agent only after the plan is concrete enough.
 - Recommend `review` before build for breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, multi-surface plans, high reversal cost, or ambiguous verification.
