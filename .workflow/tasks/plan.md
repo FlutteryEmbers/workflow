@@ -10,6 +10,7 @@ outputs:
   - full_persist_packet
 user_selectable_lenses:
   - architecture
+  - boundary
   - test
   - language
 done_check:

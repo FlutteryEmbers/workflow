@@ -10,6 +10,7 @@ outputs:
   - full_persist_packet
 user_selectable_lenses:
   - architecture
+  - boundary
   - debug
   - language
 done_check:
@@ -178,7 +179,7 @@ Use this structure for non-trivial output:
 - `Candidate Review Targets`: targets that may need `review` if the user wants a verdict, source-of-truth decision, or baseline gap review.
 - `Recommended Next Task`: usually `shape`, `review`, `plan`, or `persist`. Recommend `sync` only when the user explicitly asks for stable-document projection and the required review/source-of-truth prerequisites are already clear.
 
-Lens use must not change task responsibility. `architecture`, `debug`, and `language` may improve evidence extraction, but `explore` must not present candidate interpretations as final synthesis or verdict.
+Lens use must not change task responsibility. `architecture`, `boundary`, `debug`, and `language` may improve evidence extraction; `boundary` may focus evidence on imports, call direction, contract terms, provider logic inventory, package API dependencies, and suspected leakage. `explore` must not present candidate interpretations or suspected leakage as final synthesis or verdict.
 
 Use this shape for conflict reliability notes:
 

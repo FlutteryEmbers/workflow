@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite explore command for evidence mapping and non-mutating probes.
-argument-hint: "Request=<code, docs, behavior, entrypoint, dependency, or reference to explore>; Lens=<none|architecture|debug|language>"
+argument-hint: "Request=<code, docs, behavior, entrypoint, dependency, or reference to explore>; Lens=<none|architecture|boundary|debug|language>"
 ---
 
 # wf-explore

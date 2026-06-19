@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite fallback/router prompt for mixed requests and full protocol control.
-argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|distill|shape|plan|persist|build|review|sync>; Lens=<none|consistency|language|domain|redteam|test|architecture|debug|expert>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference|capture>; Depth=<compact|standard|detailed>; Sync Domain=<project-docs|session-archive>; Thread=<thread-name>; Target=<required for sync stable documents; optional for persist>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|distill|shape|plan|persist|build|review|sync>; Lens=<none|consistency|boundary|language|domain|redteam|test|architecture|debug|expert>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference|capture>; Depth=<compact|standard|detailed>; Sync Domain=<project-docs|session-archive>; Thread=<thread-name>; Target=<required for sync stable documents; optional for persist>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Fallback / Router Prompt
@@ -72,6 +72,7 @@ Request: ${input:request:describe the work}
 - Ask for confirmation only when ambiguity would affect file writes, execution, source of truth, or material scope.
 - Use `Lens: none` unless the user explicitly names or adds lens files.
 - Multiple lenses are allowed in `Mode: discuss` only when explicitly listed; follow the user's lens order.
+- Use `boundary` for ownership, dependency direction, contract leakage, provider/package boundaries, provider-owned capability business, main-system business, and migration ownership. Use `boundary, consistency` together when boundary judgment also depends on source-of-truth, docs/code drift, contract/implementation alignment, or artifact alignment.
 - Do not infer, auto-apply, or load all lenses.
 - In `Mode: discuss`, do not load templates and do not create or update files.
 - Discussion tasks should produce a short `Persist Candidate` when the result is worth preserving; this is only a candidate and must not write files. Output full `Persist Packet` only when `Output: full`, the user asks to persist, or a handoff/audit requires it.

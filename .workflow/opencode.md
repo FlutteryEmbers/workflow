@@ -57,6 +57,8 @@ For `shape`, adjacent allowance includes lightweight clarification, lightweight 
 
 Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
 
+Use `boundary` for ownership, dependency direction, contract leakage, provider/package boundaries, provider-owned capability business, main-system business, and migration ownership. Use `boundary, consistency` together when that boundary judgment also depends on source-of-truth, docs/code drift, contract/implementation alignment, or artifact alignment.
+
 Discovery vs judgment rule:
 
 - Do not infer repo ownership or maintenance responsibility.
@@ -179,6 +181,7 @@ Examples:
 /wf-distill 总结 .workflow/tasks 目录的职责
 /wf-shape 这个 thread 命名规则应该怎么收敛？
 /wf-review Audit this plan before implementation: <plan>
+/wf-review Lens: boundary, consistency 审计这个 provider 是否保持 system/contract/provider/package 边界和一致性
 /wf-persist Artifact: shape Thread: workflow-thread-naming Topic: thread_inference Source: last discussion
 /wf-build Plan: .session/threads/workflow-goal-removal/plan_goal_removal.md
 /wf-sync Sync Object: architecture Source: .session/threads/workflow-goal-removal/shape_goal_boundary.md Scope: workflow memory Source Of Truth: session shape Target: docs/architecture.md Alignment Success Criteria: future workflow docs match confirmed boundaries

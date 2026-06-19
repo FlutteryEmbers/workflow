@@ -283,6 +283,7 @@ Core selectable lenses:
 | Lens | Use When |
 | :--- | :--- |
 | `architecture` | Structure, interfaces, dependencies, constraints, or durable tradeoffs matter. |
+| `boundary` | Ownership, dependency direction, contract leakage, provider/package boundary, or provider-local business vs main-system business matters. |
 | `consistency` | `sync` needs confirmed alignment projection after docs/code/session drift has been reviewed. |
 | `debug` | `explore` or `build` needs defect or uncertain runtime behavior diagnosis. |
 | `expert` | `shape` or `review` needs high-density expert reasoning, hidden assumptions, opposing views, or anti-generic output. |
@@ -310,16 +311,18 @@ Selectable lenses by task:
 
 | Task | Selectable Lenses |
 | :--- | :--- |
-| `shape` | `architecture`, `language`, `expert` |
-| `plan` | `architecture`, `test`, `language` |
-| `explore` | `architecture`, `debug`, `language` |
+| `shape` | `architecture`, `boundary`, `language`, `expert` |
+| `plan` | `architecture`, `boundary`, `test`, `language` |
+| `explore` | `architecture`, `boundary`, `debug`, `language` |
 | `distill` | `language` |
 | `sync` | `consistency`, `architecture`, `language` |
 | `clarify` | `language` |
 | `persist` | `language` |
 | `build` | `test`, `debug` |
-| `review` | `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, `architecture`, `expert` |
+| `review` | `redteam`, `consistency`, `boundary`, `debug`, `language`, `domain`, `test`, `architecture`, `expert` |
 | `route` | none; recommend lenses for the next task only |
+
+Use `boundary, consistency` together when ownership/dependency-direction questions also require source-of-truth, docs/code drift, contract/implementation alignment, or artifact alignment judgment.
 
 ## Mode And Write Boundaries
 

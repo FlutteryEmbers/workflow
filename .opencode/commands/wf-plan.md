@@ -7,7 +7,7 @@ Use Workflow Lite planning semantics.
 Mode: discuss
 Output: compact unless handoff detail is required
 Task: plan
-Lens: none unless explicitly requested; allowed: architecture, test, language
+Lens: none unless explicitly requested; allowed: architecture, boundary, test, language
 
 Rules:
 - Do not edit files.

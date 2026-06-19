@@ -31,7 +31,7 @@ Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear tas
 Mode: <discuss|persist|execute>
 Output: <compact|normal|full>
 Task: <route|clarify|explore|distill|shape|plan|persist|build|review|sync>
-Lens: <none|consistency|language|domain|redteam|test|architecture|debug|expert>
+Lens: <none|consistency|boundary|language|domain|redteam|test|architecture|debug|expert>
 Artifact: <required for persist unless target is explicit>
 Artifact State: <inbox|working|settled|superseded; for persist metadata>
 Thread: <thread-name; for persist thread target inference>
@@ -148,6 +148,8 @@ Prefer Output Shape over prohibition. User-selected task is respected; authority
 For `shape`, adjacent allowance includes lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, and non-executable planning sketch. It must route away for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, explicit executable plan candidate, stable sync, writes, execution, or implementation.
 
 Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
+
+Use `boundary` for ownership, dependency direction, contract leakage, provider/package boundaries, provider-owned capability business, main-system business, and migration ownership. Use `boundary, consistency` together when that boundary judgment also depends on source-of-truth, docs/code drift, contract/implementation alignment, or artifact alignment.
 
 ## Discussion Freedom
 
@@ -274,6 +276,7 @@ Common segmentations:
 - Distill a reference and improve workflow: `distill -> Persist Candidate -> shape -> persist thread artifact -> plan -> build`.
 - Ambiguous what-if or entrypoint selection: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
 - Understand code/docs mismatches as discovery: `explore -> Persist Candidate -> persist note`, with `Reliability Notes`; use `review --lens consistency` only for source-of-truth judgments.
+- Provider/contract/package boundary: `shape --lens boundary` for boundary model, `explore --lens boundary` for imports/call evidence, `review --lens boundary` for ownership verdict, or `review --lens boundary, consistency` when source-of-truth or docs/code alignment also matters.
 
 Use stop points before implementation and stable-document sync.
 

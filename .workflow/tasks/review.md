@@ -11,6 +11,7 @@ outputs:
 user_selectable_lenses:
   - redteam
   - consistency
+  - boundary
   - debug
   - language
   - domain
@@ -145,7 +146,7 @@ Treat these as typical blocking gaps for plan verdicts: missing target or scope,
 
 Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam` or asks for critique, counterarguments, failure paths, or a hostile read. Otherwise, you may output `Suggested Critique: explicit redteam critique` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
 
-Lens use must not change task responsibility. `redteam`, `consistency`, `debug`, `language`, `domain`, `test`, `architecture`, and `expert` may deepen the verdict; `expert` may strengthen findings, evidence pressure, and revision specificity, but must not produce a full replacement design or implementation plan. `review` must not become evidence-only `explore`, full synthesis-oriented `shape`, or executable `plan`.
+Lens use must not change task responsibility. `redteam`, `consistency`, `boundary`, `debug`, `language`, `domain`, `test`, `architecture`, and `expert` may deepen the verdict; `boundary` may judge ownership, dependency direction, contract leakage, provider-local business, main-system business, and migration path back to package. `expert` may strengthen findings, evidence pressure, and revision specificity, but must not produce a full replacement design or implementation plan. `review` must not become evidence-only `explore`, full synthesis-oriented `shape`, or executable `plan`.
 
 ## Discussion Freedom
 

@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite review command for verdicts, gap analysis, audits, diff reviews, and docs/code drift judgment.
-argument-hint: "Request=<target to review>; Lens=<none|redteam|consistency|test|architecture|debug|language|domain|expert>"
+argument-hint: "Request=<target to review>; Lens=<none|redteam|consistency|boundary|test|architecture|debug|language|domain|expert>"
 ---
 
 # wf-review

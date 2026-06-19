@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite shape command for what-if, option-comparison, concept-level, and direction-setting discussion.
-argument-hint: "Request=<direction question>; Lens=<none|architecture|language|expert>"
+argument-hint: "Request=<direction question>; Lens=<none|architecture|boundary|language|expert>"
 ---
 
 # wf-shape

@@ -116,7 +116,8 @@ Recommend the smallest path:
 
 - Use `shape` built-in option comparison for route comparison or technical direction; do not suggest a separate strategy lens.
 - Use core `Plan Readiness` rules for planning, executable plan candidates, strong-model-to-weak-model handoff, or requests to avoid premature code-level detail; do not suggest a separate conceptual lens.
-- Suggest `architecture` for boundaries, dependency direction, public surfaces, or constraints.
+- Suggest `boundary` for ownership, dependency direction, contract leakage, provider/package boundaries, provider-owned capability business, main-system business, or migration path back to a package.
+- Suggest `architecture` for general structure, interfaces, public surfaces, constraints, or durable tradeoffs.
 - For terminology or rules questions outside review, suggest `language`, `clarify`, or `shape` depending on the request; reserve `domain` for review.
 - Use thread inference and `persist` rules for multi-turn work with changing background; do not suggest a separate iteration lens.
 - For vague or early ideas, route to `shape` with embedded critique check rather than redteam.
@@ -125,6 +126,7 @@ Recommend the smallest path:
 - Suggest `test` for verification planning.
 - Suggest `debug` for defects or uncertain runtime behavior.
 - Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across explicit session sources, project docs, code, tests, code-adjacent README files, workflow artifacts, prompts, templates, or archive summaries.
+- Suggest `boundary, consistency` when provider/contract/package boundary judgment also depends on source-of-truth, docs/code drift, contract/implementation alignment, or artifact alignment.
 - Do not suggest `consistency` for discovery questions like whether evidence for a capability exists, where it is implemented, or how reliable the evidence is.
 - Suggest `language` for terminology or output language.
 - Recommend `distill` as a task when the user wants a summary, folder summary, source distillation, or archive-summary draft.

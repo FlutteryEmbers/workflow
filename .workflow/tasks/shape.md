@@ -10,6 +10,7 @@ outputs:
   - full_persist_packet
 user_selectable_lenses:
   - architecture
+  - boundary
   - language
   - expert
 done_check:
@@ -106,7 +107,7 @@ Use `fallback_fit` only in `Mode: discuss`. It allows a useful shape when the sp
 
 `Embedded Critique Check` is core protocol, not the `redteam` lens. Use it to name risky assumptions, likely failure paths, and whether a later explicit redteam critique is worth running. Do not load `.workflow/lenses/redteam.md` from `shape`, and do not output a formal review verdict.
 
-Lens use must not change task responsibility. `architecture`, `language`, and `expert` may help synthesize direction; `expert` may sharpen assumptions, tradeoffs, and recommendation density, but output must stay at concept level. `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`. Option comparison is built into `shape`; it does not require a separate lens.
+Lens use must not change task responsibility. `architecture`, `boundary`, `language`, and `expert` may help synthesize direction; `boundary` may define ownership, dependency direction, contract/provider/package responsibilities, and provider-owned capability business vs main-system business. `expert` may sharpen assumptions, tradeoffs, and recommendation density, but output must stay at concept level. `shape` must not become evidence-only `explore`, verdict-only `review`, or executable `plan`. Option comparison is built into `shape`; it does not require a separate lens.
 
 ## Discussion Freedom
 

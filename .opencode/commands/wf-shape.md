@@ -7,7 +7,7 @@ Use Workflow Lite for direction-setting and concept design.
 Mode: discuss
 Output: compact
 Task: shape
-Lens: none unless explicitly requested; allowed: architecture, language, expert
+Lens: none unless explicitly requested; allowed: architecture, boundary, language, expert
 
 Rules:
 - Do not edit files.

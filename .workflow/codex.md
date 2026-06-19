@@ -49,6 +49,8 @@ For `shape`, adjacent allowance includes lightweight clarification, lightweight 
 
 Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
 
+Use `boundary` for ownership, dependency direction, contract leakage, provider/package boundaries, provider-owned capability business, main-system business, and migration ownership. Use `boundary, consistency` together when that boundary judgment also depends on source-of-truth, docs/code drift, contract/implementation alignment, or artifact alignment.
+
 ## Discussion Freedom
 
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide useful provisional thinking without treating it as approval.

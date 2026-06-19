@@ -8,7 +8,7 @@ Use Workflow Lite review semantics.
 Mode: discuss
 Output: compact unless audit detail is required
 Task: review
-Lens: none unless explicitly requested; allowed: redteam, consistency, test, architecture, debug, language, domain, expert
+Lens: none unless explicitly requested; allowed: redteam, consistency, boundary, test, architecture, debug, language, domain, expert
 
 Rules:
 - Do not edit files.
