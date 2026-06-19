@@ -28,7 +28,7 @@ Rules:
 - Do not write `.session/threads/**`, `.session/inbox/**`, `notes/**`, source code, `.workflow/**`, or `.github/**`.
 - If `Sync Object`, source of truth, alignment criteria, and safe target selection are unclear, output `docs blocked` or `archive blocked`.
 - If source of truth is unclear, route to `wf-review` with `Lens: consistency`.
-- Use `.workflow/tasks/sync.md` as the task contract.
+- Use `.workflow/tasks/sync.md` and `.workflow/templates/_sync_metadata.md` as the stable metadata contract.
 
 Request:
 ${input:request:describe the stable-document sync to perform}

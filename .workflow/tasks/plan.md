@@ -3,7 +3,7 @@ id: plan
 role: designer
 purpose: Turn a chosen direction into a repo-aware plan, explicit executable plan candidate, or external-agent handoff in chat.
 inputs:
-  - decision_or_target
+  - direction_or_target
 outputs:
   - chat_plan
   - persist_hint
@@ -121,6 +121,8 @@ Every plan, including compact chat output, must summarize the shaped or chosen d
 
 Every plan, including compact chat output, must include a short `Impact Surface`. Compact impact surface is a planning reader aid, not a full audit; include only `Scope Size`, `Affected Surfaces`, `Risk`, and `Reversal Cost`.
 
+Persisted plan artifacts include `Impact Surface -> Key Changes` for scanability. `Key Changes` is a summary layer, not a full diff and not a replacement for the plan steps.
+
 Build handoff wording must use `explicit executable plan candidate`, not plan kind labels. `build` requires explicit user invocation plus executable plan validation; review is recommended for material risk but is not a universal hard gate. `build` must not infer authorization from `Plan Readiness`, and review must not redefine plan completion.
 
 When recommending `build`, include `Review Recommended: yes | no | strongly`. Use `no` only for low-risk explicit plans. Use `yes` or `strongly` for medium/high risk, breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, multi-surface work, high reversal cost, or ambiguous verification. For unclear plans, recommend `plan` or `review`, not `build`. For `Plan Readiness: execution-candidate`, recommended next tasks may include `review`, `build with explicit invocation`, `external-agent`, or `persist`.
@@ -219,10 +221,12 @@ Impact Surface:
 - Affected Surfaces: <surfaces>
 - Risk: <low | medium | high>
 - Reversal Cost: <low | medium | high>
+Key Changes:
+- <3-7 summary changes; target, reason, and risk>
 Refined Plan:
 - <target outcome, sequence, constraints, and verification approach>
-Planning Basis:
-- <source shape/decision, locked decisions, assumed decisions, rejected options, and planning blockers if incomplete>
+Source Basis:
+- <shape summary, evidence/repo basis, assumptions, and open basis>
 Plan Readiness:
 - <incomplete|reviewable|execution-candidate>
 Readiness Rationale:
@@ -256,13 +260,19 @@ Suggested Target: .session/threads/<thread>/plan_<topic>.md
 Source Summary: <source shape/decision, user request, repo context, or project docs basis>
 Key Fields:
 - Target Outcome: <what should be true after execution>
-- Plan: <steps, phases, or work packages with scope, constraints, verification, and stop conditions>
+- Source Basis: <shape summary, evidence/repo basis, assumptions, unknowns, and plan blockers if incomplete>
+- Impact Surface: <scope size, affected surfaces, risk, reversal cost, docs/sync impact, and key changes>
+- Plan: <steps, phases, or work packages>
+- Scope: <allowed changes, do-not-touch areas, and explicit out-of-scope work>
+- Verification: <success criteria, checks, and acceptance evidence>
+- Stop Conditions: <when to stop instead of expanding scope>
 - Plan Readiness: <incomplete|reviewable|execution-candidate>
 - Plan Blockers: <only for incomplete; none | missing or weak planning input>
 - Review Focus: <omit when incomplete; only for reviewable/execution-candidate; what review should inspect before build, sync, or handoff>
 - Diagnostic Review Request: <optional; Question, Target, Intended Use For Answer>
 - Review Recommended: <no | yes | strongly>
 - Compatibility / Constraint Policy: <preserve/breaking and respect/override/exception summary>
+- Risk / Recovery: <risks, rollback/recovery, and handoff notes>
 Next Use: <persist | review | build | external-agent | sync | none>
 ```
 

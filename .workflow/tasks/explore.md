@@ -15,7 +15,7 @@ user_selectable_lenses:
 done_check:
   - evidence_is_named
   - unknowns_are_listed
-  - next_decision_is_clear
+  - next_step_is_clear
 ---
 
 # Explore Task
@@ -212,7 +212,7 @@ Missing Evidence:
 Follow-up Targets:
 - <0-3 sources, probes, or candidate review targets>
 Recommended Next Task: <shape|review|plan|persist|distill|none>
-Persist Candidate: Artifact=<note|option>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+Persist Candidate: Artifact=<note|shape>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
 Use `Persist Candidate: none` when the exploration is not worth preserving.
@@ -241,7 +241,7 @@ Open Questions:
 Recommended Next Task:
 - <shape|review|plan|persist|distill|none>
 Persist Candidate:
-- Artifact=<note|option>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+- Artifact=<note|shape>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
 ## Full Persist Packet
@@ -250,7 +250,7 @@ Output the full packet only when the user asks to persist, provides `Target`, or
 
 ```text
 Persist Packet:
-Artifact: note | option
+Artifact: note | shape
 Thread: <thread or none>
 Topic: <topic>
 Suggested Target: .session/inbox/<artifact>_<topic>.md or .session/threads/<thread>/<artifact>_<topic>.md

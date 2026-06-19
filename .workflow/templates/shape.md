@@ -1,17 +1,10 @@
 # Shape
 
-## Persist Metadata
+{{CONTENT: /.workflow/templates/_persist_metadata.md}}
 
-- Artifact: shape
+## Shape Metadata
+
 - Artifact ID: {{shape_<topic>}}
-- Topic: {{topic}}
-- Artifact State: {{working | settled | superseded}}
-- Thread: {{thread-name}}
-- Intent: {{exploration | decision | constraint}}
-- Depth: {{detailed}}
-- Source: {{recent discussion | existing artifact | file path}}
-- Target: {{.session/...}}
-- Last Updated: {{date}}
 
 ## Language / Style
 
@@ -20,7 +13,7 @@
 ## Decision Link
 
 - Thread shape: `.session/threads/<thread>/shape_<topic>.md`
-- Thread decision: `.session/threads/<thread>/decision_<topic>.md`
+- Thread direction: `.session/threads/<thread>/shape_<topic>.md`
 - Source brief: `.session/inbox/brief_<topic>.md` when an external-goal brief exists
 
 ## Decision Snapshot

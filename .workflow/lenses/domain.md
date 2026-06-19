@@ -17,5 +17,5 @@ Do not force tactical DDD patterns such as entities, aggregates, repositories, o
 ## Output Hints
 
 - Language and model notes can be persisted to `.session/inbox/**`.
-- Domain decisions can be persisted to `.session/threads/{thread}/decision_{topic}.md`.
+- Domain decisions can be persisted as shape artifacts under `.session/threads/{thread}/shape_{topic}.md`.
 - Project terminology, business rules, and boundaries go to `docs/**` through `sync`.

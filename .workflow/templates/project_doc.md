@@ -1,5 +1,7 @@
 # Project Doc
 
+{{CONTENT: /.workflow/templates/_sync_metadata.md}}
+
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}

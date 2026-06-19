@@ -170,10 +170,19 @@ Required:
 
 ## Templates
 
-- Project-docs sync: `.workflow/templates/sync.md`
-- New project doc target: `.workflow/templates/project_doc.md`
-- Code-adjacent README targets: `.workflow/templates/code_readme.md`
-- Session archive summary: `.workflow/templates/archive_summary.md`
+Use only the stable target body template. There is no sync operation-record template. `sync` is the stable document metadata owner: apply `.workflow/templates/_sync_metadata.md` before the stable document body.
+
+Metadata timestamps use `YYYY-MM-DD HH:mm` with the execution environment timezone. For stable documents, refresh `Updated At` on every write.
+
+- `project-docs` new `architecture`, `feature`, or `reference` target: `.workflow/templates/project_doc.md`
+- `project-docs` code-adjacent README target: `.workflow/templates/code_readme.md`
+- `session-archive` summary target: `.workflow/templates/archive_summary.md`
+
+Metadata partial:
+
+- `.workflow/templates/_sync_metadata.md`
+
+If the sync discussion or decision trail needs to be saved separately, use `persist Artifact=note` or `persist Artifact=review`.
 
 ## Copilot Add Context
 

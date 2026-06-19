@@ -8,7 +8,7 @@ Output flow: use `Output: compact` for general discussion, `Output: normal` to r
 
 For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as a minimal handoff packet for persist, implementation handoff, explicit executable plan candidate, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 
-For `persist`, load only the matching template for the selected artifact; a discussion `Persist Packet` is handoff input, not the final artifact schema.
+For `persist`, load only the matching template for the selected artifact and apply `.workflow/templates/_persist_metadata.md`; a discussion `Persist Packet` is handoff input, not the final artifact schema.
 
 OpenCode may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically. Use full `redteam` only when the user explicitly selected that lens, asked for critique, or the prompt explicitly includes it.
 
@@ -181,7 +181,7 @@ Examples:
 /wf-review Audit this plan before implementation: <plan>
 /wf-persist Artifact: shape Thread: workflow-thread-naming Topic: thread_inference Source: last discussion
 /wf-build Plan: .session/threads/workflow-goal-removal/plan_goal_removal.md
-/wf-sync Sync Object: architecture Source: .session/threads/workflow-goal-removal/decision_goal_boundary.md Scope: workflow memory Source Of Truth: session decision Target: docs/architecture.md Alignment Success Criteria: future workflow docs match confirmed boundaries
+/wf-sync Sync Object: architecture Source: .session/threads/workflow-goal-removal/shape_goal_boundary.md Scope: workflow memory Source Of Truth: session shape Target: docs/architecture.md Alignment Success Criteria: future workflow docs match confirmed boundaries
 ```
 
 ## Add Context

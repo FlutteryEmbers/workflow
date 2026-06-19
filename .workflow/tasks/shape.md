@@ -13,7 +13,7 @@ user_selectable_lenses:
   - language
   - expert
 done_check:
-  - decision_is_named
+  - direction_is_named
   - tradeoffs_are_visible
   - target_docs_are_named_when_relevant
 ---
@@ -304,11 +304,11 @@ Output the full packet only when the user asks to persist, provides `Target`, or
 
 ```text
 Persist Packet:
-Artifact: shape | decision
+Artifact: shape
 Artifact ID: shape_<topic>
 Thread: <thread>
 Topic: <topic>
-Suggested Target: .session/threads/<thread>/shape_<topic>.md or .session/threads/<thread>/decision_<topic>.md
+Suggested Target: .session/threads/<thread>/shape_<topic>.md
 Source Summary: <current chat goal, external-goal brief, session artifact, evidence, or user correction>
 Key Fields:
 - Recommendation: <current direction, core boundary, and narrowest useful wedge>

@@ -11,7 +11,7 @@ Mode: persist
 Output: full
 Task: persist
 Lens: ${input:lens:none}
-Artifact: ${input:artifact:brief|note|shape|option|plan|review|decision|distillation|expanded}
+Artifact: ${input:artifact:brief|note|shape|plan|review|distillation}
 Brief Type: ${input:brief_type:general|external-goal; only for Artifact=brief}
 Artifact State: ${input:artifact_state:inbox|working|settled|superseded}
 Thread: ${input:thread:optional thread}
@@ -28,7 +28,7 @@ Rules:
 - Infer thread targets by same-work-item fit when `Thread` is absent; recency alone is not enough.
 - Include `Thread Inference Note` when target selection depends on assumptions or low-confidence fit.
 - Do not write `docs/**`, source code, `.workflow/**`, or `.github/**`.
-- Load `.workflow/tasks/persist.md` and the matching artifact template.
+- Load `.workflow/tasks/persist.md`, the matching artifact template, and `.workflow/templates/_persist_metadata.md`.
 - Preserve decision-relevant reasoning, not full transcript.
 - If target belongs to another write boundary, route to `wf-sync`, external-agent, or manual workflow-lite fallback.
 

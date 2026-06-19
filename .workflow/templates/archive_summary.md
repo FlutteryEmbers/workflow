@@ -1,19 +1,10 @@
 # Thread Archive Summary
 
+{{CONTENT: /.workflow/templates/_sync_metadata.md}}
+
 ## Language / Style
 
 {{default: Chinese explanations with English technical terms preserved; use full English only when requested}}
-
-## Archive Metadata
-
-- Sync Domain: session-archive
-- Source Thread: {{.session/threads/<thread>/**}}
-- Target: {{.session/archive/<thread>/summary.md}}
-- Thread Status: {{settled | superseded | abandoned | implemented | blocked}}
-- Archive Date: {{date}}
-- Archive Purpose: {{why this thread is being archived}}
-- Summary Scope: {{what source artifacts and time span this summary covers}}
-- Next Retrieval Use: {{how a future reader should use this archive}}
 
 ## Final Outcome
 

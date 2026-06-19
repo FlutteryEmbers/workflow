@@ -20,4 +20,4 @@ Folded concepts:
 - `iteration`: built into session/thread inference and `persist` rules.
 - `expand`: built into `Output` and `Depth` behavior.
 
-Use `persist` for active session outputs: `.session/inbox/**` for staged inputs and `.session/threads/{thread}/**` for related shape, plan, review, decision, and reference artifacts. Code-aligned project knowledge goes to `docs/**` through `sync`; archive summaries go to `.session/archive/<thread>/summary.md` through `sync`. Code-adjacent reading notes go to `src/**/README.md`.
+Use `persist` for active session outputs: `.session/inbox/**` for staged inputs and `.session/threads/{thread}/**` for related shape, plan, review, distillation, note, brief, and reference artifacts. Code-aligned project knowledge goes to `docs/**` through `sync`; archive summaries go to `.session/archive/<thread>/summary.md` through `sync`. Code-adjacent reading notes go to `src/**/README.md`.

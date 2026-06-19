@@ -5,21 +5,10 @@
 > ```yaml
 > status: active | parked | discarded | promoted
 > source: chat | script | code | external
-> updated: {{date}}
 > promoted_to: {{path or none}}
 > ```
 
-## Persist Metadata
-
-- Artifact: note
-- Topic: {{topic}}
-- Artifact State: {{inbox | working | settled | superseded}}
-- Thread: {{thread-name or none}}
-- Intent: {{summary | exploration | audit | reference | capture}}
-- Depth: {{compact | standard}}
-- Source: {{recent discussion | user input | file path}}
-- Target: {{.session/...}}
-- Last Updated: {{date}}
+{{CONTENT: /.workflow/templates/_persist_metadata.md}}
 
 ## Purpose
 

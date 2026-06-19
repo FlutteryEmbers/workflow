@@ -44,7 +44,7 @@ Plan: <required for execute; otherwise none>
 Context:
 - #.workflow/tasks/<task>.md
 - #.workflow/lenses/<lens>.md only when selected
-- #.workflow/templates/<template>.md only for persist or sync in Mode: persist
+- #.workflow/templates/<template>.md plus the matching metadata partial only for persist or sync in Mode: persist
 - relevant .session/inbox/**, relevant .session/threads/**, docs/**, or source files
 Request:
 <what you want>
@@ -211,7 +211,7 @@ Use this when the user says persist, write, generate, update, land, or record a 
 Add:
 
 - #.workflow/tasks/persist.md
-- the matching artifact template from #.workflow/templates/
+- the matching artifact template from #.workflow/templates/ and #.workflow/templates/_persist_metadata.md
 - selected #.workflow/lenses/<lens>.md only when named
 - `Persist Candidate`, `Persist Packet`, source discussion, source artifact, or relevant context
 
@@ -235,7 +235,7 @@ Content fidelity:
 - Include `Thread Inference Note` when the inferred target depends on assumptions or low-confidence same-work-item fit.
 - Preserve decision-relevant reasoning, not full transcript.
 - Keep context, key facts, decision trail, rejected options, risks, examples, and next use when they affect later work.
-- Use artifact `Depth: detailed` for shape, option, plan, review, decision, distillation, and expanded artifacts unless the user asks for compact artifact output.
+- Use artifact `Depth: detailed` for shape, plan, review, and distillation artifacts unless the user asks for compact artifact output.
 - For `notes/**`, compact or standard depth is enough unless the user asks for more detail.
 
 Revision boundary:
@@ -282,12 +282,9 @@ Use stop points before implementation and stable-document sync.
 - `Artifact: brief`: #.workflow/templates/brief.md
 - `Artifact: note`: #.workflow/templates/note.md
 - `Artifact: shape`: #.workflow/templates/shape.md
-- `Artifact: option`: #.workflow/templates/options.md
 - `Artifact: plan`: #.workflow/templates/plan.md
 - `Artifact: review`: #.workflow/templates/review.md
-- `Artifact: decision`: #.workflow/templates/decision.md
 - `Artifact: distillation`: #.workflow/templates/distillation.md
-- `Artifact: expanded`: #.workflow/templates/expanded.md
 
 ## Common Scenarios
 
@@ -331,12 +328,12 @@ Target: notes/thread-naming.md
 
 Add #.workflow/tasks/persist.md and #.workflow/templates/note.md. `notes/**` must be explicit and remains disposable exploration memory.
 
-### Persist Thread Decision
+### Persist Thread Direction
 
 ```text
 Mode: persist
 Task: persist
-Artifact: decision
+Artifact: shape
 Artifact State: settled
 Intent: constraint
 Depth: detailed
@@ -344,7 +341,7 @@ Thread: workflow-goal-removal
 Topic: goal_boundary
 ```
 
-Add #.workflow/tasks/persist.md and #.workflow/templates/decision.md.
+Add #.workflow/tasks/persist.md and #.workflow/templates/shape.md.
 
 ### Sync Stable Documents
 
@@ -354,19 +351,19 @@ Task: sync
 Sync Domain: project-docs
 Sync Object: architecture
 Scope: auth
-Source Of Truth: .session/threads/{thread}/decision_{topic}.md
+Source Of Truth: .session/threads/{thread}/shape_{topic}.md
 Target: docs/architecture.md
 Source:
-- .session/threads/{thread}/decision_{topic}.md
+- .session/threads/{thread}/shape_{topic}.md
 ```
 
-Add #.workflow/tasks/sync.md, #.workflow/templates/sync.md, relevant thread artifacts, existing docs, and source files. Apply Project Docs Rules for `project-docs` or Archive Rules for `session-archive`.
+Add #.workflow/tasks/sync.md, #.workflow/templates/_sync_metadata.md, relevant thread artifacts, existing docs, and source files. Apply Project Docs Rules for `project-docs` or Archive Rules for `session-archive`.
 
-When creating a new `architecture`, `feature`, or `reference` docs target, also add #.workflow/templates/project_doc.md. When updating existing docs, preserve the target file's existing structure.
+When creating a new `architecture`, `feature`, or `reference` docs target, also add #.workflow/templates/project_doc.md. When updating existing docs, preserve the target file's existing structure and refresh sync metadata.
 
 Use `Sync Object: architecture | feature | reference | code-readme | archive-summary | all`. `Target` wins, `Target Directory` may guide creation/update, and existing docs convention may guide suggested targets. Do not create workflow-internal docs such as `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` unless the user explicitly declares a host-project taxonomy override.
 
-For `session-archive`, use target `.session/archive/<thread>/summary.md` and add #.workflow/templates/archive_summary.md. Require Source Thread, Thread Status, Archive Purpose, Summary Scope, and Next Retrieval Use. Do not edit active `.session/threads/**`.
+For `session-archive`, use target `.session/archive/<thread>/summary.md` and add #.workflow/templates/archive_summary.md plus #.workflow/templates/_sync_metadata.md. Require Source Thread, Thread Status, Archive Purpose, Summary Scope, and Next Retrieval Use. Do not edit active `.session/threads/**`.
 
 ### Execute A Plan
 

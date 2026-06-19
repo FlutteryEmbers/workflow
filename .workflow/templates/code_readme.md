@@ -1,5 +1,7 @@
 # Code README
 
+{{CONTENT: /.workflow/templates/_sync_metadata.md}}
+
 ## Note Type
 
 {{module overview | surface | behavior | decision | mixed}}
@@ -40,7 +42,3 @@
 
 - Project docs: {{allowed docs/** path or none}}
 - Code: {{source path}}
-
-## Last Reviewed
-
-{{date}}

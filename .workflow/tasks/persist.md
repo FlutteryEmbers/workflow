@@ -44,7 +44,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 - Use after `clarify`, `explore`, `shape`, `plan`, `review`, or `build` output when the user wants to persist a session artifact or knowledge capture.
 - Use to update an existing `.session/**` artifact with newer discussion, review feedback, or user corrections.
-- Use to persist structured artifacts into `.session/threads/{thread}/**` so related shape, plan, review, and decision files stay together.
+- Use to persist structured artifacts into `.session/threads/{thread}/**` so related shape, plan, review, distillation, note, and brief files stay together.
 - Use to write disposable exploration notes only when the user explicitly provides `Target: notes/**`.
 
 ## Do Not Use When
@@ -63,7 +63,7 @@ Adjacent discussion output from `clarify`, `explore`, `distill`, `shape`, `revie
 
 ## Persist Inputs
 
-- `Artifact`: `brief | note | shape | option | plan | review | decision | distillation | expanded`.
+- `Artifact`: `brief | note | shape | plan | review | distillation`.
 - `Brief Type`: optional for `Artifact: brief`; use `external-goal` for long, external, or reusable goal material stored in `.session/inbox/**`.
 - `Artifact State`: `inbox | working | settled | superseded`.
 - `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference | capture`.
@@ -101,7 +101,7 @@ Persisted artifacts must be more structured than chat without losing the reasoni
 - `standard`: include source context, key points, decision-relevant facts, assumptions, open questions, and next use.
 - `detailed`: include decision trail, evidence, alternatives considered, rejected options, risks, examples or pseudocode when useful, validation approach, and next use.
 - Default `Depth: standard` for `brief` and `note`.
-- Default `Depth: detailed` for `shape`, `option`, `plan`, `review`, `decision`, `distillation`, and `expanded`.
+- Default `Depth: detailed` for `shape`, `plan`, `review`, and `distillation`.
 - Use a lower depth only when the user explicitly asks for a compact artifact.
 
 ## Source Handling
@@ -109,11 +109,21 @@ Persisted artifacts must be more structured than chat without losing the reasoni
 - Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Packet`; explicit `Persist Candidate`; source artifacts from the inferred same work item; recent discussion that matches the target work item.
 - Prefer an explicit `Persist Packet` when present. Treat it as source handoff input, not as the final artifact schema.
 - If no `Persist Packet` exists, synthesize one from `Persist Candidate`, recent discussion, source artifacts, user corrections, and selected files.
-- `persist` is the artifact shaping owner: load the matching template for the selected `Artifact`, map packet fields into it, and fill missing template sections by inference, summary, or `unknown` / `none`.
+- `persist` is the artifact shaping and persist metadata owner: load the matching template for the selected `Artifact`, apply `.workflow/templates/_persist_metadata.md`, map packet fields into it, and fill missing template sections by inference, summary, or `unknown` / `none`.
+- Metadata timestamps use `YYYY-MM-DD HH:mm` with the execution environment timezone. For new files, set `Created At` and `Updated At` to the current minute. For existing files, preserve `Created At`, refresh `Updated At`, and add `Created At` with the current minute when missing.
 - Discuss output budget does not reduce artifact fidelity. Even if the prior answer used `Output: compact`, generate the persisted artifact at the requested or default `Depth`.
 - If source material conflicts, preserve the conflict and mark the source of truth as unresolved.
 - Do not use `persist` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
 - Do not promote inbox capture to source of truth. Persist can store the capture, but promotion to thread decision, project docs, code README, or build adapter requires later `review`, `plan`, or `sync`.
+
+## Retired Artifact Types
+
+These artifact kinds are retired and must not be written or routed as compatibility aliases:
+
+- `option`: use `Artifact: shape` for candidate directions, tradeoffs, and rejected options.
+- `decision`: use `Artifact: shape` for concept-level or non-implementation decisions, `Artifact: plan` for implementation decisions, and `sync` for stable source-of-truth projection.
+- `expanded`: use `Artifact: note`, `shape`, `plan`, or `distillation` according to the content's purpose.
+- critique and consistency review outputs: use `Artifact: review`.
 
 ## Thread Inference
 
@@ -172,7 +182,7 @@ If review feedback is not explicit enough to apply mechanically, route back to `
 - `notes/**` may be overwritten, deleted, parked, discarded, or promoted later.
 - Useful conclusions from `notes/**` should be promoted through normal workflow: persist to `.session/threads/**`, or sync confirmed project context to `docs/**`.
 - Optional note metadata may be used when helpful: `status`, `source`, `updated`, `promoted_to`.
-- `notes/**` is suitable for `Artifact: brief | note | shape | option | review | distillation | expanded`; do not use it for implementation plans, project docs, or gate verdicts.
+- `notes/**` is suitable for `Artifact: brief | note | shape | review | distillation`; do not use it for implementation plans, project docs, or gate verdicts.
 - Review-like content in `notes/**` must be labeled disposable and non-gating. Use `.session/threads/**` for review artifacts that may gate plan, build, sync, or source-of-truth decisions.
 
 ## Inbox Capture Rule
@@ -202,22 +212,23 @@ If the user explicitly provides a target path, respect it unless it violates wri
 
 ## Template Selection
 
-Load only the matching template for the artifact being written. Discussion task packet fields do not replace these templates.
+Load only the matching template for the artifact being written. Apply the persist metadata partial before the artifact body. Discussion task packet fields do not replace these templates.
 
 - `brief`: `.workflow/templates/brief.md`
 - `note`: `.workflow/templates/note.md`
 - `shape`: `.workflow/templates/shape.md`
-- `option`: `.workflow/templates/options.md`
 - `plan`: `.workflow/templates/plan.md`
 - `review`: `.workflow/templates/review.md`
-- `decision`: `.workflow/templates/decision.md`
 - `distillation`: `.workflow/templates/distillation.md`
-- `expanded`: `.workflow/templates/expanded.md`
+
+Metadata partial:
+
+- `.workflow/templates/_persist_metadata.md`
 
 ## Output Rules
 
 - Write only the target `.session/inbox/**` or `.session/threads/**` artifact, or explicit `notes/**` exploration note.
-- Add `Persist Metadata` to the artifact.
+- Add metadata from `.workflow/templates/_persist_metadata.md` to the artifact.
 - Include `Thread Inference Note` when thread selection depends on same-work-item assumptions, source context, or low-confidence inference.
 - Keep `Intent` and `Depth` as metadata; do not use them to choose directories or permissions.
 - `Artifact State` is metadata and inference input only. It may help infer an inbox target when no stronger target anchor exists, but it does not authorize execution, does not mean approved, and does not permit writes outside the target boundary.

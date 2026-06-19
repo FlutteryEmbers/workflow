@@ -30,7 +30,7 @@ graph TD
 - `lens`: optional user-selected thinking method in `.workflow/lenses/`.
 - `.session`: AI session working memory, not project source of truth.
 - `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, reference material, and untriaged knowledge captures.
-- `.session/threads`: related shape, option, plan, review, decision, and reference artifacts grouped by small closable work item.
+- `.session/threads`: related shape, plan, review, distillation, note, brief, and reference artifacts grouped by small closable work item.
 - `.session/archive`: stable summaries of completed, superseded, abandoned, implemented, or blocked threads.
 - `persist`: the only task that writes session artifacts.
 - `sync`: stable-document projection for project docs, code-adjacent README files, and session archive summaries.
@@ -55,7 +55,7 @@ Use `.session/inbox/**` for raw or lightly structured inputs and untriaged knowl
 Session directories express role; thread directories express small closable work items; file prefixes express artifact kind.
 
 - `inbox`: `note_{topic}.md`, `brief_{topic}.md`
-- `threads/{thread}`: `brief_`, `note_`, `shape_`, `option_`, `plan_`, `review_`, `decision_`, `distillation_`, `expanded_`
+- `threads/{thread}`: `brief_`, `note_`, `shape_`, `plan_`, `review_`, `distillation_`
 
 Do not use task names, lenses, modes, or artifact kinds as thread names. `docs/**` follows the host project's project docs naming. `src/**/README.md` is fixed.
 
@@ -378,6 +378,17 @@ Persisted artifact schema belongs only to `.workflow/templates/**`. Discussion t
 
 `persist` is the artifact shaping owner. It consumes `Persist Candidate`, minimal `Persist Packet`, recent discussion, existing artifacts, or source files, then loads the matching template and fills the final artifact. Missing packet fields do not remove template sections; `persist` should infer, summarize, or mark fields as `unknown` / `none`.
 
+## Unified Metadata Partials
+
+Template bodies reference shared metadata partials instead of defining metadata independently.
+
+- `.workflow/templates/_persist_metadata.md` is used for active session artifacts written by `persist`.
+- `.workflow/templates/_sync_metadata.md` is used for stable documents written by `sync`.
+- Discussion tasks and `Persist Packet` do not generate final metadata; the write task owns metadata completion.
+- Timestamps use `YYYY-MM-DD HH:mm` and include `Timezone`.
+- `persist` sets `Created At` and `Updated At` for new files, preserves `Created At` on updates, and refreshes `Updated At`.
+- `sync` refreshes `Updated At` for stable document writes.
+
 `distill` is the summary task. It summarizes only the user-selected source and focus, separates `Observed`, `Inferred`, and `Unknown`, and does not write files. Save its result through `persist Artifact=distillation`. Use `review` to judge summary accuracy or source-of-truth status.
 
 Compact output starts with `User Intent`, may include `Current Read`, and uses short `Take`, limited risks, one `Next`, and at most one-line `Persist Candidate`. Normal refine output should include `Discussion Notes To Preserve` for phase boundaries, constraints, examples, accepted risks, and user corrections.
@@ -386,13 +397,14 @@ Compact output starts with `User Intent`, may include `Current Read`, and uses s
 
 - `shape compact`: reason about direction and choose or recommend a concept.
 - `plan compact`: summarize the shaped/chosen direction, show a compact `Impact Surface`, then give the plan sketch.
-- `plan full`: minimal handoff packet for persist, explicit executable plan candidate, or external-agent use. The persisted artifact structure comes from `.workflow/templates/plan.md`.
+- `plan full`: minimal handoff packet for persist, explicit executable plan candidate, or external-agent use. The persisted artifact structure comes from `.workflow/templates/plan.md` and uses `Source Basis`, `Impact Surface -> Key Changes`, `Scope`, `Verification`, `Stop Conditions`, and `Review / Next Use`.
 
 Every `plan` output, including compact chat output, must include:
 
 ```text
 Shape Summary
 Impact Surface
+Key Changes
 Plan
 Plan Readiness
 Plan Blockers
@@ -448,7 +460,9 @@ Persisted artifacts preserve decision-relevant reasoning, not full transcript. T
 - `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference | capture`.
 - `Depth`: `compact | standard | detailed`.
 
-Default depth is `standard` for `brief` and `note`, and `detailed` for `shape`, `option`, `plan`, `review`, `decision`, `distillation`, and `expanded`.
+Default depth is `standard` for `brief` and `note`, and `detailed` for `shape`, `plan`, `review`, and `distillation`.
+
+Retired artifact kinds are not compatibility aliases. Candidate directions, tradeoffs, and non-implementation decisions persist as `Artifact: shape`; implementation decisions persist as `Artifact: plan`; review, critique, and consistency findings persist as `Artifact: review`; expanded discussion persists as `note`, `shape`, `plan`, or `distillation` depending on its purpose.
 
 ## Exploration Notes
 
@@ -481,7 +495,7 @@ Implicit preflight must not load templates, write files, run implementation, run
 
 ## Embedded Critique Check
 
-Embedded critique checks are lightweight core protocol behavior, not a lens. They do not load `.workflow/lenses/redteam.md`, do not use the full `critique.md` template, and do not issue formal review verdicts.
+Embedded critique checks are lightweight core protocol behavior, not a lens. They do not load `.workflow/lenses/redteam.md`, do not use a separate critique artifact template, and do not issue formal review verdicts.
 
 - `shape`: name key unknowns, risky assumptions, likely failure paths, and whether an explicit redteam critique is worth running later.
 - `plan`: include `Step / Change / Verify / Risk / Stop Condition` for major steps.
@@ -576,7 +590,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Stage requirements or background: `clarify -> persist -> .session/inbox/**`.
 - Long or reusable external goal: `persist external-goal brief -> shape -> persist shape`.
 - Conversational goal: `shape -> persist shape`.
-- Explore code or reference material: `explore Evidence Mapping/Probe -> persist -> .session/inbox/**` or `.session/threads/{thread}/option_*.md`.
+- Explore code or reference material: `explore Evidence Mapping/Probe -> persist -> .session/inbox/**` or `.session/threads/{thread}/note_*.md`.
 - Summarize a file, folder, thread, discussion, docs, or reference: `distill -> optional persist Artifact=distillation`.
 - Disposable exploration note: `persist -> notes/{topic}.md` only with explicit target.
 - Shape a direction: `shape -> persist -> .session/threads/{thread}/shape_*.md`.

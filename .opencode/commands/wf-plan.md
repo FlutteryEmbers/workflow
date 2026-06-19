@@ -36,6 +36,7 @@ Return:
 - Target outcome
 - Shape Summary
 - Impact Surface
+- Key Changes
 - Plan
 - Plan Readiness
 - Readiness Rationale

@@ -1,16 +1,6 @@
 # Distillation / Summary
 
-## Persist Metadata
-
-- Artifact: distillation
-- Topic: {{topic}}
-- Artifact State: {{inbox | working | settled | superseded}}
-- Thread: {{thread-name or none}}
-- Intent: {{summary | exploration | audit | reference}}
-- Depth: {{detailed}}
-- Source: {{file | folder | document | thread | discussion | reference material}}
-- Target: {{.session/...}}
-- Last Updated: {{date}}
+{{CONTENT: /.workflow/templates/_persist_metadata.md}}
 
 ## Source Scope
 

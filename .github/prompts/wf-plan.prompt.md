@@ -37,6 +37,7 @@ Return:
 - User Intent
 - Shape Summary
 - Impact Surface
+- Key Changes
 - Plan
 - Plan Readiness
 - Readiness Rationale

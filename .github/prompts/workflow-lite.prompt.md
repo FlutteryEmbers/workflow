@@ -120,7 +120,7 @@ Request: ${input:request:describe the work}
 ## Context Format
 
 Add the selected task file from `.workflow/tasks/`.
-Add the matching template from `.workflow/templates/` only for `persist` or `sync` in `Mode: persist`.
+Add the matching template from `.workflow/templates/` only for `persist` or `sync` in `Mode: persist`, plus `_persist_metadata.md` for `persist` or `_sync_metadata.md` for `sync`.
 Discussion task `Full Persist Packet` output is handoff input, not a final artifact schema.
 For new `architecture | feature | reference` docs targets, add `project_doc.md`; for `code-readme`, add `code_readme.md`; for archive summaries, add `archive_summary.md`. For existing docs, preserve the target structure.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.

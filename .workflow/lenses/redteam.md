@@ -23,4 +23,4 @@ This is not normal review, built-in safety, or a rewrite task. `review` still ow
 
 - Use the critique structure in chat when useful.
 - Persist durable critique results through `Persist Packet` and `persist`, usually as a `review` or `decision` artifact.
-- Do not load `.workflow/templates/critique.md` by default in `Mode: discuss`; templates are for `persist` or `sync` persist steps.
+- Do not load artifact templates by default in `Mode: discuss`; templates are for `persist` or `sync` persist steps.

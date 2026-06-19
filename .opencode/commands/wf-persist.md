@@ -17,7 +17,7 @@ Rules:
 - Infer thread targets by same-work-item fit when `Thread` is absent; recency alone is not enough.
 - Include `Thread Inference Note` when target selection depends on assumptions or low-confidence fit.
 - Do not write `docs/**`, source code, `.workflow/**`, or `.github/**`.
-- Use `.workflow/tasks/persist.md` and the matching `.workflow/templates/<artifact>.md` as contracts if needed.
+- Use `.workflow/tasks/persist.md`, the matching `.workflow/templates/<artifact>.md`, and `.workflow/templates/_persist_metadata.md` as contracts if needed.
 - You may consume a `Persist Candidate`, recent discussion, explicit source files, or user-provided content.
 - Preserve decision-relevant reasoning; do not save full transcript by default.
 

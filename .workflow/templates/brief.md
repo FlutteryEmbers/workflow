@@ -1,16 +1,10 @@
 # Brief
 
-## Persist Metadata
+{{CONTENT: /.workflow/templates/_persist_metadata.md}}
 
-- Artifact: brief
+## Brief Metadata
+
 - Brief Type: {{general | external-goal}}
-- Artifact State: {{inbox | working | settled | superseded}}
-- Thread: {{thread-name or none}}
-- Intent: {{summary | exploration}}
-- Depth: {{compact | standard}}
-- Source: {{recent discussion | user input | file path}}
-- Target: {{.session/...}}
-- Last Updated: {{date}}
 
 ## Goal
 

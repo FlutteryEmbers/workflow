@@ -27,7 +27,7 @@ Use this lens when structure, boundaries, dependencies, interfaces, or durable t
 
 ## Output Hints
 
-- Architecture decisions can be persisted to `.session/threads/{thread}/decision_{topic}.md`.
-- Architecture direction from goal context should be shaped into `.session/threads/{thread}/shape_{topic}.md` or `.session/threads/{thread}/decision_{topic}.md`.
+- Architecture decisions can be persisted as shape artifacts under `.session/threads/{thread}/shape_{topic}.md`.
+- Architecture direction from goal context should be shaped into `.session/threads/{thread}/shape_{topic}.md`.
 - Stable project constraints belong in `docs/architecture/boundaries.md` or another user-specified `docs/**` target through `sync`.
 - Do not turn prototype exceptions into durable project constraints unless explicitly confirmed.

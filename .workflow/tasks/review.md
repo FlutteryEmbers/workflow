@@ -19,7 +19,7 @@ user_selectable_lenses:
   - expert
 done_check:
   - findings_are_actionable
-  - decision_is_clear
+  - verdict_target_is_clear
   - evidence_is_named
 ---
 
@@ -252,11 +252,11 @@ Persist Candidate:
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an audit/diff-review artifact. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load `.workflow/templates/review.md` or `.workflow/templates/decision.md` and shape the final artifact.
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an audit/diff-review artifact. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load `.workflow/templates/review.md` and shape the final artifact.
 
 ```text
 Persist Packet:
-Artifact: review | decision
+Artifact: review
 Thread: <thread>
 Topic: <topic>
 Suggested Target: .session/threads/<thread>/review_<topic>.md

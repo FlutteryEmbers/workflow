@@ -20,7 +20,7 @@ Rules:
 - `Target` wins; `Target Directory` may guide creation/update; otherwise use an existing docs convention or output an Alignment Set.
 - Do not create workflow-internal docs such as `docs/workflow/**`, `docs/session/**`, `docs/ai/**`, `docs/prompts/**`, `docs/notes/**`, `docs/plans/**`, or `docs/reviews/**` unless the user explicitly declares host-project taxonomy override.
 - If `Target` is missing, require `Scope` and return an `Alignment Set` of at most 3 targets before writing.
-- Use `.workflow/tasks/sync.md` as the task contract if needed.
+- Use `.workflow/tasks/sync.md` and `.workflow/templates/_sync_metadata.md` as contracts if needed.
 - If Project Docs Rules are not satisfied, output `docs blocked`; if Archive Rules are not satisfied, output `archive blocked`.
 
 Request:

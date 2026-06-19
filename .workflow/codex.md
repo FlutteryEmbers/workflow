@@ -20,7 +20,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Codex may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 - Load templates only for `persist` or `sync` in `Mode: persist`; discussion tasks must not copy final artifact templates.
-- For `persist`, load only the matching template for the selected artifact; a discussion `Persist Packet` is handoff input, not the final artifact schema.
+- For `persist`, load only the matching template for the selected artifact and apply `.workflow/templates/_persist_metadata.md`; a discussion `Persist Packet` is handoff input, not the final artifact schema.
 - Treat `.session/**` as working memory, not project source of truth.
 - Treat `.session/threads/**` as session working memory grouped by small closable work item.
 - Use explicit `.session/threads/{thread}/plan_{topic}.md` files for workflow-managed build input.
@@ -130,7 +130,7 @@ Use when the user wants to persist a session artifact from recent discussion, an
 ```text
 Mode: persist
 Task: persist
-Artifact: <brief|note|shape|option|plan|review|decision|distillation|expanded>
+Artifact: <brief|note|shape|plan|review|distillation>
 Brief Type: <general|external-goal; only for Artifact: brief>
 Artifact State: <inbox|working|settled|superseded>
 Thread: <thread-name>
@@ -140,7 +140,7 @@ Topic: <topic>
 Target: <optional when thread/topic can infer target>
 Context:
 - .workflow/tasks/persist.md
-- .workflow/templates/<artifact template>.md
+- .workflow/templates/<artifact template>.md and .workflow/templates/_persist_metadata.md
 - selected lenses only when named
 - Persist Packet or source context
 Request:
@@ -212,7 +212,7 @@ Source:
 - .session/threads/<thread>/<artifact>.md
 Context:
 - .workflow/tasks/sync.md
-- .workflow/templates/sync.md, plus .workflow/templates/project_doc.md, .workflow/templates/code_readme.md, or .workflow/templates/archive_summary.md when creating a target
+- .workflow/templates/project_doc.md, .workflow/templates/code_readme.md, or .workflow/templates/archive_summary.md plus .workflow/templates/_sync_metadata.md when creating or rewriting a stable target
 - source artifact, existing docs, and relevant source files
 Request:
 Project confirmed outcomes into the target only. Use Sync Object gates for `project-docs`; use archive prerequisites for `session-archive`.

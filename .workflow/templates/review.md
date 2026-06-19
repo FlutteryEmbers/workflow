@@ -1,16 +1,6 @@
 # Review
 
-## Persist Metadata
-
-- Artifact: review
-- Topic: {{topic}}
-- Artifact State: {{working | settled | superseded}}
-- Thread: {{thread-name}}
-- Intent: {{audit | decision}}
-- Depth: {{detailed}}
-- Source: {{recent discussion | existing artifact | diff | file path}}
-- Target: {{.session/...}}
-- Last Updated: {{date}}
+{{CONTENT: /.workflow/templates/_persist_metadata.md}}
 
 ## Language / Style
 
