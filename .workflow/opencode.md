@@ -23,7 +23,7 @@ When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, OpenCode may provide provisional thinking while the user keeps final responsibility.
 
 - `clarify` may output a lightweight next-task hint.
-- `explore` may output `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
+- `explore` may output `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
@@ -40,7 +40,7 @@ Default to `Compatibility: preserve` and `Constraint Mode: respect`. Breaking co
 Task shortcut:
 
 - `shape = synthesis`: small discussion fallback for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, "how should I think about this", or next-step selection requests.
-- `explore = evidence acquisition + non-mutating probe`: code/docs/reference/behavior/entrypoint/dependency evidence mapping, reliability notes, and temporary non-mutating probes.
+- `explore = upstream evidence for shape and review`: code/docs/reference/behavior/entrypoint/dependency evidence mapping, reliability notes, sufficiency, downstream use, and temporary non-mutating probes.
 - `distill = summary`: user-directed summary, folder summary, source distillation, or archive-summary draft for specified source material.
 - `review = verdict / gap-analysis`: existing target reasonableness, readiness, conflict, safety, acceptance checks, or baseline gap review.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
@@ -65,6 +65,8 @@ Discovery vs judgment rule:
 - Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
 - Use `review` for whether something is correct, acceptable, ready, worth changing, or which source should be treated as truth.
 - Do not add the `consistency` lens for discovery questions.
+
+`explore` is upstream evidence for shape and review. Use `explore -> plan` only when the direction or target is already selected and the evidence only fills repo-aware planning context. Shape/review/plan may perform bounded evidence checks only to support their own output shape; if evidence gathering becomes the main deliverable, route to `explore`.
 
 Compatibility / constraint rule:
 

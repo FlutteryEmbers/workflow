@@ -101,7 +101,7 @@ conversational source
 | :--- | :--- | :--- | :--- |
 | `route` | `analyst` | chat | Recommend the smallest useful next path. |
 | `clarify` | `analyst` | chat | Explain terms, prior answers, statements, assumptions, scope, and success criteria. |
-| `explore` | `designer` | chat | Acquire evidence with discovery inventory, evidence mapping, reliability notes, or non-mutating probes. |
+| `explore` | `designer` | chat | Acquire upstream evidence for shape and review with discovery inventory, evidence mapping, reliability notes, or non-mutating probes. |
 | `distill` | `analyst` | chat | Generate a user-directed summary or distillation of specified source material. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, or session decision. |
 | `plan` | `designer` | chat | Turn a chosen direction into a repo-aware plan, explicit executable plan candidate, or external-agent handoff. |
@@ -116,12 +116,12 @@ When unsure, start with `shape`. Use `clarify` for meaning, `explore` for eviden
 
 - `clarify = semantic unpacking`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
 - `shape = synthesis`: default small fallback for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, "how should I think about this", or "what should happen next" requests.
-- `explore = evidence acquisition + non-mutating probe`: use only when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, dependencies, or temporary non-mutating probes.
+- `explore = upstream evidence for shape and review`: use when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, dependencies, or temporary non-mutating probes before direction or verdict.
 - `distill = summary`: use when the user asks to summarize, distill, compress, or extract structure from specified files, folders, threads, docs, discussion, or reference material.
 - `review = verdict / gap-analysis`: use only when there is an existing target or baseline to judge, such as code, docs, plan, diff, decision, behavior claim, missing capability, or thread artifact.
 - `plan = planning sequence`: use when the direction is chosen and the user needs phases, sequencing, repo-aware steps, or an executable handoff.
 
-`shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `explore` may say "evidence was found" or "no evidence was found", run non-mutating probes, and provide candidate interpretations, but not final direction, severity, source-of-truth judgment, repair recommendation, or gap-analysis. `distill` may summarize and separate observed, inferred, and unknown content, but not judge accuracy or source of truth. `review` may give a minimal revision sketch, but not a full replacement design.
+`explore` is upstream evidence for shape and review. It may say "evidence was found" or "no evidence was found", run non-mutating probes, provide candidate interpretations, and report evidence sufficiency for downstream use, but not final direction, severity, source-of-truth judgment, repair recommendation, or gap-analysis. `explore -> plan` is allowed only when the direction or target is already selected and evidence merely fills repo-aware planning context. `shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `distill` may summarize and separate observed, inferred, and unknown content, but not judge accuracy or source of truth. `review` may give a minimal revision sketch, but not a full replacement design.
 
 ## Task Boundary Layers
 
@@ -216,7 +216,7 @@ Use these decision states across shape and plan:
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is thinking material for the user, not final authorization.
 
 - `clarify` may provide a lightweight next-task hint.
-- `explore` may provide `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
+- `explore` may provide `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
@@ -490,9 +490,12 @@ Implicit preflight is a same-response, read-only check that can run automaticall
 
 With shape-first routing:
 
-- `shape` preflight is triage plus evidence check: decide whether to shape now, recommend `explore -> shape`, or route to `review`.
+- `shape` preflight is triage plus bounded evidence check for direction shaping: decide whether to shape now, recommend `explore -> shape`, or route to `review`.
 - `explore` preflight is source/scope/evidence-type/probe-safety check only.
-- `review` preflight is target/question/evidence-readiness check only.
+- `review` preflight is a bounded evidence check for a named verdict, claim, diff review, or baseline.
+- `plan` preflight is repo-fit preflight: target files, existing patterns, constraints, and verification entrypoints for an already selected direction.
+
+A task may perform bounded evidence checks only to support its own output shape. If evidence gathering becomes the main deliverable, route to `explore`.
 
 Implicit preflight must not load templates, write files, run implementation, run build verification, perform sync, apply unselected lenses, or do a full repository scan. `explore` may run non-mutating probes only after the explore boundary is clear and only to establish evidence. In `Mode: persist` and `Mode: execute`, do not run implicit preflight; validate prerequisites and block when they are missing. `build` execution plan validation is required in `Mode: execute`, but it is not implicit preflight.
 
@@ -593,11 +596,13 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Stage requirements or background: `clarify -> persist -> .session/inbox/**`.
 - Long or reusable external goal: `persist external-goal brief -> shape -> persist shape`.
 - Conversational goal: `shape -> persist shape`.
-- Explore code or reference material: `explore Evidence Mapping/Probe -> persist -> .session/inbox/**` or `.session/threads/{thread}/note_*.md`.
+- Explore code or reference material: `explore Evidence Mapping/Probe -> shape/review`, then optional `persist -> .session/inbox/**` or `.session/threads/{thread}/note_*.md`.
 - Summarize a file, folder, thread, discussion, docs, or reference: `distill -> optional persist Artifact=distillation`.
 - Disposable exploration note: `persist -> notes/{topic}.md` only with explicit target.
 - Shape a direction: `shape -> persist -> .session/threads/{thread}/shape_*.md`.
 - Ambiguous what-if or option comparison: `shape`, then `explore -> shape` only if missing evidence could change the recommendation.
+- Evidence to verdict/gap: `explore -> review`.
+- Evidence to plan: `explore -> plan` only when direction or target is already selected.
 - Existing target reasonableness: `review`, then `shape` or `plan` only if revision is needed.
 - Plan work or handoff: `plan -> persist -> .session/threads/{thread}/plan_*.md`.
 - Multi-turn design: `shape/review/explore discuss loop -> persist into one thread`.

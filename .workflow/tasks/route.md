@@ -84,6 +84,8 @@ Recommend the smallest path:
 - Meaning questions such as "what does this term/rule/sentence mean" go to `clarify`.
 - Evidence-only requests such as reading code, finding entrypoints, checking docs, understanding behavior, studying references, or running a non-mutating probe go to `explore`.
 - Existence and discovery questions such as "does this repo have evidence for X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
+- `explore` is upstream evidence for shape and review. Use `explore -> shape` when the user wants to design from evidence, and `explore -> review` when the user wants a verdict or gap analysis from evidence.
+- Use `explore -> plan` only when the direction or target is already selected and exploration merely supplies repo-aware planning context.
 - "review this system has X" can use `review` as a claim verdict with bounded evidence check.
 - "review how X is implemented" should use an evidence-shaped response or recommend `explore` unless the user asks for a verdict.
 - "explore whether this plan is reasonable" should use `explore` evidence shape plus `Candidate Review Targets`, not a verdict.
@@ -98,6 +100,9 @@ Recommend the smallest path:
 - User-directed summary or distillation: `distill` -> optional `persist Artifact=distillation`, `review`, `shape`, `plan`, or `sync`.
 - Reusable execution discovery or build environment lesson: `build -> Persist Candidate -> persist` as `Artifact: note`, `Artifact State: inbox`, `Intent: capture`.
 - Target direction, option, architecture, or concept: `shape` -> `persist` to `.session/threads/{thread}/shape_{topic}.md`.
+- Evidence to direction: `explore -> shape`.
+- Evidence to verdict or gap analysis: `explore -> review`.
+- Evidence to plan: `explore -> plan` only after direction or target is selected.
 - Repo-aware implementation sequence or handoff: `plan` -> `persist` to `.session/threads/{thread}/plan_{topic}.md`.
 - Session artifact write: `persist` -> active `.session/inbox/**` or `.session/threads/**`.
 - Active thread metadata or thread file maintenance: `persist` -> `.session/threads/**`.

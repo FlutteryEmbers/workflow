@@ -73,13 +73,13 @@ Adjacent allowance must stay planning-owned. If the primary need is direction ch
 Before planning, classify the request:
 
 - `fits`: target direction is chosen and the user needs repo-aware sequencing, explicit implementation steps, or handoff.
-- `fits_with_preflight`: plan depends on current code, project docs, session context, target-to-repo fit, target files, or verification readiness. In `Mode: discuss`, run default implicit preflight first.
+- `fits_with_preflight`: plan depends on current code, project docs, session context, target-to-repo fit, target files, or verification readiness. In `Mode: discuss`, run repo-fit preflight first.
 - `composite`: user asks to plan and persist; plan first, then route to `persist`.
 - `wrong_task`: target direction is not chosen; recommend `shape`.
 - `wrong_task`: user asks whether current implementation, target, or plan is reasonable; recommend `review`.
 - `composite`: user asks to implement from target docs and current code without a concrete executable plan; recommend `review -> plan -> optional review -> external-agent/build -> review`.
 
-Default implicit preflight runs only in `Mode: discuss` and checks target stability, repo fit, target areas, constraints, and verification readiness. Plan may name plan blockers and conflicts, but must not invent a new target or issue a formal review verdict.
+Repo-fit preflight runs only in `Mode: discuss` and checks target stability, target files or areas, existing patterns, constraints, verification entrypoints, and whether the selected direction fits current repo reality. Plan may name plan blockers and conflicts, but must not perform discovery inventory, decide source of truth, judge missing capability, invent a new target, or issue a formal review verdict. If repo evidence is missing, output `Plan Readiness: incomplete` and `Recommended Next Task: explore`.
 
 ## Copilot Add Context
 

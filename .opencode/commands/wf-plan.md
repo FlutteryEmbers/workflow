@@ -18,6 +18,7 @@ Rules:
 - A plan may name `Plan Blockers` and next task, but it does not authorize writing, sync, execution, or implementation.
 - Use `Output: full` when the plan is intended as an implementation handoff.
 - Compact plan output must still summarize shape/chosen direction and include a compact impact surface.
+- Plan may run repo-fit preflight for target files, existing patterns, constraints, and verification entrypoints. It must not perform discovery inventory, source-of-truth verdicts, or missing-capability judgments; if repo evidence is missing, output `Plan Readiness: incomplete` and recommend `explore`.
 - Use `Shape Summary: Source=chat` when there is no persisted shape artifact.
 - Use `Output: full` for persisted plans, implementation handoffs, explicit executable plan candidates, or external-agent handoffs.
 - Use `.workflow/tasks/plan.md` as the task contract if needed.

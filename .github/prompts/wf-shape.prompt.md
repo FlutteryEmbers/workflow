@@ -19,6 +19,7 @@ Rules:
 - Use `.workflow/tasks/shape.md` as the task contract.
 - Use shape as the small discussion fallback only for concept direction, option framing, and next-step selection.
 - Shape may include lightweight clarification, lightweight current-context compression, candidate evidence needs, risk sketch, or non-executable planning sketch when that supports the direction.
+- Shape may do a bounded evidence check only to support direction-shaped output. If evidence gathering becomes the main deliverable, route to `explore -> shape`.
 - Do not use shape for formal evidence extraction, specified-source summary, formal verdict, source-of-truth judgment, explicit executable plan candidate, stable sync, writes, execution, or implementation.
 - Shape may consume the current chat goal directly or a `.session/inbox/**` brief with `Brief Type: external-goal`.
 - Do not require an inbox goal brief when the conversation already contains enough context.

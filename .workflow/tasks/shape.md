@@ -86,7 +86,9 @@ Before shaping, classify the request:
 - `wrong_task`: user asks to write, stable-sync, execute, implement, or modify repository files; recommend `persist`, `sync`, `plan -> optional review -> build`, or external-agent depending on target and plan readiness.
 - `composite`: user asks to evaluate reasonableness and then design a replacement; recommend `review -> shape`.
 
-Default implicit preflight runs only in `Mode: discuss`. Use it as triage plus evidence check before shaping.
+Default implicit preflight runs only in `Mode: discuss`. Use it as triage plus bounded evidence check for direction shaping.
+
+Shape may inspect current context or do a small bounded evidence check only to decide whether a direction-shaped response can proceed. It must not output a full evidence inventory, discovery map, or source reliability audit. If evidence gathering becomes the main deliverable, route to `explore`.
 
 Output this before the shape when task boundary, evidence readiness, or verdict/planning need is unclear:
 

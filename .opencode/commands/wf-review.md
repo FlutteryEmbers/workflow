@@ -18,6 +18,7 @@ Rules:
 - User-selected review is respected when a bounded claim can be judged; authority is not expanded.
 - Use `Review Type: verdict-review | gap-analysis | diff-review`.
 - Use `gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
+- Review may perform bounded evidence checks only to support a named verdict or baseline. If evidence mapping becomes the main deliverable, return `needs more evidence` and recommend `explore -> review`.
 - Review plans under `verdict-review` when the question is about plan quality, executability, readiness, fit, or risk.
 - When a plan asks review to diagnose a system problem, use `verdict-review` or `gap-analysis` based on the question.
 - For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. An `execution-candidate` plan may be ready with `Blocking Gaps: none` and `Can Execute Plan: yes`.

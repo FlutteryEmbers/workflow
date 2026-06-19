@@ -95,9 +95,9 @@ Before reviewing, classify the request. Prefer an in-shape verdict response over
 - `composite`: user asks to review and persist; review first, then route to `persist`.
 - `wrong_task`: user asks for writing, stable sync, implementation, or full implementation discovery that cannot be answered as a bounded verdict.
 
-Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. It must not become open-ended discovery, must not load templates, and must not write files.
+Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. Review may perform a bounded evidence check only to support a named verdict, claim, diff review, or baseline. It must not become open-ended discovery, must not load templates, and must not write files.
 
-If evidence is insufficient for a verdict or gap analysis, output `Review Verdict: needs more evidence`, name the missing evidence or missing baseline, and recommend `explore` or `shape` instead of inventing readiness or blocking conclusions.
+If evidence is insufficient for a verdict or gap analysis, output `Review Verdict: needs more evidence`, name the missing evidence or missing baseline, and recommend `explore -> review` or `shape` instead of inventing readiness or blocking conclusions. If evidence gathering becomes the main deliverable, route to `explore`.
 
 Review provides verdicts and risk/gap gates when requested or when the selected path uses review. Verdicts should recommend next task: `none`, `persist`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 

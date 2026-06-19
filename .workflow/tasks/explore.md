@@ -1,7 +1,7 @@
 ---
 id: explore
 role: designer
-purpose: Acquire source-backed evidence through discovery inventory, evidence mapping, reliability assessment, and temporary non-mutating probes.
+purpose: Upstream evidence acquisition for shape and review, and occasionally plan, through discovery inventory, evidence mapping, reliability assessment, and temporary non-mutating probes.
 inputs:
   - question_or_source
 outputs:
@@ -39,9 +39,10 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - Use when the user clearly needs evidence about current code, docs, behavior, feasibility, reference material, entrypoints, dependencies, or unknowns.
 - Use when the user asks what exists, where something is, how something appears to work, whether evidence for a capability exists, or how reliable the evidence is.
 - Use when the user needs a non-mutating probe, dry-run, collection command, list command, one-off shell probe, or temporary script outside the repo to establish source-backed evidence.
-- Use when the user needs to understand a repository or material before deciding whether to borrow, maintain, review, plan, or redesign anything.
+- Use when the user needs to understand a repository or material before deciding whether to shape a direction or review a claim.
 - Use when `shape` cannot safely recommend a direction because missing facts could change the answer.
-- Use before `shape` or `plan` when the decision depends on repository reality or external references.
+- Use before `review` when a verdict, gap analysis, or source-of-truth judgment needs evidence first.
+- Use before `plan` only when the direction or target is already selected and the remaining need is repo-aware planning context.
 
 ## Do Not Use When
 
@@ -58,7 +59,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## Boundary Layers
 
 - `Core Responsibility`: acquire source-backed evidence through discovery inventory, evidence mapping, reliability assessment, missing-evidence reporting, and temporary non-mutating probes.
-- `Adjacent Allowance`: include candidate interpretations, likely entrypoints, borrowable ideas, missing evidence, follow-up targets, candidate review targets, and a recommended next task when they help the user use the evidence.
+- `Adjacent Allowance`: include candidate interpretations, likely entrypoints, borrowable ideas, missing evidence, downstream sufficiency, follow-up targets, candidate review targets, and a recommended next task when they help the user use the evidence.
 - `Hard Authority Boundaries`: no durable writes, no stable sync, no implementation or write-path execution, no source-of-truth promotion, and no verdict/severity fields.
 
 Explore output must remain evidence-shaped. If the user asks for judgment, provide evidence plus `Candidate Review Targets`; if the user asks for direction, provide evidence plus likely `shape` inputs.
@@ -74,13 +75,15 @@ Explore output is shaped around evidence:
 - `Evidence Probes`
 - `Reliability Notes`
 - `Missing Evidence`
+- `Evidence Sufficiency`
+- `Downstream Use`
 - `Follow-up Targets`
 - `Candidate Review Targets`
 - `Recommended Next Task`
 
 ## Expected Output
 
-- `Sources Checked`, `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Unknowns`, `Constraints Found`, `Follow-up Targets`, and `Recommended Next Task`.
+- `Sources Checked`, `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Unknowns`, `Constraints Found`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, and `Recommended Next Task`.
 - `Output: compact` default: short findings, key reliability notes, and optional `Persist Candidate`.
 - `Full Persist Packet` only when findings should be persisted now or `Output: full` is requested.
 
@@ -118,7 +121,7 @@ User-selected lenses:
 
 ## Instructions
 
-Explore enough to reduce uncertainty for the next decision. Separate observed facts from assumptions and inferences. You may provide candidate interpretations, likely entrypoints, and borrowable ideas, but do not present them as the final direction, verdict, repair, or baseline gap review; prepare evidence for `shape`, `review`, or `plan`.
+Explore is upstream evidence for shape and review. Explore enough to reduce uncertainty for the next direction or verdict. Separate observed facts from assumptions and inferences. You may provide candidate interpretations, likely entrypoints, and borrowable ideas, but do not present them as the final direction, verdict, repair, or baseline gap review; prepare evidence for `shape` or `review` by default. Prepare evidence for `plan` only when the direction or target is already selected and the evidence merely fills repo-aware planning context.
 
 ## Evidence Probe
 
@@ -170,6 +173,8 @@ Use this structure for non-trivial output:
 - `Reliability Notes`: claims that are contradicted, weak, stale-looking, version-sensitive, or unsafe to rely on.
 - `Evidence Probes`: temporary non-mutating probes used to establish facts, including side-effect checks.
 - `Missing Evidence`: evidence not found or not checked; say "no evidence found for X" rather than "X is missing" when no baseline verdict was requested.
+- `Evidence Sufficiency`: whether the evidence is sufficient, partial, or insufficient for `shape`, `review`, and exceptional `plan` use.
+- `Downstream Use`: shape-ready evidence, review-ready evidence, plan-ready evidence, and missing evidence for each downstream task.
 - `Unknowns`: missing facts or weak evidence.
 - `Constraints Found`: boundaries, existing behavior, dependencies, or doc constraints.
 - `Candidate Interpretations`: plausible explanations or readings of the evidence.
@@ -177,7 +182,7 @@ Use this structure for non-trivial output:
 - `Borrowable Ideas`: patterns or structures that may be useful later, without recommending adoption.
 - `Follow-up Targets`: sources, probes, runtime observations, or questions that could strengthen evidence later.
 - `Candidate Review Targets`: targets that may need `review` if the user wants a verdict, source-of-truth decision, or baseline gap review.
-- `Recommended Next Task`: usually `shape`, `review`, `plan`, or `persist`. Recommend `sync` only when the user explicitly asks for stable-document projection and the required review/source-of-truth prerequisites are already clear.
+- `Recommended Next Task`: default to `shape`, `review`, `persist`, `distill`, or `none`. Recommend `plan` only when the direction or target is already selected and the evidence merely supplies repo-aware planning context. Do not recommend `sync` from discovery unless the user explicitly asks for stable-document projection and review/source-of-truth prerequisites are already clear.
 
 Lens use must not change task responsibility. `architecture`, `boundary`, `debug`, and `language` may improve evidence extraction; `boundary` may focus evidence on imports, call direction, contract terms, provider logic inventory, package API dependencies, and suspected leakage. `explore` must not present candidate interpretations or suspected leakage as final synthesis or verdict.
 
@@ -210,9 +215,20 @@ Evidence Probes:
 - <optional; probe, command or method, observed result, reliability, side effect check>
 Missing Evidence:
 - <0-3 facts not found or not checked>
+Evidence Sufficiency:
+- For Shape: <sufficient|partial|insufficient>
+- For Review: <sufficient|partial|insufficient>
+- For Plan: <sufficient|partial|insufficient|not-applicable>
+Downstream Use:
+- Shape-ready Evidence: <evidence or none>
+- Review-ready Evidence: <evidence or none>
+- Plan-ready Evidence: <only when direction/target is selected; otherwise not-applicable>
+- Missing For Shape: <missing evidence or none>
+- Missing For Review: <missing evidence or none>
+- Missing For Plan: <missing repo facts or not-applicable>
 Follow-up Targets:
 - <0-3 sources, probes, or candidate review targets>
-Recommended Next Task: <shape|review|plan|persist|distill|none>
+Recommended Next Task: <shape|review|persist|distill|none; plan only when direction/target is already selected>
 Persist Candidate: Artifact=<note|shape>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
@@ -233,6 +249,17 @@ Evidence Probes:
 - <probe, command or method, observed result, reliability, side effect check, or none>
 Missing Evidence:
 - <evidence not found or not checked>
+Evidence Sufficiency:
+- For Shape: <sufficient|partial|insufficient>
+- For Review: <sufficient|partial|insufficient>
+- For Plan: <sufficient|partial|insufficient|not-applicable>
+Downstream Use:
+- Shape-ready Evidence: <evidence or none>
+- Review-ready Evidence: <evidence or none>
+- Plan-ready Evidence: <only when direction/target is selected; otherwise not-applicable>
+- Missing For Shape: <missing evidence or none>
+- Missing For Review: <missing evidence or none>
+- Missing For Plan: <missing repo facts or not-applicable>
 Follow-up Targets:
 - <source, probe, runtime observation, user question, or candidate review target>
 Discussion Notes To Preserve:
@@ -240,7 +267,7 @@ Discussion Notes To Preserve:
 Open Questions:
 - <missing source or evidence gap>
 Recommended Next Task:
-- <shape|review|plan|persist|distill|none>
+- <shape|review|persist|distill|none; plan only when direction/target is already selected>
 Persist Candidate:
 - Artifact=<note|shape>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
@@ -263,9 +290,11 @@ Key Fields:
 - Evidence Probes: <temporary non-mutating probes and side-effect checks, or none>
 - Reliability Notes: <evidence strength, conflicts, and unknowns>
 - Missing Evidence: <evidence not found or not checked>
+- Evidence Sufficiency: <For Shape, For Review, For Plan>
+- Downstream Use: <shape-ready evidence, review-ready evidence, exceptional plan-ready evidence, and missing evidence for each>
 - Follow-up Targets: <sources, probes, or candidate review targets>
 - Constraints Found: <constraint or boundary found>
-Next Use: <shape | plan | review | persist | sync | none>
+Next Use: <shape | review | plan | persist | none; plan only when direction/target is already selected>
 ```
 
 If the exploration is not worth preserving, output `Persist Candidate: none`.
