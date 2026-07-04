@@ -633,16 +633,16 @@ Recommended Copilot chain:
 
 ## Using With OpenCode
 
-- Use `.workflow/opencode.md` as the OpenCode adapter guide.
-- Use `/wf`, `/wf-clarify`, `/wf-explore`, `/wf-distill`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync` as thin OpenCode slash commands.
-- Keep `.workflow/**` as the source of truth; do not create a separate OpenCode workflow.
-- Use OpenCode first as a read-only context helper when its context management or model quality is uncertain.
-- Treat OpenCode native Plan output as an external plan draft until it is explicitly chosen for implementation; review is recommended for material risk.
-- Audit OpenCode plans with `review` before implementation when risk is material, and review diffs afterward.
-- `/wf-build` is a high-risk write command for explicit plans only. It should block when `Plan:` is missing or not executable enough.
-- `/wf-build` defaults to compact `Execution Trace`; it does not write `.session/**`. Persist current-work-item audit traces as `Artifact: note` with `Intent: audit`, and reusable execution discoveries as inbox notes with `Intent: capture`.
-- OpenCode bounded implementation should execute only explicit narrow segments.
-- Temporary `.opencode/plans/` files are scratch; use `persist` to persist handoffs to `.session/threads/{thread}/plan_{topic}.md`.
+- Use `.workflow/opencode.md` as the low-model OpenCode adapter guide.
+- Treat OpenCode as an external-agent helper for four actions only: context, plan, implement, and review.
+- Use `/oc-context`, `/oc-plan`, `/oc-implement`, and `/oc-review` from `.opencode/commands/**`.
+- Do not use OpenCode for Workflow Lite routing, lenses, templates, `persist`, or `sync`.
+- Use short handoff packets when passing work from the main workflow to OpenCode.
+- `/oc-context` is read-only and should return current state, relevant files, missing evidence, and a next action packet.
+- `/oc-plan` creates an external implementation plan draft only after direction is chosen.
+- `/oc-implement` executes only an explicit narrow plan and must block when allowed changes, do-not-touch areas, verification, or stop conditions are missing.
+- `/oc-review` is read-only and reviews plans or diffs with blocking and non-blocking gaps.
+- Stable document sync and session artifact persistence stay in the main Workflow Lite path through Codex or Copilot.
 
 ## Using With Codex
 

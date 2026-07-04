@@ -6,7 +6,7 @@ Workflow Lite is an embeddable prompt workspace for AI-assisted development.
 .workflow/   # workflow system: tasks, lenses, roles, templates, guidance
 .session/    # AI session working memory: inbox, closable threads, archive
 docs/        # code-aligned project docs, when the host project uses it
-.opencode/   # optional OpenCode adapter agents and slash commands
+.opencode/   # optional OpenCode low-model external-agent adapter
 ```
 
 The workflow system belongs in `.workflow/`. Session artifacts belong in `.session/`. Code-aligned long-term project docs belong in `docs/**`. Code-adjacent reading notes may live in `src/**/README.md` when useful.
@@ -27,7 +27,7 @@ For Copilot, use dedicated GitHub prompt commands for common work: `/wf-route`, 
 
 Do not put workflow system files under `.session/` or `docs/`. Do not treat `.session/**` as project source of truth. Stable project knowledge, architecture constraints, terminology, and design docs belong in the host project's `docs/**`.
 
-OpenCode support is an adapter, not a second workflow. Keep task, lens, role, and template semantics in `.workflow/**`; use `.opencode/commands/**` as thin slash-command shortcuts and `.opencode/agents/**` only for OpenCode-specific context helper, review, and stable-document sync behavior. `/wf-build` is the explicit-plan execution command and should be used only with a concrete `Plan:`.
+OpenCode support is a low-model external-agent adapter, not a second workflow. Use `.opencode/commands/**` only for `/oc-context`, `/oc-plan`, `/oc-implement`, and `/oc-review`. OpenCode does not own Workflow Lite routing, lenses, templates, `persist`, or `sync`; keep those in `.workflow/**` and the stronger Codex/Copilot paths.
 
 ## Experiment Workflow Direction
 
