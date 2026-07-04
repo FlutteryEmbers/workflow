@@ -167,6 +167,20 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be use
 
 Do not treat discussion freedom as write permission. `persist`, `sync`, `build`, and external-agent implementation keep their normal boundaries.
 
+## Copilot Native Question UI
+
+Use `vscode/askQuestions` only as the Copilot renderer for a `shape` task
+`User Checkpoint`.
+
+- Use it only when `Human Decision State: checkpoint`.
+- Ask at most one consequential choice per response.
+- Provide 2-3 mutually exclusive options.
+- Put the recommended option first and label it with `(Recommended)`.
+- Preserve each option's label, explanation, and risk.
+- Do not use it for fact discovery, ordinary clarification, review verdicts, plan blockers, task routing, repo preflight, write authorization, sync authorization, or build authorization.
+- After asking, stop before `Take`, `Provisional Recommendation`, `Impact Surface`, or `Persist Candidate` until the user chooses.
+- If `vscode/askQuestions` is unavailable, output the structured `User Checkpoint` block and wait.
+
 Discovery vs judgment rule:
 
 - Do not infer repo ownership or maintenance responsibility.
