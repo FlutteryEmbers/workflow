@@ -68,7 +68,7 @@ Protocol: `Output: compact | normal | full`.
 - `normal`: refine. Prepare key structure and important context for later persist, without writing files.
 - `full`: artifact, handoff, audit, explicit executable plan candidate, diff review, or complex routing.
 
-For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Treat `Output: full` plan output as a minimal handoff packet for persist, implementation handoff, explicit executable plan candidate, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+For `Task: plan`, compact output must start from `Shape Summary` with `Motivation`, a compact `Impact Surface`, and `Plan At A Glance` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. Treat `Output: full` plan output as a minimal handoff packet for persist, implementation handoff, explicit executable plan candidate, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 
 Recommended flow:
 
@@ -122,7 +122,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Shape Summary`, `Impact Surface`, `Plan`, `Plan Readiness`, conditional `Plan Blockers`, conditional `Review Focus`, optional `Diagnostic Review Request`, `Review Recommended`, `Next`, and `Persist Candidate`. Do not output formal blocking gaps from `plan`; review owns blocking and severity.
+For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Shape Summary`, `Impact Surface`, `Plan At A Glance`, `Plan`, `Plan Readiness`, conditional `Plan Blockers` or `Shape Handoff`, conditional `Review Questions`, optional `Diagnostic Review Request`, `Review Recommended`, `Next`, and `Persist Candidate`. Do not output formal blocking gaps from `plan`; review owns blocking and severity.
 
 ## Task Boundary Shortcut
 
@@ -160,7 +160,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be use
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may output `Plan Readiness`, `Plan Blockers` when incomplete, `Review Focus` when reviewable or execution-candidate, optional `Diagnostic Review Request`, `Review Recommended`, and recommended next task.
+- `plan` may output `Plan Readiness`, `Plan Blockers` when incomplete, `Shape Handoff` for direction-level decisions that belong to shape, narrow `Plan Decision Question` for execution-organization choices, `Review Questions` when reviewable or execution-candidate, optional `Diagnostic Review Request`, `Review Recommended`, and recommended next task.
 - `review` may output `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
@@ -169,17 +169,19 @@ Do not treat discussion freedom as write permission. `persist`, `sync`, `build`,
 
 ## Copilot Native Question UI
 
-Use `vscode/askQuestions` only as the Copilot renderer for a `shape` task
-`User Checkpoint`.
+Use `vscode/askQuestions` only as the Copilot renderer for either a `shape`
+`User Checkpoint` or a narrow `plan` `Plan Decision Question`.
 
-- Use it only when `Human Decision State: checkpoint`.
+- For `shape`, use it only when `Human Decision State: checkpoint`.
+- For `plan`, use it only when the direction is already selected and one execution-organization choice materially changes sequencing, staging, or handoff shape.
 - Ask at most one consequential choice per response.
 - Provide 2-3 mutually exclusive options.
 - Put the recommended option first and label it with `(Recommended)`.
 - Preserve each option's label, explanation, and risk.
-- Do not use it for fact discovery, ordinary clarification, review verdicts, plan blockers, task routing, repo preflight, write authorization, sync authorization, or build authorization.
-- After asking, stop before `Take`, `Provisional Recommendation`, `Impact Surface`, or `Persist Candidate` until the user chooses.
-- If `vscode/askQuestions` is unavailable, output the structured `User Checkpoint` block and wait.
+- Do not use it for fact discovery, ordinary clarification, direction choice inside `plan`, review verdicts, plan blockers, task routing, repo preflight, write authorization, sync authorization, or build authorization.
+- After a `shape` question, stop before `Take`, `Provisional Recommendation`, `Impact Surface`, or `Persist Candidate` until the user chooses.
+- After a `plan` question, stop before `Plan At A Glance`, `Plan`, `Review Questions`, or `Persist Candidate` until the user chooses.
+- If `vscode/askQuestions` is unavailable, output the structured `User Checkpoint` or `Plan Decision Question` block and wait.
 
 Discovery vs judgment rule:
 
@@ -201,7 +203,7 @@ Discovery vs judgment rule:
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Candidate` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
-Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates. `execution-candidate` is the terminal complete state for plan: plan-complete enough for review, build executability check, or external-agent handoff. `shape` stays at concept level. `plan` outputs `Plan Readiness`, `Plan Blockers` when incomplete, `Review Focus` when reviewable or execution-candidate, optional `Diagnostic Review Request`, and `Review Recommended`; `review` owns formal `Blocking Gaps`, severity, and verdicts, but does not redefine plan completion.
+Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates. `execution-candidate` is the terminal complete state for plan: plan-complete enough for review, build executability check, or external-agent handoff. `shape` stays at concept level. `plan` outputs `Plan Readiness`, `Plan Blockers` when incomplete, `Shape Handoff` for direction-level decisions, `Review Questions` when reviewable or execution-candidate, optional `Diagnostic Review Request`, and `Review Recommended`; `review` owns formal `Blocking Gaps`, severity, and verdicts, but does not redefine plan completion.
 
 For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block an `execution-candidate` plan for optional improvement only.
 

@@ -10,7 +10,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Optional shortcut skill source: `skills/workflow-lite-shortcuts/`. Install it into `$CODEX_HOME/skills` or `~/.codex/skills` only when you want phrases like `wf shape`, `wf plan`, or `wf build` to map to the matching `.workflow/tasks/<task>.md`.
 - Default to `Mode: discuss`.
 - Default to `Output: compact` for general discussion; use `Output: normal` to refine before persist and `Output: full` for artifacts, handoffs, audits, or diff reviews.
-- For `Task: plan`, compact output must start from `Shape Summary` and a compact `Impact Surface` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact.
+- For `Task: plan`, compact output must start from `Shape Summary` with `Motivation`, a compact `Impact Surface`, and `Plan At A Glance` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing.
 - Treat `Output: full` plan output as a minimal handoff packet for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 - When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
@@ -60,7 +60,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
 - `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review`: `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
-- `plan`: `Plan Readiness`, conditional `Plan Blockers`, conditional `Review Focus`, optional `Diagnostic Review Request`, `Review Recommended`, and recommended next task.
+- `plan`: `Plan Readiness`, conditional `Plan Blockers`, `Shape Handoff` for direction-level decisions that belong to shape, narrow `Plan Decision Question` for execution-organization choices, conditional `Review Questions`, optional `Diagnostic Review Request`, `Review Recommended`, and recommended next task.
 - `review`: `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
 - Review plans under `verdict-review`; use `gap-analysis` when the plan asks review to diagnose a system or protocol gap against a baseline.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
@@ -89,7 +89,7 @@ Discovery vs judgment rule:
 Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates. `execution-candidate` is the terminal complete state for plan: plan-complete enough for review, build executability check, or external-agent handoff.
 
 - `shape` produces concept-level direction and may recommend `plan` or `review`.
-- `plan` outputs `Plan Readiness`, `Plan Blockers` when incomplete, `Review Focus` when reviewable or execution-candidate, optional `Diagnostic Review Request`, and `Review Recommended`.
+- `plan` outputs `Plan Readiness`, `Plan Blockers` when incomplete, `Shape Handoff` for direction-level decisions, `Review Questions` when reviewable or execution-candidate, optional `Diagnostic Review Request`, and `Review Recommended`.
 - `Plan Readiness` is self-assessment, not a gate verdict.
 - `review` owns formal `Blocking Gaps`, gap severity, and verdicts. Review owns verdict and blocking risk, but does not redefine plan completion.
 - For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block an `execution-candidate` plan for optional improvement only.

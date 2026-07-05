@@ -184,11 +184,12 @@ Every plan output uses:
 - `Plan Readiness: incomplete | reviewable | execution-candidate`
 - `Readiness Rationale`
 - `Plan Blockers` when readiness is `incomplete`
-- `Review Focus` when readiness is `reviewable | execution-candidate`
+- `Shape Handoff` when a direction, motivation, scope, or compatibility decision belongs to `shape`
+- `Review Questions` when readiness is `reviewable | execution-candidate`
 - optional `Diagnostic Review Request`
 - `Review Recommended: no | yes | strongly`
 
-`Plan Readiness` is self-assessment, not a gate verdict. `execution-candidate` is the terminal complete state for plan: the plan is plan-complete enough to be used as review input, build executability-check input, or external-agent handoff. `Plan Blockers` are plan-owned blockers without severity and appear only when the plan is incomplete. `Review Focus` tells `review` what to inspect only after the plan is reviewable or an execution candidate. `Diagnostic Review Request` asks review to diagnose a system or protocol question through `verdict-review` or `gap-analysis`. `Review Recommended` communicates risk posture; it is not a build blocker by itself. When review is invoked, review owns verdict and blocking risk, but does not redefine plan completion.
+`Plan Readiness` is self-assessment, not a gate verdict. `execution-candidate` is the terminal complete state for plan: the plan is plan-complete enough to be used as review input, build executability-check input, or external-agent handoff. `Plan Blockers` are plan-owned blockers without severity and appear only when the plan is incomplete. `Shape Handoff` sends direction-level questions back to `shape` instead of asking the user from `plan`. `Review Questions` tell `review` what concrete questions to answer only after the plan is reviewable or an execution candidate. `Diagnostic Review Request` asks review to diagnose a system or protocol question through `verdict-review` or `gap-analysis`. `Review Recommended` communicates risk posture; it is not a build blocker by itself. When review is invoked, review owns verdict and blocking risk, but does not redefine plan completion.
 
 ## Impact Surface
 
@@ -220,7 +221,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is think
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may provide `Plan Readiness`, `Plan Blockers`, `Review Focus`, `Diagnostic Review Request`, and readiness rationale.
+- `plan` may provide `Plan Readiness`, `Plan Blockers`, `Shape Handoff`, `Plan Decision Question`, `Review Questions`, `Diagnostic Review Request`, and readiness rationale.
 - `review` may provide `Gap Analysis` with `Severity: high | medium | low`, `Blocking Gaps`, and `Non-blocking Gaps`.
 - Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 
@@ -346,11 +347,12 @@ Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning
 - `reviewable`: coherent enough for review, but not self-claimed as execution candidate.
 - `execution-candidate`: terminal complete state for plan; explicit enough to be reviewed as possible build or external-agent input.
 
-`Plan Readiness` is not a build verdict. `Plan Blockers` belong to incomplete plans and have no severity. When invoked, `review` decides `Review Verdict`, `Blocking Gaps`, severity, and recommended next task; review does not redefine plan completion. Missing review is not by itself a `build` blocker.
+`Plan Readiness` is not a build verdict. `Plan Blockers` belong to incomplete plans and have no severity. Use `Shape Handoff` when the missing input is a direction, motivation, scope, or compatibility decision that belongs to `shape`. When invoked, `review` decides `Review Verdict`, `Blocking Gaps`, severity, and recommended next task; review does not redefine plan completion. Missing review is not by itself a `build` blocker.
 
 Closed loop paths:
 
-- `plan incomplete -> shape/explore/user-answer/plan`
+- `plan incomplete + Shape Handoff -> shape`
+- `plan incomplete + Plan Blockers -> explore/user-answer/plan`
 - `plan reviewable -> review or persist`
 - `plan execution-candidate -> optional review or build with explicit invocation`
 - `plan execution-candidate + Review Verdict: ready -> build/external-agent`
@@ -400,28 +402,27 @@ Compact output starts with `User Intent`, may include `Current Read`, and uses s
 
 - `shape compact`: reason about direction and choose or recommend a concept.
 - `plan compact`: summarize the shaped/chosen direction, show a compact `Impact Surface`, then give the plan sketch.
-- `plan full`: minimal handoff packet for persist, explicit executable plan candidate, or external-agent use. The persisted artifact structure comes from `.workflow/templates/plan.md` and uses `Source Basis`, `Impact Surface -> Key Changes`, `Scope`, `Verification`, `Stop Conditions`, and `Review / Next Use`.
+- `plan full`: minimal handoff packet for persist, explicit executable plan candidate, or external-agent use. The persisted artifact structure comes from `.workflow/templates/plan.md` and uses `Source Basis`, `Impact Surface -> Plan At A Glance`, `Scope`, `Verification`, `Stop Conditions`, and `Review / Next Use`.
 
-Every `plan` output, including compact chat output, must include:
+Every `plan` output, including compact chat output, must include the core planning fields and use conditional fields only when their condition applies:
 
 ```text
 Shape Summary
 Impact Surface
-Key Changes
+Plan At A Glance
 Plan
 Plan Readiness
-Plan Blockers
-Review Focus
-Diagnostic Review Request
 Review Recommended
 Next
 ```
 
-Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Compact `Impact Surface` includes only scope size, affected surfaces, risk, and reversal cost. Full plan artifacts may expand impact with docs/sync and build/handoff readiness.
+Conditional fields are `Plan Blockers`, `Shape Handoff`, `Review Questions`, and `Diagnostic Review Request`.
+
+Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Include `Motivation`; use `unknown` when motivation is unavailable and do not invent it. Compact `Impact Surface` includes only scope size, affected surfaces, risk, and reversal cost. Full plan artifacts may expand impact with docs/sync and build/handoff readiness.
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Do not add a detailed chat output mode; use `Output: full` for detailed artifacts and handoffs.
 
-Plans should not use generic open-question sections. Use `Plan Blockers` for plan-owned missing inputs or weak spots only when readiness is `incomplete`; use `Review Focus` only when readiness is `reviewable | execution-candidate`; use `Follow-up Questions` only for non-blocking future considerations. Formal `Blocking Gaps` and severity belong to `review`.
+Plans should not use generic open-question sections. Use `Plan Blockers` for plan-owned repo, evidence, target, verification, source-of-truth, or planning-input gaps only when readiness is `incomplete`; use `Shape Handoff` for direction, motivation, scope, or compatibility decisions that belong to `shape`; use `Review Questions` only when readiness is `reviewable | execution-candidate`; use `Follow-up Questions` only for non-blocking future considerations. Formal `Blocking Gaps` and severity belong to `review`.
 
 ## Task Boundary Router
 
@@ -493,7 +494,7 @@ With shape-first routing:
 - `shape` preflight is triage plus bounded evidence check for direction shaping: decide whether to shape now, recommend `explore -> shape`, or route to `review`.
 - `explore` preflight is source/scope/evidence-type/probe-safety check only.
 - `review` preflight is a bounded evidence check for a named verdict, claim, diff review, or baseline.
-- `plan` preflight is repo-fit preflight: target files, existing patterns, constraints, and verification entrypoints for an already selected direction.
+- `plan` preflight is mandatory bounded repo-fit preflight when planning depends on repo facts: target files or areas, existing patterns, constraints, verification entrypoints, and direction-to-repo fit for an already selected direction.
 
 A task may perform bounded evidence checks only to support its own output shape. If evidence gathering becomes the main deliverable, route to `explore`.
 

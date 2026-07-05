@@ -22,6 +22,7 @@
 Required. Use `Source: chat` when there is no persisted shape artifact.
 
 - Source: {{chat | shape artifact | inbox brief | project docs | user request}}
+- Motivation: {{one sentence explaining why this direction matters; use unknown when unavailable}}
 - Selected Direction: {{one-line chosen direction}}
 - Locked Decisions: {{confirmed choices that affect scope, sequence, compatibility, or verification}}
 - Assumptions: {{defaults or inferred choices and risk if wrong}}
@@ -34,7 +35,8 @@ Required. Use `Source: chat` when there is no persisted shape artifact.
 
 ### Open Basis
 
-- Plan Blockers: {{only for Plan Readiness: incomplete; none | missing or weak planning input}}
+- Plan Blockers: {{only when Plan Readiness is incomplete because of repo, evidence, target, verification, source-of-truth, or planning-input gaps; omit otherwise}}
+- Shape Handoff: {{only when Plan Readiness is incomplete because direction, motivation, scope, or compatibility decisions belong to shape; Reason, Questions For Shape, Recommended First Checkpoint, Recommended Next Task}}
 - Unknowns: {{unknown facts or unresolved inputs}}
 - Non-blocking Follow-up Questions: {{none | future considerations}}
 
@@ -46,9 +48,9 @@ Required. Use `Source: chat` when there is no persisted shape artifact.
 - Reversal Cost: {{low | medium | high}}
 - Docs / Sync Impact: {{none | suggested | required}}
 
-### Key Changes
+### Plan At A Glance
 
-3-7 summary changes for scanability. This is not a full diff or a replacement for the plan.
+3-7 surface-level summary changes for scanability. This is not a step list, verification plan, full diff, or replacement for the plan.
 
 | Change | Target | Reason | Risk |
 | :--- | :--- | :--- | :--- |
@@ -92,10 +94,10 @@ Required. Use `Source: chat` when there is no persisted shape artifact.
 
 ## Review / Next Use
 
-- Review Focus: {{only for Plan Readiness: reviewable | execution-candidate; omit when incomplete}}
+- Review Questions: {{only for Plan Readiness: reviewable | execution-candidate; 1-3 concrete questions review should answer; omit when incomplete}}
 - Diagnostic Review Request: {{optional; Question, Target, Intended Use For Answer}}
 - Recommended Next Task: {{shape | explore | review | plan | persist | sync | build | external-agent | none}}
-- Next Use: {{review | persist | build | external-agent | sync | none}}
+- Next Use: {{review | persist | build with explicit invocation | external-agent | sync | none}}
 - Stable Document Follow-up: {{none | sync project-docs | sync session-archive; target and reason if known}}
 
 ## Notes To Preserve
