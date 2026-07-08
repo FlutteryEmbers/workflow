@@ -1,7 +1,7 @@
 ---
 id: explore
 role: designer
-purpose: Upstream evidence acquisition for shape and review, and occasionally plan, through discovery inventory, evidence mapping, reliability assessment, and temporary non-mutating probes.
+purpose: Structured descriptive inquiry for how something works, what exists, where it appears, observed source-backed differences, entrypoint flow, evidence reliability, and temporary non-mutating probes.
 inputs:
   - question_or_source
 outputs:
@@ -36,8 +36,8 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## When To Use
 
-- Use when the user clearly needs evidence about current code, docs, behavior, feasibility, reference material, entrypoints, dependencies, or unknowns.
-- Use when the user asks what exists, where something is, how something appears to work, whether evidence for a capability exists, or how reliable the evidence is.
+- Use when the user clearly needs a descriptive account of current code, docs, behavior, feasibility, reference material, entrypoints, dependencies, or unknowns.
+- Use when the user asks what exists, where something is, how something appears to work, what observed differences exist between source-backed paths, whether evidence for a capability exists, or how reliable the evidence is.
 - Use when the user needs a non-mutating probe, dry-run, collection command, list command, one-off shell probe, or temporary script outside the repo to establish source-backed evidence.
 - Use when the user needs to understand a repository or material before deciding whether to shape a direction or review a claim.
 - Use when `shape` cannot safely recommend a direction because missing facts could change the answer.
@@ -58,22 +58,24 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## Boundary Layers
 
-- `Core Responsibility`: acquire source-backed evidence through discovery inventory, evidence mapping, reliability assessment, missing-evidence reporting, and temporary non-mutating probes.
-- `Adjacent Allowance`: include candidate interpretations, likely entrypoints, borrowable ideas, missing evidence, downstream sufficiency, follow-up targets, candidate review targets, and a recommended next task when they help the user use the evidence.
-- `Hard Authority Boundaries`: no durable writes, no stable sync, no implementation or write-path execution, no source-of-truth promotion, and no verdict/severity fields.
+- `Core Responsibility`: answer descriptive inquiry with source-backed observed answers, evidence basis, checked scope, not-found-in-scope reporting, reliability notes, and temporary non-mutating probes.
+- `Adjacent Allowance`: include candidate interpretations, likely entrypoints, borrowable ideas, downstream sufficiency, follow-up targets, candidate review targets, and a recommended next task when they help the user use the observed answer.
+- `Hard Authority Boundaries`: no durable writes, no stable sync, no implementation or write-path execution, no source-of-truth promotion, and no review verdict or review rating fields.
 
-Explore output must remain evidence-shaped. If the user asks for judgment, provide evidence plus `Candidate Review Targets`; if the user asks for direction, provide evidence plus likely `shape` inputs.
+Explore output must remain descriptive and evidence-backed. If the user asks for judgment, provide observed evidence plus `Candidate Review Targets`; if the user asks for direction, provide observed evidence plus likely `shape` inputs.
 
 ## Output Shape
 
-`Output Shape: Evidence Map`
+`Output Shape: Observed System Map`
 
-Explore output is shaped around evidence:
+Explore output is shaped around descriptive inquiry:
 
-- `Observed Facts`
+- `Explore Frame`
+- `Observed Answer`
+- `Evidence Basis`
 - `Evidence Map`
 - `Evidence Probes`
-- `Reliability Notes`
+- `Reliability / Not Checked`
 - `Missing Evidence`
 - `Evidence Sufficiency`
 - `Downstream Use`
@@ -83,19 +85,20 @@ Explore output is shaped around evidence:
 
 ## Expected Output
 
-- `Sources Checked`, `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Unknowns`, `Constraints Found`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, and `Recommended Next Task`.
-- `Output: compact` default: short findings, key reliability notes, and optional `Persist Candidate`.
+- Start with `User Intent`, then `Explore Frame`, then `Observed Answer`; list `Evidence Basis` after answering the user's descriptive question.
+- Include `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Candidate Review Targets`, `Follow-up Targets`, and `Recommended Next Task` when relevant.
+- `Output: compact` default: observed answer, evidence basis, reliability/not-checked notes, downstream use, and optional `Persist Candidate`.
 - `Full Persist Packet` only when findings should be persisted now or `Output: full` is requested.
 
 ## Task Boundary Check
 
 Before exploring, classify obvious boundary problems. Prefer an in-shape evidence response over `wrong_task` when the user-selected task can still provide useful evidence.
 
-- `fits`: user asks to understand code, docs, behavior, feasibility, reference material, entrypoints, dependencies, source evidence, or non-mutating probe results.
+- `fits`: user asks to understand code, docs, behavior, feasibility, reference material, entrypoints, dependencies, source evidence, observed differences, or non-mutating probe results.
 - `fits_with_preflight`: request scope is too broad, source is unclear, or the request may actually belong to `review`, `shape`, or `plan`. In `Mode: discuss`, run conditional boundary preflight only.
 - `composite`: user asks to explore and persist; explore first, then route to `persist`.
-- `fallback_fit`: user asks for a judgment or direction but `explore` can still provide evidence-shaped output and candidate next targets.
-- `wrong_task`: user asks for writing, stable sync, implementation, or a source-of-truth verdict that cannot be answered with evidence-shaped output.
+- `fallback_fit`: user asks for a judgment or direction but `explore` can still provide observed-system-map output and candidate next targets.
+- `wrong_task`: user asks for writing, stable sync, implementation, or a source-of-truth verdict that cannot be answered with observed-system-map output.
 
 Conditional implicit preflight for `explore` only checks boundary, source, scope, and evidence type. Do not duplicate exploration inside preflight; once the boundary is clear, proceed with normal evidence extraction or recommend the right task.
 
@@ -103,7 +106,7 @@ Boundary handling:
 
 - `fits`: extract evidence in chat.
 - `fits_with_preflight`: run the boundary/source/scope/evidence-type preflight, then either extract evidence or route to the right task.
-- `fallback_fit`: output evidence-shaped material plus `Scope Interpretation`; do not output verdict fields.
+- `fallback_fit`: output observed-system-map material plus `Scope Interpretation`; do not output verdict fields.
 - `composite`: explore first, then output the `persist` follow-up prompt; do not write files.
 - `wrong_task` or `missing_prerequisite`: stop and return Boundary, Reason, Recommended Path, and Next Prompt.
 
@@ -121,7 +124,28 @@ User-selected lenses:
 
 ## Instructions
 
-Explore is upstream evidence for shape and review. Explore enough to reduce uncertainty for the next direction or verdict. Separate observed facts from assumptions and inferences. You may provide candidate interpretations, likely entrypoints, and borrowable ideas, but do not present them as the final direction, verdict, repair, or baseline gap review; prepare evidence for `shape` or `review` by default. Prepare evidence for `plan` only when the direction or target is already selected and the evidence merely fills repo-aware planning context.
+Explore is structured descriptive inquiry. First answer what is observed in the checked scope, then show the evidence basis. Separate observed facts from assumptions and inferences. You may provide candidate interpretations, likely entrypoints, and borrowable ideas, but do not present them as the final direction, verdict, repair, or baseline gap review; prepare evidence for `shape` or `review` by default. Prepare evidence for `plan` only when the direction or target is already selected and the evidence merely fills repo-aware planning context.
+
+Every non-trivial explore output must start with an `Explore Frame`:
+
+```text
+Explore Frame:
+- Explore Question: <what the user wants to understand>
+- Inquiry Type: how-it-works | what-exists | difference-map | evidence-check | entrypoint-map
+- Source Scope: <checked files/docs/commands/materials>
+- Downstream Use: shape | review | plan | none
+- Stop Rule: <when enough descriptive evidence has been collected>
+```
+
+Use `Inquiry Type` to shape the answer:
+
+- `how-it-works`: explain observed behavior, control flow, or document/process mechanics.
+- `what-exists`: inventory source-backed items, files, concepts, commands, or surfaces.
+- `difference-map`: compare observed source-backed differences without judging which side is correct.
+- `evidence-check`: report whether evidence for a claim or capability was found in checked scope.
+- `entrypoint-map`: describe entrypoints, call paths, routing, or source flow.
+
+The explanation style is structured current-state description: answer the user's question first, then list evidence. Use "observed", "appears to", "in checked scope", "not found in checked scope", "differs from", and "not checked". Avoid judgment words such as correct, incorrect, should, blocker, ready, gap, must fix, and source of truth.
 
 ## Evidence Probe
 
@@ -157,22 +181,23 @@ Evidence Probes:
 Do not infer repository ownership or maintenance responsibility. Choose `explore` vs `review` from the user's question type.
 
 - `explore` answers what exists, where it is, how it appears to work, and how reliable the evidence is.
-- `review` answers whether something is acceptable, correct, consistent, ready, worth changing, or which source should be treated as truth; use `Change Assessment` for change-seeking judgment.
-- For code/docs/test/example mismatches during exploration, record `Reliability Notes` instead of repair actions.
+- `review` answers whether something is acceptable, correct, consistent, ready, worth changing, or which source should be treated as truth.
+- For code/docs/test/example differences during exploration, record `Reliability / Not Checked` instead of repair actions.
 - Do not decide which side should be modified.
-- Do not label evidence conflicts as `correct`, `incorrect`, `ready`, `blocked`, `source of truth`, severity labels, gaps, or repair actions.
+- Do not label evidence conflicts as `correct`, `incorrect`, `ready`, `blocked`, `source of truth`, gaps, or repair actions.
 - Do not recommend `sync` or `build` as the default next task for discovery questions.
 - Suggested follow-up should be read-only or interpretive: inspect runtime behavior, check tests, compare versions, ask owner, broaden search, or treat the claim as a hypothesis.
 - If the user asks who should change, whether something is acceptable, whether it violates intent, or whether to fix docs/code, route to `review`.
 
 Use this structure for non-trivial output:
 
-- `Sources Checked`: code paths, docs, references, commands, or materials reviewed.
-- `Observed Facts`: facts directly supported by checked sources.
-- `Evidence Map`: source -> fact -> implication.
-- `Reliability Notes`: claims that are contradicted, weak, stale-looking, version-sensitive, or unsafe to rely on.
+- `Explore Frame`: question, inquiry type, checked scope, downstream use, and stop rule.
+- `Observed Answer`: direct descriptive answer before evidence details. Use only the relevant subfields: `How It Works`, `What Exists`, `Differences Observed`, `Entrypoints / Flow`, `Not Found In Checked Scope`, and `Not Checked`.
+- `Evidence Basis`: source-backed facts supporting the observed answer.
+- `Evidence Map`: source -> fact -> observed implication.
+- `Reliability / Not Checked`: claims that are contradicted, weak, stale-looking, version-sensitive, unsafe to rely on, or outside checked scope.
 - `Evidence Probes`: temporary non-mutating probes used to establish facts, including side-effect checks.
-- `Missing Evidence`: evidence not found or not checked; say "no evidence found for X" rather than "X is missing" when no baseline verdict was requested.
+- `Missing Evidence`: evidence not found or not checked; say "no evidence found for X in checked scope" rather than "X is missing" when no baseline verdict was requested.
 - `Evidence Sufficiency`: whether the evidence is sufficient, partial, or insufficient for `shape`, `review`, and exceptional `plan` use.
 - `Downstream Use`: shape-ready evidence, review-ready evidence, plan-ready evidence, and missing evidence for each downstream task.
 - `Unknowns`: missing facts or weak evidence.
@@ -181,18 +206,18 @@ Use this structure for non-trivial output:
 - `Likely Entry Points`: probable files, APIs, flows, or docs to inspect next.
 - `Borrowable Ideas`: patterns or structures that may be useful later, without recommending adoption.
 - `Follow-up Targets`: sources, probes, runtime observations, or questions that could strengthen evidence later.
-- `Candidate Review Targets`: targets that may need `review` if the user wants a verdict, source-of-truth decision, or baseline gap review.
+- `Candidate Review Targets`: questions that may need `review` if the user wants a verdict, source-of-truth decision, baseline gap review, or change judgment. Do not include a verdict.
 - `Recommended Next Task`: default to `shape`, `review`, `persist`, `distill`, or `none`. Recommend `plan` only when the direction or target is already selected and the evidence merely supplies repo-aware planning context. Do not recommend `sync` from discovery unless the user explicitly asks for stable-document projection and review/source-of-truth prerequisites are already clear.
 
 Lens use must not change task responsibility. `architecture`, `boundary`, `debug`, and `language` may improve evidence extraction; `boundary` may focus evidence on imports, call direction, contract terms, provider logic inventory, package API dependencies, and suspected leakage. `explore` must not present candidate interpretations or suspected leakage as final synthesis or verdict.
 
-Use this shape for conflict reliability notes:
+Use this shape for difference reliability notes:
 
 ```text
-Reliability Notes:
+Reliability / Not Checked:
 - Claim: <what docs, examples, tests, or comments claim>
 - Evidence: <code, docs, tests, examples, behavior, or version evidence>
-- Conflict: <what does not line up>
+- Difference Observed: <what does not line up>
 - Reliability: <reliable fact | weak signal | hypothesis only | do not rely>
 - Possible Explanation: <version drift, stale docs, optional path, incomplete sample, unknown>
 - Suggested Follow-up: <inspect runtime behavior | check tests | ask owner | compare versions | treat as hypothesis>
@@ -204,17 +229,25 @@ In `Mode: discuss`, default to:
 
 ```text
 User Intent: <one line about what the user wants to understand>
-Current Read: <optional one line about the strongest source-backed fact>
-Take:
-- <3-6 bullets>
-Risks/Unknowns:
-- <0-3 bullets>
-Candidate Interpretations:
-- <0-3 plausible interpretations, not final direction>
+Explore Frame:
+- Explore Question: <what the user wants to understand>
+- Inquiry Type: how-it-works | what-exists | difference-map | evidence-check | entrypoint-map
+- Source Scope: <checked files/docs/commands/materials>
+- Downstream Use: shape | review | plan | none
+- Stop Rule: <when enough descriptive evidence has been collected>
+Observed Answer:
+- How It Works: <only when relevant; observed behavior or mechanism>
+- What Exists: <only when relevant; source-backed inventory>
+- Differences Observed: <only when relevant; observed differences without judging which side is correct>
+- Entrypoints / Flow: <only when relevant; observed entrypoints or flow>
+- Not Found In Checked Scope: <evidence not found, with checked scope>
+- Not Checked: <scope not checked>
+Evidence Basis:
+- <source -> observed fact>
+Reliability / Not Checked:
+- <0-3 reliability notes, weak evidence, or unchecked scope notes>
 Evidence Probes:
 - <optional; probe, command or method, observed result, reliability, side effect check>
-Missing Evidence:
-- <0-3 facts not found or not checked>
 Evidence Sufficiency:
 - For Shape: <sufficient|partial|insufficient>
 - For Review: <sufficient|partial|insufficient>
@@ -228,8 +261,10 @@ Downstream Use:
 - Missing For Plan: <missing repo facts or not-applicable>
 Follow-up Targets:
 - <0-3 sources, probes, or candidate review targets>
+Candidate Review Targets:
+- <reviewable question or none>
 Recommended Next Task: <shape|review|persist|distill|none; plan only when direction/target is already selected>
-Persist Candidate: Artifact=<note|shape>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+Persist Candidate: Artifact=note; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
 Use `Persist Candidate: none` when the exploration is not worth preserving.
@@ -240,15 +275,27 @@ Use `Output: normal` when the user asks to organize, refine, or prepare evidence
 
 ```text
 User Intent: <one line about what the user wants to understand>
-Current Read: <optional one line about the strongest source-backed fact>
-Refined Evidence:
-- <evidence summary, reliability status, and recommended next task>
+Explore Frame:
+- Explore Question: <what the user wants to understand>
+- Inquiry Type: how-it-works | what-exists | difference-map | evidence-check | entrypoint-map
+- Source Scope: <checked files/docs/commands/materials>
+- Downstream Use: shape | review | plan | none
+- Stop Rule: <when enough descriptive evidence has been collected>
+Observed Answer:
+- How It Works: <only when relevant>
+- What Exists: <only when relevant>
+- Differences Observed: <only when relevant>
+- Entrypoints / Flow: <only when relevant>
+- Not Found In Checked Scope: <evidence not found, with checked scope>
+- Not Checked: <scope not checked>
+Evidence Basis:
+- <source-backed fact, reliability status, and observed implication>
 Candidate Interpretations:
 - <plausible explanation, borrowable idea, or likely entrypoint to preserve>
 Evidence Probes:
 - <probe, command or method, observed result, reliability, side effect check, or none>
-Missing Evidence:
-- <evidence not found or not checked>
+Reliability / Not Checked:
+- <evidence not found, weak evidence, stale-looking evidence, or unchecked scope>
 Evidence Sufficiency:
 - For Shape: <sufficient|partial|insufficient>
 - For Review: <sufficient|partial|insufficient>
@@ -269,7 +316,7 @@ Open Questions:
 Recommended Next Task:
 - <shape|review|persist|distill|none; plan only when direction/target is already selected>
 Persist Candidate:
-- Artifact=<note|shape>; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+- Artifact=note; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
 ## Full Persist Packet
@@ -278,18 +325,18 @@ Output the full packet only when the user asks to persist, provides `Target`, or
 
 ```text
 Persist Packet:
-Artifact: note | shape
+Artifact: note
 Thread: <thread or none>
 Topic: <topic>
-Suggested Target: .session/inbox/<artifact>_<topic>.md or .session/threads/<thread>/<artifact>_<topic>.md
+Suggested Target: .session/inbox/note_<topic>.md or .session/threads/<thread>/note_<topic>.md
 Source Summary: <code paths, docs, references, or materials explored>
 Key Fields:
-- Evidence Summary: <main source-backed facts>
-- Sources Checked: <source list>
+- Explore Frame: <question, inquiry type, checked scope, downstream use, and stop rule>
+- Observed Answer: <how it works, what exists, differences observed, entrypoints or flow, not found in checked scope, and not checked>
+- Evidence Basis: <main source-backed facts>
 - Candidate Interpretations: <plausible explanations or entrypoints; not final direction>
 - Evidence Probes: <temporary non-mutating probes and side-effect checks, or none>
-- Reliability Notes: <evidence strength, conflicts, and unknowns>
-- Missing Evidence: <evidence not found or not checked>
+- Reliability / Not Checked: <evidence strength, observed differences, weak evidence, unknowns, and unchecked scope>
 - Evidence Sufficiency: <For Shape, For Review, For Plan>
 - Downstream Use: <shape-ready evidence, review-ready evidence, exceptional plan-ready evidence, and missing evidence for each>
 - Follow-up Targets: <sources, probes, or candidate review targets>

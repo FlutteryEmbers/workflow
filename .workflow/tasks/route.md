@@ -81,13 +81,13 @@ Recommend the smallest path:
 - "Roughly compress the current discussion, then give direction" goes to `shape` if the compression is lightweight and current-context only; use `distill -> shape` if a specified source summary matters.
 - "Look at the risks, then give direction" goes to `shape` if this is a risk sketch; use `review` if the user needs a formal verdict, readiness judgment, or source-of-truth decision.
 - "Give me rough steps" goes to `shape` if this means a conceptual planning sketch; use `plan` if sequencing, executable handoff, target files, or verification steps are needed.
-- Meaning questions such as "what does this term/rule/sentence mean" go to `clarify`.
-- Evidence-only requests such as reading code, finding entrypoints, checking docs, understanding behavior, studying references, or running a non-mutating probe go to `explore`.
-- Existence and discovery questions such as "does this repo have evidence for X", "where is X", "how does X work", or "what evidence exists" go to `explore`.
-- `explore` is upstream evidence for shape and review. Use `explore -> shape` when the user wants to design from evidence, and `explore -> review` when the user wants a verdict or gap analysis from evidence.
+- Meaning questions such as "what does this term/rule/sentence mean" or semantic difference questions not grounded in repo/source inspection go to `clarify`.
+- Source-backed descriptive inquiry such as reading code, finding entrypoints, checking docs, understanding behavior, studying references, mapping observed differences, checking evidence, or running a non-mutating probe goes to `explore`.
+- Existence and discovery questions such as "does this repo have evidence for X", "where is X", "how does X work", "what exists", "what is different between A and B in the repo", or "what evidence exists" go to `explore`.
+- `explore` is descriptive inquiry for shape and review. Use `explore -> shape` when the user wants to design from observed evidence, and `explore -> review` when the user wants a verdict or gap analysis from evidence.
 - Use `explore -> plan` only when the direction or target is already selected and exploration merely supplies repo-aware planning context.
 - "review this system has X" can use `review` as a claim verdict with bounded evidence check.
-- "review how X is implemented" should use an evidence-shaped response or recommend `explore` unless the user asks for a verdict.
+- "review how X is implemented" should use an observed-system-map response or recommend `explore` unless the user asks for a verdict.
 - "explore whether this plan is reasonable" should use `explore` evidence shape plus `Candidate Review Targets`, not a verdict.
 - Summary and distillation requests such as "summarize this folder", "distill this thread", "extract structure", or "make an archive summary draft" go to `distill`.
 - Gap and missing-capability requests such as "what is missing", "where are the gaps", "does this satisfy the goal", "audit feature gaps", or "audit workflow support" go to `review` with `Review Type: gap-analysis`; if evidence is insufficient, route `explore -> review`. "No evidence found for X" is explore; "X is a gap that matters" is review.

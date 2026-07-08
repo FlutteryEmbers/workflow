@@ -44,7 +44,7 @@ Shape the boundary model before planning or implementation:
 Collect evidence without verdicts:
 
 - `Boundary Evidence`: imports, call direction, contract terms, provider logic inventory, package API dependency, and package internal dependency.
-- `Suspected Leakage`: evidence-shaped suspicion only; do not label it wrong or blocking.
+- `Suspected Leakage`: observed-evidence suspicion only; do not label it wrong or blocking.
 - `Missing Evidence`: boundary facts not found or not checked.
 - Candidate review targets when a verdict is needed.
 

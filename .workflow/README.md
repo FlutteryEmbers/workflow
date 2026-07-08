@@ -101,7 +101,7 @@ conversational source
 | :--- | :--- | :--- | :--- |
 | `route` | `analyst` | chat | Recommend the smallest useful next path. |
 | `clarify` | `analyst` | chat | Explain terms, prior answers, statements, assumptions, scope, and success criteria. |
-| `explore` | `designer` | chat | Acquire upstream evidence for shape and review with discovery inventory, evidence mapping, reliability notes, or non-mutating probes. |
+| `explore` | `designer` | chat | Explain how current code/docs/behavior work, what exists, where things appear, observed differences, checked-scope evidence, reliability, or non-mutating probes. |
 | `distill` | `analyst` | chat | Generate a user-directed summary or distillation of specified source material. |
 | `shape` | `designer` | chat | Form a direction, concept, architecture, or session decision. |
 | `plan` | `designer` | chat | Turn a chosen direction into a repo-aware plan, explicit executable plan candidate, or external-agent handoff. |
@@ -112,16 +112,16 @@ conversational source
 
 ## Task Boundary Shortcut
 
-When unsure, start with `shape`. Use `clarify` for meaning, `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
+When unsure, start with `shape`. Use `clarify` for meaning, `explore` for descriptive inquiry, `distill` for user-directed summaries, and `review` for verdict.
 
 - `clarify = semantic unpacking`: terms, prior AI answers, statements, assumptions, scope boundaries, success criteria, or "what does this mean" questions.
 - `shape = synthesis`: default small fallback for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, "how should I think about this", or "what should happen next" requests.
-- `explore = upstream evidence for shape and review`: use when the request primarily needs facts from code, docs, behavior, feasibility checks, references, entrypoints, dependencies, or temporary non-mutating probes before direction or verdict.
+- `explore = descriptive inquiry / observed system map`: use when the request primarily asks how code/docs/behavior work, what exists, where something appears, what source-backed differences are observed, whether evidence exists in checked scope, or which entrypoints/flows are visible.
 - `distill = summary`: use when the user asks to summarize, distill, compress, or extract structure from specified files, folders, threads, docs, discussion, or reference material.
 - `review = verdict / gap-analysis`: use only when there is an existing target or baseline to judge, such as code, docs, plan, diff, decision, behavior claim, missing capability, or thread artifact.
 - `plan = planning sequence`: use when the direction is chosen and the user needs phases, sequencing, repo-aware steps, or an executable handoff.
 
-`explore` is upstream evidence for shape and review. It may say "evidence was found" or "no evidence was found", run non-mutating probes, provide candidate interpretations, and report evidence sufficiency for downstream use, but not final direction, severity, source-of-truth judgment, repair recommendation, or gap-analysis. `explore -> plan` is allowed only when the direction or target is already selected and evidence merely fills repo-aware planning context. `shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `distill` may summarize and separate observed, inferred, and unknown content, but not judge accuracy or source of truth. `review` may give a minimal revision sketch, but not a full replacement design.
+`explore` is descriptive inquiry for shape and review. It may say how something works, what exists, where something appears, what differences were observed, "evidence found", or "no evidence found in checked scope"; it may run non-mutating probes, provide candidate interpretations, and report evidence sufficiency for downstream use. It must not provide final direction, source-of-truth judgment, repair recommendation, or gap-analysis. `explore -> plan` is allowed only when the direction or target is already selected and evidence merely fills repo-aware planning context. `shape` may give provisional recommendations, but it must not provide approval or readiness verdicts. `distill` may summarize and separate observed, inferred, and unknown content, but not judge accuracy or source of truth. `review` may give a minimal revision sketch, but not a full replacement design.
 
 ## Task Boundary Layers
 
@@ -136,7 +136,7 @@ Every task has three boundary layers:
 Task selection is flexible; task authority is not. A user-selected task is respected whenever possible, but authority is not expanded. The selected task should answer using its own `Output Shape` instead of frequently rejecting the request as the wrong task.
 
 - `clarify` uses a meaning-shaped output: meaning, assumptions, scope, example, next.
-- `explore` uses an evidence-shaped output: observed facts, evidence map, probes, reliability, missing evidence, follow-up targets.
+- `explore` uses an observed-system-map output: `Explore Frame`, `Observed Answer`, `Evidence Basis`, probes, reliability/not-checked notes, and downstream use.
 - `shape` uses a direction-shaped output: current read, decision state, options, provisional recommendation, what would change the recommendation.
 - `review` uses a verdict-shaped output: review question, evidence checked, verdict, gaps, readiness, recommended action.
 
@@ -151,7 +151,7 @@ Scope Interpretation:
 - Recommended Next Task: <task or none>
 ```
 
-For example, `review this system has X` can use review's verdict shape with a bounded evidence check. `review how X is implemented` should use an evidence-shaped response or recommend `explore` unless the user asks for a verdict. `explore whether this plan is reasonable` should output evidence and candidate review targets, not a verdict.
+For example, `review this system has X` can use review's verdict shape with a bounded evidence check. `review how X is implemented` should use an observed-system-map response or recommend `explore` unless the user asks for a verdict. `explore whether this plan is reasonable` should output observed evidence and candidate review targets, not a verdict.
 
 Adjacent allowance reduces task-switching friction; it does not replace the specialized task. If the adjacent work becomes the primary deliverable, route to the specialized task.
 
@@ -215,7 +215,7 @@ Use these decision states across shape and plan:
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is thinking material for the user, not final authorization.
 
 - `clarify` may provide a lightweight next-task hint.
-- `explore` may provide `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
+- `explore` may provide `Explore Frame`, `Observed Answer`, `Evidence Basis`, `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` starts non-trivial output with `Review Frame` and may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
@@ -259,10 +259,10 @@ Use 2-3 mutually exclusive options and put the recommended option first. If a na
 
 For repository conflicts:
 
-- Discovery question: conflict = reliability risk. Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
+- Discovery question: difference = reliability/context risk. Use `explore` for what exists, where it is, how it appears to work, what source-backed differences are observed, and how reliable the evidence is.
 - Judgment question: conflict = possible source-of-truth issue. Use `review --lens consistency` when the user asks what is correct, acceptable, ready, or worth changing.
 - Change-seeking judgment: "does this need change / is it worth changing / are there useful improvements" goes to `review` with `Change Assessment`; "if changing, what directions exist" goes to `shape`; "how to make the chosen change" goes to `plan`.
-- `explore` can say "no evidence found for X"; `review` decides whether that means the system lacks X, whether it matters, and what should change.
+- `explore` can say "no evidence found for X in checked scope"; `review` decides whether that means the system lacks X, whether it matters, and what should change.
 - Do not infer repo ownership. Use the user's question type to choose `explore` vs `review`.
 
 For stable documents:
@@ -599,7 +599,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 - Stage requirements or background: `clarify -> persist -> .session/inbox/**`.
 - Long or reusable external goal: `persist external-goal brief -> shape -> persist shape`.
 - Conversational goal: `shape -> persist shape`.
-- Explore code or reference material: `explore Evidence Mapping/Probe -> shape/review`, then optional `persist -> .session/inbox/**` or `.session/threads/{thread}/note_*.md`.
+- Explore code or reference material: `explore descriptive inquiry/probe -> shape/review`, then optional `persist -> .session/inbox/**` or `.session/threads/{thread}/note_*.md`.
 - Summarize a file, folder, thread, discussion, docs, or reference: `distill -> optional persist Artifact=distillation`.
 - Disposable exploration note: `persist -> notes/{topic}.md` only with explicit target.
 - Shape a direction: `shape -> persist -> .session/threads/{thread}/shape_*.md`.

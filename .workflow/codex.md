@@ -33,7 +33,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 ## Task Boundary Shortcut
 
 - `shape = synthesis`: small discussion fallback for ambiguous, what-if, option-comparison, concept-level, direction-setting, entrypoint-selection, "how should I think about this", or next-step selection requests.
-- `explore = upstream evidence for shape and review`: code/docs/reference/behavior/entrypoint/dependency evidence mapping, reliability notes, sufficiency, downstream use, and temporary non-mutating probes.
+- `explore = descriptive inquiry / observed system map`: how code/docs/behavior work, what exists, where things appear, observed differences, checked-scope evidence, reliability/not-checked notes, downstream use, and temporary non-mutating probes.
 - `distill = summary`: user-directed summary, folder summary, source distillation, or archive-summary draft for specified source material.
 - `review = verdict / gap-analysis`: existing target reasonableness, readiness, conflict, safety, acceptance checks, or baseline gap review.
 - `plan = planning sequence`: chosen direction to phases, repo-aware steps, or executable handoff.
@@ -57,7 +57,7 @@ Use `boundary` for ownership, dependency direction, contract leakage, provider/p
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide useful provisional thinking without treating it as approval.
 
 - `clarify`: lightweight next-task hint.
-- `explore`: `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, recommended next task.
+- `explore`: `Explore Frame`, `Observed Answer`, `Evidence Basis`, `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, recommended next task.
 - `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
 - `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review`: `Review Frame`, `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
@@ -72,11 +72,11 @@ Discussion freedom does not permit file writes, stable-document sync, implementa
 Discovery vs judgment rule:
 
 - Do not infer repo ownership or maintenance responsibility.
-- Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
+- Use `explore` for what exists, where it is, how it appears to work, source-backed observed differences, checked-scope evidence, and evidence reliability.
 - Use `review` for whether something is correct, acceptable, ready, worth changing, or which source should be treated as truth. Use `Change Assessment` only for change-seeking review questions; route "if changing, what directions exist" to `shape`, and "how to make the chosen change" to `plan`.
 - Do not add the `consistency` lens for discovery questions.
 
-`explore` is upstream evidence for shape and review. Use `explore -> plan` only when the direction or target is already selected and the evidence only fills repo-aware planning context. Shape/review/plan may perform bounded evidence checks only to support their own output shape; if evidence gathering becomes the main deliverable, route to `explore`.
+`explore` is descriptive inquiry for shape and review. Use `explore -> plan` only when the direction or target is already selected and the evidence only fills repo-aware planning context. Shape/review/plan may perform bounded evidence checks only to support their own output shape; if descriptive source inquiry becomes the main deliverable, route to `explore`.
 
 ## Compatibility / Constraint Policy
 
