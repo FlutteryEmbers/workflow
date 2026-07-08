@@ -13,6 +13,7 @@ For common daily Copilot work, prefer dedicated workflow prompt commands:
 - `/wf-distill`
 - `/wf-shape`
 - `/wf-plan`
+- `/wf-pplan`
 - `/wf-review`
 - `/wf-persist`
 - `/wf-sync`
@@ -55,19 +56,22 @@ Request: ${input:request:describe the work}
 - Evidence-only requests, discovery inventory, source-backed fact checks, and non-mutating probes go to `explore`; evidence-to-direction paths go `explore -> shape`; evidence-to-verdict/gap paths go `explore -> review`; evidence-to-plan paths use `explore -> plan` only when direction or target is already selected. Verdict, source-of-truth, missing-capability, and baseline-satisfaction requests go to `review`.
 - Each task should answer using its own `Output Shape`: clarify=meaning, explore=evidence, shape=direction, review=verdict, plan=plan.
 - Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. `distill` is a task, not a lens. Do not use any lens as a skip mechanism.
-- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Evidence Probes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Minimal Revision Sketch`, `Repair Direction`, `Plan Readiness`, `Plan Blockers`, `Shape Handoff`, `Plan Decision Question`, `Review Questions`, and `What Would Change My Mind` as thinking material.
+- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Evidence Probes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Minimal Revision Sketch`, `Repair Direction`, `Input Sufficiency`, `Input Gaps`, and `What Would Change My Mind` as thinking material.
 - Discussion adjacency is allowed; authority is not. Adjacent output may recommend the next task, but write, sync, execute, implementation, source-of-truth, and build authority still require the proper `Mode`, `Task`, target rules, prerequisites, and explicit executable plan.
 - For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision State`.
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
-- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use `vscode/askQuestions` when available as the Copilot-only renderer for `User Checkpoint`: use `User Checkpoint.Question` as the question, use 2-3 mutually exclusive `User Checkpoint.Options`, preserve label/explanation/risk, and put the recommended option first with `(Recommended)`. If `vscode/askQuestions` is unavailable, output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
-- In `plan`, use `vscode/askQuestions` only for a single `Plan Decision Question` after the direction is already selected and the choice only affects execution organization. Use 2-3 mutually exclusive options, put the recommended option first with `(Recommended)`, then stop before `Plan At A Glance`, `Plan`, `Review Questions`, or `Persist Candidate` until the user chooses.
-- `vscode/askQuestions` is a checkpoint renderer, not a task router, preflight substitute, review verdict tool, generic plan blocker mechanism, direction chooser inside `plan`, write authorization, sync authorization, or build authorization.
-- Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning output. This is plan self-assessment, not a review verdict. `execution-candidate` is the terminal complete state for plan: plan-complete enough for review, build executability check, or external-agent handoff.
-- `plan compact` must summarize the chosen direction first, include `Motivation`, then give a compact impact surface, `Plan At A Glance`, plan sketch, conditional plan blockers or `Shape Handoff`, and conditional `Review Questions`. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. `Output: full` is a minimal handoff packet for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
-- `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, and gap analysis. Review owns verdict and blocking risk, but does not redefine plan completion. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
+- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation.
+- If state is `checkpoint`, use `vscode/askQuestions` when available as the Copilot-only renderer for `User Checkpoint`.
+- Use `User Checkpoint.Question` as the question, use 2-3 mutually exclusive `User Checkpoint.Options`, preserve label/explanation/risk, and put the recommended option first with `(Recommended)`.
+- If `vscode/askQuestions` is unavailable, output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
+- `vscode/askQuestions` is only a checkpoint renderer for `shape`.
+- Do not use the native question UI for planning, review verdicts, task routing, preflight, write authorization, sync authorization, or build authorization.
+- Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` for planning output. This classifies source input for intended use, not generated plan quality.
+- `plan compact` must summarize the chosen direction first, include `Motivation`, then give compact `Impact Surface`, `Plan At A Glance`, and plan body only when input is sufficient. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. `Output: full` is a minimal handoff packet for persist, explicit handoff candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
+- `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, and gap analysis. Review output must include `Review Target Kind` and `Intended Next Use`; plan review is a built-in review rubric, not a lens. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
 - `explore` is upstream evidence for shape and review. It can say "evidence found" or "no evidence found"; `review` decides what that evidence means against a baseline. `explore` may run non-mutating probes only to establish evidence and must report `Probe`, `Command or Method`, `Observed Result`, `Reliability`, and `Side Effect Check`. Use `explore -> plan` only when direction or target is already selected and evidence only fills repo-aware planning context.
-- Review plans under `verdict-review` when the question is about plan quality, executability, readiness, fit, or risk. When a plan asks review to diagnose a system problem, use `verdict-review` or `gap-analysis` based on the question.
-- For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block an `execution-candidate` plan for optional improvement only.
+- Review plans under `verdict-review` when the question is whether the plan can be used for `Intended Next Use`. When a plan asks review to diagnose a system problem, use `verdict-review` or `gap-analysis` based on the question.
+- For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block a plan for optional improvement only.
 - Read-only preflight is allowed only in `Mode: discuss`; do not load templates, write files, run implementation, or apply unselected deep lenses during preflight. Shape/review/plan may perform bounded evidence checks only to support their own output shape; if evidence gathering becomes the main deliverable, route to `explore`.
 - Plan preflight is mandatory bounded repo-fit preflight when planning depends on repo facts: target files or areas, existing patterns, constraints, verification entrypoints, and direction-to-repo fit for an already selected direction.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
@@ -150,6 +154,9 @@ For `Task: plan` with `Output: compact`, use this structure instead:
 
 ```text
 User Intent: <one line about what the user wants planned>
+Input Sufficiency: <insufficient|sufficient-for-draft|sufficient-for-handoff>
+Input Gaps:
+- <only when insufficient; missing input categories only>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Motivation: <one sentence or unknown>
@@ -157,27 +164,18 @@ Shape Summary:
 - Key Decisions: <1-3 bullets or none>
 - Assumptions: <0-2 bullets or none>
 Impact Surface:
-- Scope Size: <small | medium | large>
-- Affected Surfaces: <surfaces>
-- Risk: <low | medium | high>
-- Reversal Cost: <low | medium | high>
+- Scope Size: <small | medium | large; omit when insufficient>
+- Affected Surfaces: <surfaces; omit when insufficient>
+- Risk: <low | medium | high; omit when insufficient>
+- Reversal Cost: <low | medium | high; omit when insufficient>
 Plan At A Glance:
-- <1-3 summary changes; target, reason, and risk>
+- <1-3 summary changes; target, reason, and risk; omit when insufficient>
 Plan:
-- <3-6 steps or phases>
-Plan Readiness: <incomplete|reviewable|execution-candidate>
-Readiness Rationale: <why this readiness applies>
-Plan Blockers:
-- <only when incomplete because of repo/evidence/planning gaps; omit otherwise>
-Shape Handoff:
-- <only when incomplete because direction, motivation, scope, or compatibility belongs to shape; Reason, Questions For Shape, Recommended First Checkpoint, Recommended Next Task>
-Review Questions:
-- <omit when incomplete; only for reviewable/execution-candidate; 1-3 concrete questions review should answer before build, sync, or handoff>
-Diagnostic Review Request:
-- <optional; Question, Target, Intended Use For Answer>
+- <3-6 work packages or phases; omit when insufficient>
+Compatibility / Constraint Plan:
+- <when relevant>
 Recommended Next Task: <shape | explore | review | plan | persist | sync | build | external-agent | none>
-Review Recommended: <no|yes|strongly>
-Next: <review | build with explicit invocation | persist plan | sync | shape | none>
+Next: <review plan | build with explicit invocation | persist plan | sync | shape | none>
 Persist Candidate: <none or one line; candidate only, do not write>
 ```
 
@@ -196,7 +194,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Shape Summary` with `Motivation`, `Impact Surface`, `Plan At A Glance`, `Plan Readiness`, conditional `Plan Blockers` or `Shape Handoff`, conditional `Review Questions`, optional `Diagnostic Review Request`, and `Review Recommended`. Do not output formal blocking gaps from `plan`.
+For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Input Sufficiency`, conditional `Input Gaps`, `Shape Summary` with `Motivation`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, and `Compatibility / Constraint Plan` when relevant. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`.
 
 Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 
@@ -239,7 +237,9 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Review this external plan before native implementation with explicit critique posture. Return Review Verdict: ready, needs changes, needs more evidence, blocked, or docs blocked.
+Review Target Kind: plan
+Intended Next Use: external-agent
+Review this external plan before native implementation with explicit critique posture. Return Review Verdict, Blocking Gaps, Non-blocking Gaps, Can Use For Intended Next Use, and Recommended Next Task.
 ```
 
 Diff review:

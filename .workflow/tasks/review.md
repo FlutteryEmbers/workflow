@@ -41,16 +41,18 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 ## When To Use
 
-- Use when the user asks whether code, docs, a decision, a plan, a diff, or a behavior claim is reasonable, safe, acceptable, executable, consistent, or ready.
+- Use when the user asks whether code, docs, a decision, a plan, a diff, or a behavior claim is reasonable, safe, acceptable, usable, consistent, or ready.
 - Use when the user asks what capability, behavior, documentation, plan, or system support is missing relative to a baseline; use `Review Type: gap-analysis`.
 - Use as a recommended risk/gap audit before external-agent implementation and after external-agent diffs.
+- Use inside composite `pplan` to judge a frozen plan draft for an intended next use.
 
 ## Do Not Use When
 
 - Do not use to create a new direction without evaluation; use `shape`.
 - Do not use for ambiguous what-if, strategy, conceptual, or direction-setting requests unless there is an existing target to judge.
 - Do not use to create implementation steps from a chosen direction; use `plan`.
-- Do not use to perform repository edits; use `build` or the external-agent path after an explicit plan.
+- Do not use to rewrite a plan. Return gaps and `Repair Direction`; route plan repair to `plan`.
+- Do not use to perform repository edits; use `build` or the external-agent path after an explicit plan and explicit user invocation.
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update stable documents; use `sync`.
 
@@ -58,7 +60,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 - `Core Responsibility`: provide a verdict on a target, claim, plan, diff, source-of-truth question, readiness state, or alignment question.
 - `Adjacent Allowance`: include minimal revision sketch, repair direction, blocking/non-blocking gaps, suggested critique, and recommended next action when they make the verdict actionable.
-- `Hard Authority Boundaries`: no durable writes, no stable sync, no implementation or write-path execution, no full replacement design, and no implementation plan.
+- `Hard Authority Boundaries`: no durable writes, no stable sync, no implementation or write-path execution, no full replacement design, no plan rewrite, and no implementation plan.
 
 Review output must remain verdict-shaped. It may perform a bounded evidence check over named or directly relevant sources to support the verdict, but it does not output a full discovery inventory.
 
@@ -68,19 +70,23 @@ Review output must remain verdict-shaped. It may perform a bounded evidence chec
 
 Review output is shaped around judgment:
 
+- `Review Target Kind`
+- `Intended Next Use`
 - `Review Question`
 - `Evidence Checked`
 - `Review Type`
 - `Review Verdict`
 - `Blocking Gaps`
 - `Non-blocking Gaps`
+- `Can Use For Intended Next Use`
 - `Recommended Action`
 - `Recommended Next Task`
 
 ## Expected Output
 
-- Findings first, then `Review Type`, `Review Verdict`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
+- Findings first, then `Review Target Kind`, `Intended Next Use`, `Review Type`, `Review Verdict`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
 - `gap-analysis` output includes baseline, observed state, gap analysis, severity, why it matters, and recommended action.
+- Plan reviews use the built-in plan rubric; this is core review behavior, not a lens.
 - `Output: compact` default: short verdict, key findings, and optional `Persist Candidate`.
 - `Full Persist Packet` only when the review should be persisted now, used as an audit handoff, or `Output: full` is requested.
 
@@ -88,16 +94,16 @@ Review output is shaped around judgment:
 
 Before reviewing, classify the request. Prefer an in-shape verdict response over `wrong_task` when the user-selected task can still judge a bounded claim.
 
-- `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, readiness, acceptability, consistency, safety, or reasonableness.
+- `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, acceptability, consistency, safety, or reasonableness.
 - `fits`: user asks to identify missing capabilities, gaps, drift from expected behavior, or whether a system satisfies a target baseline.
 - `fits_with_preflight`: review verdict depends on code, docs, diff, session evidence, or external plan context. In `Mode: discuss`, run conditional implicit preflight first.
 - `fallback_fit`: user asks for broad implementation discovery, but review can answer a bounded claim or verdict over named sources.
 - `composite`: user asks to review and persist; review first, then route to `persist`.
-- `wrong_task`: user asks for writing, stable sync, implementation, or full implementation discovery that cannot be answered as a bounded verdict.
+- `wrong_task`: user asks for writing, stable sync, implementation, plan creation, or full implementation discovery that cannot be answered as a bounded verdict.
 
-Conditional implicit preflight for `review` only checks review target, review question, and evidence readiness. Review may perform a bounded evidence check only to support a named verdict, claim, diff review, or baseline. It must not become open-ended discovery, must not load templates, and must not write files.
+Conditional implicit preflight for `review` only checks review target, review question, intended next use, and evidence readiness. Review may perform a bounded evidence check only to support a named verdict, claim, diff review, plan review, or baseline. It must not become open-ended discovery, must not load templates, and must not write files.
 
-If evidence is insufficient for a verdict or gap analysis, output `Review Verdict: needs more evidence`, name the missing evidence or missing baseline, and recommend `explore -> review` or `shape` instead of inventing readiness or blocking conclusions. If evidence gathering becomes the main deliverable, route to `explore`.
+If evidence is insufficient for a verdict or gap analysis, output `Review Verdict: needs more evidence`, name the missing evidence or missing baseline, and recommend `explore -> review` or `shape` instead of inventing conclusions. If evidence gathering becomes the main deliverable, route to `explore`.
 
 Review provides verdicts and risk/gap gates when requested or when the selected path uses review. Verdicts should recommend next task: `none`, `persist`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
 
@@ -117,65 +123,97 @@ User-selected lenses:
 
 Inspect the target and report findings first. Keep review scope explicit. A review may report whether a session artifact is ready, needs changes, lacks evidence, is blocked, or should be synced to stable documents.
 
-Do not create a full replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions, `Repair Direction`, and a `Minimal Revision Sketch`, but it should not become a design synthesis task.
+Set `Review Target Kind` explicitly:
+
+- `plan`: plan draft, persisted plan, external plan, or `pplan` frozen draft.
+- `diff`: implementation diff or proposed patch.
+- `code`: existing code or behavior.
+- `docs`: stable docs or code-adjacent README.
+- `decision`: session decision, design choice, or compatibility policy.
+- `claim`: user or AI claim about behavior, support, readiness, or source of truth.
+- `artifact`: session artifact that is not otherwise a plan, diff, code, docs, decision, or claim.
+
+Set `Intended Next Use` explicitly:
+
+- `discussion`: use as thinking material only.
+- `persist`: save as a session artifact.
+- `build`: feed workflow-managed build after explicit user invocation.
+- `external-agent`: hand to native Plan/Implement or another implementation agent.
+- `sync`: project-docs or archive projection.
+
+Do not create a full replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions, `Repair Direction`, and a `Minimal Revision Sketch`, but it should not become a design synthesis task or plan rewrite.
 
 Default review is `Review Type: verdict-review`. Use one primary review type per output:
 
-- `verdict-review`: default correctness, readiness, reasonableness, safety, or source-of-truth judgment.
+- `verdict-review`: default correctness, usability, reasonableness, safety, or source-of-truth judgment.
 - `gap-analysis`: compare observed state against a baseline and identify missing capability, behavior, coverage, support, or alignment.
 - `diff-review`: review an implementation diff against an explicit plan.
 
 Use `gap-analysis` when the user asks what is missing, where the gaps are, whether a system satisfies an expected capability, or why a workflow scenario is not supported. Gap analysis requires a `Baseline`. Baseline may come from explicit user goal, protocol purpose, documented promise, expected workflow scenario, or confirmed project standard. If no baseline is available, return `Review Verdict: needs more evidence` or route to `shape`.
 
-Review a plan under `verdict-review` when the question is about plan quality, executability, readiness, fit, risk, or whether the plan can be used as a source for build/external-agent work. When a plan asks review to diagnose whether a system problem exists, choose `verdict-review` or `gap-analysis` based on the review question; do not infer a separate plan-review mode.
+## Plan Review Rubric
 
-Plan-specific missing-input question lists are not a stable review output field. If evidence is insufficient, use `Review Verdict: needs more evidence`, `Blocking Gaps`, or ordinary `Open Questions`.
+Use this built-in rubric when `Review Target Kind: plan`. Do not require or invent a plan-review lens.
 
-## Plan Verdict Rules
+Judge whether the plan can be used for `Intended Next Use`:
 
-Use these rules when the review target is a plan:
+- Source input is sufficient for the intended use.
+- Target outcome and scope are explicit.
+- Allowed changes and do-not-touch areas are clear when the intended use is build, external-agent, or sync.
+- Compatibility and constraint policy are explicit when they affect the work.
+- Repo evidence is enough for the planned scope and sequence.
+- Sequencing is coherent and does not depend on hidden decisions.
+- Verification is concrete enough for the intended use.
+- Stop conditions are clear enough to prevent scope expansion.
+- The plan does not imply unauthorized write, build, sync, or implementation.
 
-- `Review Verdict: ready`: no blocking gaps for the plan's intended next use. If the target plan has `Plan Readiness: execution-candidate`, review may return `Review Verdict: ready`, `Blocking Gaps: none`, and `Can Execute Plan: yes`.
+Plan review verdicts:
+
+- `Review Verdict: ready`: no blocking gaps for the intended next use.
 - `Review Verdict: needs changes`: the direction is usable, but the plan text must change before the intended next use.
-- `Review Verdict: needs more evidence`: evidence or baseline is insufficient to judge the plan.
-- `Review Verdict: blocked`: a high-severity blocker prevents the intended next use.
+- `Review Verdict: needs more evidence`: evidence, source input, or baseline is insufficient to judge the plan.
+- `Review Verdict: blocked`: a high-severity gap prevents the intended next use.
 
-Do not block an `execution-candidate` plan for optional improvement only. Alternative sequencing, style preferences, extra detail, polish, or optional risk reduction belongs in `Non-blocking Gaps`, `Recommended Action`, or `Minimal Revision Sketch` unless it affects target scope, verification, source of truth, compatibility / constraint policy, safety, or executability.
+Do not block a plan for optional improvement only. Alternative sequencing, style preferences, extra detail, polish, or optional risk reduction belongs in `Non-blocking Gaps`, `Recommended Action`, or `Minimal Revision Sketch` unless it affects scope, verification, source of truth, compatibility / constraint policy, safety, or usability for the intended next use.
 
-Treat these as typical blocking gaps for plan verdicts: missing target or scope, missing verification, source-of-truth conflict, out-of-scope write risk, unclear compatibility / constraint policy, unsafe docs projection, or steps that cannot be executed without inventing decisions.
+Treat these as typical blocking gaps for plan verdicts: missing target or scope, missing verification, source-of-truth conflict, out-of-scope write risk, unclear compatibility / constraint policy, unsafe docs projection, missing allowed changes or do-not-touch areas for handoff use, or steps that cannot be used without inventing decisions.
+
+## Lens Rules
 
 Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam` or asks for critique, counterarguments, failure paths, or a hostile read. Otherwise, you may output `Suggested Critique: explicit redteam critique` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
 
-Lens use must not change task responsibility. `redteam`, `consistency`, `boundary`, `debug`, `language`, `domain`, `test`, `architecture`, and `expert` may deepen the verdict; `boundary` may judge ownership, dependency direction, contract leakage, provider-local business, main-system business, and migration path back to package. `expert` may strengthen findings, evidence pressure, and revision specificity, but must not produce a full replacement design or implementation plan. `review` must not become evidence-only `explore`, full synthesis-oriented `shape`, or executable `plan`.
+Lens use must not change task responsibility. `redteam`, `consistency`, `boundary`, `debug`, `language`, `domain`, `test`, `architecture`, and `expert` may deepen the verdict; `boundary` may judge ownership, dependency direction, contract leakage, provider-local business, main-system business, and migration path back to package. `expert` may strengthen findings, evidence pressure, and revision specificity, but must not produce a full replacement design, implementation plan, or plan rewrite. `review` must not become evidence-only `explore`, full synthesis-oriented `shape`, or executable `plan`.
 
 ## Discussion Freedom
 
 In `Mode: discuss`, review may help the human decide what to do next without taking ownership of the redesign.
 
 - You may output `Minimal Revision Sketch` and `Repair Direction` when they make the verdict actionable.
-- Keep the sketch minimal: name the direction of change in one sentence, not a full replacement architecture, product direction, implementation sequence, or implementation plan.
+- Keep the sketch minimal: name the direction of change in one sentence, not a full replacement architecture, product direction, implementation sequence, implementation plan, or rewritten plan.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the verdict or repair direction depends on incomplete evidence.
 - Do not treat a sketch as approval to write files or execute work.
 
 For non-trivial reviews, include a readiness dashboard:
 
+- `Review Target Kind`: `plan | diff | code | docs | decision | claim | artifact`
+- `Intended Next Use`: `discussion | persist | build | external-agent | sync`
 - `Review Type`: `verdict-review | gap-analysis | diff-review`
 - `Review Verdict`: `ready | needs changes | needs more evidence | blocked | docs blocked`
 - `Confidence`: `high | medium | low`
 - `Readiness`: `0-10`
-- `Blocking Gaps`: issues that must be resolved before the next write or implementation step.
+- `Blocking Gaps`: issues that must be resolved before the intended next use.
 - `Non-blocking Gaps`: issues that can be tracked without blocking.
 - `Recommended Action`: `none | persist | sync project-docs | sync session-archive | shape | plan | build | external-agent`.
-- `Can Execute Plan`: `yes | no | not-applicable`; use only when the review target is a plan.
+- `Can Use For Intended Next Use`: `yes | no | not-applicable`.
 - `Suggested Critique`: `explicit redteam critique` or `none`.
 
 ## Gap Analysis
 
-Use this in discuss mode to audit missing capability, behavior, coverage, workflow support, docs/code alignment, or plan readiness against a baseline.
+Use this in discuss mode to audit missing capability, behavior, coverage, workflow support, docs/code alignment, or plan usability against a baseline.
 
 Gap severity:
 
-- `high`: blocks next write, build, sync, source-of-truth decision, or core workflow scenario.
+- `high`: blocks next write, build, sync, source-of-truth decision, intended plan use, or core workflow scenario.
 - `medium`: does not block immediately but creates material rework, ambiguity, drift, user friction, or maintenance risk.
 - `low`: clarity, polish, convenience, or non-blocking completeness issue.
 
@@ -209,15 +247,19 @@ In `Mode: discuss`, default to:
 ```text
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
+Review Target Kind: <plan|diff|code|docs|decision|claim|artifact>
+Intended Next Use: <discussion|persist|build|external-agent|sync>
 Review Type: <verdict-review|gap-analysis|diff-review>
-Baseline: <expected state, review question, plan, or none>
+Review Verdict: <ready|needs changes|needs more evidence|blocked|docs blocked>
+Confidence: <high|medium|low>
 Take:
-- <3-6 bullets>
-Risks/Unknowns:
-- <0-3 bullets>
-Gap Analysis:
-- <only for gap-analysis; gap, severity, evidence, impact, why it matters, recommended action>
-Minimal Revision Sketch: <smallest repair direction or none>
+- <3-6 findings or verdict bullets>
+Blocking Gaps:
+- <must-fix before intended next use, or none>
+Non-blocking Gaps:
+- <trackable gaps, or none>
+Repair Direction: <smallest repair direction or none>
+Can Use For Intended Next Use: <yes|no|not-applicable>
 Recommended Next Task: <shape|plan|build|external-agent|sync|persist|explore|none>
 Persist Candidate: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
 ```
@@ -231,16 +273,20 @@ Use `Output: normal` when the user asks to organize, refine, or prepare the revi
 ```text
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
+Review Target Kind:
+- <plan|diff|code|docs|decision|claim|artifact>
+Intended Next Use:
+- <discussion|persist|build|external-agent|sync>
 Review Type:
 - <verdict-review|gap-analysis|diff-review>
-Baseline:
-- <expected state, review question, plan, or none>
 Refined Verdict:
 - <review verdict, key findings, required revisions, and recommended next task>
-Gap Analysis:
-- <only for gap-analysis; gap, severity, evidence, impact, why it matters, recommended action>
+Blocking Gaps:
+- <must-fix before intended next use, or none>
+Non-blocking Gaps:
+- <trackable gaps, or none>
 Repair Direction:
-- <minimal direction of change, not full redesign>
+- <minimal direction of change, not full redesign or plan rewrite>
 Discussion Notes To Preserve:
 - <review question clarification, evidence priority, accepted risk, verdict change reason, or user concern>
 Open Questions:
@@ -263,14 +309,17 @@ Topic: <topic>
 Suggested Target: .session/threads/<thread>/review_<topic>.md
 Source Summary: <plan, diff, code, docs, session artifact, or claim reviewed>
 Key Fields:
+- Review Target Kind: <plan | diff | code | docs | decision | claim | artifact>
+- Intended Next Use: <discussion | persist | build | external-agent | sync>
 - Review Type: <verdict-review | gap-analysis | diff-review>
 - Review Question: <what was being judged>
 - Baseline: <expected state, documented promise, user goal, workflow scenario, or none>
 - Review Verdict: <ready | needs changes | needs more evidence | blocked | docs blocked>
 - Findings: <key findings with severity and evidence>
 - Gap Summary: <blocking and non-blocking gaps, or none>
+- Can Use For Intended Next Use: <yes | no | not-applicable>
 - Recommended Action: <repair direction, next task, or none>
-Next Use: <persist | shape | plan | build | sync | none>
+Next Use: <persist | shape | plan | build with explicit invocation | external-agent | sync | none>
 ```
 
 If the review is not worth preserving, output `Persist Candidate: none`.

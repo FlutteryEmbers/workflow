@@ -8,7 +8,15 @@
 
 ## Review Target
 
-{{code, docs, session decision, external plan, diff, or behavior claim}}
+{{code, docs, session decision, external plan, diff, artifact, or behavior claim}}
+
+## Review Target Kind
+
+{{plan | diff | code | docs | decision | claim | artifact}}
+
+## Intended Next Use
+
+{{discussion | persist | build | external-agent | sync}}
 
 ## Review Type
 
@@ -28,7 +36,7 @@
 
 ## Discussion Notes To Preserve
 
-{{preserve discussion details that clarify the review question, user concern, evidence priority, accepted risk, or why the verdict changed. Do not redesign the target here, and do not preserve full transcript or conversational noise.}}
+{{preserve discussion details that clarify the review question, user concern, evidence priority, accepted risk, or why the verdict changed. Do not redesign or rewrite the target here, and do not preserve full transcript or conversational noise.}}
 
 ## Evidence Checked
 
@@ -59,25 +67,30 @@
 
 {{ready | needs changes | needs more evidence | blocked | docs blocked}}
 
-## Plan Verdict Rules
+## Plan Review Rubric
 
-{{only when Review Target is a plan}}
+{{only when Review Target Kind is plan}}
 
-- Ready Meaning: `Review Verdict: ready` means no blocking gaps for the intended next use.
-- Plan Complete Input: `Plan Readiness: execution-candidate` is plan-complete input; review may still return ready.
-- Optional Improvements: {{non-blocking sequencing, polish, or risk-reduction suggestions; none if not relevant}}
-- Blocking Standard: {{target/scope, verification, source-of-truth, compatibility/constraint, safety, docs projection, or executability blocker}}
+- Intended Use Fit: {{whether the source input and plan detail support Intended Next Use}}
+- Scope / Target: {{clear | unclear; evidence}}
+- Allowed Changes / Do Not Touch: {{clear | unclear | not-applicable; evidence}}
+- Compatibility / Constraint Policy: {{clear | unclear | not-applicable; evidence}}
+- Repo Evidence: {{sufficient | insufficient | not-applicable; evidence}}
+- Sequencing: {{coherent | needs changes; evidence}}
+- Verification: {{sufficient | insufficient; evidence}}
+- Stop Conditions: {{clear | unclear; evidence}}
+- Authorization Boundary: {{does not imply unauthorized write/build/sync | problematic; evidence}}
 
 ## Readiness
 
 - Review Type: {{verdict-review | gap-analysis | diff-review}}
 - Confidence: {{high | medium | low}}
 - Readiness: {{0-10}}
-- Blocking Gaps: {{must-fix before next write or implementation}}
-- Non-blocking Gaps: {{can track without blocking}}
+- Blocking Gaps: {{must-fix before intended next use, or none}}
+- Non-blocking Gaps: {{can track without blocking, or none}}
 - Recommended Action: {{none | persist | sync project-docs | sync session-archive | shape | plan | build | external-agent}}
 - Can Promote Source: {{yes/no}}
-- Can Execute Plan: {{yes | no | not-applicable; only meaningful when Review Target is a plan}}
+- Can Use For Intended Next Use: {{yes | no | not-applicable}}
 
 ## Findings
 
@@ -95,7 +108,7 @@
 
 Severity rules:
 
-- `high`: blocks next write, build, sync, source-of-truth decision, or core workflow scenario.
+- `high`: blocks next write, build, sync, source-of-truth decision, intended plan use, or core workflow scenario.
 - `medium`: does not block immediately but creates material rework, ambiguity, drift, user friction, or maintenance risk.
 - `low`: clarity, polish, convenience, or non-blocking completeness issue.
 
@@ -105,7 +118,11 @@ Severity rules:
 
 ## Required Revisions
 
-- {{required change before readiness or next write}}
+- {{required change before intended next use}}
+
+## Repair Direction
+
+- {{minimal direction of change, not a full redesign or plan rewrite}}
 
 ## Open Questions
 
@@ -154,4 +171,4 @@ flowchart TD
 
 ## Next Use
 
-{{persist, plan, build, sync, or none}}
+{{persist | plan | build with explicit invocation | external-agent | sync | none}}

@@ -10,9 +10,8 @@
 
 - Target Outcome: {{what should be true after execution}}
 - Recommended Path: {{short sequence, staged path, or work package summary}}
-- Plan Readiness: {{incomplete | reviewable | execution-candidate}}
-- Readiness Rationale: {{why this readiness applies}}
-- Review Recommended: {{no | yes | strongly}}
+- Input Sufficiency: {{insufficient | sufficient-for-draft | sufficient-for-handoff}}
+- Input Gaps: {{only when insufficient; missing input categories, or omitted}}
 - Main Risk: {{main risk or none}}
 
 ## Source Basis
@@ -35,8 +34,6 @@ Required. Use `Source: chat` when there is no persisted shape artifact.
 
 ### Open Basis
 
-- Plan Blockers: {{only when Plan Readiness is incomplete because of repo, evidence, target, verification, source-of-truth, or planning-input gaps; omit otherwise}}
-- Shape Handoff: {{only when Plan Readiness is incomplete because direction, motivation, scope, or compatibility decisions belong to shape; Reason, Questions For Shape, Recommended First Checkpoint, Recommended Next Task}}
 - Unknowns: {{unknown facts or unresolved inputs}}
 - Non-blocking Follow-up Questions: {{none | future considerations}}
 
@@ -58,7 +55,7 @@ Required. Use `Source: chat` when there is no persisted shape artifact.
 
 ## Plan
 
-{{steps, phases, or work packages with scope, constraints, verification, and stop conditions. Use bullets for small plans and a table for larger handoffs.}}
+{{work packages, phases, or sequencing with scope, constraints, verification, and stop conditions. Use bullets for small plans and a table for larger handoffs. Omit when Input Sufficiency is insufficient.}}
 
 ## Scope
 
@@ -90,12 +87,10 @@ Required. Use `Source: chat` when there is no persisted shape artifact.
 
 - Risks / Unknowns: {{execution risk or missing information}}
 - Rollback / Recovery: {{how to revert, recover, or stop safely if this plan fails}}
-- Handoff Notes: {{context an implementer or external agent needs to execute without making product decisions}}
+- Handoff Notes: {{context an implementer or external agent needs to use this plan without making product decisions}}
 
 ## Review / Next Use
 
-- Review Questions: {{only for Plan Readiness: reviewable | execution-candidate; 1-3 concrete questions review should answer; omit when incomplete}}
-- Diagnostic Review Request: {{optional; Question, Target, Intended Use For Answer}}
 - Recommended Next Task: {{shape | explore | review | plan | persist | sync | build | external-agent | none}}
 - Next Use: {{review | persist | build with explicit invocation | external-agent | sync | none}}
 - Stable Document Follow-up: {{none | sync project-docs | sync session-archive; target and reason if known}}

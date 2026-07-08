@@ -7,16 +7,16 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 ## Core Rules
 
 - `.workflow/README.md` is the workflow source of truth.
-- Optional shortcut skill source: `skills/workflow-lite-shortcuts/`. Install it into `$CODEX_HOME/skills` or `~/.codex/skills` only when you want phrases like `wf shape`, `wf plan`, or `wf build` to map to the matching `.workflow/tasks/<task>.md`.
+- Optional shortcut skill source: `skills/workflow-lite-shortcuts/`. Install it into `$CODEX_HOME/skills` or `~/.codex/skills` only when you want phrases like `wf shape`, `wf plan`, `wf pplan`, or `wf build` to map to the matching Workflow Lite context.
 - Default to `Mode: discuss`.
 - Default to `Output: compact` for general discussion; use `Output: normal` to refine before persist and `Output: full` for artifacts, handoffs, audits, or diff reviews.
-- For `Task: plan`, compact output must start from `Shape Summary` with `Motivation`, a compact `Impact Surface`, and `Plan At A Glance` before the plan sketch. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing.
-- Treat `Output: full` plan output as a minimal handoff packet for persist, explicit executable plan candidates, implementation handoff, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+- For `Task: plan`, compact output must start from `Input Sufficiency`, then `Shape Summary` with `Motivation`, a compact `Impact Surface`, and `Plan At A Glance` when a plan body is allowed. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing.
+- Treat `Output: full` plan output as a minimal handoff packet for persist, implementation handoff, explicit plan handoff, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 - When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
-- Use `Plan Readiness` rules when the user wants planning, implementation handoff, or strong-model-to-weak-model handoff.
+- Use `Input Sufficiency` rules when the user wants planning, implementation handoff, or strong-model-to-weak-model handoff.
 - Codex may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 - Load templates only for `persist` or `sync` in `Mode: persist`; discussion tasks must not copy final artifact templates.
@@ -60,9 +60,9 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
 - `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review`: `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
-- `plan`: `Plan Readiness`, conditional `Plan Blockers`, `Shape Handoff` for direction-level decisions that belong to shape, narrow `Plan Decision Question` for execution-organization choices, conditional `Review Questions`, optional `Diagnostic Review Request`, `Review Recommended`, and recommended next task.
+- `plan`: `Input Sufficiency`, `Input Gaps` when insufficient, compatibility/constraint plan, and recommended next task.
 - `review`: `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
-- Review plans under `verdict-review`; use `gap-analysis` when the plan asks review to diagnose a system or protocol gap against a baseline.
+- Review plans under `verdict-review` with `Review Target Kind: plan` and explicit `Intended Next Use`; use `gap-analysis` when the plan asks review to diagnose a system or protocol gap against a baseline.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
@@ -84,15 +84,15 @@ Discovery vs judgment rule:
 - `build` or native implement must stop if it needs unplanned compatibility removal or constraint override.
 - `prototype_exception` is temporary PoC scope, not a durable project constraint.
 
-## Planning Readiness
+## Planning Input Sufficiency
 
-Use `Plan Readiness: incomplete | reviewable | execution-candidate` to separate incomplete plans, reviewable plans, and explicit executable plan candidates. `execution-candidate` is the terminal complete state for plan: plan-complete enough for review, build executability check, or external-agent handoff.
+Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` to separate missing input, discussion/review drafts, and handoff-grade plans. This classifies source input, not generated plan quality.
 
 - `shape` produces concept-level direction and may recommend `plan` or `review`.
-- `plan` outputs `Plan Readiness`, `Plan Blockers` when incomplete, `Shape Handoff` for direction-level decisions, `Review Questions` when reviewable or execution-candidate, optional `Diagnostic Review Request`, and `Review Recommended`.
-- `Plan Readiness` is self-assessment, not a gate verdict.
-- `review` owns formal `Blocking Gaps`, gap severity, and verdicts. Review owns verdict and blocking risk, but does not redefine plan completion.
-- For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block an `execution-candidate` plan for optional improvement only.
+- `plan` outputs `Input Sufficiency`, `Input Gaps` when insufficient, and a plan body only when input is sufficient.
+- `Input Sufficiency` is not a gate verdict or execution authorization.
+- `review` owns formal `Blocking Gaps`, gap severity, verdicts, and whether a plan can be used for `Intended Next Use`.
+- For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block a plan for optional improvement only.
 - `build` requires explicit user invocation and a plan concrete enough to execute safely; review is recommended for material risk, but missing review is not by itself a build blocker.
 
 ## Common Paths

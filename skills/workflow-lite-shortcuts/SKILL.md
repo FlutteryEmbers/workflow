@@ -1,6 +1,6 @@
 ---
 name: workflow-lite-shortcuts
-description: "Route Workflow Lite short task phrases to repo-local task files. Use when the user says `wf route`, `wf clarify`, `wf explore`, `wf distill`, `wf shape`, `wf plan`, `wf review`, `wf persist`, `wf build`, `wf sync`, `workflow <task>`, `use workflow task <task>`, or asks for a Workflow Lite task shortcut in a repo that contains `.workflow/tasks/**`."
+description: "Route Workflow Lite short task phrases to repo-local task files. Use when the user says `wf route`, `wf clarify`, `wf explore`, `wf distill`, `wf shape`, `wf plan`, `wf pplan`, `wf review`, `wf persist`, `wf build`, `wf sync`, `workflow <task>`, `use workflow task <task>`, or asks for a Workflow Lite task shortcut in a repo that contains `.workflow/tasks/**`."
 ---
 
 # Workflow Lite Shortcuts
@@ -15,6 +15,7 @@ Use this skill as a thin shortcut layer over a repo-local Workflow Lite installa
 - `wf distill` -> read `.workflow/tasks/distill.md`
 - `wf shape` -> read `.workflow/tasks/shape.md`
 - `wf plan` -> read `.workflow/tasks/plan.md`
+- `wf pplan` -> read `.workflow/tasks/plan.md` and `.workflow/tasks/review.md`; run plan, freeze the draft, then review it with `Review Target Kind: plan`
 - `wf review` -> read `.workflow/tasks/review.md`
 - `wf persist` -> read `.workflow/tasks/persist.md`
 - `wf build` -> read `.workflow/tasks/build.md`
@@ -24,7 +25,7 @@ Also accept `workflow <task>` and `use workflow task <task>` for the same task n
 
 ## Use Rules
 
-1. Load only the mapped task file for the requested shortcut.
+1. Load only the mapped task file for the requested shortcut. For `wf pplan`, load only the mapped plan and review task files.
 2. Load `.workflow/README.md` only when task boundaries, write boundaries, mode rules, or routing are unclear.
 3. Do not load every task, lens, template, adapter, prompt, or session artifact by default.
 4. Load lens files only when the user explicitly names a lens.

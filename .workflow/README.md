@@ -172,24 +172,21 @@ When no task fits exactly, use nearest-fit fallback:
 Workflow Lite separates concept shaping, planning, and gate judgment.
 
 - `shape` decides what the direction is, what it is not, and why. It stays at concept level.
-- `plan` organizes an already selected or explicitly assumed direction into a coherent plan or explicit executable plan candidate. It does not classify plan kinds.
-- `review` owns verdicts, formal blocking gaps, severity, source-of-truth judgment, and whether a plan can proceed.
+- `plan` classifies source input sufficiency, then organizes an already selected or explicitly assumed direction into a coherent plan draft or handoff when input is sufficient.
+- `review` owns verdicts, formal blocking gaps, severity, source-of-truth judgment, and whether a plan can be used for an intended next use.
 
 `shape` may name the next workflow task, the smallest conceptual wedge, and the approximate impact surface. It must not output ordered implementation steps, target files, or step-level verification.
 
-`plan` assumes the direction is selected or proceeds from a clearly marked recommended assumption. It must not reopen the core direction. If the main uncertainty is still which direction to choose, return to `shape`.
+`plan` assumes the direction is selected or proceeds from a clearly marked recommended assumption. It must not reopen the core direction, ask user questions, or self-review. If the main uncertainty is still which direction to choose, return to `shape`.
 
 Every plan output uses:
 
-- `Plan Readiness: incomplete | reviewable | execution-candidate`
-- `Readiness Rationale`
-- `Plan Blockers` when readiness is `incomplete`
-- `Shape Handoff` when a direction, motivation, scope, or compatibility decision belongs to `shape`
-- `Review Questions` when readiness is `reviewable | execution-candidate`
-- optional `Diagnostic Review Request`
-- `Review Recommended: no | yes | strongly`
+- `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff`
+- `Input Gaps` only when input is insufficient
+- `Shape Summary` with `Motivation`
+- `Impact Surface`, `Plan At A Glance`, and `Plan` only when input is sufficient
 
-`Plan Readiness` is self-assessment, not a gate verdict. `execution-candidate` is the terminal complete state for plan: the plan is plan-complete enough to be used as review input, build executability-check input, or external-agent handoff. `Plan Blockers` are plan-owned blockers without severity and appear only when the plan is incomplete. `Shape Handoff` sends direction-level questions back to `shape` instead of asking the user from `plan`. `Review Questions` tell `review` what concrete questions to answer only after the plan is reviewable or an execution candidate. `Diagnostic Review Request` asks review to diagnose a system or protocol question through `verdict-review` or `gap-analysis`. `Review Recommended` communicates risk posture; it is not a build blocker by itself. When review is invoked, review owns verdict and blocking risk, but does not redefine plan completion.
+`Input Sufficiency` classifies the source input, not the generated plan quality. `sufficient-for-handoff` means the input supports a handoff-grade plan; it is not a review verdict or execution authorization. `review` decides formal `Review Verdict`, `Blocking Gaps`, severity, and whether the plan can be used for `Intended Next Use`.
 
 ## Impact Surface
 
@@ -204,7 +201,7 @@ Impact Surface:
 - User Confirmation Needed Before: none | plan | review | build
 ```
 
-Use `Plan Readiness: execution-candidate` only when the plan is explicit enough to be reviewed as possible build or external-agent input. It is plan-complete, not a review verdict or execution authorization. Use `reviewable` for large, staged, or high-risk plans that are coherent enough for review but not yet execution input. Use `incomplete` when direction, evidence, target, compatibility, source of truth, or verification is missing.
+Use `Input Sufficiency: sufficient-for-handoff` only when the source input names enough target, scope, allowed changes, verification, and stop conditions to support build or external-agent handoff after review. Use `sufficient-for-draft` for discussion/review drafts. Use `insufficient` when direction, evidence, target, compatibility, source of truth, verification, allowed changes, or stop conditions are missing.
 
 Use these decision states across shape and plan:
 
@@ -221,7 +218,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is think
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may provide `Plan Readiness`, `Plan Blockers`, `Shape Handoff`, `Plan Decision Question`, `Review Questions`, `Diagnostic Review Request`, and readiness rationale.
+- `plan` may provide `Input Sufficiency`, `Input Gaps`, plan draft/handoff content, and recommended next task.
 - `review` may provide `Gap Analysis` with `Severity: high | medium | low`, `Blocking Gaps`, and `Non-blocking Gaps`.
 - Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 
@@ -339,23 +336,22 @@ Native Plan/Implement is a separate external-agent write path.
 
 `build` is a workflow-aware bounded executor, not a general implementation agent. Its special responsibility is bounded execution plus environment contract, command provenance, retry discipline, execution trace, and discovery capture. External-agent implementation may produce general changes; `build` must apply the explicit workflow plan, limit trial-and-error, record verification evidence, and surface reusable execution discoveries without writing session memory directly.
 
-## Plan Readiness Core Rules
+## Plan Input Sufficiency Core Rules
 
-Use `Plan Readiness: incomplete | reviewable | execution-candidate` for planning output.
+Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` for planning output.
 
-- `incomplete`: key direction, evidence, target, compatibility, source-of-truth, or verification inputs are missing.
-- `reviewable`: coherent enough for review, but not self-claimed as execution candidate.
-- `execution-candidate`: terminal complete state for plan; explicit enough to be reviewed as possible build or external-agent input.
+- `insufficient`: required source input is missing and cannot be safely assumed; do not output a plan body.
+- `sufficient-for-draft`: source input is enough for a discussion or review draft, but not handoff use.
+- `sufficient-for-handoff`: source input is enough for a handoff-grade plan with scope, allowed changes, do-not-touch areas, verification, and stop conditions.
 
-`Plan Readiness` is not a build verdict. `Plan Blockers` belong to incomplete plans and have no severity. Use `Shape Handoff` when the missing input is a direction, motivation, scope, or compatibility decision that belongs to `shape`. When invoked, `review` decides `Review Verdict`, `Blocking Gaps`, severity, and recommended next task; review does not redefine plan completion. Missing review is not by itself a `build` blocker.
+`Input Sufficiency` is not a build verdict. `Input Gaps` belong only to insufficient input and name missing input categories without asking questions. When invoked, `review` decides `Review Verdict`, `Blocking Gaps`, severity, `Can Use For Intended Next Use`, and recommended next task. Missing review is not by itself a `build` blocker.
 
 Closed loop paths:
 
-- `plan incomplete + Shape Handoff -> shape`
-- `plan incomplete + Plan Blockers -> explore/user-answer/plan`
-- `plan reviewable -> review or persist`
-- `plan execution-candidate -> optional review or build with explicit invocation`
-- `plan execution-candidate + Review Verdict: ready -> build/external-agent`
+- `plan insufficient -> shape/explore/user-answer/plan`
+- `plan sufficient-for-draft -> review or persist`
+- `plan sufficient-for-handoff -> review, build with explicit invocation, or external-agent`
+- `plan + Review Verdict: ready -> build/external-agent`
 
 ## Conversation-to-Artifact Output Flow
 
@@ -401,28 +397,28 @@ Compact output starts with `User Intent`, may include `Current Read`, and uses s
 `shape` and `plan` may both be compact in chat, but they have different responsibilities:
 
 - `shape compact`: reason about direction and choose or recommend a concept.
-- `plan compact`: summarize the shaped/chosen direction, show a compact `Impact Surface`, then give the plan sketch.
-- `plan full`: minimal handoff packet for persist, explicit executable plan candidate, or external-agent use. The persisted artifact structure comes from `.workflow/templates/plan.md` and uses `Source Basis`, `Impact Surface -> Plan At A Glance`, `Scope`, `Verification`, `Stop Conditions`, and `Review / Next Use`.
+- `plan compact`: classify `Input Sufficiency`, summarize the shaped/chosen direction, then show compact `Impact Surface` and plan sketch only when input is sufficient.
+- `plan full`: minimal handoff packet for persist, explicit plan handoff, or external-agent use. The persisted artifact structure comes from `.workflow/templates/plan.md` and uses `Source Basis`, `Impact Surface -> Plan At A Glance`, `Scope`, `Verification`, `Stop Conditions`, and `Review / Next Use`.
 
 Every `plan` output, including compact chat output, must include the core planning fields and use conditional fields only when their condition applies:
 
 ```text
+Input Sufficiency
+Input Gaps
 Shape Summary
 Impact Surface
 Plan At A Glance
 Plan
-Plan Readiness
-Review Recommended
 Next
 ```
 
-Conditional fields are `Plan Blockers`, `Shape Handoff`, `Review Questions`, and `Diagnostic Review Request`.
+`Input Gaps`, `Impact Surface`, `Plan At A Glance`, and `Plan` are conditional: insufficient input outputs gaps and omits the plan body.
 
 Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Include `Motivation`; use `unknown` when motivation is unavailable and do not invent it. Compact `Impact Surface` includes only scope size, affected surfaces, risk, and reversal cost. Full plan artifacts may expand impact with docs/sync and build/handoff readiness.
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Do not add a detailed chat output mode; use `Output: full` for detailed artifacts and handoffs.
 
-Plans should not use generic open-question sections. Use `Plan Blockers` for plan-owned repo, evidence, target, verification, source-of-truth, or planning-input gaps only when readiness is `incomplete`; use `Shape Handoff` for direction, motivation, scope, or compatibility decisions that belong to `shape`; use `Review Questions` only when readiness is `reviewable | execution-candidate`; use `Follow-up Questions` only for non-blocking future considerations. Formal `Blocking Gaps` and severity belong to `review`.
+Plans should not use generic open-question sections. Use `Input Gaps` only for missing input categories when input is insufficient. Use `Follow-up Questions` only for non-blocking future considerations. Formal `Blocking Gaps`, severity, and plan usability verdicts belong to `review`.
 
 ## Task Boundary Router
 
@@ -618,7 +614,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 
 ## Using With Copilot
 
-- Prefer dedicated GitHub prompt commands for common Copilot work: `/wf-route`, `/wf-clarify`, `/wf-explore`, `/wf-distill`, `/wf-shape`, `/wf-plan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync`.
+- Prefer dedicated GitHub prompt commands for common Copilot work: `/wf-route`, `/wf-clarify`, `/wf-explore`, `/wf-distill`, `/wf-shape`, `/wf-plan`, `/wf-pplan`, `/wf-review`, `/wf-persist`, `/wf-build`, and `/wf-sync`.
 - Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear task boundaries, or full protocol control.
 - Add one task file from `.workflow/tasks/` when manually using Add Context.
 - Add selected lenses only when explicitly named.
@@ -629,7 +625,7 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 Recommended Copilot chain:
 
 ```text
-/wf-clarify -> /wf-explore or /wf-distill -> /wf-shape -> /wf-plan -> /wf-review -> /wf-persist -> /wf-build -> /wf-sync
+/wf-clarify -> /wf-explore or /wf-distill -> /wf-shape -> /wf-plan or /wf-pplan -> /wf-review -> /wf-persist -> /wf-build -> /wf-sync
 ```
 
 ## Using With OpenCode
@@ -649,7 +645,7 @@ Recommended Copilot chain:
 
 - Codex support is manual. This project does not add `AGENTS.md` by default.
 - Optional Codex shortcut skill source lives at `skills/workflow-lite-shortcuts/`.
-- Install or link that skill into `$CODEX_HOME/skills` or `~/.codex/skills` to use short task phrases such as `wf distill`, `wf shape`, `wf plan`, `wf review`, and `wf build`.
+- Install or link that skill into `$CODEX_HOME/skills` or `~/.codex/skills` to use short task phrases such as `wf distill`, `wf shape`, `wf plan`, `wf pplan`, `wf review`, and `wf build`.
 - The skill is only a shortcut layer. It maps a requested task to `.workflow/tasks/<task>.md` and does not replace `.workflow/**`.
 - Add or read `.workflow/codex.md` when you want Codex to follow Workflow Lite.
 - Do not load all `.workflow/**`; use one task, explicitly selected lenses, and relevant context.

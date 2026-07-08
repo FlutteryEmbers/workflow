@@ -52,7 +52,7 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 
 - `Core Responsibility`: apply an explicit executable workflow-managed plan with bounded execution, verification evidence, and execution trace.
 - `Adjacent Allowance`: report executability gaps, missing prerequisites, pitfalls, reusable execution discoveries, and recommended review or persist follow-up.
-- `Forbidden Authority`: do not create or approve the plan, expand scope, infer authorization from `Plan Readiness`, adjacent discussion output, review suggestions, plan path status, or any label, sync stable documents, persist session artifacts, or execute without `Mode: execute` and an explicit executable `Plan`.
+- `Forbidden Authority`: do not create or approve the plan, expand scope, infer authorization from input sufficiency, adjacent discussion output, review suggestions, plan path status, or any label, sync stable documents, persist session artifacts, or execute without `Mode: execute` and an explicit executable `Plan`.
 
 Adjacent discussion output from `clarify`, `explore`, `distill`, `shape`, `review`, or `plan` does not grant build authority. `build` may modify repository artifacts only in `Mode: execute`, only with an explicit executable `Plan`, and only inside that plan's scope.
 
@@ -149,7 +149,7 @@ Do not treat native Plan/Implement output as workflow-managed execution unless t
 
 Do not treat path status as approval. A plan under `.session/threads/**` is executable only when the user invokes `build` with it and it is concrete enough to execute safely.
 
-Do not infer execution authorization from `Plan Readiness`, adjacent discussion output, review suggestions, plan path status, or any plan label. The user invoking `build` with an explicit executable plan is the authorization; the plan still must name scope, target files or target areas, allowed changes, verification, and stop conditions.
+Do not infer execution authorization from input sufficiency, adjacent discussion output, review suggestions, plan path status, or any plan label. The user invoking `build` with an explicit executable plan is the authorization; the plan still must name scope, target files or target areas, allowed changes, verification, and stop conditions.
 
 Do not execute `notes/**`. Exploration notes are disposable working memory and must be converted into a concrete plan under `.session/threads/**` or provided as an explicit executable plan before implementation.
 

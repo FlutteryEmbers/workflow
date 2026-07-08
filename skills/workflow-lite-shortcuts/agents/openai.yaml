@@ -1,4 +1,4 @@
 interface:
   display_name: "Workflow Lite Shortcuts"
   short_description: "Route wf task shortcuts to repo-local Workflow Lite task files."
-  default_prompt: "Use wf shape, wf plan, wf review, wf build, or another wf task shortcut."
+  default_prompt: "Use wf shape, wf plan, wf pplan, wf review, wf build, or another wf task shortcut."

@@ -1,7 +1,7 @@
 ---
 id: plan
 role: designer
-purpose: Turn a chosen direction into a repo-aware plan, explicit executable plan candidate, or external-agent handoff in chat.
+purpose: Turn a chosen direction and sufficiently specified source input into a repo-aware plan draft or handoff in chat.
 inputs:
   - direction_or_target
 outputs:
@@ -14,9 +14,10 @@ user_selectable_lenses:
   - test
   - language
 done_check:
-  - sequence_is_coherent
+  - input_sufficiency_classified
+  - sequence_is_coherent_when_plan_body_exists
   - constraints_are_named
-  - verification_is_defined_or_gap_is_named
+  - verification_is_defined_or_input_gap_is_named
 ---
 
 # Plan Task
@@ -32,56 +33,54 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
 - If the user asks to persist, provides a target, requests a handoff, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
-- `Mode: execute` is not valid for this task; use `build` with explicit user invocation and an executable plan validated by `build`.
+- `Mode: execute` is not valid for this task; use `build` with explicit user invocation and a plan validated by `review` or `build`.
 - For native Plan/Implement, use the external-agent path.
 
 ## When To Use
 
-- Use when the target direction is chosen and the user needs repo-aware sequencing, explicit implementation steps, or external-agent handoff.
-- Use when a plan must name success criteria, scope, constraints, verification, and stop conditions before any write.
-- Use after `shape`, `review`, `explore`, or user-provided direction when there is enough basis to organize work.
+- Use when the target direction is chosen and the user needs repo-aware sequencing, work packages, or external-agent handoff.
+- Use when source input must be organized into target outcome, scope, constraints, verification, and stop conditions before any write.
+- Use after `shape`, `review`, `explore`, or a user-provided direction when the input is enough to organize work.
 
 ## Do Not Use When
 
 - Do not use to invent the target direction; use `shape`.
+- Do not use to ask the user questions; classify missing input and route to `shape`, `explore`, or `user-answer`.
 - Do not use to judge whether a plan, target, code, or diff is good; use `review`.
-- Do not use to identify formal blocking gaps or gate readiness; use `review`.
-- Do not use to implement the plan; use `build` with explicit user invocation and an executable plan, or use the external-agent path.
+- Do not use to identify formal blocking gaps, severity, readiness verdicts, or gate status; use `review`.
+- Do not use to implement the plan; use `build` with explicit user invocation and an explicit plan, or use the external-agent path.
 - Do not use to write session artifacts; use `persist`.
 - Do not use to update stable documents; use `sync`.
 
 ## Boundary Layers
 
-- `Core Responsibility`: organize a chosen direction into a coherent plan or explicit executable plan candidate without performing the work.
-- `Adjacent Allowance`: include self-assessed plan readiness, plan blockers when incomplete, `Shape Handoff` for unresolved direction-level choices, narrow `Plan Decision Question` for execution-organization choices, `Review Questions` when reviewable, critique/review recommendation, and recommended next task.
-- `Forbidden Authority`: do not choose the core direction, issue a review verdict, label formal blocking gaps, write files, stable-sync documents, execute, implement, or imply execution authorization.
+- `Core Responsibility`: classify whether the source input can support a plan and, when it can, organize the chosen direction into a coherent plan draft or handoff without performing the work.
+- `Adjacent Allowance`: include bounded repo-fit preflight, input gaps, compatibility/constraint plan, stop conditions, and recommended next task.
+- `Forbidden Authority`: do not choose the core direction, ask user questions, issue a review verdict, label formal blocking gaps, write files, stable-sync documents, execute, implement, or imply execution authorization.
 
 Adjacent allowance must stay planning-owned. If the primary need is direction choice, formal gap severity, verdict, stable projection, or implementation, route to `shape`, `review`, `sync`, or `build`/external-agent.
 
 ## Expected Output
 
-- A coherent plan appropriate to the user's requested scope and current evidence.
-- `Plan Readiness`: `incomplete | reviewable | execution-candidate`.
-- `Plan Blockers`: plan-owned missing inputs or weak spots; these appear only when `Plan Readiness: incomplete` and are not formal review gaps.
-- `Shape Handoff`: direction-level, motivation-level, scope-level, or compatibility-policy questions that belong to `shape`; appears only when readiness is `incomplete`.
-- `Plan Decision Question`: one narrow execution-organization choice for an already selected direction; when emitted, stop before the plan body until the user chooses.
-- `Review Questions`: 1-3 concrete questions review should answer before build, sync, or handoff; appears only when readiness is `reviewable | execution-candidate`.
+- `Input Sufficiency`: `insufficient | sufficient-for-draft | sufficient-for-handoff`.
+- `Input Gaps` only when sufficiency is `insufficient`.
+- A plan body only when sufficiency is `sufficient-for-draft` or `sufficient-for-handoff`.
 - `Compatibility / Constraint Plan` when compatibility or constraint policy affects execution.
-- `Output: compact` default: shape summary, impact surface, plan at a glance, plan, readiness, conditional plan blockers or shape handoff, conditional review questions, next step, and optional `Persist Candidate`.
-- `Output: full` / `Full Persist Packet` only when the plan should be persisted now, used as a handoff, needs explicit executable detail, or `Output: full` is requested.
+- `Output: compact` default: user intent, input sufficiency, optional input gaps, shape summary, impact surface, plan at a glance, plan body when allowed, next step, and optional `Persist Candidate`.
+- `Output: full` / `Full Persist Packet` only when the plan should be persisted now, used as a handoff, needs explicit handoff detail, or `Output: full` is requested.
 
 ## Task Boundary Check
 
 Before planning, classify the request:
 
-- `fits`: target direction is chosen and the user needs repo-aware sequencing, explicit implementation steps, or handoff.
-- `fits_with_preflight`: plan depends on current code, project docs, session context, target-to-repo fit, target files, or verification readiness. In `Mode: discuss`, repo-fit preflight is required before planning.
+- `fits`: target direction is chosen and the user needs repo-aware sequencing, work packages, or handoff.
+- `fits_with_preflight`: plan depends on current code, project docs, session context, target-to-repo fit, target files, or verification entrypoints. In `Mode: discuss`, repo-fit preflight is required before planning.
 - `composite`: user asks to plan and persist; plan first, then route to `persist`.
 - `wrong_task`: target direction is not chosen; recommend `shape`.
 - `wrong_task`: user asks whether current implementation, target, or plan is reasonable; recommend `review`.
-- `composite`: user asks to implement from target docs and current code without a concrete executable plan; recommend `review -> plan -> optional review -> external-agent/build -> review`.
+- `composite`: user asks to implement from target docs and current code without a concrete plan; recommend `review -> plan -> review -> external-agent/build -> review`.
 
-Repo-fit preflight runs only in `Mode: discuss` and is mandatory when the plan depends on repo facts. It checks target stability, target files or areas, existing patterns, constraints, verification entrypoints, and whether the selected direction fits current repo reality. Plan may name plan blockers and conflicts, but must not perform discovery inventory, decide source of truth, judge missing capability, invent a new target, or issue a formal review verdict. If missing evidence would affect scope, sequence, target files, or verification, output `Plan Readiness: incomplete`, output `Plan Blockers`, and set `Recommended Next Task: explore`.
+Repo-fit preflight runs only in `Mode: discuss` and is mandatory when the plan depends on repo facts. It checks target stability, target files or areas, existing patterns, constraints, verification entrypoints, and whether the selected direction fits current repo reality. Plan may name input gaps and conflicts, but must not perform discovery inventory, decide source of truth, judge missing capability, invent a new target, or issue a formal review verdict. If missing evidence would affect scope, sequence, target files, or verification, output `Input Sufficiency: insufficient`, output `Input Gaps`, and set `Recommended Next Task: explore`.
 
 ## Copilot Add Context
 
@@ -99,72 +98,36 @@ User-selected lenses:
 
 Write the smallest useful plan for the user's current intent. Do not compare or choose core directions; route that work to `shape`. A plan may be large or staged when the work requires it, but do not classify plans into plan kinds.
 
-Use `Plan Readiness` as plan self-assessment:
+`Input Sufficiency` judges the source input, not the model's generated plan quality:
 
-- `incomplete`: the plan is missing key direction, motivation, evidence, scope, target, compatibility, source-of-truth, or verification inputs. Output `Plan Blockers` for repo/evidence/planning gaps or `Shape Handoff` for direction-level decisions, recommend `shape`, `explore`, `user-answer`, or another `plan` pass, and do not output `Review Questions`.
-- `reviewable`: the plan is coherent enough for review, but should not be treated as an execution candidate yet. Large staged plans, high-risk plans, and plans with material unresolved inputs usually belong here.
-- `execution-candidate`: the terminal complete state for plan. The plan is plan-complete enough to be used as build executability-check input, external-agent handoff, or review target. This is not a review verdict, build verdict, or execution authorization.
+- `insufficient`: required input is missing and cannot be safely assumed. Do not output a plan body. Output `Input Gaps` and recommend `shape`, `explore`, `user-answer`, or another `plan` pass.
+- `sufficient-for-draft`: input is enough to produce a discussion or review draft, but not enough for build or external-agent handoff.
+- `sufficient-for-handoff`: input is enough to produce a handoff-grade plan with target outcome, scope, allowed changes, do-not-touch areas, verification, and stop conditions. This still does not authorize execution.
 
-Use `Plan Blockers` for plan-owned repo evidence, target, verification, source-of-truth, or planning-input gaps only when the plan is incomplete. Omit `Plan Blockers` when the plan is reviewable or an execution candidate. Do not output formal blocking fields or severity from plan. Formal blocking, severity, and source-of-truth judgment belong to `review`.
-
-Use `Shape Handoff` when the missing input is a direction-level, motivation-level, scope-level, or compatibility-policy user decision. These are questions for `shape`, not a direct multi-question user form:
-
-```text
-Shape Handoff:
-- Reason: <why this decision belongs to shape>
-- Questions For Shape:
-  - <1-3 direction, scope, motivation, or compatibility questions>
-- Recommended First Checkpoint: <the first consequential choice shape should ask>
-- Recommended Next Task: shape
-```
-
-Use `Plan Decision Question` only for one narrow execution-organization choice after the direction is already selected. It may affect sequencing, staging, or handoff shape, but must not choose the direction, discover repo facts, issue a review verdict, authorize writes, authorize sync, or authorize build. Ask at most one question, provide 2-3 mutually exclusive options, put the recommended option first and label it `(Recommended)`, then stop before `Plan At A Glance`, `Plan`, `Review Questions`, or `Persist Candidate` until the user chooses.
-
-```text
-Plan Decision Question:
-- Question: <one execution-organization choice>
-- Options:
-  - <label (Recommended)>: <effect>; Risk: <risk if wrong>
-  - <label>: <effect>; Risk: <risk if wrong>
-```
-
-Use `Review Questions` only when `Plan Readiness` is `reviewable` or `execution-candidate`. Output 1-3 concrete questions review should answer, such as whether scope drift exists, verification is adequate, target boundaries are respected, compatibility policy is encoded correctly, source-of-truth risk remains, handoff clarity is sufficient, or stop conditions are enforceable.
-
-Use `Diagnostic Review Request` only when the plan needs `review` to diagnose whether a system, protocol, docs, or code problem exists. Keep it lightweight:
-
-```text
-Diagnostic Review Request:
-- Question: <what review should determine>
-- Target: <system, protocol, docs, code, artifact, or scenario to inspect>
-- Intended Use For Answer: <how the answer will change the plan>
-```
-
-Route diagnostic review requests to `review` with `Review Type: verdict-review` or `gap-analysis` based on the question. Do not infer a separate plan-review type.
+Use `Input Gaps` only when input is insufficient. List missing input categories, not questions. Valid gap categories include direction, motivation, scope, target, compatibility policy, constraint policy, allowed changes, do-not-touch areas, source of truth, repo evidence, verification, stop conditions, and intended next use. Do not include generic cautions, risk notes, or review concerns as input gaps.
 
 Every plan, including compact chat output, must summarize the shaped or chosen direction before planning execution. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Include `Motivation` as one sentence explaining why the direction matters; use `unknown` when the motivation is not available, and do not invent it. Do not force a shape artifact just to plan.
 
-Every plan, including compact chat output, must include a short `Impact Surface`. Compact impact surface is a planning reader aid, not a full audit; include only `Scope Size`, `Affected Surfaces`, `Risk`, and `Reversal Cost`.
+Every plan, including compact chat output, must include a short `Impact Surface` when a plan body is output. Compact impact surface is a planning reader aid, not a full audit; include only `Scope Size`, `Affected Surfaces`, `Risk`, and `Reversal Cost`.
 
-Persisted plan artifacts include `Impact Surface -> Plan At A Glance` for scanability. `Plan At A Glance` is a surface-level summary of change, target, reason, and risk; it is not a step list, verification plan, full diff, or replacement for the plan steps.
+Persisted plan artifacts include `Impact Surface -> Plan At A Glance` for scanability. `Plan At A Glance` is a surface-level summary of change, target, reason, and risk; it is not a step list, verification plan, full diff, or replacement for the plan body.
 
-Build handoff wording must use `explicit executable plan candidate`, not plan kind labels. `build` requires explicit user invocation plus executable plan validation; review is recommended for material risk but is not a universal hard gate. `build` must not infer authorization from `Plan Readiness`, and review must not redefine plan completion. In `Next` or `Next Use`, write `build with explicit invocation`; keep `Recommended Next Task` as the task id `build`.
+Use `Plan` as work packages or sequencing by default. For `sufficient-for-handoff`, the plan may include more explicit execution outline, but it must still be tied to allowed changes, verification, and stop conditions and must not imply build authorization.
 
-When recommending `build`, include `Review Recommended: yes | no | strongly`. Use `no` only for low-risk explicit plans. Use `yes` or `strongly` for medium/high risk, breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, multi-surface work, high reversal cost, or ambiguous verification. For unclear plans, recommend `plan` or `review`, not `build`. For `Plan Readiness: execution-candidate`, `Recommended Next Task` may be `review`, `build`, `external-agent`, or `persist`; write `build with explicit invocation` only in `Next` or `Next Use`.
+Build handoff wording must use `explicit plan handoff`, not readiness labels. `build` requires explicit user invocation plus plan validation; review is recommended for material risk but is not a universal hard gate. `build` must not infer authorization from `Input Sufficiency`, adjacent discussion output, or any plan label. In `Next` or `Next Use`, write `build with explicit invocation`; keep `Recommended Next Task` as the task id `build`.
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Keep chat output modes to `compact`, `normal`, and `full`.
 
 ## Discussion Freedom
 
-In `Mode: discuss`, `plan` may output incomplete, reviewable, or execution-candidate plans.
+In `Mode: discuss`, `plan` may output insufficient, draft, or handoff plans.
 
-- `Plan Readiness` is a self-assessment, not a gate verdict.
-- `execution-candidate` is plan-complete for intended execution input, subject to optional review and build executability validation.
-- `Plan Blockers` are plan-owned missing inputs or weak spots and appear only for `Plan Readiness: incomplete`.
-- `Shape Handoff` sends direction-level, motivation-level, scope-level, or compatibility-policy decisions back to `shape`.
-- `Review Questions` tell review what to answer and appear only for `Plan Readiness: reviewable | execution-candidate`.
-- Include `Confidence`, `Assumptions`, and `Human Decision State` when the plan depends on incomplete evidence or user-owned choices.
-- Do not let any plan imply execution authorization.
-- Use `Follow-up Questions` only in normal/full outputs for non-blocking future considerations.
+- `Input Sufficiency` is source-input classification, not a review verdict.
+- `sufficient-for-handoff` means the input supports a handoff-grade plan; it is not a review verdict, build verdict, or execution authorization.
+- `Input Gaps` name missing input categories only when input is insufficient.
+- Do not ask questions from `plan`.
+- Do not output review verdicts, formal blocking gaps, severity, or review-style checklists from `plan`.
+- Use `Follow-up Questions` only in normal/full outputs for non-blocking future considerations, and never as a blocking form.
 
 ## Compatibility / Constraint Policy
 
@@ -173,13 +136,13 @@ Default policy:
 - `Compatibility: preserve`
 - `Constraint Mode: respect`
 
-`plan` must encode the selected policy into proposed steps. It must not silently switch from `preserve` to `breaking`, remove migration/alias/fallback work, or introduce constraint exceptions unless the user explicitly requested them or the source decision already states them.
+`plan` must encode the selected policy into proposed work packages. It must not silently switch from `preserve` to `breaking`, remove migration/alias/fallback work, or introduce constraint exceptions unless the user explicitly requested them or the source decision already states them.
 
 Use `Compatibility: breaking` only when explicitly requested by the user or explicit source. In that case, name removed compatibility, migration/alias decisions, cleanup, and stop conditions.
 
 Use `Constraint Mode: propose_override` or `prototype_exception` only when explicitly requested by the user or explicit source. In that case, name the exception scope, reason, cleanup or review trigger, and whether it must stay out of long-term `docs/**` until confirmed.
 
-If preserving compatibility makes the plan materially more complex, output a plan blocker or tradeoff instead of switching policy automatically.
+If preserving compatibility makes the plan materially more complex and the source input does not choose a policy, output `Input Sufficiency: insufficient` with `Input Gaps: compatibility policy`.
 
 Include when relevant:
 
@@ -201,6 +164,9 @@ In `Mode: discuss`, default to:
 
 ```text
 User Intent: <one line about what the user wants planned>
+Input Sufficiency: <insufficient|sufficient-for-draft|sufficient-for-handoff>
+Input Gaps:
+- <only when insufficient; missing input categories only>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Motivation: <one sentence or unknown>
@@ -208,27 +174,16 @@ Shape Summary:
 - Key Decisions: <1-3 bullets or none>
 - Assumptions: <0-2 bullets or none>
 Impact Surface:
-- Scope Size: <small | medium | large>
-- Affected Surfaces: <workflow core | task docs | templates | adapters | project docs | source code | tests | other>
-- Risk: <low | medium | high>
-- Reversal Cost: <low | medium | high>
+- Scope Size: <small | medium | large; omit when insufficient>
+- Affected Surfaces: <workflow core | task docs | templates | adapters | project docs | source code | tests | other; omit when insufficient>
+- Risk: <low | medium | high; omit when insufficient>
+- Reversal Cost: <low | medium | high; omit when insufficient>
 Plan At A Glance:
-- <1-3 summary changes; target, reason, and risk>
+- <1-3 summary changes; target, reason, and risk; omit when insufficient>
 Plan:
-- <3-6 steps, phases, or work packages>
-Plan Readiness: <incomplete|reviewable|execution-candidate>
-Readiness Rationale: <why this readiness applies>
-Plan Blockers:
-- <only when incomplete because of repo/evidence/planning gaps; omit otherwise>
-Shape Handoff:
-- <only when incomplete because direction, motivation, scope, or compatibility belongs to shape; Reason, Questions For Shape, Recommended First Checkpoint, Recommended Next Task>
-Review Questions:
-- <omit when incomplete; only for reviewable/execution-candidate; 1-3 concrete questions review should answer before build, sync, or handoff>
-Diagnostic Review Request:
-- <optional; Question, Target, Intended Use For Answer>
+- <3-6 work packages, phases, or sequencing steps; omit when insufficient>
 Recommended Next Task: <shape|explore|user-answer|review|plan|persist|sync|build|external-agent|none>
-Review Recommended: <no|yes|strongly>
-Next: <shape | explore | user-answer | plan | review | build with explicit invocation | persist plan | sync | none>
+Next: <shape | explore | user-answer | plan | review plan | build with explicit invocation | persist plan | sync | none>
 Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
@@ -241,6 +196,10 @@ Use `Output: normal` when the user asks to organize, refine, or prepare the plan
 ```text
 User Intent: <one line about what the user wants planned>
 Current Read: <optional one line about relevant plan/code/docs facts>
+Input Sufficiency:
+- <insufficient|sufficient-for-draft|sufficient-for-handoff>
+Input Gaps:
+- <only when insufficient; missing input categories only>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Motivation: <one sentence or unknown>
@@ -248,41 +207,29 @@ Shape Summary:
 - Key Decisions: <confirmed decisions that affect the plan>
 - Assumptions: <recommended defaults and risk if wrong>
 Impact Surface:
-- Scope Size: <small | medium | large>
-- Affected Surfaces: <surfaces>
-- Risk: <low | medium | high>
-- Reversal Cost: <low | medium | high>
+- Scope Size: <small | medium | large; omit when insufficient>
+- Affected Surfaces: <surfaces; omit when insufficient>
+- Risk: <low | medium | high; omit when insufficient>
+- Reversal Cost: <low | medium | high; omit when insufficient>
 Plan At A Glance:
-- <3-7 summary changes; target, reason, and risk>
-Refined Plan:
-- <target outcome, sequence, constraints, and verification approach>
+- <3-7 summary changes; target, reason, and risk; omit when insufficient>
+Plan:
+- <target outcome, work packages, sequence, constraints, and verification approach; omit when insufficient>
 Source Basis:
 - <shape summary, evidence/repo basis, assumptions, and open basis>
-Plan Readiness:
-- <incomplete|reviewable|execution-candidate>
-Readiness Rationale:
-- <why this readiness applies>
-Plan Blockers:
-- <only when incomplete because of repo/evidence/planning gaps; omit otherwise>
-Shape Handoff:
-- <only when incomplete because direction, motivation, scope, or compatibility belongs to shape; Reason, Questions For Shape, Recommended First Checkpoint, Recommended Next Task>
-Review Questions:
-- <omit when incomplete; only for reviewable/execution-candidate; 1-3 concrete questions review should answer>
-Diagnostic Review Request:
-- <optional; Question, Target, Intended Use For Answer>
+Compatibility / Constraint Plan:
+- <when relevant>
 Follow-up Questions:
 - <none | non-blocking future consideration>
 Recommended Next Task:
 - <shape|explore|user-answer|review|plan|persist|sync|build|external-agent|none>
-Review Recommended:
-- <no|yes|strongly>
 Persist Candidate:
 - Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
 ## Full Persist Packet
 
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an explicit executable plan candidate / external-agent handoff. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load `.workflow/templates/plan.md` and shape the final artifact. A packet becomes build input only when explicitly supplied by the user as the `Plan` for `build` or persisted as a plan and then selected for build:
+Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a handoff. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load `.workflow/templates/plan.md` and shape the final artifact. A packet becomes build input only when explicitly supplied by the user as the `Plan` for `build` or persisted as a plan and then selected for build:
 
 ```text
 Persist Packet:
@@ -293,18 +240,14 @@ Suggested Target: .session/threads/<thread>/plan_<topic>.md
 Source Summary: <source shape/decision, user request, repo context, or project docs basis>
 Key Fields:
 - Target Outcome: <what should be true after execution>
-- Source Basis: <shape summary, evidence/repo basis, assumptions, unknowns, and plan blockers if incomplete>
+- Input Sufficiency: <insufficient|sufficient-for-draft|sufficient-for-handoff>
+- Input Gaps: <only when insufficient; missing input categories>
+- Source Basis: <shape summary, evidence/repo basis, assumptions, and unknowns>
 - Impact Surface: <scope size, affected surfaces, risk, reversal cost, docs/sync impact, and plan at a glance>
-- Plan: <steps, phases, or work packages>
+- Plan: <work packages, phases, or sequencing>
 - Scope: <allowed changes, do-not-touch areas, and explicit out-of-scope work>
 - Verification: <success criteria, checks, and acceptance evidence>
 - Stop Conditions: <when to stop instead of expanding scope>
-- Plan Readiness: <incomplete|reviewable|execution-candidate>
-- Plan Blockers: <only for incomplete repo/evidence/planning gaps; omit otherwise>
-- Shape Handoff: <only for incomplete direction, motivation, scope, or compatibility decisions that belong to shape>
-- Review Questions: <omit when incomplete; only for reviewable/execution-candidate; 1-3 concrete questions review should answer before build, sync, or handoff>
-- Diagnostic Review Request: <optional; Question, Target, Intended Use For Answer>
-- Review Recommended: <no | yes | strongly>
 - Compatibility / Constraint Policy: <preserve/breaking and respect/override/exception summary>
 - Risk / Recovery: <risks, rollback/recovery, and handoff notes>
 Next Use: <persist | review | build with explicit invocation | external-agent | sync | none>
