@@ -157,7 +157,7 @@ Evidence Probes:
 Do not infer repository ownership or maintenance responsibility. Choose `explore` vs `review` from the user's question type.
 
 - `explore` answers what exists, where it is, how it appears to work, and how reliable the evidence is.
-- `review` answers whether something is acceptable, correct, consistent, ready, worth changing, or which source should be treated as truth.
+- `review` answers whether something is acceptable, correct, consistent, ready, worth changing, or which source should be treated as truth; use `Change Assessment` for change-seeking judgment.
 - For code/docs/test/example mismatches during exploration, record `Reliability Notes` instead of repair actions.
 - Do not decide which side should be modified.
 - Do not label evidence conflicts as `correct`, `incorrect`, `ready`, `blocked`, `source of truth`, severity labels, gaps, or repair actions.

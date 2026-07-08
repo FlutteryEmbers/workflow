@@ -10,21 +10,13 @@
 
 {{code, docs, session decision, external plan, diff, artifact, or behavior claim}}
 
-## Review Target Kind
+## Review Frame
 
-{{plan | diff | code | docs | decision | claim | artifact}}
-
-## Intended Next Use
-
-{{discussion | persist | build | external-agent | sync}}
-
-## Review Type
-
-{{verdict-review | gap-analysis | diff-review}}
-
-## Review Question
-
-{{what this review is trying to decide}}
+- Review Question: {{what this review is trying to decide}}
+- Review Target Kind: {{plan | diff | code | docs | decision | claim | artifact}}
+- Intended Next Use: {{discussion | persist | build | external-agent | sync}}
+- Review Type: {{verdict-review | gap-analysis | diff-review}}
+- Review Route Reason: {{why this target is reviewed instead of shaped, planned, or explored}}
 
 ## Baseline
 
@@ -67,6 +59,15 @@
 
 {{ready | needs changes | needs more evidence | blocked | docs blocked}}
 
+## Change Assessment
+
+{{only for change-seeking review questions such as whether something should change, is worth changing, has useful improvements, or needs adjustment}}
+
+- Answer: {{yes | no | conditional | unknown}}
+- Why: {{one sentence}}
+- Preconditions: {{only when Answer is yes or conditional; conditions that make the change worthwhile}}
+- Suggested Change: {{only when Answer is yes or conditional; smallest worthwhile change, not a full design or plan}}
+
 ## Plan Review Rubric
 
 {{only when Review Target Kind is plan}}
@@ -83,7 +84,6 @@
 
 ## Readiness
 
-- Review Type: {{verdict-review | gap-analysis | diff-review}}
 - Confidence: {{high | medium | low}}
 - Readiness: {{0-10}}
 - Blocking Gaps: {{must-fix before intended next use, or none}}

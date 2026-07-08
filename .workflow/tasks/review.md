@@ -42,6 +42,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 ## When To Use
 
 - Use when the user asks whether code, docs, a decision, a plan, a diff, or a behavior claim is reasonable, safe, acceptable, usable, consistent, or ready.
+- Use when the user asks whether something should change, is worth changing, has useful improvements, or needs adjustment.
 - Use when the user asks what capability, behavior, documentation, plan, or system support is missing relative to a baseline; use `Review Type: gap-analysis`.
 - Use as a recommended risk/gap audit before external-agent implementation and after external-agent diffs.
 - Use inside composite `pplan` to judge a frozen plan draft for an intended next use.
@@ -70,11 +71,9 @@ Review output must remain verdict-shaped. It may perform a bounded evidence chec
 
 Review output is shaped around judgment:
 
-- `Review Target Kind`
-- `Intended Next Use`
-- `Review Question`
+- `Review Frame`
 - `Evidence Checked`
-- `Review Type`
+- `Change Assessment`, only for change-seeking review questions
 - `Review Verdict`
 - `Blocking Gaps`
 - `Non-blocking Gaps`
@@ -84,8 +83,9 @@ Review output is shaped around judgment:
 
 ## Expected Output
 
-- Findings first, then `Review Target Kind`, `Intended Next Use`, `Review Type`, `Review Verdict`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
+- Start with user intent, current read when useful, and `Review Frame`; then give findings, `Review Verdict`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
 - `gap-analysis` output includes baseline, observed state, gap analysis, severity, why it matters, and recommended action.
+- Change-seeking review output includes `Change Assessment`; this is conditional and must not appear as a required dashboard field.
 - Plan reviews use the built-in plan rubric; this is core review behavior, not a lens.
 - `Output: compact` default: short verdict, key findings, and optional `Persist Candidate`.
 - `Full Persist Packet` only when the review should be persisted now, used as an audit handoff, or `Output: full` is requested.
@@ -95,11 +95,14 @@ Review output is shaped around judgment:
 Before reviewing, classify the request. Prefer an in-shape verdict response over `wrong_task` when the user-selected task can still judge a bounded claim.
 
 - `fits`: user asks to judge code, docs, decisions, plans, diffs, evidence, acceptability, consistency, safety, or reasonableness.
+- `fits`: user asks whether something should change, has useful improvements, is worth changing, or needs adjustment; use `Change Assessment`.
 - `fits`: user asks to identify missing capabilities, gaps, drift from expected behavior, or whether a system satisfies a target baseline.
 - `fits_with_preflight`: review verdict depends on code, docs, diff, session evidence, or external plan context. In `Mode: discuss`, run conditional implicit preflight first.
 - `fallback_fit`: user asks for broad implementation discovery, but review can answer a bounded claim or verdict over named sources.
 - `composite`: user asks to review and persist; review first, then route to `persist`.
 - `wrong_task`: user asks for writing, stable sync, implementation, plan creation, or full implementation discovery that cannot be answered as a bounded verdict.
+- `wrong_task`: user asks for possible change directions without asking whether change is needed; recommend `shape`.
+- `wrong_task`: user asks how to make a chosen change or asks for implementation steps; recommend `plan`.
 
 Conditional implicit preflight for `review` only checks review target, review question, intended next use, and evidence readiness. Review may perform a bounded evidence check only to support a named verdict, claim, diff review, plan review, or baseline. It must not become open-ended discovery, must not load templates, and must not write files.
 
@@ -121,9 +124,9 @@ User-selected lenses:
 
 ## Instructions
 
-Inspect the target and report findings first. Keep review scope explicit. A review may report whether a session artifact is ready, needs changes, lacks evidence, is blocked, or should be synced to stable documents.
+Inspect the target, state `Review Frame`, then report findings. Keep review scope explicit. A review may report whether a session artifact is ready, needs changes, lacks evidence, is blocked, or should be synced to stable documents.
 
-Set `Review Target Kind` explicitly:
+Inside `Review Frame`, set `Review Target Kind` explicitly:
 
 - `plan`: plan draft, persisted plan, external plan, or `pplan` frozen draft.
 - `diff`: implementation diff or proposed patch.
@@ -133,7 +136,7 @@ Set `Review Target Kind` explicitly:
 - `claim`: user or AI claim about behavior, support, readiness, or source of truth.
 - `artifact`: session artifact that is not otherwise a plan, diff, code, docs, decision, or claim.
 
-Set `Intended Next Use` explicitly:
+Inside `Review Frame`, set `Intended Next Use` explicitly:
 
 - `discussion`: use as thinking material only.
 - `persist`: save as a session artifact.
@@ -141,15 +144,47 @@ Set `Intended Next Use` explicitly:
 - `external-agent`: hand to native Plan/Implement or another implementation agent.
 - `sync`: project-docs or archive projection.
 
+Every non-trivial review must start with a `Review Frame`:
+
+```text
+Review Frame:
+- Review Question: <plain-language question this review answers>
+- Review Target Kind: plan | diff | code | docs | decision | claim | artifact
+- Intended Next Use: discussion | persist | build | external-agent | sync
+- Review Type: verdict-review | gap-analysis | diff-review
+- Review Route Reason: <why this is review rather than shape, plan, or explore>
+```
+
+Use `Review Route Reason` to make routing explicit. For example, "the user is asking whether this is worth changing, not asking for change directions" routes to review; "the user asks for possible directions if changing" routes to shape; "the user asks how to make the chosen change" routes to plan.
+
 Do not create a full replacement design. Route redesign to `shape` and executable sequencing to `plan`. Review may propose required revisions, `Repair Direction`, and a `Minimal Revision Sketch`, but it should not become a design synthesis task or plan rewrite.
 
-Default review is `Review Type: verdict-review`. Use one primary review type per output:
+Inside `Review Frame`, default review is `Review Type: verdict-review`. Use one primary review type per output:
 
 - `verdict-review`: default correctness, usability, reasonableness, safety, or source-of-truth judgment.
 - `gap-analysis`: compare observed state against a baseline and identify missing capability, behavior, coverage, support, or alignment.
 - `diff-review`: review an implementation diff against an explicit plan.
 
 Use `gap-analysis` when the user asks what is missing, where the gaps are, whether a system satisfies an expected capability, or why a workflow scenario is not supported. Gap analysis requires a `Baseline`. Baseline may come from explicit user goal, protocol purpose, documented promise, expected workflow scenario, or confirmed project standard. If no baseline is available, return `Review Verdict: needs more evidence` or route to `shape`.
+
+## Change-Seeking Review
+
+Use `Change Assessment` only when the user asks whether something needs change, is worth changing, has useful improvements, should be adjusted, or asks for an improvement audit.
+
+`Change Assessment` answers change necessity. It does not replace `Review Verdict`; the verdict still judges whether the target is usable for the intended next use.
+
+```text
+Change Assessment:
+- Answer: yes | no | conditional | unknown
+- Why: <one sentence>
+- Preconditions:
+  - <only when Answer is yes or conditional; conditions that make the change worthwhile>
+- Suggested Change: <only when Answer is yes or conditional; smallest worthwhile change, not a full design or plan>
+```
+
+When `Answer: no`, default to `Recommended Action: none` and `Recommended Next Task: none`. When `Answer: unknown`, default to `Review Verdict: needs more evidence` and recommend `explore`. When `Answer: yes | conditional`, recommend `shape` if a direction choice is still needed and `plan` if the direction is already selected.
+
+Do not list speculative improvements as recommended changes unless their preconditions are true or explicitly assumed. Use `What Is Still Reasonable` to name what can remain unchanged.
 
 ## Plan Review Rubric
 
@@ -197,9 +232,7 @@ In `Mode: discuss`, review may help the human decide what to do next without tak
 
 For non-trivial reviews, include a readiness dashboard:
 
-- `Review Target Kind`: `plan | diff | code | docs | decision | claim | artifact`
-- `Intended Next Use`: `discussion | persist | build | external-agent | sync`
-- `Review Type`: `verdict-review | gap-analysis | diff-review`
+- `Review Frame`: question, target kind, intended next use, review type, and route reason.
 - `Review Verdict`: `ready | needs changes | needs more evidence | blocked | docs blocked`
 - `Confidence`: `high | medium | low`
 - `Readiness`: `0-10`
@@ -249,9 +282,17 @@ In `Mode: discuss`, default to:
 ```text
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
-Review Target Kind: <plan|diff|code|docs|decision|claim|artifact>
-Intended Next Use: <discussion|persist|build|external-agent|sync>
-Review Type: <verdict-review|gap-analysis|diff-review>
+Review Frame:
+- Review Question: <plain-language question this review answers>
+- Review Target Kind: plan | diff | code | docs | decision | claim | artifact
+- Intended Next Use: discussion | persist | build | external-agent | sync
+- Review Type: verdict-review | gap-analysis | diff-review
+- Review Route Reason: <why this is review rather than shape, plan, or explore>
+Change Assessment: <only for change-seeking review; omit otherwise>
+- Answer: yes | no | conditional | unknown
+- Why: <one sentence>
+- Preconditions: <only when Answer is yes or conditional>
+- Suggested Change: <only when Answer is yes or conditional>
 Review Verdict: <ready|needs changes|needs more evidence|blocked|docs blocked>
 Confidence: <high|medium|low>
 Take:
@@ -261,7 +302,7 @@ Blocking Gaps:
 Non-blocking Gaps:
 - <trackable gaps, or none>
 Repair Direction: <smallest repair direction or none>
-Can Use For Intended Next Use: <yes|no|not-applicable>
+Can Use For Intended Next Use: yes | no | not-applicable
 Recommended Next Task: <shape|plan|build|external-agent|sync|persist|explore|none>
 Persist Candidate: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
 ```
@@ -275,12 +316,17 @@ Use `Output: normal` when the user asks to organize, refine, or prepare the revi
 ```text
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
-Review Target Kind:
-- <plan|diff|code|docs|decision|claim|artifact>
-Intended Next Use:
-- <discussion|persist|build|external-agent|sync>
-Review Type:
-- <verdict-review|gap-analysis|diff-review>
+Review Frame:
+- Review Question: <plain-language question this review answers>
+- Review Target Kind: plan | diff | code | docs | decision | claim | artifact
+- Intended Next Use: discussion | persist | build | external-agent | sync
+- Review Type: verdict-review | gap-analysis | diff-review
+- Review Route Reason: <why this is review rather than shape, plan, or explore>
+Change Assessment: <only for change-seeking review; omit otherwise>
+- Answer: <yes | no | conditional | unknown; only for change-seeking review>
+- Why: <one sentence>
+- Preconditions: <only when yes or conditional>
+- Suggested Change: <smallest worthwhile change, not full design or plan>
 Refined Verdict:
 - <review verdict, key findings, required revisions, and recommended next task>
 Blocking Gaps:
@@ -311,15 +357,13 @@ Topic: <topic>
 Suggested Target: .session/threads/<thread>/review_<topic>.md
 Source Summary: <plan, diff, code, docs, session artifact, or claim reviewed>
 Key Fields:
-- Review Target Kind: <plan | diff | code | docs | decision | claim | artifact>
-- Intended Next Use: <discussion | persist | build | external-agent | sync>
-- Review Type: <verdict-review | gap-analysis | diff-review>
-- Review Question: <what was being judged>
+- Review Frame: <review question, target kind, intended next use, review type, and route reason>
+- Change Assessment: <only for change-seeking review; answer, why, preconditions, and suggested change>
 - Baseline: <expected state, documented promise, user goal, workflow scenario, or none>
 - Review Verdict: <ready | needs changes | needs more evidence | blocked | docs blocked>
 - Findings: <key findings with severity and evidence>
 - Gap Summary: <blocking and non-blocking gaps, or none>
-- Can Use For Intended Next Use: <yes | no | not-applicable>
+- Can Use For Intended Next Use: yes | no | not-applicable
 - Recommended Action: <repair direction, next task, or none>
 Next Use: <persist | shape | plan | build with explicit invocation | external-agent | sync | none>
 ```

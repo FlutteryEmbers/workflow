@@ -71,7 +71,7 @@ Before clarifying, classify obvious boundary problems:
 - `composite`: user asks to clarify and persist; clarify first, then route to `persist`.
 - `wrong_task`: user asks to gather evidence, inspect files, or discover how something works; recommend `explore`.
 - `wrong_task`: user asks to summarize or distill specified source material; recommend `distill`.
-- `wrong_task`: user asks whether something is correct, reasonable, conflicting, safe, ready, or worth changing; recommend `review`.
+- `wrong_task`: user asks whether something is correct, reasonable, conflicting, safe, ready, or worth changing; recommend `review`, using `Change Assessment` for change-seeking judgment.
 - `wrong_task`: user asks to form a direction or decision; recommend `shape`.
 - `wrong_task`: user asks to produce implementation steps; recommend `plan`.
 - `wrong_task`: user asks to update project docs; recommend `sync`.

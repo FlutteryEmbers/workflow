@@ -218,9 +218,9 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is think
 - `explore` may provide `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
-- `review` may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
+- `review` starts non-trivial output with `Review Frame` and may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
 - `plan` may provide `Input Sufficiency`, `Input Gaps`, minimum viable verification, fallback verification, residual risk, plan draft/handoff content, and recommended next task.
-- `review` may provide `Gap Analysis` with `Severity: high | medium | low`, `Blocking Gaps`, and `Non-blocking Gaps`.
+- `review` may provide `Gap Analysis` with `Severity: high | medium | low`, `Blocking Gaps`, `Non-blocking Gaps`, and conditional `Change Assessment` for change-seeking judgment.
 - Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 
 These freedoms do not loosen write or execution boundaries. `persist`, `sync`, and `build` keep their existing target and prerequisite rules.
@@ -261,6 +261,7 @@ For repository conflicts:
 
 - Discovery question: conflict = reliability risk. Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
 - Judgment question: conflict = possible source-of-truth issue. Use `review --lens consistency` when the user asks what is correct, acceptable, ready, or worth changing.
+- Change-seeking judgment: "does this need change / is it worth changing / are there useful improvements" goes to `review` with `Change Assessment`; "if changing, what directions exist" goes to `shape`; "how to make the chosen change" goes to `plan`.
 - `explore` can say "no evidence found for X"; `review` decides whether that means the system lacks X, whether it matters, and what should change.
 - Do not infer repo ownership. Use the user's question type to choose `explore` vs `review`.
 
@@ -345,7 +346,7 @@ Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-han
 - `sufficient-for-draft`: source input is enough for a discussion or review draft, but not handoff use.
 - `sufficient-for-handoff`: source input is enough for a handoff-grade plan with scope, allowed changes, do-not-touch areas, minimum viable verification, fallback verification when needed, residual risk, and stop conditions.
 
-`Input Sufficiency` is not a build verdict. `Input Gaps` belong only to insufficient input and name missing input categories without asking questions. When invoked, `review` decides `Review Verdict`, `Blocking Gaps`, severity, `Can Use For Intended Next Use`, and recommended next task. Missing review is not by itself a `build` blocker.
+`Input Sufficiency` is not a build verdict. `Input Gaps` belong only to insufficient input and name missing input categories without asking questions. When invoked, `review` decides `Review Frame`, `Review Verdict`, `Blocking Gaps`, severity, `Can Use For Intended Next Use`, change necessity judgment, and recommended next task. Missing review is not by itself a `build` blocker.
 
 Default plan verification is minimum viable verification. Prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites. Refactor or migration plans without an old baseline should name fallback verification and residual risk instead of becoming insufficient solely for that reason.
 

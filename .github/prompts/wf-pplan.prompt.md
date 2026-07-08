@@ -50,9 +50,12 @@ Plan Draft:
 - Next
 
 Plan Review:
-- Review Target Kind: plan
-- Intended Next Use: <discussion|persist|build|external-agent|sync>
-- Review Type: verdict-review
+- Review Frame:
+  - Review Question: Can this frozen plan draft be used for the intended next use?
+  - Review Target Kind: plan
+  - Intended Next Use: discussion | persist | build | external-agent | sync
+  - Review Type: verdict-review
+  - Review Route Reason: pplan reviews a frozen plan draft instead of revising it.
 - Review Verdict: ready | needs changes | needs more evidence | blocked
 - Blocking Gaps
 - Non-blocking Gaps

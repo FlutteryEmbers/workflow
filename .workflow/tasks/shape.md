@@ -47,6 +47,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 - Do not use only to collect raw context; use `clarify` or `explore`.
 - Do not use to judge whether existing code/docs/plan are reasonable; use `review`.
+- Do not use to judge whether something should change or is worth changing; use `review` with `Change Assessment`.
 - Do not use when the direction is fixed and the user needs executable steps; use `plan`.
 - Do not use to approve a plan, code change, diff, project docs update, or existing artifact; use `review`.
 - Do not use to write session artifacts; use `persist`.

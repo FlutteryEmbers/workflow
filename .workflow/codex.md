@@ -60,9 +60,9 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `explore`: `Observed Facts`, `Evidence Map`, `Evidence Probes`, `Reliability Notes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, recommended next task.
 - `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
 - `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
-- `review`: `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
+- `review`: `Review Frame`, `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
 - `plan`: `Input Sufficiency`, `Input Gaps` when insufficient, minimum viable verification, fallback verification, residual risk, compatibility/constraint plan, and recommended next task.
-- `review`: `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
+- `review`: `Review Frame` fields, `Gap Analysis`, severity, blocking gaps, non-blocking gaps, and conditional `Change Assessment` when the user asks whether something should change or is worth changing.
 - Review plans under `verdict-review` with `Review Target Kind: plan` and explicit `Intended Next Use`; use `gap-analysis` when the plan asks review to diagnose a system or protocol gap against a baseline.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 - In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
@@ -73,7 +73,7 @@ Discovery vs judgment rule:
 
 - Do not infer repo ownership or maintenance responsibility.
 - Use `explore` for what exists, where it is, how it appears to work, and how reliable the evidence is.
-- Use `review` for whether something is correct, acceptable, ready, worth changing, or which source should be treated as truth.
+- Use `review` for whether something is correct, acceptable, ready, worth changing, or which source should be treated as truth. Use `Change Assessment` only for change-seeking review questions; route "if changing, what directions exist" to `shape`, and "how to make the chosen change" to `plan`.
 - Do not add the `consistency` lens for discovery questions.
 
 `explore` is upstream evidence for shape and review. Use `explore -> plan` only when the direction or target is already selected and the evidence only fills repo-aware planning context. Shape/review/plan may perform bounded evidence checks only to support their own output shape; if evidence gathering becomes the main deliverable, route to `explore`.
@@ -92,7 +92,7 @@ Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-han
 - `shape` produces concept-level direction and may recommend `plan` or `review`.
 - `plan` outputs `Input Sufficiency`, `Input Gaps` when insufficient, and a plan body plus minimum viable verification only when input is sufficient.
 - `Input Sufficiency` is not a gate verdict or execution authorization.
-- `review` owns formal `Blocking Gaps`, gap severity, verdicts, and whether a plan can be used for `Intended Next Use`.
+- `review` owns `Review Frame`, formal `Blocking Gaps`, gap severity, verdicts, whether a plan can be used for `Intended Next Use`, and change necessity judgment.
 - For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block a plan for optional improvement only.
 - `build` requires explicit user invocation and a plan concrete enough to execute safely; review is recommended for material risk, but missing review is not by itself a build blocker.
 

@@ -53,7 +53,8 @@ Request: ${input:request:describe the work}
 - Meaning, explanation, restatement, difference, assumption, hidden scope, or prior AI answer unpacking requests go to `clarify`.
 - Summary, folder summary, source distillation, and archive-summary draft requests go to `distill`.
 - Ambiguous what-if, option-comparison, concept-level, direction-setting, or entrypoint-selection requests default to `shape`.
-- Evidence-only requests, discovery inventory, source-backed fact checks, and non-mutating probes go to `explore`; evidence-to-direction paths go `explore -> shape`; evidence-to-verdict/gap paths go `explore -> review`; evidence-to-plan paths use `explore -> plan` only when direction or target is already selected. Verdict, source-of-truth, missing-capability, and baseline-satisfaction requests go to `review`.
+- Evidence-only requests, discovery inventory, source-backed fact checks, and non-mutating probes go to `explore`; evidence-to-direction paths go `explore -> shape`; evidence-to-verdict/gap paths go `explore -> review`; evidence-to-plan paths use `explore -> plan` only when direction or target is already selected. Verdict, source-of-truth, missing-capability, baseline-satisfaction, and worth-changing requests go to `review`.
+- Change-seeking judgment routes: "does this need change / is it worth changing / any useful improvements" goes to `review` with `Change Assessment`; "if changing, what directions exist" goes to `shape`; "how to make the chosen change" goes to `plan`.
 - Each task should answer using its own `Output Shape`: clarify=meaning, explore=evidence, shape=direction, review=verdict, plan=plan.
 - Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. `distill` is a task, not a lens. Do not use any lens as a skip mechanism.
 - Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Evidence Probes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Minimal Revision Sketch`, `Repair Direction`, `Input Sufficiency`, `Input Gaps`, and `What Would Change My Mind` as thinking material.
@@ -69,7 +70,7 @@ Request: ${input:request:describe the work}
 - Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` for planning output. This classifies source input for intended use, not generated plan quality.
 - `plan compact` must summarize the chosen direction first, include `Motivation`, then give compact `Impact Surface`, `Plan At A Glance`, plan body, and compact verification only when input is sufficient. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. `Output: full` is a minimal handoff packet for persist, explicit handoff candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
 - Default plan verification is minimum viable verification: prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites.
-- `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, and gap analysis. Review output must include `Review Target Kind` and `Intended Next Use`; plan review is a built-in review rubric, not a lens. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
+- `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, gap analysis, and change necessity judgment. Review output must start with `Review Frame` containing `Review Question`, `Review Target Kind`, `Intended Next Use`, `Review Type`, and `Review Route Reason`; plan review is a built-in review rubric, not a lens. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap. Use `Change Assessment` only for change-seeking review requests.
 - `explore` is upstream evidence for shape and review. It can say "evidence found" or "no evidence found"; `review` decides what that evidence means against a baseline. `explore` may run non-mutating probes only to establish evidence and must report `Probe`, `Command or Method`, `Observed Result`, `Reliability`, and `Side Effect Check`. Use `explore -> plan` only when direction or target is already selected and evidence only fills repo-aware planning context.
 - Review plans under `verdict-review` when the question is whether the plan can be used for `Intended Next Use`. When a plan asks review to diagnose a system problem, use `verdict-review` or `gap-analysis` based on the question.
 - For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block a plan for optional improvement only.
@@ -244,8 +245,12 @@ Mode: discuss
 Task: review
 Lens: redteam, test, architecture
 Request:
-Review Target Kind: plan
-Intended Next Use: external-agent
+Review Frame:
+- Review Question: Can this external plan be used for native implementation?
+- Review Target Kind: plan
+- Intended Next Use: external-agent
+- Review Type: verdict-review
+- Review Route Reason: plan usability for external-agent implementation requires review, not shape or plan.
 Review this external plan before native implementation with explicit critique posture. Return Review Verdict, Blocking Gaps, Non-blocking Gaps, Can Use For Intended Next Use, and Recommended Next Task.
 ```
 

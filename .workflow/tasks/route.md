@@ -92,6 +92,9 @@ Recommend the smallest path:
 - Summary and distillation requests such as "summarize this folder", "distill this thread", "extract structure", or "make an archive summary draft" go to `distill`.
 - Gap and missing-capability requests such as "what is missing", "where are the gaps", "does this satisfy the goal", "audit feature gaps", or "audit workflow support" go to `review` with `Review Type: gap-analysis`; if evidence is insufficient, route `explore -> review`. "No evidence found for X" is explore; "X is a gap that matters" is review.
 - Judgment questions such as "is this correct", "is this reasonable", "should this change", "which source is truth", or "is this ready" go to `review`.
+- Change-seeking judgment questions such as "does this need change", "is this worth changing", "are there useful improvements", "should this be adjusted", or "audit improvement points" go to `review` with `Change Assessment`.
+- "If changing, what directions exist" goes to `shape`.
+- "How should the chosen change be implemented" or "give implementation steps" goes to `plan` when the direction is already selected.
 - Verdict-only requests such as "is this reasonable", "can this execute", "does this conflict", or "is this ready" go to `review`.
 - Default careful session flow: `external or conversational goal -> shape -> plan -> optional review -> build/external-agent -> recommended review -> sync`.
 - Long or reusable external goal sources: `persist` as `Artifact: brief`, `Brief Type: external-goal`, then `shape` consumes the inbox brief.
