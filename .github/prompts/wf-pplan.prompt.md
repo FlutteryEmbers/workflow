@@ -27,6 +27,8 @@ Rules:
 - Do not persist, build, sync, execute, or implement.
 - Freeze the plan draft before reviewing it; do not revise the plan during the review phase.
 - If the plan phase outputs `Input Sufficiency: insufficient`, still review the frozen insufficient result for the requested intended next use.
+- The plan draft must use default minimum viable verification unless `Lens: test` is selected or the request explicitly asks for higher assurance.
+- If intended next use is `build` or `external-agent`, review whether minimum viable verification, fallback verification, residual risk, and stop conditions are enough for that use; do not mechanically require old baseline, contract freeze, parity matrix, full regression, or e2e.
 - Review must output verdict and gaps, not a rewritten plan.
 
 Request:
@@ -41,6 +43,8 @@ Plan Draft:
 - Impact Surface, omitted when insufficient
 - Plan At A Glance, omitted when insufficient
 - Plan, omitted when insufficient
+- Verification: Minimum Viable Verification, Verification Feasibility, Fallback Verification, Residual Risk; omitted when insufficient
+- Execution Handoff, only when recommending build or external-agent
 - Compatibility / Constraint Plan, when relevant
 - Recommended Next Task
 - Next

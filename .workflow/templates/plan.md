@@ -55,7 +55,7 @@ Required. Use `Source: chat` when there is no persisted shape artifact.
 
 ## Plan
 
-{{work packages, phases, or sequencing with scope, constraints, verification, and stop conditions. Use bullets for small plans and a table for larger handoffs. Omit when Input Sufficiency is insufficient.}}
+{{work packages, phases, or sequencing with scope, constraints, minimum viable verification, fallback verification, and stop conditions. Use bullets for small plans and a table for larger handoffs. Omit when Input Sufficiency is insufficient.}}
 
 ## Scope
 
@@ -66,6 +66,11 @@ Required. Use `Source: chat` when there is no persisted shape artifact.
 ## Verification
 
 - Success Criteria: {{what must be true when this plan is done}}
+- Minimum Viable Verification: {{targeted existing checks, fixture/unit/static/smoke/manual validation, or none}}
+- Verification Feasibility: {{available | partial | unavailable | unknown}}
+- Fallback Verification: {{fallback checks when stronger verification is unavailable, or none}}
+- Residual Risk: {{risk left after minimum/fallback verification, or none}}
+- Higher Assurance: {{only when Lens: test or explicitly requested; contract/baseline/parity/regression strategy, or none}}
 - Checks: {{tests, commands, review checks, or manual validation}}
 - Acceptance Evidence: {{what evidence proves the plan worked}}
 

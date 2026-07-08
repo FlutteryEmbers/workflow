@@ -67,7 +67,8 @@ Request: ${input:request:describe the work}
 - `vscode/askQuestions` is only a checkpoint renderer for `shape`.
 - Do not use the native question UI for planning, review verdicts, task routing, preflight, write authorization, sync authorization, or build authorization.
 - Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` for planning output. This classifies source input for intended use, not generated plan quality.
-- `plan compact` must summarize the chosen direction first, include `Motivation`, then give compact `Impact Surface`, `Plan At A Glance`, and plan body only when input is sufficient. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. `Output: full` is a minimal handoff packet for persist, explicit handoff candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
+- `plan compact` must summarize the chosen direction first, include `Motivation`, then give compact `Impact Surface`, `Plan At A Glance`, plan body, and compact verification only when input is sufficient. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. `Output: full` is a minimal handoff packet for persist, explicit handoff candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
+- Default plan verification is minimum viable verification: prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites.
 - `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, and gap analysis. Review output must include `Review Target Kind` and `Intended Next Use`; plan review is a built-in review rubric, not a lens. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
 - `explore` is upstream evidence for shape and review. It can say "evidence found" or "no evidence found"; `review` decides what that evidence means against a baseline. `explore` may run non-mutating probes only to establish evidence and must report `Probe`, `Command or Method`, `Observed Result`, `Reliability`, and `Side Effect Check`. Use `explore -> plan` only when direction or target is already selected and evidence only fills repo-aware planning context.
 - Review plans under `verdict-review` when the question is whether the plan can be used for `Intended Next Use`. When a plan asks review to diagnose a system problem, use `verdict-review` or `gap-analysis` based on the question.
@@ -172,8 +173,14 @@ Plan At A Glance:
 - <1-3 summary changes; target, reason, and risk; omit when insufficient>
 Plan:
 - <3-6 work packages or phases; omit when insufficient>
+Verification:
+- Minimum Viable Verification: <targeted fixture/unit/static/smoke/manual check; omit when insufficient>
+- Verification Feasibility: <available|partial|unavailable|unknown; omit when insufficient>
+- Fallback Verification: <fallback or none; omit when insufficient>
+- Residual Risk: <remaining risk or none; omit when insufficient>
 Compatibility / Constraint Plan:
 - <when relevant>
+Execution Handoff: <use Output: full or persisted plan for executable handoff; include only when Recommended Next Task is build or external-agent>
 Recommended Next Task: <shape | explore | review | plan | persist | sync | build | external-agent | none>
 Next: <review plan | build with explicit invocation | persist plan | sync | shape | none>
 Persist Candidate: <none or one line; candidate only, do not write>
@@ -194,7 +201,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Input Sufficiency`, conditional `Input Gaps`, `Shape Summary` with `Motivation`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, and `Compatibility / Constraint Plan` when relevant. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`.
+For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Input Sufficiency`, conditional `Input Gaps`, `Shape Summary` with `Motivation`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, and `Compatibility / Constraint Plan` when relevant. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`.
 
 Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 

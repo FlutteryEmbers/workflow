@@ -163,7 +163,7 @@ Judge whether the plan can be used for `Intended Next Use`:
 - Compatibility and constraint policy are explicit when they affect the work.
 - Repo evidence is enough for the planned scope and sequence.
 - Sequencing is coherent and does not depend on hidden decisions.
-- Verification is concrete enough for the intended use.
+- Verification is concrete enough for the intended use: minimum viable verification, feasibility, fallback verification, residual risk, and acceptance evidence are clear enough to judge the plan.
 - Stop conditions are clear enough to prevent scope expansion.
 - The plan does not imply unauthorized write, build, sync, or implementation.
 
@@ -176,7 +176,9 @@ Plan review verdicts:
 
 Do not block a plan for optional improvement only. Alternative sequencing, style preferences, extra detail, polish, or optional risk reduction belongs in `Non-blocking Gaps`, `Recommended Action`, or `Minimal Revision Sketch` unless it affects scope, verification, source of truth, compatibility / constraint policy, safety, or usability for the intended next use.
 
-Treat these as typical blocking gaps for plan verdicts: missing target or scope, missing verification, source-of-truth conflict, out-of-scope write risk, unclear compatibility / constraint policy, unsafe docs projection, missing allowed changes or do-not-touch areas for handoff use, or steps that cannot be used without inventing decisions.
+For plan reviews, accept `Verification Feasibility: partial | unavailable` when the fallback verification, residual risk, and stop conditions are explicit enough for the intended next use. Do not mechanically require contract freeze, old baseline, parity matrix, full regression, or e2e unless the intended next use, user request, selected lens, safety profile, public API/data risk, or migration risk truly requires that assurance.
+
+Treat these as typical blocking gaps for plan verdicts: missing target or scope, missing verification or fallback verification, source-of-truth conflict, out-of-scope write risk, unclear compatibility / constraint policy, unsafe docs projection, missing allowed changes or do-not-touch areas for handoff use, or steps that cannot be used without inventing decisions.
 
 ## Lens Rules
 

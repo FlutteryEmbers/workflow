@@ -185,6 +185,7 @@ Every plan output uses:
 - `Input Gaps` only when input is insufficient
 - `Shape Summary` with `Motivation`
 - `Impact Surface`, `Plan At A Glance`, and `Plan` only when input is sufficient
+- `Verification` with minimum viable verification, feasibility, fallback verification, and residual risk only when input is sufficient
 
 `Input Sufficiency` classifies the source input, not the generated plan quality. `sufficient-for-handoff` means the input supports a handoff-grade plan; it is not a review verdict or execution authorization. `review` decides formal `Review Verdict`, `Blocking Gaps`, severity, and whether the plan can be used for `Intended Next Use`.
 
@@ -201,7 +202,7 @@ Impact Surface:
 - User Confirmation Needed Before: none | plan | review | build
 ```
 
-Use `Input Sufficiency: sufficient-for-handoff` only when the source input names enough target, scope, allowed changes, verification, and stop conditions to support build or external-agent handoff after review. Use `sufficient-for-draft` for discussion/review drafts. Use `insufficient` when direction, evidence, target, compatibility, source of truth, verification, allowed changes, or stop conditions are missing.
+Use `Input Sufficiency: sufficient-for-handoff` only when the source input names enough target, scope, allowed changes, minimum viable verification, fallback verification when needed, residual risk, and stop conditions to support build or external-agent handoff after review. Use `sufficient-for-draft` for discussion/review drafts. Use `insufficient` when direction, evidence, target, compatibility, source of truth, any credible minimum verification path, allowed changes, or stop conditions are missing.
 
 Use these decision states across shape and plan:
 
@@ -218,7 +219,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is think
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may provide `Input Sufficiency`, `Input Gaps`, plan draft/handoff content, and recommended next task.
+- `plan` may provide `Input Sufficiency`, `Input Gaps`, minimum viable verification, fallback verification, residual risk, plan draft/handoff content, and recommended next task.
 - `review` may provide `Gap Analysis` with `Severity: high | medium | low`, `Blocking Gaps`, and `Non-blocking Gaps`.
 - Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 
@@ -286,7 +287,7 @@ Core selectable lenses:
 | `debug` | `explore` or `build` needs defect or uncertain runtime behavior diagnosis. |
 | `expert` | `shape` or `review` needs high-density expert reasoning, hidden assumptions, opposing views, or anti-generic output. |
 | `language` | Full English, translation, terminology consistency, or project glossary updates are needed. |
-| `test` | `plan` or `build` needs stronger verification and acceptance evidence. |
+| `test` | `plan` or `build` needs stronger verification, contract/baseline/parity coverage, or acceptance evidence beyond default minimum viable verification. |
 
 Review-owned lenses remain available to `review`:
 
@@ -342,9 +343,11 @@ Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-han
 
 - `insufficient`: required source input is missing and cannot be safely assumed; do not output a plan body.
 - `sufficient-for-draft`: source input is enough for a discussion or review draft, but not handoff use.
-- `sufficient-for-handoff`: source input is enough for a handoff-grade plan with scope, allowed changes, do-not-touch areas, verification, and stop conditions.
+- `sufficient-for-handoff`: source input is enough for a handoff-grade plan with scope, allowed changes, do-not-touch areas, minimum viable verification, fallback verification when needed, residual risk, and stop conditions.
 
 `Input Sufficiency` is not a build verdict. `Input Gaps` belong only to insufficient input and name missing input categories without asking questions. When invoked, `review` decides `Review Verdict`, `Blocking Gaps`, severity, `Can Use For Intended Next Use`, and recommended next task. Missing review is not by itself a `build` blocker.
+
+Default plan verification is minimum viable verification. Prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites. Refactor or migration plans without an old baseline should name fallback verification and residual risk instead of becoming insufficient solely for that reason.
 
 Closed loop paths:
 
@@ -397,7 +400,7 @@ Compact output starts with `User Intent`, may include `Current Read`, and uses s
 `shape` and `plan` may both be compact in chat, but they have different responsibilities:
 
 - `shape compact`: reason about direction and choose or recommend a concept.
-- `plan compact`: classify `Input Sufficiency`, summarize the shaped/chosen direction, then show compact `Impact Surface` and plan sketch only when input is sufficient.
+- `plan compact`: classify `Input Sufficiency`, summarize the shaped/chosen direction, then show compact `Impact Surface`, plan sketch, and compact verification only when input is sufficient.
 - `plan full`: minimal handoff packet for persist, explicit plan handoff, or external-agent use. The persisted artifact structure comes from `.workflow/templates/plan.md` and uses `Source Basis`, `Impact Surface -> Plan At A Glance`, `Scope`, `Verification`, `Stop Conditions`, and `Review / Next Use`.
 
 Every `plan` output, including compact chat output, must include the core planning fields and use conditional fields only when their condition applies:
@@ -409,12 +412,14 @@ Shape Summary
 Impact Surface
 Plan At A Glance
 Plan
+Verification
+Execution Handoff
 Next
 ```
 
-`Input Gaps`, `Impact Surface`, `Plan At A Glance`, and `Plan` are conditional: insufficient input outputs gaps and omits the plan body.
+`Input Gaps`, `Impact Surface`, `Plan At A Glance`, `Plan`, and `Verification` are conditional: insufficient input outputs gaps and omits the plan body. `Execution Handoff` appears only when compact output recommends `build` or `external-agent`, and should say to use `Output: full` or a persisted plan for executable handoff.
 
-Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Include `Motivation`; use `unknown` when motivation is unavailable and do not invent it. Compact `Impact Surface` includes only scope size, affected surfaces, risk, and reversal cost. Full plan artifacts may expand impact with docs/sync and build/handoff readiness.
+Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Include `Motivation`; use `unknown` when motivation is unavailable and do not invent it. Compact `Impact Surface` includes only scope size, affected surfaces, risk, and reversal cost. Compact `Verification` includes minimum viable verification, feasibility, fallback verification, and residual risk. Full plan artifacts may expand impact with docs/sync and build/handoff readiness.
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Do not add a detailed chat output mode; use `Output: full` for detailed artifacts and handoffs.
 

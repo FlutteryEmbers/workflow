@@ -26,6 +26,7 @@ Rules:
 - Use `gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap.
 - When `Review Target Kind: plan`, use the built-in plan rubric from `.workflow/tasks/review.md`; do not require a lens for plan review.
 - For plan reviews, judge whether the plan can be used for `Intended Next Use`.
+- For plan reviews, accept partial or unavailable verification only when fallback verification, residual risk, and stop conditions are explicit enough for the intended use; do not mechanically require contract freeze, old baseline, parity matrix, full regression, or e2e.
 - Do not rewrite a plan. Return gaps, `Repair Direction`, and recommended next task.
 - Treat `redteam` as an explicit critique posture: failure paths, counterarguments, hidden costs, and boundary breaks. Review still owns the verdict.
 - You may include repair direction and minimal revision sketch, but do not create an implementation plan, write, sync, execute, or implement.

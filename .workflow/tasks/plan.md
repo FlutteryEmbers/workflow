@@ -17,7 +17,7 @@ done_check:
   - input_sufficiency_classified
   - sequence_is_coherent_when_plan_body_exists
   - constraints_are_named
-  - verification_is_defined_or_input_gap_is_named
+  - minimum_viable_verification_is_defined_or_input_gap_is_named
 ---
 
 # Plan Task
@@ -39,7 +39,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 ## When To Use
 
 - Use when the target direction is chosen and the user needs repo-aware sequencing, work packages, or external-agent handoff.
-- Use when source input must be organized into target outcome, scope, constraints, verification, and stop conditions before any write.
+- Use when source input must be organized into target outcome, scope, constraints, minimum viable verification, fallback verification, and stop conditions before any write.
 - Use after `shape`, `review`, `explore`, or a user-provided direction when the input is enough to organize work.
 
 ## Do Not Use When
@@ -54,7 +54,7 @@ Role: {{CONTENT: /.workflow/roles/designer.md}}
 
 ## Boundary Layers
 
-- `Core Responsibility`: classify whether the source input can support a plan and, when it can, organize the chosen direction into a coherent plan draft or handoff without performing the work.
+- `Core Responsibility`: classify whether the source input can support a plan and, when it can, organize the chosen direction into a coherent, realistically executable plan draft or handoff without performing the work.
 - `Adjacent Allowance`: include bounded repo-fit preflight, input gaps, compatibility/constraint plan, stop conditions, and recommended next task.
 - `Forbidden Authority`: do not choose the core direction, ask user questions, issue a review verdict, label formal blocking gaps, write files, stable-sync documents, execute, implement, or imply execution authorization.
 
@@ -66,7 +66,7 @@ Adjacent allowance must stay planning-owned. If the primary need is direction ch
 - `Input Gaps` only when sufficiency is `insufficient`.
 - A plan body only when sufficiency is `sufficient-for-draft` or `sufficient-for-handoff`.
 - `Compatibility / Constraint Plan` when compatibility or constraint policy affects execution.
-- `Output: compact` default: user intent, input sufficiency, optional input gaps, shape summary, impact surface, plan at a glance, plan body when allowed, next step, and optional `Persist Candidate`.
+- `Output: compact` default: user intent, input sufficiency, optional input gaps, shape summary, impact surface, plan at a glance, plan body when allowed, compact verification, next step, and optional `Persist Candidate`.
 - `Output: full` / `Full Persist Packet` only when the plan should be persisted now, used as a handoff, needs explicit handoff detail, or `Output: full` is requested.
 
 ## Task Boundary Check
@@ -80,7 +80,7 @@ Before planning, classify the request:
 - `wrong_task`: user asks whether current implementation, target, or plan is reasonable; recommend `review`.
 - `composite`: user asks to implement from target docs and current code without a concrete plan; recommend `review -> plan -> review -> external-agent/build -> review`.
 
-Repo-fit preflight runs only in `Mode: discuss` and is mandatory when the plan depends on repo facts. It checks target stability, target files or areas, existing patterns, constraints, verification entrypoints, and whether the selected direction fits current repo reality. Plan may name input gaps and conflicts, but must not perform discovery inventory, decide source of truth, judge missing capability, invent a new target, or issue a formal review verdict. If missing evidence would affect scope, sequence, target files, or verification, output `Input Sufficiency: insufficient`, output `Input Gaps`, and set `Recommended Next Task: explore`.
+Repo-fit preflight runs only in `Mode: discuss` and is mandatory when the plan depends on repo facts. It checks target stability, target files or areas, existing patterns, constraints, existing verification entrypoints, and whether the selected direction fits current repo reality. Plan may name input gaps and conflicts, but must not perform discovery inventory, decide source of truth, judge missing capability, invent a new target, or issue a formal review verdict. If missing evidence would affect scope, sequence, target files, or any credible minimum verification path, output `Input Sufficiency: insufficient`, output `Input Gaps`, and set `Recommended Next Task: explore`. Do not mark input insufficient solely because old-run baselines, contract snapshots, or broad regression suites are unavailable.
 
 ## Copilot Add Context
 
@@ -102,7 +102,7 @@ Write the smallest useful plan for the user's current intent. Do not compare or 
 
 - `insufficient`: required input is missing and cannot be safely assumed. Do not output a plan body. Output `Input Gaps` and recommend `shape`, `explore`, `user-answer`, or another `plan` pass.
 - `sufficient-for-draft`: input is enough to produce a discussion or review draft, but not enough for build or external-agent handoff.
-- `sufficient-for-handoff`: input is enough to produce a handoff-grade plan with target outcome, scope, allowed changes, do-not-touch areas, verification, and stop conditions. This still does not authorize execution.
+- `sufficient-for-handoff`: input is enough to produce a handoff-grade plan with target outcome, scope, allowed changes, do-not-touch areas, minimum viable verification, fallback verification when needed, residual risk, and stop conditions. This still does not authorize execution.
 
 Use `Input Gaps` only when input is insufficient. List missing input categories, not questions. Valid gap categories include direction, motivation, scope, target, compatibility policy, constraint policy, allowed changes, do-not-touch areas, source of truth, repo evidence, verification, stop conditions, and intended next use. Do not include generic cautions, risk notes, or review concerns as input gaps.
 
@@ -112,11 +112,34 @@ Every plan, including compact chat output, must include a short `Impact Surface`
 
 Persisted plan artifacts include `Impact Surface -> Plan At A Glance` for scanability. `Plan At A Glance` is a surface-level summary of change, target, reason, and risk; it is not a step list, verification plan, full diff, or replacement for the plan body.
 
-Use `Plan` as work packages or sequencing by default. For `sufficient-for-handoff`, the plan may include more explicit execution outline, but it must still be tied to allowed changes, verification, and stop conditions and must not imply build authorization.
+Use `Plan` as work packages or sequencing by default. For `sufficient-for-handoff`, the plan may include more explicit execution outline, but it must still be tied to allowed changes, minimum viable verification, fallback verification, residual risk, and stop conditions and must not imply build authorization.
 
 Build handoff wording must use `explicit plan handoff`, not readiness labels. `build` requires explicit user invocation plus plan validation; review is recommended for material risk but is not a universal hard gate. `build` must not infer authorization from `Input Sufficiency`, adjacent discussion output, or any plan label. In `Next` or `Next Use`, write `build with explicit invocation`; keep `Recommended Next Task` as the task id `build`.
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Keep chat output modes to `compact`, `normal`, and `full`.
+
+## Default Verification Policy
+
+Default `plan` optimizes for practical execution. Choose the narrowest existing verification that is target-relevant, low-cost, and executable in the current repo. Prefer, in order:
+
+- existing repo script or manifest command that directly covers the target area;
+- existing fixture, unit, static, typecheck, lint, snapshot, or targeted test for the touched module;
+- small smoke check, CLI command, fixture replay, prompt/static assertion, or manual acceptance checklist when no automated target exists;
+- fallback verification plus explicit residual risk when full verification is unavailable.
+
+Every plan body must include:
+
+```text
+Verification
+- Minimum Viable Verification: <existing targeted check, static check, smoke, fixture/unit, manual checklist, or none>
+- Verification Feasibility: available | partial | unavailable | unknown
+- Fallback Verification: <fallback checks when stronger verification is unavailable, or none>
+- Residual Risk: <risk left after minimum/fallback verification, or none>
+```
+
+Do not require new test infrastructure, old-run baseline capture, complete contract freeze, full regression, or e2e coverage by default. For refactor or migration plans, the absence of an old run or baseline does not by itself make input insufficient. Mark `Input Sufficiency: insufficient` for verification only when there is no credible way to judge whether the plan completed successfully.
+
+Use `Higher Assurance` only when `Lens: test` is selected or the user explicitly requests stronger assurance. Higher assurance may include contract freeze, old baseline replay, parity matrix, full regression, e2e, golden cases, edge cases, rollback validation, or migration validation. In default output, mention these only as optional higher-assurance follow-up, not as prerequisites.
 
 ## Discussion Freedom
 
@@ -125,6 +148,7 @@ In `Mode: discuss`, `plan` may output insufficient, draft, or handoff plans.
 - `Input Sufficiency` is source-input classification, not a review verdict.
 - `sufficient-for-handoff` means the input supports a handoff-grade plan; it is not a review verdict, build verdict, or execution authorization.
 - `Input Gaps` name missing input categories only when input is insufficient.
+- Default verification is minimum viable verification. Use fallback and residual risk when stronger verification is not feasible.
 - Do not ask questions from `plan`.
 - Do not output review verdicts, formal blocking gaps, severity, or review-style checklists from `plan`.
 - Use `Follow-up Questions` only in normal/full outputs for non-blocking future considerations, and never as a blocking form.
@@ -182,6 +206,12 @@ Plan At A Glance:
 - <1-3 summary changes; target, reason, and risk; omit when insufficient>
 Plan:
 - <3-6 work packages, phases, or sequencing steps; omit when insufficient>
+Verification:
+- Minimum Viable Verification: <targeted fixture/unit/static/smoke/manual check; omit when insufficient>
+- Verification Feasibility: <available|partial|unavailable|unknown; omit when insufficient>
+- Fallback Verification: <fallback or none; omit when insufficient>
+- Residual Risk: <remaining risk or none; omit when insufficient>
+Execution Handoff: <use Output: full or persisted plan for executable handoff; include only when Recommended Next Task is build or external-agent>
 Recommended Next Task: <shape|explore|user-answer|review|plan|persist|sync|build|external-agent|none>
 Next: <shape | explore | user-answer | plan | review plan | build with explicit invocation | persist plan | sync | none>
 Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
@@ -214,7 +244,13 @@ Impact Surface:
 Plan At A Glance:
 - <3-7 summary changes; target, reason, and risk; omit when insufficient>
 Plan:
-- <target outcome, work packages, sequence, constraints, and verification approach; omit when insufficient>
+- <target outcome, work packages, sequence, constraints, minimum viable verification, fallback verification, and stop conditions; omit when insufficient>
+Verification:
+- Minimum Viable Verification: <targeted existing checks, static/smoke/manual checks, or none>
+- Verification Feasibility: <available|partial|unavailable|unknown>
+- Fallback Verification: <fallback checks when stronger verification is unavailable, or none>
+- Residual Risk: <remaining risk after minimum/fallback verification, or none>
+- Higher Assurance: <only when Lens: test or explicitly requested; otherwise none>
 Source Basis:
 - <shape summary, evidence/repo basis, assumptions, and open basis>
 Compatibility / Constraint Plan:
@@ -246,7 +282,7 @@ Key Fields:
 - Impact Surface: <scope size, affected surfaces, risk, reversal cost, docs/sync impact, and plan at a glance>
 - Plan: <work packages, phases, or sequencing>
 - Scope: <allowed changes, do-not-touch areas, and explicit out-of-scope work>
-- Verification: <success criteria, checks, and acceptance evidence>
+- Verification: <minimum viable verification, feasibility, fallback verification, residual risk, success criteria, checks, and acceptance evidence>
 - Stop Conditions: <when to stop instead of expanding scope>
 - Compatibility / Constraint Policy: <preserve/breaking and respect/override/exception summary>
 - Risk / Recovery: <risks, rollback/recovery, and handoff notes>

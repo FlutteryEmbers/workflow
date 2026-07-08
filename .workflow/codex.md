@@ -10,7 +10,8 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Optional shortcut skill source: `skills/workflow-lite-shortcuts/`. Install it into `$CODEX_HOME/skills` or `~/.codex/skills` only when you want phrases like `wf shape`, `wf plan`, `wf pplan`, or `wf build` to map to the matching Workflow Lite context.
 - Default to `Mode: discuss`.
 - Default to `Output: compact` for general discussion; use `Output: normal` to refine before persist and `Output: full` for artifacts, handoffs, audits, or diff reviews.
-- For `Task: plan`, compact output must start from `Input Sufficiency`, then `Shape Summary` with `Motivation`, a compact `Impact Surface`, and `Plan At A Glance` when a plan body is allowed. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing.
+- For `Task: plan`, compact output must start from `Input Sufficiency`, then `Shape Summary` with `Motivation`, a compact `Impact Surface`, `Plan At A Glance`, and compact verification when a plan body is allowed. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing.
+- Default plan verification is minimum viable verification: prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites.
 - Treat `Output: full` plan output as a minimal handoff packet for persist, implementation handoff, explicit plan handoff, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
 - When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
@@ -60,7 +61,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
 - `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review`: `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
-- `plan`: `Input Sufficiency`, `Input Gaps` when insufficient, compatibility/constraint plan, and recommended next task.
+- `plan`: `Input Sufficiency`, `Input Gaps` when insufficient, minimum viable verification, fallback verification, residual risk, compatibility/constraint plan, and recommended next task.
 - `review`: `Review Type`, `Gap Analysis`, severity, blocking gaps, and non-blocking gaps when relevant.
 - Review plans under `verdict-review` with `Review Target Kind: plan` and explicit `Intended Next Use`; use `gap-analysis` when the plan asks review to diagnose a system or protocol gap against a baseline.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
@@ -89,7 +90,7 @@ Discovery vs judgment rule:
 Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` to separate missing input, discussion/review drafts, and handoff-grade plans. This classifies source input, not generated plan quality.
 
 - `shape` produces concept-level direction and may recommend `plan` or `review`.
-- `plan` outputs `Input Sufficiency`, `Input Gaps` when insufficient, and a plan body only when input is sufficient.
+- `plan` outputs `Input Sufficiency`, `Input Gaps` when insufficient, and a plan body plus minimum viable verification only when input is sufficient.
 - `Input Sufficiency` is not a gate verdict or execution authorization.
 - `review` owns formal `Blocking Gaps`, gap severity, verdicts, and whether a plan can be used for `Intended Next Use`.
 - For plan reviews, `Review Verdict: ready` means no blocking gaps for the intended next use. Do not block a plan for optional improvement only.

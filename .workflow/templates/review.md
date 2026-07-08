@@ -77,7 +77,7 @@
 - Compatibility / Constraint Policy: {{clear | unclear | not-applicable; evidence}}
 - Repo Evidence: {{sufficient | insufficient | not-applicable; evidence}}
 - Sequencing: {{coherent | needs changes; evidence}}
-- Verification: {{sufficient | insufficient; evidence}}
+- Verification: {{sufficient | insufficient; minimum viable verification, feasibility, fallback, residual risk, and evidence}}
 - Stop Conditions: {{clear | unclear; evidence}}
 - Authorization Boundary: {{does not imply unauthorized write/build/sync | problematic; evidence}}
 
