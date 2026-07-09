@@ -1,6 +1,6 @@
 ---
 id: distill
-role: analyst
+role: summarizer
 purpose: Generate a user-directed summary or distillation of specified source material without judging, planning, writing, or projecting stable documents.
 inputs:
   - source
@@ -25,7 +25,7 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /.workflow/roles/analyst.md}}
+Role: {{CONTENT: /.workflow/roles/summarizer.md}}
 
 ## Mode Rules
 

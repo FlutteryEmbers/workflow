@@ -1,6 +1,6 @@
 ---
 id: shape
-role: designer
+role: shaper
 purpose: Default discussion fallback, concept organizer, and next-task router for ambiguous, what-if, option-comparison, concept-level, direction-setting, or session decision work in chat.
 inputs:
   - clarified_context
@@ -24,7 +24,7 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /.workflow/roles/designer.md}}
+Role: {{CONTENT: /.workflow/roles/shaper.md}}
 
 ## Mode Rules
 

@@ -101,10 +101,10 @@ conversational source
 | :--- | :--- | :--- | :--- |
 | `route` | `analyst` | chat | Recommend the smallest useful next path. |
 | `clarify` | `analyst` | chat | Explain terms, prior answers, statements, assumptions, scope, and success criteria. |
-| `explore` | `designer` | chat | Explain how current code/docs/behavior work, what exists, where things appear, observed differences, checked-scope evidence, reliability, or non-mutating probes. |
-| `distill` | `analyst` | chat | Generate a user-directed summary or distillation of specified source material. |
-| `shape` | `designer` | chat | Form a direction, concept, architecture, or session decision. |
-| `plan` | `designer` | chat | Turn a chosen direction into a repo-aware plan, explicit executable plan candidate, or external-agent handoff. |
+| `explore` | `explorer` | chat | Explain how current code/docs/behavior work, what exists, where things appear, observed differences, checked-scope evidence, reliability, or non-mutating probes. |
+| `distill` | `summarizer` | chat | Generate a user-directed summary or distillation of specified source material. |
+| `shape` | `shaper` | chat | Form a direction, concept, architecture, or session decision. |
+| `plan` | `planner` | chat | Turn a chosen direction into a repo-aware plan, explicit executable plan candidate, or external-agent handoff. |
 | `persist` | `steward` | active session artifacts | Persist high-fidelity structured inbox, thread, or capture artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
 | `build` | `builder` | repository changes | Apply an explicit workflow-managed plan with bounded execution and traceable verification. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |

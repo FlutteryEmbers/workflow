@@ -1,6 +1,6 @@
 ---
 id: explore
-role: designer
+role: explorer
 purpose: Structured descriptive inquiry for how something works, what exists, where it appears, observed source-backed differences, entrypoint flow, evidence reliability, and temporary non-mutating probes.
 inputs:
   - question_or_source
@@ -23,7 +23,7 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /.workflow/roles/designer.md}}
+Role: {{CONTENT: /.workflow/roles/explorer.md}}
 
 ## Mode Rules
 

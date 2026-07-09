@@ -1,6 +1,6 @@
 ---
 id: plan
-role: designer
+role: planner
 purpose: Turn a chosen direction and sufficiently specified source input into a repo-aware plan draft or handoff in chat.
 inputs:
   - direction_or_target
@@ -24,7 +24,7 @@ done_check:
 
 ## Context Injection
 
-Role: {{CONTENT: /.workflow/roles/designer.md}}
+Role: {{CONTENT: /.workflow/roles/planner.md}}
 
 ## Mode Rules
 
