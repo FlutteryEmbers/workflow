@@ -113,7 +113,7 @@ Recommend the smallest path:
 - Native external-agent implementation: external-agent path -> `review` plan review -> native Implement -> `review` diff.
 - Project docs alignment: `review -> plan -> sync` with `Sync Domain: project-docs` -> `docs/**` or `src/**/README.md`.
 - Code or repository change through workflow: `build` with `Mode: execute`, explicit user invocation, and an explicit executable plan.
-- Plan sufficiency loop: `plan insufficient -> shape/explore/user-answer/plan`; `plan sufficient-for-draft -> review or persist`; `plan sufficient-for-handoff -> review, build with explicit invocation, or external-agent`; `plan + Review Verdict: ready -> build/external-agent`.
+- Plan sufficiency loop: `plan insufficient -> shape/explore/user supplies input/plan`; `plan sufficient-for-draft -> review or persist`; `plan sufficient-for-handoff -> review, build with explicit invocation, or external-agent`; `plan + Review Verdict: ready -> build/external-agent`.
 - Direct build path: `build` when the user invokes execute with an explicit executable plan; missing review is a risk notice, not a build blocker.
 - Vague implementation intent without an explicit executable plan: `plan -> review`, then `build` or external-agent only after the plan is concrete enough.
 - Recommend `review` before build for breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, multi-surface plans, high reversal cost, or ambiguous verification.

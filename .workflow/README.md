@@ -18,7 +18,7 @@ graph TD
     V --> Y["sync stable documents"]
 
     C -. "input" .-> N[".session/inbox"]
-    W -. "thread artifacts" .-> D[".session/threads"]
+    W -. "thread artifacts" .-> T[".session/threads"]
     Y -. "project docs" .-> F["docs"]
     Y -. "archive summaries" .-> A[".session/archive"]
 ```
@@ -30,7 +30,7 @@ graph TD
 - `lens`: optional user-selected thinking method in `.workflow/lenses/`.
 - `.session`: AI session working memory, not project source of truth.
 - `.session/inbox`: unprocessed or lightly structured inputs, background, exploration notes, reference material, and untriaged knowledge captures.
-- `.session/threads`: related shape, plan, review, distillation, note, brief, and reference artifacts grouped by small closable work item.
+- `.session/threads`: related shape, plan, review, distillation, note, and brief artifacts grouped by small closable work item; reference material uses a `brief` or `note` with `Intent: reference`.
 - `.session/archive`: stable summaries of completed, superseded, abandoned, implemented, or blocked threads.
 - `persist`: the only task that writes session artifacts.
 - `sync`: stable-document projection for project docs, code-adjacent README files, and session archive summaries.
@@ -93,7 +93,7 @@ conversational source
 -> persist shape artifact
 ```
 
-`Brief Type: external-goal` is an optional inbox cache for long, external, or reusable goal material. It is not a mandatory step. `shape` is the reasoned projection of external or conversational goal context into a `concept` artifact. The durable shaped result belongs in `.session/threads/<thread>/shape_<topic>.md`.
+`Brief Type: external-goal` is an optional inbox cache for long, external, or reusable goal material. It is not a mandatory step. `shape` is the reasoned projection of external or conversational goal context into a `shape` artifact. The durable shaped result belongs in `.session/threads/<thread>/shape_<topic>.md`.
 
 ## Tasks
 
@@ -219,7 +219,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is think
 - `explore` may provide `Explore Frame`, `Observed Answer`, `Evidence Basis`, `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` starts with `Need For Shape`, follows with `Shape Continuation`, and may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change This`, and allowed lightweight adjacent output when `Boundary Advice` shows a safe fallback response.
-- `review` starts non-trivial output with `Review Frame` and may provide `Gap Analysis`, `Severity: high | medium | low`, `Blocking Gaps`, `Non-blocking Gaps`, `Minimal Revision Sketch`, `Repair Direction`, conditional `Change Assessment`, and recommended next action.
+- `review` starts non-trivial output with `Review Frame` and includes `Review Verdict`, `Confidence`, `Readiness`, `Blocking Gaps`, `Non-blocking Gaps`, `Can Use For Intended Next Use`, `Recommended Action`, `Suggested Critique`, and `Recommended Next Task`; it may also provide `Gap Analysis`, `Severity: high | medium | low`, `Minimal Revision Sketch`, `Repair Direction`, and conditional `Change Assessment`.
 - `plan` may provide `Input Sufficiency`, `Input Gaps`, `Planning Continuation` when insufficient, minimum viable verification, fallback verification, residual risk, plan draft/handoff content, and recommended next task.
 - Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 
@@ -355,7 +355,7 @@ Default plan verification is minimum viable verification. Prefer existing fixtur
 
 Closed loop paths:
 
-- `plan insufficient -> shape/explore/user-answer/plan`
+- `plan insufficient -> shape/explore/user supplies input/plan`
 - `plan sufficient-for-draft -> review or persist`
 - `plan sufficient-for-handoff -> review, build with explicit invocation, or external-agent`
 - `plan + Review Verdict: ready -> build/external-agent`
@@ -558,7 +558,7 @@ Task behavior:
 - `Sync Domain: project-docs`: write `docs/**` or explicit `src/**/README.md`.
 - `Sync Domain: session-archive`: write `.session/archive/<thread>/summary.md`.
 
-Docs maintenance usually follows `review --lens consistency -> plan --lens consistency -> sync`. If source of truth or artifact ownership is unclear, use `review --lens consistency -> shape -> plan -> sync`. If code may be wrong, repair code through `review -> plan -> build/external-agent -> review` before stable-document sync.
+Docs maintenance usually follows `review --lens consistency -> plan -> sync`. If source of truth or artifact ownership is unclear, use `review --lens consistency -> shape -> plan -> sync`. If code may be wrong, repair code through `review -> plan -> build/external-agent -> review` before stable-document sync.
 
 Any write to `docs/**` must:
 
@@ -635,7 +635,9 @@ Archive summaries preserve completed thread outcomes, key decisions, plans/execu
 Recommended Copilot chain:
 
 ```text
-/wf-clarify -> /wf-explore or /wf-distill -> /wf-shape -> /wf-plan or /wf-pplan -> /wf-review -> /wf-persist -> /wf-build -> /wf-sync
+/wf-clarify -> /wf-explore or /wf-distill -> /wf-shape
+-> (/wf-plan -> /wf-review | /wf-pplan)
+-> /wf-persist -> /wf-build -> /wf-review (diff review) -> /wf-sync
 ```
 
 ## Using With OpenCode

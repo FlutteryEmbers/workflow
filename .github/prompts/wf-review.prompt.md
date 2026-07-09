@@ -47,10 +47,12 @@ Return:
 - Gap Analysis, when Review Type is gap-analysis
 - Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
 - Confidence
+- Readiness: 0-10
 - Blocking Gaps
 - Non-blocking Gaps
 - Can Use For Intended Next Use
 - Repair Direction
 - Recommended Action
+- Suggested Critique: explicit redteam critique | none
 - Recommended Next Task
 - Persist Candidate, candidate only and do not write

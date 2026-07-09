@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite persist command for writing session artifacts or explicit disposable notes.
-argument-hint: "Artifact=<kind>; Artifact State=<inbox|working|settled|superseded>; Thread=<thread>; Topic=<topic>; Target=<optional>; Intent=<intent>; Depth=<depth>; Request=<source or changes>"
+argument-hint: "Artifact=<kind>; Artifact State=<inbox|working|settled|superseded>; Thread=<thread>; Topic=<topic>; Target=<optional>; Intent=<intent>; Depth=<depth>; Lens=<none|language>; Request=<source or changes>"
 ---
 
 # wf-persist
@@ -22,6 +22,7 @@ Depth: ${input:depth:compact|standard|detailed}
 
 Rules:
 - Write only `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
+- Load `.workflow/lenses/language.md` only when the user explicitly selects `language`.
 - Use `Brief Type: external-goal` only for long, external, or reusable goal material stored as an inbox brief before shape.
 - Use `Artifact=note`, `Artifact State=inbox`, and `Intent=capture` for untriaged knowledge captures such as reusable build execution discoveries.
 - Inbox capture is not source of truth and is not an execution source; later `review`, `plan`, or `sync` must promote stable conclusions.

@@ -45,7 +45,7 @@ Role: {{CONTENT: /.workflow/roles/planner.md}}
 ## Do Not Use When
 
 - Do not use to invent the target direction; use `shape`.
-- Do not use to ask the user questions; classify missing input and route to `shape`, `explore`, or `user-answer`.
+- Do not use to ask the user questions; classify missing input and route to `shape` or `explore`, or set `Next: user-answer` when only user-provided input can resolve the gap.
 - Do not use to judge whether a plan, target, code, or diff is good; use `review`.
 - Do not use to identify formal blocking gaps, severity, readiness verdicts, or gate status; use `review`.
 - Do not use to implement the plan; use `build` with explicit user invocation and an explicit plan, or use the external-agent path.
@@ -101,7 +101,7 @@ Write the smallest useful plan for the user's current intent. Do not compare or 
 
 `Input Sufficiency` judges the source input, not the model's generated plan quality. It is an advisory planning classifier, not a blocker verdict or authorization boundary:
 
-- `insufficient`: required input is missing and cannot be safely assumed for the requested plan use. Do not output an executable or handoff plan body. Output `Input Gaps`, `Planning Continuation`, and recommend `shape`, `explore`, `user-answer`, or another `plan` pass.
+- `insufficient`: required input is missing and cannot be safely assumed for the requested plan use. Do not output an executable or handoff plan body. Output `Input Gaps` and `Planning Continuation`; recommend `shape`, `explore`, or another `plan` pass, or use `Next: user-answer` when only user-provided input can resolve the gap.
 - `sufficient-for-draft`: input is enough to produce a discussion or review draft, but not enough for build or external-agent handoff.
 - `sufficient-for-handoff`: input is enough to produce a handoff-grade plan with target outcome, scope, allowed changes, do-not-touch areas, minimum viable verification, fallback verification when needed, residual risk, and stop conditions. This still does not authorize execution.
 
@@ -197,7 +197,7 @@ Planning Continuation:
 - Known Direction: <known chosen direction, or unknown; only when insufficient>
 - Useful Planning Frame Now: <safe partial framing, or none; only when insufficient>
 - Cannot Produce Yet: <draft plan | handoff plan | executable plan; only when insufficient>
-- Advisory Next Task: <shape|explore|user-answer|plan|none; only when insufficient>
+- Advisory Next Task: <shape|explore|plan|none; only when insufficient>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Motivation: <one sentence or unknown>
@@ -219,7 +219,7 @@ Verification:
 - Fallback Verification: <fallback or none; omit when insufficient>
 - Residual Risk: <remaining risk or none; omit when insufficient>
 Execution Handoff: <use Output: full or persisted plan for executable handoff; include only when Recommended Next Task is build or external-agent>
-Recommended Next Task: <shape|explore|user-answer|review|plan|persist|sync|build|external-agent|none>
+Recommended Next Task: <shape|explore|review|plan|persist|sync|build|external-agent|none>
 Next: <shape | explore | user-answer | plan | review plan | build with explicit invocation | persist plan | sync | none>
 Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
@@ -241,7 +241,7 @@ Planning Continuation:
 - Known Direction: <known chosen direction, or unknown; only when insufficient>
 - Useful Planning Frame Now: <safe partial framing, or none; only when insufficient>
 - Cannot Produce Yet: <draft plan | handoff plan | executable plan; only when insufficient>
-- Advisory Next Task: <shape|explore|user-answer|plan|none; only when insufficient>
+- Advisory Next Task: <shape|explore|plan|none; only when insufficient>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Motivation: <one sentence or unknown>
@@ -270,7 +270,9 @@ Compatibility / Constraint Plan:
 Follow-up Questions:
 - <none | non-blocking future consideration>
 Recommended Next Task:
-- <shape|explore|user-answer|review|plan|persist|sync|build|external-agent|none>
+- <shape|explore|review|plan|persist|sync|build|external-agent|none>
+Next:
+- <shape | explore | user-answer | plan | review plan | build with explicit invocation | persist plan | sync | none>
 Persist Candidate:
 - Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```

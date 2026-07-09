@@ -308,6 +308,7 @@ Change Assessment: <only for change-seeking review; omit otherwise>
 - Suggested Change: <only when Answer is yes or conditional>
 Review Verdict: <ready|needs changes|needs more evidence|blocked|docs blocked>
 Confidence: <high|medium|low>
+Readiness: <0-10>
 Take:
 - <3-6 findings or verdict bullets>
 Blocking Gaps:
@@ -316,6 +317,8 @@ Non-blocking Gaps:
 - <trackable gaps, or none>
 Repair Direction: <smallest repair direction or none>
 Can Use For Intended Next Use: yes | no | not-applicable
+Recommended Action: <none|persist|sync project-docs|sync session-archive|shape|plan|build|external-agent>
+Suggested Critique: <explicit redteam critique|none>
 Recommended Next Task: <shape|plan|build|external-agent|sync|persist|explore|none>
 Persist Candidate: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
 ```
@@ -345,8 +348,11 @@ Change Assessment: <only for change-seeking review; omit otherwise>
 - Why: <one sentence>
 - Preconditions: <only when yes or conditional>
 - Suggested Change: <smallest worthwhile change, not full design or plan>
-Refined Verdict:
-- <review verdict, key findings, required revisions, and recommended next task>
+Review Verdict: <ready|needs changes|needs more evidence|blocked|docs blocked>
+Confidence: <high|medium|low>
+Readiness: <0-10>
+Findings:
+- <review findings with evidence and severity when relevant>
 Blocking Gaps:
 - <must-fix before intended next use, or none>
 Non-blocking Gaps:
@@ -357,6 +363,9 @@ Discussion Notes To Preserve:
 - <review question clarification, evidence priority, accepted risk, verdict change reason, or user concern>
 Open Questions:
 - <ordinary review uncertainty>
+Can Use For Intended Next Use: <yes|no|not-applicable>
+Recommended Action: <none|persist|sync project-docs|sync session-archive|shape|plan|build|external-agent>
+Suggested Critique: <explicit redteam critique|none>
 Recommended Next Task:
 - <shape|plan|build|external-agent|sync|persist|explore|none>
 Persist Candidate:

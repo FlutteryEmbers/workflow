@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite distill command for user-directed summaries.
-argument-hint: "Source=<file, folder, thread, docs, discussion, or reference>; Summary Focus=<what to summarize>; Summary Type=<structure-summary|folder-summary|content-summary|decision-summary|interface-summary|risk-summary|archive-summary-draft>; Output=<compact|normal|full>; Request=<distill request>"
+argument-hint: "Source=<file, folder, thread, docs, discussion, or reference>; Summary Focus=<what to summarize>; Summary Type=<structure-summary|folder-summary|content-summary|decision-summary|interface-summary|risk-summary|archive-summary-draft>; Lens=<none|language>; Output=<compact|normal|full>; Request=<distill request>"
 ---
 
 # wf-distill
@@ -10,7 +10,7 @@ Use Workflow Lite distill semantics.
 Mode: discuss
 Output: ${input:output:compact|normal|full}
 Task: distill
-Lens: none
+Lens: ${input:lens:none}
 Source: ${input:source:source material to summarize}
 Summary Focus: ${input:summary_focus:what dimension to summarize}
 Summary Type: ${input:summary_type:structure-summary|folder-summary|content-summary|decision-summary|interface-summary|risk-summary|archive-summary-draft}
@@ -18,6 +18,7 @@ Summary Type: ${input:summary_type:structure-summary|folder-summary|content-summ
 Rules:
 - Do not write files.
 - Do not load templates.
+- Load `.workflow/lenses/language.md` only when the user explicitly selects `language`.
 - Use `.workflow/tasks/distill.md` as the task contract.
 - Summarize only the requested source and focus.
 - Separate `Observed`, `Inferred`, and `Unknown`.

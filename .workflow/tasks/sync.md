@@ -1,7 +1,7 @@
 ---
 id: sync
 role: steward
-purpose: Project confirmed outcomes into stable documents: project docs / code-adjacent README, or session archive summaries.
+purpose: "Project confirmed outcomes into stable documents: project docs / code-adjacent README, or session archive summaries."
 inputs:
   - sync_domain
   - sync_object
@@ -66,7 +66,7 @@ Rejected targets:
 
 - Use `project-docs` when reviewed/planned decisions, code, diffs, tests, or existing docs cleanup need stable projection into project docs or a code-adjacent README.
 - Use `session-archive` when a completed thread needs a stable archive summary under `.session/archive/<thread>/summary.md`.
-- Use after `review --lens consistency -> plan --lens consistency` when docs/code, docs/docs, or thread/docs drift has been confirmed.
+- Use after `review --lens consistency -> plan -> sync` when docs/code, docs/docs, or thread/docs drift has been confirmed.
 - Use after `review -> shape -> plan` when source of truth or document architecture was unclear and has since been settled.
 
 ## Do Not Use When

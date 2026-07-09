@@ -19,7 +19,7 @@ Rules:
 - Use `.workflow/tasks/plan.md` as the task contract.
 - Classify `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff`.
 - `Input Sufficiency` judges source input for intended use, not the quality of the generated plan.
-- Do not ask questions from `plan`; if input is missing, output `Input Gaps`, `Planning Continuation`, and recommend `shape`, `explore`, `user-answer`, or another `plan` pass.
+- Do not ask questions from `plan`; if input is missing, output `Input Gaps` and `Planning Continuation`, recommend `shape`, `explore`, or another `plan` pass, and use `Next: user-answer` when only user-provided input can resolve the gap.
 - Plan must run bounded repo-fit preflight when planning depends on repo facts: target files or areas, existing patterns, constraints, verification entrypoints, and whether the selected direction fits current repo reality.
 - If missing evidence would affect scope, sequence, target files, or any credible minimum verification path, output `Input Sufficiency: insufficient`, `Input Gaps`, `Planning Continuation`, and recommend `explore`.
 - Default verification is minimum viable verification: prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, or manual acceptance checks over ideal high-assurance test systems.

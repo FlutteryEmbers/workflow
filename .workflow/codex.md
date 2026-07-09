@@ -60,7 +60,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `explore`: `Explore Frame`, `Observed Answer`, `Evidence Basis`, `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, recommended next task.
 - `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
 - `shape`: `Need For Shape`, `Shape Continuation`, `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change This`, and allowed lightweight adjacent output when `Boundary Advice` shows a safe fallback response.
-- `review`: `Review Frame`, `Gap Analysis`, severity, blocking gaps, non-blocking gaps, `Minimal Revision Sketch`, `Repair Direction`, conditional `Change Assessment`, and recommended next action.
+- `review`: `Review Frame`, `Review Verdict`, `Confidence`, `Readiness`, `Blocking Gaps`, `Non-blocking Gaps`, `Can Use For Intended Next Use`, `Recommended Action`, `Suggested Critique`, `Recommended Next Task`, optional `Gap Analysis`, `Minimal Revision Sketch`, `Repair Direction`, and conditional `Change Assessment`.
 - `plan`: `Input Sufficiency`, `Input Gaps` and `Planning Continuation` when insufficient, minimum viable verification, fallback verification, residual risk, compatibility/constraint plan, and recommended next task.
 - Review plans under `verdict-review` with `Review Target Kind: plan` and explicit `Intended Next Use`; use `gap-analysis` when the plan asks review to diagnose a system or protocol gap against a baseline.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.

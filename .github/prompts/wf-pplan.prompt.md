@@ -1,5 +1,5 @@
 ---
-description: Workflow Lite protected plan command: generate a plan draft, then review the frozen draft for intended next use.
+description: "Workflow Lite protected plan command: generate a plan draft, then review the frozen draft for intended next use."
 argument-hint: "Request=<planning request>; Intended Next Use=<discussion|persist|build|external-agent|sync>; Lens=<none|architecture|boundary|test|language>"
 ---
 
@@ -57,10 +57,14 @@ Plan Review:
   - Review Type: verdict-review
   - Review Route Reason: pplan reviews a frozen plan draft instead of revising it.
 - Review Verdict: ready | needs changes | needs more evidence | blocked
+- Confidence: high | medium | low
+- Readiness: 0-10
 - Blocking Gaps
 - Non-blocking Gaps
 - Can Use For Intended Next Use
 - Repair Direction
+- Recommended Action
+- Suggested Critique: explicit redteam critique | none
 - Recommended Next Task
 
 Persist Candidate: candidate only and do not write

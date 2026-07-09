@@ -296,7 +296,7 @@ Shape Continuation:
 - What Would Change This: <evidence, review result, or user decision>
 - Advisory Next Task: <shape|explore|review|plan|persist|none>
 Boundary Advice:
-- Boundary: <fits|fallback_fit|composite|wrong_task|missing_prerequisite>
+- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
 - Why: <routing reason or none>
 - Useful Response Now: <what shape can still safely provide, or none>
 - Advisory Next Task: <task or sequence>
@@ -344,7 +344,7 @@ Shape Continuation:
 - What Would Change This: <evidence, review result, or user decision>
 - Advisory Next Task: <shape|explore|review|plan|persist|none>
 Boundary Advice:
-- Boundary: <fits|fallback_fit|composite|wrong_task|missing_prerequisite>
+- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
 - Why: <routing reason or none>
 - Useful Response Now: <what shape can still safely provide, or none>
 - Advisory Next Task: <task or sequence>

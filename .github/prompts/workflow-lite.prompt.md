@@ -10,12 +10,15 @@ Use this full-protocol prompt when the request is mixed, the right task is uncle
 For common daily Copilot work, prefer dedicated workflow prompt commands:
 
 - `/wf-route`
+- `/wf-clarify`
+- `/wf-explore`
 - `/wf-distill`
 - `/wf-shape`
 - `/wf-plan`
 - `/wf-pplan`
 - `/wf-review`
 - `/wf-persist`
+- `/wf-build`
 - `/wf-sync`
 
 ## Required Input
@@ -206,7 +209,7 @@ Shape Continuation:
 - What Would Change This: <evidence, review result, or user decision>
 - Advisory Next Task: <shape|explore|review|plan|persist|none>
 Boundary Advice:
-- Boundary: <fits|fallback_fit|composite|wrong_task|missing_prerequisite>
+- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
 - Why: <routing reason or none>
 - Useful Response Now: <what shape can still safely provide, or none>
 - Advisory Next Task: <task or sequence>
@@ -240,7 +243,7 @@ Planning Continuation:
 - Known Direction: <known chosen direction, or unknown; only when insufficient>
 - Useful Planning Frame Now: <safe partial framing, or none; only when insufficient>
 - Cannot Produce Yet: <draft plan | handoff plan | executable plan; only when insufficient>
-- Advisory Next Task: <shape|explore|user-answer|plan|none; only when insufficient>
+- Advisory Next Task: <shape|explore|plan|none; only when insufficient>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Motivation: <one sentence or unknown>
@@ -265,7 +268,7 @@ Compatibility / Constraint Plan:
 - <when relevant>
 Execution Handoff: <use Output: full or persisted plan for executable handoff; include only when Recommended Next Task is build or external-agent>
 Recommended Next Task: <shape | explore | review | plan | persist | sync | build | external-agent | none>
-Next: <review plan | build with explicit invocation | persist plan | sync | shape | none>
+Next: <shape | explore | user-answer | plan | review plan | build with explicit invocation | persist plan | sync | none>
 Persist Candidate: <none or one line; candidate only, do not write>
 ```
 
@@ -285,6 +288,8 @@ Persist Candidate:
 ```
 
 For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Input Sufficiency`, conditional `Input Gaps`, `Planning Continuation` when insufficient, `Shape Summary` with `Motivation`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, and `Compatibility / Constraint Plan` when relevant. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`.
+
+For non-trivial `Task: review` output, follow `.workflow/tasks/review.md` instead of the generic compact/normal structure. Include `Review Frame`, `Review Verdict`, `Confidence`, `Readiness`, `Blocking Gaps`, `Non-blocking Gaps`, `Can Use For Intended Next Use`, `Recommended Action`, `Suggested Critique`, and `Recommended Next Task`.
 
 Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 
@@ -337,7 +342,7 @@ Review Frame:
 - Intended Next Use: external-agent
 - Review Type: verdict-review
 - Review Route Reason: plan usability for external-agent implementation requires review, not shape or plan.
-Review this external plan before native implementation with explicit critique posture. Return Review Verdict, Blocking Gaps, Non-blocking Gaps, Can Use For Intended Next Use, and Recommended Next Task.
+Review this external plan before native implementation with explicit critique posture. Return Review Verdict, Confidence, Readiness, Blocking Gaps, Non-blocking Gaps, Can Use For Intended Next Use, Recommended Action, Suggested Critique, and Recommended Next Task.
 ```
 
 Diff review:

@@ -21,7 +21,9 @@ Use dedicated workflow prompt commands for common Copilot work:
 Recommended daily chain:
 
 ```text
-/wf-clarify -> /wf-explore or /wf-distill -> /wf-shape -> /wf-plan or /wf-pplan -> /wf-review -> /wf-persist -> /wf-build -> /wf-sync
+/wf-clarify -> /wf-explore or /wf-distill -> /wf-shape
+-> (/wf-plan -> /wf-review | /wf-pplan)
+-> /wf-persist -> /wf-build -> /wf-review (diff review) -> /wf-sync
 ```
 
 Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear task boundaries, or full protocol control. Prompt commands are shortcuts only; `.workflow/tasks/**` remains the source of truth.
@@ -162,7 +164,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be use
 - `explore` may output `Explore Frame`, `Observed Answer`, `Evidence Basis`, `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` starts with `Need For Shape`, follows with `Shape Continuation`, and may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change This`, and allowed lightweight adjacent output when `Boundary Advice` shows a safe fallback response.
-- `review` starts non-trivial output with `Review Frame` and may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
+- `review` starts non-trivial output with `Review Frame` and includes `Review Verdict`, `Confidence`, `Readiness`, `Blocking Gaps`, `Non-blocking Gaps`, `Can Use For Intended Next Use`, `Recommended Action`, `Suggested Critique`, and `Recommended Next Task`; it may also output `Minimal Revision Sketch` and `Repair Direction`.
 - `plan` may output `Input Sufficiency`, `Input Gaps` and `Planning Continuation` when insufficient, minimum viable verification, fallback verification, residual risk, compatibility/constraint plan, and recommended next task.
 - `review` may output `Review Frame` fields, `Gap Analysis`, severity, blocking gaps, non-blocking gaps, and conditional `Change Assessment` when the user asks whether something should change or is worth changing.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
