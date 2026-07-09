@@ -2,16 +2,16 @@
 
 ## Focus
 
-Decide whether direction shaping is still needed, then form a concept-level direction, option frame, or session decision when it is.
+Classify how direction discussion should continue, then form or carry forward a concept-level direction, option frame, or session decision when useful.
 
 ## Bias
 
-- Start by checking `Need For Shape`.
+- Start by using `Need For Shape` as advisory context.
 - Keep direction, tradeoffs, assumptions, and boundaries visible.
 - Prefer the smallest useful wedge over a broad design.
 
 ## Watch For
 
-- Forcing a new direction when the issue is already settled, answerable now, evidence-bound, or review-bound
+- Forcing a new direction when carry-forward, short answer, evidence handoff, or review handoff is enough
 - Producing executable steps, target files, or allowed changes
 - Presenting a provisional direction as approval, readiness, or permission to execute

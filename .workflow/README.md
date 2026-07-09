@@ -165,15 +165,15 @@ When no task fits exactly, use nearest-fit fallback:
 - Perform only the selected task's core responsibility plus allowed adjacent output.
 - Never cross `Hard Authority Boundaries`.
 
-`composite` is a normal routing outcome, not a failure. Composite requests should return segmented prompts with stop points. Do not silently execute later write, sync, build, or external-agent segments.
+`composite` is a normal routing outcome, not a failure. Composite requests should return segmented prompts with handoff points. Do not silently execute later write, sync, build, or external-agent segments.
 
 ## Shape / Plan / Review Boundary
 
-Workflow Lite separates concept shaping, planning, and gate judgment.
+Workflow Lite separates concept shaping, planning, and review judgment.
 
 - `shape` decides what the direction is, what it is not, and why. It stays at concept level.
 - `plan` classifies source input sufficiency, then organizes an already selected or explicitly assumed direction into a coherent plan draft or handoff when input is sufficient.
-- `review` owns verdicts, formal blocking gaps, severity, source-of-truth judgment, and whether a plan can be used for an intended next use.
+- `review` owns verdicts, formal blocking gaps, severity, source-of-truth judgment, and whether a plan can be used for an intended next use. In `Mode: discuss`, review verdicts are thinking material, not write, sync, build, or external-agent authorization.
 
 `shape` may name the next workflow task, the smallest conceptual wedge, and the approximate impact surface. It must not output ordered implementation steps, target files, or step-level verification.
 
@@ -183,11 +183,12 @@ Every plan output uses:
 
 - `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff`
 - `Input Gaps` only when input is insufficient
+- `Planning Continuation` only when input is insufficient
 - `Shape Summary` with `Motivation`
 - `Impact Surface`, `Plan At A Glance`, and `Plan` only when input is sufficient
 - `Verification` with minimum viable verification, feasibility, fallback verification, and residual risk only when input is sufficient
 
-`Input Sufficiency` classifies the source input, not the generated plan quality. `sufficient-for-handoff` means the input supports a handoff-grade plan; it is not a review verdict or execution authorization. `review` decides formal `Review Verdict`, `Blocking Gaps`, severity, and whether the plan can be used for `Intended Next Use`.
+`Input Sufficiency` classifies the source input, not the generated plan quality. `insufficient` means the input cannot support the requested plan body; it is not a blocker verdict. `sufficient-for-handoff` means the input supports a handoff-grade plan; it is not a review verdict or execution authorization. `review` decides formal `Review Verdict`, `Blocking Gaps`, severity, and whether the plan can be used for `Intended Next Use`.
 
 ## Impact Surface
 
@@ -210,34 +211,33 @@ Use these decision states across shape and plan:
 - `Assumed Decisions`: recommended defaults that can support advisory planning; note risk if wrong.
 - `Open Decisions`: unresolved choices that prevent an explicit executable plan candidate.
 
-## Discussion Freedom
+## Discussion Advisory Principle
 
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is thinking material for the user, not final authorization.
 
 - `clarify` may provide a lightweight next-task hint.
 - `explore` may provide `Explore Frame`, `Observed Answer`, `Evidence Basis`, `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
-- `shape` starts with `Need For Shape` and may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
-- `review` starts non-trivial output with `Review Frame` and may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may provide `Input Sufficiency`, `Input Gaps`, minimum viable verification, fallback verification, residual risk, plan draft/handoff content, and recommended next task.
-- `review` may provide `Gap Analysis` with `Severity: high | medium | low`, `Blocking Gaps`, `Non-blocking Gaps`, and conditional `Change Assessment` for change-seeking judgment.
+- `shape` starts with `Need For Shape`, follows with `Shape Continuation`, and may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change This`, and allowed lightweight adjacent output when `Boundary Advice` shows a safe fallback response.
+- `review` starts non-trivial output with `Review Frame` and may provide `Gap Analysis`, `Severity: high | medium | low`, `Blocking Gaps`, `Non-blocking Gaps`, `Minimal Revision Sketch`, `Repair Direction`, conditional `Change Assessment`, and recommended next action.
+- `plan` may provide `Input Sufficiency`, `Input Gaps`, `Planning Continuation` when insufficient, minimum viable verification, fallback verification, residual risk, plan draft/handoff content, and recommended next task.
 - Discussion output should include `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
 
-These freedoms do not loosen write or execution boundaries. `persist`, `sync`, and `build` keep their existing target and prerequisite rules.
+Discussion classifications are advisory signals. They help the user decide what to do next, but they should not refuse useful in-shape discussion solely because another task might also fit. These freedoms do not loosen write or execution boundaries. `persist`, `sync`, and `build` keep their existing target and prerequisite rules.
 
 ## User Checkpoint
 
 `User Checkpoint` is a shape-first interactive checkpoint, not a task, lens, or persisted artifact. V1 uses it only inside `shape` to handle consequential user-owned choices before a recommendation is finalized.
 
-`shape` must treat human decision handling as control flow, not tail metadata:
+`shape` must treat human decision handling as discussion guidance, not tail metadata or authorization:
 
-- `Need For Shape`: shape-only check for whether direction shaping should continue. It is not a review verdict and does not judge whether code, docs, plans, or previous work are correct, solved, ready, or worth changing.
-- `Need For Shape: needs-direction`: continue shape and then use `Human Decision State` when needed.
-- `Need For Shape: already-settled | answerable-now | needs-evidence | needs-review`: stop before final recommendation, user checkpoint, impact surface, or `Persist Candidate: Artifact=shape`; recommend `plan`, `persist`, `explore`, `review`, or `none`.
+- `Need For Shape`: shape-only advisory classifier for how direction discussion should continue. It is not a review verdict and does not judge whether code, docs, plans, or previous work are correct, solved, ready, or worth changing.
+- `Need For Shape: needs-direction`: continue with a new-direction shape and then use `Human Decision State` when needed.
+- `Need For Shape: already-settled | answerable-now | needs-evidence | needs-review`: output `Shape Continuation` as carry-forward context, short answer, provisional direction, or review handoff; recommend `plan`, `persist`, `explore`, `review`, or `none`.
 - `Human Decision State: none`: no user-owned choice blocks the shape; continue normally.
 - `Human Decision State: assumed`: a low-risk choice exists; choose the recommended default, continue, and record it in `Assumed Decisions`.
-- `Human Decision State: checkpoint`: a consequential choice can be expressed as 2-3 options; output one `User Checkpoint` and stop before final recommendation or `Persist Candidate`.
-- `Human Decision State: blocking`: the choice is too risky or under-specified to express safely; stop and name what evidence or decision is missing.
+- `Human Decision State: checkpoint`: a consequential choice can be expressed as 2-3 options; output one `User Checkpoint` and wait for selection before final recommendation or `Persist Candidate`.
+- `Human Decision State: unresolved`: the choice is too risky, under-specified, or evidence-dependent to finalize; continue with provisional direction, assumptions, what would change it, and advisory next task.
 
 Use a checkpoint only after `Need For Shape: needs-direction` for shape choices that affect direction, scope, source of truth, compatibility, constraint policy, artifact boundary, or next planning level. Do not checkpoint ordinary low-risk preferences or facts that can be discovered by read-only preflight.
 
@@ -345,11 +345,11 @@ Native Plan/Implement is a separate external-agent write path.
 
 Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` for planning output.
 
-- `insufficient`: required source input is missing and cannot be safely assumed; do not output a plan body.
+- `insufficient`: required source input is missing and cannot be safely assumed for the requested plan use; output `Input Gaps` and `Planning Continuation`, but do not output an executable or handoff plan body.
 - `sufficient-for-draft`: source input is enough for a discussion or review draft, but not handoff use.
 - `sufficient-for-handoff`: source input is enough for a handoff-grade plan with scope, allowed changes, do-not-touch areas, minimum viable verification, fallback verification when needed, residual risk, and stop conditions.
 
-`Input Sufficiency` is not a build verdict. `Input Gaps` belong only to insufficient input and name missing input categories without asking questions. When invoked, `review` decides `Review Frame`, `Review Verdict`, `Blocking Gaps`, severity, `Can Use For Intended Next Use`, change necessity judgment, and recommended next task. Missing review is not by itself a `build` blocker.
+`Input Sufficiency` is not a build verdict or blocker verdict. `Input Gaps` belong only to insufficient input and name missing input categories without asking questions. `Planning Continuation` keeps insufficient-input discussion useful without creating a plan body. When invoked, `review` decides `Review Frame`, `Review Verdict`, `Blocking Gaps`, severity, `Can Use For Intended Next Use`, change necessity judgment, and recommended next task. Missing review is not by itself a `build` blocker.
 
 Default plan verification is minimum viable verification. Prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites. Refactor or migration plans without an old baseline should name fallback verification and residual risk instead of becoming insufficient solely for that reason.
 
@@ -403,8 +403,8 @@ Compact output starts with `User Intent`, may include `Current Read`, and uses s
 
 `shape` and `plan` may both be compact in chat, but they have different responsibilities:
 
-- `shape compact`: first decide `Need For Shape`, then reason about direction and choose or recommend a concept only when direction is still needed.
-- `plan compact`: classify `Input Sufficiency`, summarize the shaped/chosen direction, then show compact `Impact Surface`, plan sketch, and compact verification only when input is sufficient.
+- `shape compact`: first classify `Need For Shape`, then output `Shape Continuation`; form or update a direction only when useful.
+- `plan compact`: classify `Input Sufficiency`, summarize the shaped/chosen direction, then output `Planning Continuation` when insufficient or compact `Impact Surface`, plan sketch, and compact verification when input is sufficient.
 - `plan full`: minimal handoff packet for persist, explicit plan handoff, or external-agent use. The persisted artifact structure comes from `.workflow/templates/plan.md` and uses `Source Basis`, `Impact Surface -> Plan At A Glance`, `Scope`, `Verification`, `Stop Conditions`, and `Review / Next Use`.
 
 Every `plan` output, including compact chat output, must include the core planning fields and use conditional fields only when their condition applies:
@@ -412,6 +412,7 @@ Every `plan` output, including compact chat output, must include the core planni
 ```text
 Input Sufficiency
 Input Gaps
+Planning Continuation
 Shape Summary
 Impact Surface
 Plan At A Glance
@@ -421,7 +422,7 @@ Execution Handoff
 Next
 ```
 
-`Input Gaps`, `Impact Surface`, `Plan At A Glance`, `Plan`, and `Verification` are conditional: insufficient input outputs gaps and omits the plan body. `Execution Handoff` appears only when compact output recommends `build` or `external-agent`, and should say to use `Output: full` or a persisted plan for executable handoff.
+`Input Gaps` and `Planning Continuation` are conditional on insufficient input. `Impact Surface`, `Plan At A Glance`, `Plan`, and `Verification` are conditional on sufficient input. Insufficient input omits the executable or handoff plan body. `Execution Handoff` appears only when compact output recommends `build` or `external-agent`, and should say to use `Output: full` or a persisted plan for executable handoff.
 
 Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Include `Motivation`; use `unknown` when motivation is unavailable and do not invent it. Compact `Impact Surface` includes only scope size, affected surfaces, risk, and reversal cost. Compact `Verification` includes minimum viable verification, feasibility, fallback verification, and residual risk. Full plan artifacts may expand impact with docs/sync and build/handoff readiness.
 
@@ -440,9 +441,9 @@ Before acting, classify whether the request fits the selected task:
 - `wrong_task`: another task is the proper entrypoint and the selected task cannot produce a useful in-shape answer.
 - `missing_prerequisite`: required target, explicit plan, source of truth, or project docs safety is missing.
 
-Composite requests should return segmented prompts with stop points. Do not silently switch tasks or automatically run later write/implementation segments.
+Composite requests should return segmented prompts with handoff points. Do not silently switch tasks or automatically run later write/implementation segments.
 
-Boundary classes are handled explicitly: `fits` performs the selected task, `fits_with_preflight` runs only the allowed read-only preflight before continuing or routing, `fallback_fit` performs only the selected task's output shape plus allowed adjacent output, `composite` returns segmented prompts, and `wrong_task` / `missing_prerequisite` stop with a recommended path. Prefer `fallback_fit` with `Scope Interpretation` over `wrong_task` when the selected task can still provide a useful in-shape response.
+Boundary classes are handled explicitly: `fits` performs the selected task, `fits_with_preflight` runs only the allowed read-only preflight before continuing or routing, `fallback_fit` performs only the selected task's output shape plus allowed adjacent output, `composite` returns segmented prompts, and `wrong_task` / `missing_prerequisite` output `Boundary Advice`. Discussion tasks should still provide useful in-shape output when safe. Return boundary-only output only when the selected task cannot provide a useful in-shape response or the request requires write, sync, execution, stable projection, or another task's authority.
 
 ## Persist-Centered Session Writes
 

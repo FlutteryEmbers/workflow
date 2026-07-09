@@ -108,7 +108,7 @@ Boundary handling:
 - `fits_with_preflight`: run the boundary/source/scope/evidence-type preflight, then either extract evidence or route to the right task.
 - `fallback_fit`: output observed-system-map material plus `Scope Interpretation`; do not output verdict fields.
 - `composite`: explore first, then output the `persist` follow-up prompt; do not write files.
-- `wrong_task` or `missing_prerequisite`: stop and return Boundary, Reason, Recommended Path, and Next Prompt.
+- `wrong_task` or `missing_prerequisite`: output `Boundary Advice`. Still provide observed-system-map material when useful and safe; return boundary-only output only when no descriptive inquiry can help or the request requires write, sync, execution, or verdict authority.
 
 ## Copilot Add Context
 
@@ -229,6 +229,11 @@ In `Mode: discuss`, default to:
 
 ```text
 User Intent: <one line about what the user wants to understand>
+Boundary Advice:
+- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
+- Why: <routing reason or none>
+- Useful Response Now: <what explore can still safely provide, or none>
+- Advisory Next Task: <task or sequence>
 Explore Frame:
 - Explore Question: <what the user wants to understand>
 - Inquiry Type: how-it-works | what-exists | difference-map | evidence-check | entrypoint-map
@@ -275,6 +280,11 @@ Use `Output: normal` when the user asks to organize, refine, or prepare evidence
 
 ```text
 User Intent: <one line about what the user wants to understand>
+Boundary Advice:
+- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
+- Why: <routing reason or none>
+- Useful Response Now: <what explore can still safely provide, or none>
+- Advisory Next Task: <task or sequence>
 Explore Frame:
 - Explore Question: <what the user wants to understand>
 - Inquiry Type: how-it-works | what-exists | difference-map | evidence-check | entrypoint-map

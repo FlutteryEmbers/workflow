@@ -54,7 +54,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - `Adjacent Allowance`: include a lightweight next-task hint when the clarification reveals whether the user likely needs `explore`, `distill`, `shape`, `review`, `plan`, `persist`, or `sync`.
 - `Forbidden Authority`: do not perform evidence audit, specified-source summary, direction choice, gate verdict, implementation sequencing, stable sync, file write, execution, or implementation.
 
-Adjacent allowance must stay secondary to the clarification. If the user primarily wants the hinted next task, route there.
+Adjacent allowance must stay secondary to the clarification. If the user primarily wants the hinted next task, include `Boundary Advice`; provide a useful clarification when one is still safe, and return boundary-only output only for write, sync, execution, or no-useful-clarification cases.
 
 ## Expected Output
 
@@ -82,7 +82,7 @@ Boundary handling:
 
 - `fits`: clarify in chat.
 - `composite`: clarify first, then output the `persist` follow-up prompt; do not write files.
-- `wrong_task` or `missing_prerequisite`: stop and return Boundary, Reason, Recommended Path, and Next Prompt.
+- `wrong_task` or `missing_prerequisite`: output `Boundary Advice`. Still provide a useful in-shape clarification when safe; return only boundary advice, recommended path, and next prompt when clarification would be misleading or the request requires write, sync, execution, or another task's authority.
 
 ## Copilot Add Context
 
@@ -120,6 +120,11 @@ In `Mode: discuss`, default to:
 
 ```text
 User Intent: <one line about what the user wants clarified>
+Boundary Advice:
+- Boundary: <fits|composite|wrong_task|missing_prerequisite>
+- Why: <routing reason or none>
+- Useful Response Now: <what clarify can still safely provide, or none>
+- Advisory Next Task: <task or sequence>
 Term / Statement: <term, phrase, prior answer, request, or none>
 Plain Meaning: <plain-language explanation>
 In This Workflow: <what it means in this workflow, or not workflow-specific>
@@ -139,6 +144,11 @@ Use `Output: normal` when the user asks to organize, refine, or prepare for pers
 ```text
 User Intent: <one line about what the user wants clarified>
 Current Read: <optional one line about relevant known context>
+Boundary Advice:
+- Boundary: <fits|composite|wrong_task|missing_prerequisite>
+- Why: <routing reason or none>
+- Useful Response Now: <what clarify can still safely provide, or none>
+- Advisory Next Task: <task or sequence>
 Term / Statement:
 - <term, phrase, prior answer, request, or none>
 Plain Meaning:

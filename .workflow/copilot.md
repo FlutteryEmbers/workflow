@@ -125,7 +125,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Input Sufficiency`, conditional `Input Gaps`, `Shape Summary`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, `Compatibility / Constraint Plan` when relevant, `Next`, and `Persist Candidate`. If compact plan recommends `build` or `external-agent`, include `Execution Handoff: use Output: full or persisted plan for executable handoff`. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`; review owns those.
+For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Input Sufficiency`, conditional `Input Gaps`, `Planning Continuation` when insufficient, `Shape Summary`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, `Compatibility / Constraint Plan` when relevant, `Next`, and `Persist Candidate`. If compact plan recommends `build` or `external-agent`, include `Execution Handoff: use Output: full or persisted plan for executable handoff`. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`; review owns those.
 
 ## Task Boundary Shortcut
 
@@ -154,19 +154,19 @@ Discussion adjacency is allowed; authority is not. Adjacent output may make the 
 
 Use `boundary` for ownership, dependency direction, contract leakage, provider/package boundaries, provider-owned capability business, main-system business, and migration ownership. Use `boundary, consistency` together when that boundary judgment also depends on source-of-truth, docs/code drift, contract/implementation alignment, or artifact alignment.
 
-## Discussion Freedom
+## Discussion Advisory Principle
 
 Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be useful before all evidence is complete.
 
 - `clarify` may output a lightweight next-task hint.
 - `explore` may output `Explore Frame`, `Observed Answer`, `Evidence Basis`, `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
-- `shape` starts with `Need For Shape` and may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
+- `shape` starts with `Need For Shape`, follows with `Shape Continuation`, and may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change This`, and allowed lightweight adjacent output when `Boundary Advice` shows a safe fallback response.
 - `review` starts non-trivial output with `Review Frame` and may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
-- `plan` may output `Input Sufficiency`, `Input Gaps` when insufficient, minimum viable verification, fallback verification, residual risk, compatibility/constraint plan, and recommended next task.
+- `plan` may output `Input Sufficiency`, `Input Gaps` and `Planning Continuation` when insufficient, minimum viable verification, fallback verification, residual risk, compatibility/constraint plan, and recommended next task.
 - `review` may output `Review Frame` fields, `Gap Analysis`, severity, blocking gaps, non-blocking gaps, and conditional `Change Assessment` when the user asks whether something should change or is worth changing.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
-- In `shape`, `Need For Shape` is a front-door check for whether direction shaping should continue; it is not a review verdict. Put it after current read and before `Human Decision State`. Use `Human Decision State` only when `Need For Shape Status: needs-direction`. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
+- In `shape`, `Need For Shape` is an advisory continuation classifier; it is not a review verdict or hard gate. Put it after current read and before `Shape Continuation`. Use `Human Decision State` after `Shape Continuation` when a user-owned choice matters. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `unresolved`, continue with provisional direction, assumptions, what would change it, and advisory next task.
 
 Do not treat discussion freedom as write permission. `persist`, `sync`, `build`, and external-agent implementation keep their normal boundaries.
 
@@ -181,7 +181,7 @@ Use `vscode/askQuestions` only as the Copilot renderer for a `shape`
 - Put the recommended option first and label it with `(Recommended)`.
 - Preserve each option's label, explanation, and risk.
 - Do not use it for fact discovery, ordinary clarification, review verdicts, planning, task routing, repo preflight, write authorization, sync authorization, or build authorization.
-- After a `shape` question, stop before `Take`, `Provisional Recommendation`, `Impact Surface`, or `Persist Candidate` until the user chooses.
+- After a `shape` question, wait for the user choice before finalizing `Take`, `Provisional Recommendation`, `Impact Surface`, or `Persist Candidate`.
 - If that checkpoint UI is unavailable, output the structured `User Checkpoint` block and wait.
 
 Discovery vs judgment rule:
@@ -204,7 +204,7 @@ Discovery vs judgment rule:
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Candidate` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
-Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` to classify whether source input supports plan output. `sufficient-for-handoff` is not a review verdict or execution authorization. `shape` stays at concept level and uses `Need For Shape` only to decide whether to continue shaping. `plan` outputs input sufficiency, plan content, and minimum viable verification; `review` owns `Review Frame`, formal `Blocking Gaps`, severity, plan usability verdicts, `Can Use For Intended Next Use`, and change necessity judgment.
+Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` to classify whether source input supports plan output. `sufficient-for-handoff` is not a review verdict or execution authorization. `shape` stays at concept level and uses `Need For Shape` as advisory continuation context. `plan` outputs input sufficiency, `Planning Continuation` when insufficient, plan content when sufficient, and minimum viable verification; `review` owns `Review Frame`, formal `Blocking Gaps`, severity, plan usability verdicts, `Can Use For Intended Next Use`, and change necessity judgment.
 
 For plan reviews, `Review Verdict: ready` means no blocking gaps for `Intended Next Use`. Do not block a plan for optional improvement only.
 
@@ -280,7 +280,7 @@ Before acting, classify the request when it is not obviously a fit:
 - `fits_with_preflight`: the current task can handle it after a read-only preflight.
 - `fallback_fit`: no task fits exactly, but the selected task can handle the primary user intent with only allowed adjacent output.
 - `composite`: the request needs multiple tasks.
-- `wrong_task`: another task is the proper entrypoint.
+- `wrong_task`: another task is the proper entrypoint; in discussion, still provide useful in-shape output when safe and include `Boundary Advice`.
 - `missing_prerequisite`: required target, explicit plan, source of truth, or project docs safety is missing.
 
 If not `fits` or `fallback_fit`, do not force-fit the request.
@@ -299,7 +299,7 @@ Common segmentations:
 - Understand code/docs differences as discovery: `explore -> Persist Candidate -> persist note`, with `Reliability / Not Checked`; use `review --lens consistency` only for source-of-truth judgments.
 - Provider/contract/package boundary: `shape --lens boundary` for boundary model, `explore --lens boundary` for imports/call evidence, `review --lens boundary` for ownership verdict, or `review --lens boundary, consistency` when source-of-truth or docs/code alignment also matters.
 
-Use stop points before implementation and stable-document sync.
+Use handoff points before implementation and stable-document sync.
 
 ## Template Map For Persist
 

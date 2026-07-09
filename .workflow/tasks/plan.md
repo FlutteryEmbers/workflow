@@ -64,7 +64,8 @@ Adjacent allowance must stay planning-owned. If the primary need is direction ch
 
 - `Input Sufficiency`: `insufficient | sufficient-for-draft | sufficient-for-handoff`.
 - `Input Gaps` only when sufficiency is `insufficient`.
-- A plan body only when sufficiency is `sufficient-for-draft` or `sufficient-for-handoff`.
+- `Planning Continuation` when sufficiency is `insufficient`.
+- A draft or handoff plan body only when sufficiency is `sufficient-for-draft` or `sufficient-for-handoff`.
 - `Compatibility / Constraint Plan` when compatibility or constraint policy affects execution.
 - `Output: compact` default: user intent, input sufficiency, optional input gaps, shape summary, impact surface, plan at a glance, plan body when allowed, compact verification, next step, and optional `Persist Candidate`.
 - `Output: full` / `Full Persist Packet` only when the plan should be persisted now, used as a handoff, needs explicit handoff detail, or `Output: full` is requested.
@@ -98,9 +99,9 @@ User-selected lenses:
 
 Write the smallest useful plan for the user's current intent. Do not compare or choose core directions; route that work to `shape`. A plan may be large or staged when the work requires it, but do not classify plans into plan kinds.
 
-`Input Sufficiency` judges the source input, not the model's generated plan quality:
+`Input Sufficiency` judges the source input, not the model's generated plan quality. It is an advisory planning classifier, not a blocker verdict or authorization boundary:
 
-- `insufficient`: required input is missing and cannot be safely assumed. Do not output a plan body. Output `Input Gaps` and recommend `shape`, `explore`, `user-answer`, or another `plan` pass.
+- `insufficient`: required input is missing and cannot be safely assumed for the requested plan use. Do not output an executable or handoff plan body. Output `Input Gaps`, `Planning Continuation`, and recommend `shape`, `explore`, `user-answer`, or another `plan` pass.
 - `sufficient-for-draft`: input is enough to produce a discussion or review draft, but not enough for build or external-agent handoff.
 - `sufficient-for-handoff`: input is enough to produce a handoff-grade plan with target outcome, scope, allowed changes, do-not-touch areas, minimum viable verification, fallback verification when needed, residual risk, and stop conditions. This still does not authorize execution.
 
@@ -148,6 +149,7 @@ In `Mode: discuss`, `plan` may output insufficient, draft, or handoff plans.
 - `Input Sufficiency` is source-input classification, not a review verdict.
 - `sufficient-for-handoff` means the input supports a handoff-grade plan; it is not a review verdict, build verdict, or execution authorization.
 - `Input Gaps` name missing input categories only when input is insufficient.
+- `Planning Continuation` keeps the discussion useful when input is insufficient. It may summarize known direction, safe partial framing, missing input categories, and the advisory next task, but it must not become an executable plan body or handoff.
 - Default verification is minimum viable verification. Use fallback and residual risk when stronger verification is not feasible.
 - Do not ask questions from `plan`.
 - Do not output review verdicts, formal blocking gaps, severity, or review-style checklists from `plan`.
@@ -191,6 +193,11 @@ User Intent: <one line about what the user wants planned>
 Input Sufficiency: <insufficient|sufficient-for-draft|sufficient-for-handoff>
 Input Gaps:
 - <only when insufficient; missing input categories only>
+Planning Continuation:
+- Known Direction: <known chosen direction, or unknown; only when insufficient>
+- Useful Planning Frame Now: <safe partial framing, or none; only when insufficient>
+- Cannot Produce Yet: <draft plan | handoff plan | executable plan; only when insufficient>
+- Advisory Next Task: <shape|explore|user-answer|plan|none; only when insufficient>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Motivation: <one sentence or unknown>
@@ -230,6 +237,11 @@ Input Sufficiency:
 - <insufficient|sufficient-for-draft|sufficient-for-handoff>
 Input Gaps:
 - <only when insufficient; missing input categories only>
+Planning Continuation:
+- Known Direction: <known chosen direction, or unknown; only when insufficient>
+- Useful Planning Frame Now: <safe partial framing, or none; only when insufficient>
+- Cannot Produce Yet: <draft plan | handoff plan | executable plan; only when insufficient>
+- Advisory Next Task: <shape|explore|user-answer|plan|none; only when insufficient>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Motivation: <one sentence or unknown>
@@ -278,6 +290,7 @@ Key Fields:
 - Target Outcome: <what should be true after execution>
 - Input Sufficiency: <insufficient|sufficient-for-draft|sufficient-for-handoff>
 - Input Gaps: <only when insufficient; missing input categories>
+- Planning Continuation: <known direction, safe partial framing, what cannot be produced yet, and advisory next task; only when insufficient>
 - Source Basis: <shape summary, evidence/repo basis, assumptions, and unknowns>
 - Impact Surface: <scope size, affected surfaces, risk, reversal cost, docs/sync impact, and plan at a glance>
 - Plan: <work packages, phases, or sequencing>

@@ -39,16 +39,16 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 ## Boundary Layers
 
 - `Core Responsibility`: classify intent and recommend the smallest useful task path, write path, lenses, context, and next prompt.
-- `Adjacent Allowance`: include boundary mismatch, allowed scope, segmented prompts, stop points, and lens suggestions when they help the user choose the next task.
+- `Adjacent Allowance`: include boundary mismatch, allowed scope, segmented prompts, handoff points, and lens suggestions when they help the user choose the next task.
 - `Hard Authority Boundaries`: do not perform the routed task, apply lenses, run evidence preflight, write files, sync stable documents, execute, implement, or grant permissions to later segments.
 
-Adjacent allowance must stay routing-owned. If the user needs actual analysis, verdict, planning, persistence, sync, or implementation, route to that task and stop.
+Adjacent allowance must stay routing-owned. If the user needs actual analysis, verdict, planning, persistence, sync, or implementation, recommend that task and do not perform it inside `route`.
 
 ## Expected Output
 
 - Always chat-only.
 - `Output: compact` default: interpreted goal, recommended path, selected task/lens, and next prompt.
-- Full Add Context and stop points only for composite work or `Output: full`.
+- Full Add Context and handoff points only for composite work or `Output: full`.
 
 ## Task Boundary Check
 
@@ -147,6 +147,10 @@ For normal requests, keep the route compact:
 ```text
 Interpreted goal: <one sentence>
 Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite, when useful>
+Boundary Advice:
+- Why: <routing reason or none>
+- Useful Response Now: <what route can safely provide, normally routing advice only>
+- Advisory Next Task: <task or sequence>
 Scope Interpretation:
 - Requested Task: <task named or implied by user>
 - Output Shape Used: <meaning|evidence|direction|verdict|plan|persist|sync|build>
@@ -163,6 +167,10 @@ Use the full format only for `Output: full`, composite routing, wrong-task corre
 ```text
 Interpreted goal: <one sentence>
 Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
+Boundary Advice:
+- Why: <routing reason or none>
+- Useful Response Now: <what route can safely provide, normally routing advice only>
+- Advisory Next Task: <task or sequence>
 Scope Interpretation:
 - Requested Task: <task named or implied by user>
 - Output Shape Used: <meaning|evidence|direction|verdict|plan|persist|sync|build>
@@ -195,7 +203,7 @@ Recommended Segments:
    Request:
    Expected Output:
    Continue Condition:
-Stop Points:
+Advisory Handoff Points:
 - <user decision, audit, source-of-truth, Project Docs Rules, or diff review point>
 ```
 

@@ -48,7 +48,7 @@ Request: ${input:request:describe the work}
 - If no task fits exactly, choose the nearest task by primary user intent. Default gray-area discussion to `shape` only for concept direction, option framing, or next-step selection.
 - For `fallback_fit`, output `Scope Interpretation`, `Adjacent Allowance Used`, and `Recommended Next Task`; do not cross the selected task's hard authority boundaries.
 - Prefer `fits -> fits_with_preflight -> fallback_fit -> composite -> wrong_task`; use `wrong_task` only when the selected task cannot provide a useful in-shape response.
-- If composite, output segmented prompts with stop points instead of forcing the request into one task.
+- If composite, output segmented prompts with handoff points instead of forcing the request into one task.
 - When unsure, start with `shape`.
 - Meaning, explanation, restatement, semantic difference, assumption, hidden scope, or prior AI answer unpacking requests go to `clarify`.
 - Summary, folder summary, source distillation, and archive-summary draft requests go to `distill`.
@@ -57,19 +57,19 @@ Request: ${input:request:describe the work}
 - Change-seeking judgment routes: "does this need change / is it worth changing / any useful improvements" goes to `review` with `Change Assessment`; "if changing, what directions exist" goes to `shape`; "how to make the chosen change" goes to `plan`.
 - Each task should answer using its own `Output Shape`: clarify=meaning, explore=observed system map, shape=direction, review=verdict, plan=plan.
 - Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. `distill` is a task, not a lens. Do not use any lens as a skip mechanism.
-- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Need For Shape`, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Evidence Probes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Minimal Revision Sketch`, `Repair Direction`, `Input Sufficiency`, `Input Gaps`, and `What Would Change My Mind` as thinking material.
+- Discussion Advisory Principle applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Need For Shape`, `Shape Continuation`, `Boundary Advice`, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Evidence Probes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Minimal Revision Sketch`, `Repair Direction`, `Input Sufficiency`, `Input Gaps`, `Planning Continuation`, and `What Would Change This` as thinking material.
 - Discussion adjacency is allowed; authority is not. Adjacent output may recommend the next task, but write, sync, execute, implementation, source-of-truth, and build authority still require the proper `Mode`, `Task`, target rules, prerequisites, and explicit executable plan.
 - For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision State`.
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
-- In `shape`, `Need For Shape` decides whether direction shaping should continue. Put it after current read and before `Human Decision State`.
-- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after `Need For Shape` and before recommendation, only when `Need For Shape Status: needs-direction`.
+- In `shape`, `Need For Shape` is an advisory continuation classifier. Put it after current read and before `Shape Continuation`.
+- In `shape`, `Human Decision State` is discussion guidance, not authorization. Put it after `Shape Continuation` and before finalized recommendation when a user-owned choice matters.
 - If `Need For Shape Status: needs-direction` and state is `checkpoint`, use `vscode/askQuestions` when available as the Copilot-only renderer for `User Checkpoint`.
 - Use `User Checkpoint.Question` as the question, use 2-3 mutually exclusive `User Checkpoint.Options`, preserve label/explanation/risk, and put the recommended option first with `(Recommended)`.
-- If that checkpoint UI is unavailable, output structured `User Checkpoint` and wait. If `Need For Shape Status: needs-direction` and state is `blocking`, stop before final recommendation and `Persist Candidate`.
+- If that checkpoint UI is unavailable, output structured `User Checkpoint` and wait. If state is `unresolved`, continue with provisional direction, assumptions, what would change it, and advisory next task.
 - `vscode/askQuestions` is only a checkpoint renderer for `shape`.
 - Do not use the native question UI for planning, review verdicts, task routing, preflight, write authorization, sync authorization, or build authorization.
-- Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` for planning output. This classifies source input for intended use, not generated plan quality.
-- `plan compact` must summarize the chosen direction first, include `Motivation`, then give compact `Impact Surface`, `Plan At A Glance`, plan body, and compact verification only when input is sufficient. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. `Output: full` is a minimal handoff packet for persist, explicit handoff candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
+- Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` for planning output. This classifies source input for intended use, not generated plan quality or authorization.
+- `plan compact` must summarize the chosen direction first, include `Motivation`, and when input is insufficient output `Planning Continuation` instead of an executable or handoff plan body. When input is sufficient, give compact `Impact Surface`, `Plan At A Glance`, plan body, and compact verification. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. `Output: full` is a minimal handoff packet for persist, explicit handoff candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
 - Default plan verification is minimum viable verification: prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites.
 - `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, gap analysis, and change necessity judgment. Review output must start with `Review Frame` containing `Review Question`, `Review Target Kind`, `Intended Next Use`, `Review Type`, and `Review Route Reason`; plan review is a built-in review rubric, not a lens. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap. Use `Change Assessment` only for change-seeking review requests.
 - `explore` is descriptive inquiry for shape and review. It can say how something works, what exists, where it appears, what source-backed differences were observed, and "no evidence found in checked scope"; `review` decides what that evidence means against a baseline. `explore` may run non-mutating probes only to establish evidence and must report `Probe`, `Command or Method`, `Observed Result`, `Reliability`, and `Side Effect Check`. Use `explore -> plan` only when direction or target is already selected and evidence only fills repo-aware planning context.
@@ -197,27 +197,36 @@ User Intent: <one line about what the user wants shaped>
 Current Read: <optional one line about relevant code/docs/discussion facts>
 Need For Shape:
 - Status: needs-direction | already-settled | answerable-now | needs-evidence | needs-review
-- Reason: <why shape should continue or stop>
-- Recommended Next Task: <shape|explore|review|plan|persist|none>
-Stop Output: <only when Status is not needs-direction; short answer or handoff reason, then stop>
-Boundary Fit: <fits|fallback_fit|composite|wrong_task|missing_prerequisite>
+- Reason: <why this continuation type fits>
+- Advisory Next Task: <shape|explore|review|plan|persist|none>
+Shape Continuation:
+- Continuation Type: <new-direction|carry-forward|short-answer|provisional|review-handoff>
+- Current / Provisional Direction: <direction, short answer, or none>
+- Carry Forward: <boundaries, assumptions, or next-use notes>
+- What Would Change This: <evidence, review result, or user decision>
+- Advisory Next Task: <shape|explore|review|plan|persist|none>
+Boundary Advice:
+- Boundary: <fits|fallback_fit|composite|wrong_task|missing_prerequisite>
+- Why: <routing reason or none>
+- Useful Response Now: <what shape can still safely provide, or none>
+- Advisory Next Task: <task or sequence>
 Adjacent Allowance Used: <none|clarification|compression|evidence-needs|risk-sketch|planning-sketch>
-Decision State: <only when Need For Shape Status is needs-direction>
-- Human Decision State: <none|assumed|checkpoint|blocking>
+Decision State:
+- Human Decision State: <none|assumed|checkpoint|unresolved>
 - Decision State Reason: <why this state applies>
 - Assumed Default: <recommended default or none>
 - Checkpoint Needed: <yes/no>
-User Checkpoint: <only when Need For Shape Status is needs-direction and Human Decision State is checkpoint; then stop before Take>
-Blocking Reason: <only when Need For Shape Status is needs-direction and Human Decision State is blocking; then stop before Take>
+User Checkpoint: <only when Human Decision State is checkpoint; wait for selection before final recommendation>
+Unresolved Decision: <only when Human Decision State is unresolved; evidence, decision, or review result needed>
 Take:
-- <only when Need For Shape Status is needs-direction; 3-6 bullets>
+- <3-6 bullets>
 Risks/Unknowns:
-- <only when Need For Shape Status is needs-direction; 0-3 bullets>
-Provisional Recommendation: <only when Need For Shape Status is needs-direction; best guess or none>
+- <0-3 bullets>
+Provisional Recommendation: <best guess, carry-forward recommendation, or none>
 Impact Surface:
-- <only when Need For Shape Status is needs-direction and planning may follow>
+- <when this response forms or updates a direction and planning may follow>
 Recommended Next Task: <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
-Persist Candidate: <none unless Need For Shape Status is needs-direction; otherwise Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md>
+Persist Candidate: <none unless this response forms or updates a direction; otherwise Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md>
 ```
 
 For `Task: plan` with `Output: compact`, use this structure instead:
@@ -227,6 +236,11 @@ User Intent: <one line about what the user wants planned>
 Input Sufficiency: <insufficient|sufficient-for-draft|sufficient-for-handoff>
 Input Gaps:
 - <only when insufficient; missing input categories only>
+Planning Continuation:
+- Known Direction: <known chosen direction, or unknown; only when insufficient>
+- Useful Planning Frame Now: <safe partial framing, or none; only when insufficient>
+- Cannot Produce Yet: <draft plan | handoff plan | executable plan; only when insufficient>
+- Advisory Next Task: <shape|explore|user-answer|plan|none; only when insufficient>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Motivation: <one sentence or unknown>
@@ -270,12 +284,16 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Input Sufficiency`, conditional `Input Gaps`, `Shape Summary` with `Motivation`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, and `Compatibility / Constraint Plan` when relevant. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`.
+For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Input Sufficiency`, conditional `Input Gaps`, `Planning Continuation` when insufficient, `Shape Summary` with `Motivation`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, and `Compatibility / Constraint Plan` when relevant. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`.
 
 Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
 
 ```text
 Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
+Boundary Advice:
+- Why: <routing reason or none>
+- Useful Response Now: <what the selected task can still safely provide, or none>
+- Advisory Next Task: <task or sequence>
 Scope Interpretation:
 - Requested Task: <task named or implied by user>
 - Output Shape Used: <meaning|evidence|direction|verdict|plan|persist|sync|build>
@@ -300,8 +318,8 @@ Recommended Segments:
    Request:
    Expected Output:
    Continue Condition:
-Stop Points:
-- <where user decision, audit, or source-of-truth confirmation is required>
+Advisory Handoff Points:
+- <where user decision, audit, or source-of-truth confirmation may be needed>
 ```
 
 ## External-Agent Review Formats

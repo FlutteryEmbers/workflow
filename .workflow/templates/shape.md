@@ -20,8 +20,10 @@
 
 - Need For Shape Status: {{needs-direction}}
 - Need For Shape Reason: {{why this artifact represents a new or updated direction}}
-- Need For Shape Recommended Next Task: {{shape | explore | review | plan | persist | none}}
-- Human Decision State: {{none | assumed | checkpoint | blocking}}
+- Need For Shape Advisory Next Task: {{shape | explore | review | plan | persist | none}}
+- Shape Continuation Type: {{new-direction | carry-forward | short-answer | provisional | review-handoff}}
+- Shape Continuation Carry Forward: {{boundaries, assumptions, or next-use notes}}
+- Human Decision State: {{none | assumed | checkpoint | unresolved}}
 - Decision State Reason: {{why this state applies}}
 - Assumed Default: {{recommended default or none}}
 - Checkpoint Needed: {{yes | no}}
@@ -32,7 +34,7 @@
 - Key Risk: {{main risk or unknown}}
 - Next Use: {{persist | review | plan | sync | none}}
 
-> Use this template only when `Need For Shape Status: needs-direction` and the output forms or updates a direction. Do not create a new shape artifact for `already-settled`, `answerable-now`, `needs-evidence`, or `needs-review`.
+> Use this template only when the output forms or updates a direction. Carry-forward, short-answer, evidence-needed, or review-handoff continuations usually should not create a shape artifact unless they materially update the direction.
 
 ## Impact Surface
 

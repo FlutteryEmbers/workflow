@@ -84,7 +84,7 @@ Boundary handling:
 - `fits`: summarize in chat.
 - `fits_with_preflight`: inspect only enough source structure to bound the summary, then distill or return missing scope.
 - `composite`: output the distillation plus the next-task prompt; do not write files.
-- `wrong_task` or `missing_prerequisite`: stop and return Boundary, Reason, Recommended Path, and Next Prompt.
+- `wrong_task` or `missing_prerequisite`: output `Boundary Advice`. Still provide a bounded summary when a safe source/focus exists; return boundary-only output only when no selected source can be summarized or the request requires write, sync, execution, or judgment authority.
 
 ## Summary Types
 
@@ -122,6 +122,11 @@ In `Mode: discuss`, default to:
 
 ```text
 User Intent: <one line about what the user wants summarized>
+Boundary Advice:
+- Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
+- Why: <routing reason or none>
+- Useful Response Now: <what distill can still safely provide, or none>
+- Advisory Next Task: <task or sequence>
 Source: <source files, folder, thread, docs, or discussion>
 Summary Focus: <what dimension is being summarized>
 Summary Type: <structure-summary|folder-summary|content-summary|decision-summary|interface-summary|risk-summary|archive-summary-draft>
@@ -146,6 +151,11 @@ Use `Output: normal` when the user asks to organize, refine, or prepare the summ
 
 ```text
 User Intent: <one line>
+Boundary Advice:
+- Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
+- Why: <routing reason or none>
+- Useful Response Now: <what distill can still safely provide, or none>
+- Advisory Next Task: <task or sequence>
 Source Boundaries:
 - <source paths, thread, docs, or discussion boundaries>
 Summary Focus:

@@ -1,7 +1,7 @@
 ---
 id: review
 role: reviewer
-purpose: Provide verdicts and gatekeeping for behavior, evidence, decisions, plans, diffs, source-of-truth, or stable-document alignment in chat.
+purpose: Provide verdicts and usability judgments for behavior, evidence, decisions, plans, diffs, source-of-truth, or stable-document alignment in chat.
 inputs:
   - target_or_claim
 outputs:
@@ -108,7 +108,15 @@ Conditional implicit preflight for `review` only checks review target, review qu
 
 If evidence is insufficient for a verdict or gap analysis, output `Review Verdict: needs more evidence`, name the missing evidence or missing baseline, and recommend `explore -> review` or `shape` instead of inventing conclusions. If evidence gathering becomes the main deliverable, route to `explore`.
 
-Review provides verdicts and risk/gap gates when requested or when the selected path uses review. Verdicts should recommend next task: `none`, `persist`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
+Review provides verdicts and risk/gap judgments when requested or when the selected path uses review. In `Mode: discuss`, those verdicts are thinking material for the user and do not grant write, sync, build, or external-agent authority. Verdicts should recommend next task: `none`, `persist`, `sync`, `shape`, `plan`, `build`, or `external-agent`.
+
+Boundary handling:
+
+- `fits`: review in chat.
+- `fits_with_preflight`: run the review-target/evidence preflight, then review or recommend evidence gathering.
+- `fallback_fit`: answer the bounded verdict that can be reviewed and name the broader discovery as follow-up.
+- `composite`: review first, then output the next-task prompt; do not write files.
+- `wrong_task` or `missing_prerequisite`: output `Boundary Advice`. Still provide a bounded review when useful and safe; return boundary-only output only when no bounded verdict can be supported or the request requires write, sync, execution, or another task's authority.
 
 ## Copilot Add Context
 
@@ -282,6 +290,11 @@ In `Mode: discuss`, default to:
 ```text
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
+Boundary Advice:
+- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
+- Why: <routing reason or none>
+- Useful Response Now: <what review can still safely judge, or none>
+- Advisory Next Task: <task or sequence>
 Review Frame:
 - Review Question: <plain-language question this review answers>
 - Review Target Kind: plan | diff | code | docs | decision | claim | artifact
@@ -316,6 +329,11 @@ Use `Output: normal` when the user asks to organize, refine, or prepare the revi
 ```text
 User Intent: <one line about what the user wants reviewed>
 Current Read: <optional one line about the target or evidence being reviewed>
+Boundary Advice:
+- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
+- Why: <routing reason or none>
+- Useful Response Now: <what review can still safely judge, or none>
+- Advisory Next Task: <task or sequence>
 Review Frame:
 - Review Question: <plain-language question this review answers>
 - Review Target Kind: plan | diff | code | docs | decision | claim | artifact
