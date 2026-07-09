@@ -217,7 +217,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, AI output is think
 - `clarify` may provide a lightweight next-task hint.
 - `explore` may provide `Explore Frame`, `Observed Answer`, `Evidence Basis`, `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may provide `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
-- `shape` may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
+- `shape` starts with `Need For Shape` and may provide `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` starts non-trivial output with `Review Frame` and may provide `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
 - `plan` may provide `Input Sufficiency`, `Input Gaps`, minimum viable verification, fallback verification, residual risk, plan draft/handoff content, and recommended next task.
 - `review` may provide `Gap Analysis` with `Severity: high | medium | low`, `Blocking Gaps`, `Non-blocking Gaps`, and conditional `Change Assessment` for change-seeking judgment.
@@ -231,12 +231,15 @@ These freedoms do not loosen write or execution boundaries. `persist`, `sync`, a
 
 `shape` must treat human decision handling as control flow, not tail metadata:
 
+- `Need For Shape`: shape-only check for whether direction shaping should continue. It is not a review verdict and does not judge whether code, docs, plans, or previous work are correct, solved, ready, or worth changing.
+- `Need For Shape: needs-direction`: continue shape and then use `Human Decision State` when needed.
+- `Need For Shape: already-settled | answerable-now | needs-evidence | needs-review`: stop before final recommendation, user checkpoint, impact surface, or `Persist Candidate: Artifact=shape`; recommend `plan`, `persist`, `explore`, `review`, or `none`.
 - `Human Decision State: none`: no user-owned choice blocks the shape; continue normally.
 - `Human Decision State: assumed`: a low-risk choice exists; choose the recommended default, continue, and record it in `Assumed Decisions`.
 - `Human Decision State: checkpoint`: a consequential choice can be expressed as 2-3 options; output one `User Checkpoint` and stop before final recommendation or `Persist Candidate`.
 - `Human Decision State: blocking`: the choice is too risky or under-specified to express safely; stop and name what evidence or decision is missing.
 
-Use a checkpoint for shape choices that affect direction, scope, source of truth, compatibility, constraint policy, artifact boundary, or next planning level. Do not checkpoint ordinary low-risk preferences or facts that can be discovered by read-only preflight.
+Use a checkpoint only after `Need For Shape: needs-direction` for shape choices that affect direction, scope, source of truth, compatibility, constraint policy, artifact boundary, or next planning level. Do not checkpoint ordinary low-risk preferences or facts that can be discovered by read-only preflight.
 
 Checkpoint structure:
 
@@ -400,7 +403,7 @@ Compact output starts with `User Intent`, may include `Current Read`, and uses s
 
 `shape` and `plan` may both be compact in chat, but they have different responsibilities:
 
-- `shape compact`: reason about direction and choose or recommend a concept.
+- `shape compact`: first decide `Need For Shape`, then reason about direction and choose or recommend a concept only when direction is still needed.
 - `plan compact`: classify `Input Sufficiency`, summarize the shaped/chosen direction, then show compact `Impact Surface`, plan sketch, and compact verification only when input is sufficient.
 - `plan full`: minimal handoff packet for persist, explicit plan handoff, or external-agent use. The persisted artifact structure comes from `.workflow/templates/plan.md` and uses `Source Basis`, `Impact Surface -> Plan At A Glance`, `Scope`, `Verification`, `Stop Conditions`, and `Review / Next Use`.
 

@@ -57,14 +57,15 @@ Request: ${input:request:describe the work}
 - Change-seeking judgment routes: "does this need change / is it worth changing / any useful improvements" goes to `review` with `Change Assessment`; "if changing, what directions exist" goes to `shape`; "how to make the chosen change" goes to `plan`.
 - Each task should answer using its own `Output Shape`: clarify=meaning, explore=observed system map, shape=direction, review=verdict, plan=plan.
 - Lenses may strengthen the selected task, but must not change task responsibility, write permission, execute permission, or sync permission. `distill` is a task, not a lens. Do not use any lens as a skip mechanism.
-- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Evidence Probes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Minimal Revision Sketch`, `Repair Direction`, `Input Sufficiency`, `Input Gaps`, and `What Would Change My Mind` as thinking material.
+- Discussion freedom applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Need For Shape`, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Evidence Probes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Minimal Revision Sketch`, `Repair Direction`, `Input Sufficiency`, `Input Gaps`, and `What Would Change My Mind` as thinking material.
 - Discussion adjacency is allowed; authority is not. Adjacent output may recommend the next task, but write, sync, execute, implementation, source-of-truth, and build authority still require the proper `Mode`, `Task`, target rules, prerequisites, and explicit executable plan.
 - For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision State`.
 - Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
-- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation.
-- If state is `checkpoint`, use `vscode/askQuestions` when available as the Copilot-only renderer for `User Checkpoint`.
+- In `shape`, `Need For Shape` decides whether direction shaping should continue. Put it after current read and before `Human Decision State`.
+- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after `Need For Shape` and before recommendation, only when `Need For Shape Status: needs-direction`.
+- If `Need For Shape Status: needs-direction` and state is `checkpoint`, use `vscode/askQuestions` when available as the Copilot-only renderer for `User Checkpoint`.
 - Use `User Checkpoint.Question` as the question, use 2-3 mutually exclusive `User Checkpoint.Options`, preserve label/explanation/risk, and put the recommended option first with `(Recommended)`.
-- If `vscode/askQuestions` is unavailable, output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
+- If that checkpoint UI is unavailable, output structured `User Checkpoint` and wait. If `Need For Shape Status: needs-direction` and state is `blocking`, stop before final recommendation and `Persist Candidate`.
 - `vscode/askQuestions` is only a checkpoint renderer for `shape`.
 - Do not use the native question UI for planning, review verdicts, task routing, preflight, write authorization, sync authorization, or build authorization.
 - Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` for planning output. This classifies source input for intended use, not generated plan quality.
@@ -187,6 +188,36 @@ Candidate Review Targets:
 - <reviewable question or none>
 Recommended Next Task: <shape|review|persist|distill|none; plan only when direction/target is already selected>
 Persist Candidate: none | Artifact=note; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+```
+
+For `Task: shape` with `Output: compact`, use this structure instead:
+
+```text
+User Intent: <one line about what the user wants shaped>
+Current Read: <optional one line about relevant code/docs/discussion facts>
+Need For Shape:
+- Status: needs-direction | already-settled | answerable-now | needs-evidence | needs-review
+- Reason: <why shape should continue or stop>
+- Recommended Next Task: <shape|explore|review|plan|persist|none>
+Stop Output: <only when Status is not needs-direction; short answer or handoff reason, then stop>
+Boundary Fit: <fits|fallback_fit|composite|wrong_task|missing_prerequisite>
+Adjacent Allowance Used: <none|clarification|compression|evidence-needs|risk-sketch|planning-sketch>
+Decision State: <only when Need For Shape Status is needs-direction>
+- Human Decision State: <none|assumed|checkpoint|blocking>
+- Decision State Reason: <why this state applies>
+- Assumed Default: <recommended default or none>
+- Checkpoint Needed: <yes/no>
+User Checkpoint: <only when Need For Shape Status is needs-direction and Human Decision State is checkpoint; then stop before Take>
+Blocking Reason: <only when Need For Shape Status is needs-direction and Human Decision State is blocking; then stop before Take>
+Take:
+- <only when Need For Shape Status is needs-direction; 3-6 bullets>
+Risks/Unknowns:
+- <only when Need For Shape Status is needs-direction; 0-3 bullets>
+Provisional Recommendation: <only when Need For Shape Status is needs-direction; best guess or none>
+Impact Surface:
+- <only when Need For Shape Status is needs-direction and planning may follow>
+Recommended Next Task: <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
+Persist Candidate: <none unless Need For Shape Status is needs-direction; otherwise Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md>
 ```
 
 For `Task: plan` with `Output: compact`, use this structure instead:

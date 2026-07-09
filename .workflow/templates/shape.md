@@ -18,6 +18,9 @@
 
 ## Decision Snapshot
 
+- Need For Shape Status: {{needs-direction}}
+- Need For Shape Reason: {{why this artifact represents a new or updated direction}}
+- Need For Shape Recommended Next Task: {{shape | explore | review | plan | persist | none}}
 - Human Decision State: {{none | assumed | checkpoint | blocking}}
 - Decision State Reason: {{why this state applies}}
 - Assumed Default: {{recommended default or none}}
@@ -28,6 +31,8 @@
 - Success Criteria: {{what would make this worth continuing}}
 - Key Risk: {{main risk or unknown}}
 - Next Use: {{persist | review | plan | sync | none}}
+
+> Use this template only when `Need For Shape Status: needs-direction` and the output forms or updates a direction. Do not create a new shape artifact for `already-settled`, `answerable-now`, `needs-evidence`, or `needs-review`.
 
 ## Impact Surface
 

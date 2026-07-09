@@ -161,12 +161,12 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be use
 - `clarify` may output a lightweight next-task hint.
 - `explore` may output `Explore Frame`, `Observed Answer`, `Evidence Basis`, `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, and recommended next task.
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
-- `shape` may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
+- `shape` starts with `Need For Shape` and may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review` starts non-trivial output with `Review Frame` and may output `Minimal Revision Sketch`, `Repair Direction`, and recommended next action.
 - `plan` may output `Input Sufficiency`, `Input Gaps` when insufficient, minimum viable verification, fallback verification, residual risk, compatibility/constraint plan, and recommended next task.
 - `review` may output `Review Frame` fields, `Gap Analysis`, severity, blocking gaps, non-blocking gaps, and conditional `Change Assessment` when the user asks whether something should change or is worth changing.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
-- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
+- In `shape`, `Need For Shape` is a front-door check for whether direction shaping should continue; it is not a review verdict. Put it after current read and before `Human Decision State`. Use `Human Decision State` only when `Need For Shape Status: needs-direction`. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
 Do not treat discussion freedom as write permission. `persist`, `sync`, `build`, and external-agent implementation keep their normal boundaries.
 
@@ -175,14 +175,14 @@ Do not treat discussion freedom as write permission. `persist`, `sync`, `build`,
 Use `vscode/askQuestions` only as the Copilot renderer for a `shape`
 `User Checkpoint`.
 
-- Use it only when `Human Decision State: checkpoint`.
+- Use it only when `Need For Shape Status: needs-direction` and `Human Decision State: checkpoint`.
 - Ask at most one consequential choice per response.
 - Provide 2-3 mutually exclusive options.
 - Put the recommended option first and label it with `(Recommended)`.
 - Preserve each option's label, explanation, and risk.
 - Do not use it for fact discovery, ordinary clarification, review verdicts, planning, task routing, repo preflight, write authorization, sync authorization, or build authorization.
 - After a `shape` question, stop before `Take`, `Provisional Recommendation`, `Impact Surface`, or `Persist Candidate` until the user chooses.
-- If `vscode/askQuestions` is unavailable, output the structured `User Checkpoint` block and wait.
+- If that checkpoint UI is unavailable, output the structured `User Checkpoint` block and wait.
 
 Discovery vs judgment rule:
 
@@ -204,7 +204,7 @@ Discovery vs judgment rule:
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Candidate` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
-Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` to classify whether source input supports plan output. `sufficient-for-handoff` is not a review verdict or execution authorization. `shape` stays at concept level. `plan` outputs input sufficiency, plan content, and minimum viable verification; `review` owns `Review Frame`, formal `Blocking Gaps`, severity, plan usability verdicts, `Can Use For Intended Next Use`, and change necessity judgment.
+Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` to classify whether source input supports plan output. `sufficient-for-handoff` is not a review verdict or execution authorization. `shape` stays at concept level and uses `Need For Shape` only to decide whether to continue shaping. `plan` outputs input sufficiency, plan content, and minimum viable verification; `review` owns `Review Frame`, formal `Blocking Gaps`, severity, plan usability verdicts, `Can Use For Intended Next Use`, and change necessity judgment.
 
 For plan reviews, `Review Verdict: ready` means no blocking gaps for `Intended Next Use`. Do not block a plan for optional improvement only.
 

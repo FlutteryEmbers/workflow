@@ -59,13 +59,13 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Codex may provide 
 - `clarify`: lightweight next-task hint.
 - `explore`: `Explore Frame`, `Observed Answer`, `Evidence Basis`, `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Candidate Review Targets`, recommended next task.
 - `distill`: `Next Use`, `Persist Candidate`, review suggestion, or sync/archive handoff hint.
-- `shape`: `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
+- `shape`: `Need For Shape`, `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change My Mind`, and allowed lightweight adjacent output when `Boundary Fit: fallback_fit`.
 - `review`: `Review Frame`, `Minimal Revision Sketch`, `Repair Direction`, recommended next action.
 - `plan`: `Input Sufficiency`, `Input Gaps` when insufficient, minimum viable verification, fallback verification, residual risk, compatibility/constraint plan, and recommended next task.
 - `review`: `Review Frame` fields, `Gap Analysis`, severity, blocking gaps, non-blocking gaps, and conditional `Change Assessment` when the user asks whether something should change or is worth changing.
 - Review plans under `verdict-review` with `Review Target Kind: plan` and explicit `Intended Next Use`; use `gap-analysis` when the plan asks review to diagnose a system or protocol gap against a baseline.
 - Add `Confidence`, `Assumptions`, and `Human Decision State` when uncertainty or impact is material.
-- In `shape`, `Human Decision State` is control flow, not tail metadata. Put it after current read and before recommendation. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
+- In `shape`, `Need For Shape` is a front-door check for whether direction shaping should continue; it is not a review verdict. Put it after current read and before `Human Decision State`. Use `Human Decision State` only when `Need For Shape Status: needs-direction`. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `blocking`, stop before final recommendation and `Persist Candidate`.
 
 Discussion freedom does not permit file writes, stable-document sync, implementation, or source-of-truth decisions.
 
@@ -89,7 +89,7 @@ Discovery vs judgment rule:
 
 Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` to separate missing input, discussion/review drafts, and handoff-grade plans. This classifies source input, not generated plan quality.
 
-- `shape` produces concept-level direction and may recommend `plan` or `review`.
+- `shape` produces concept-level direction and may recommend `plan` or `review`; it uses `Need For Shape` only to decide whether to continue shaping.
 - `plan` outputs `Input Sufficiency`, `Input Gaps` when insufficient, and a plan body plus minimum viable verification only when input is sufficient.
 - `Input Sufficiency` is not a gate verdict or execution authorization.
 - `review` owns `Review Frame`, formal `Blocking Gaps`, gap severity, verdicts, whether a plan can be used for `Intended Next Use`, and change necessity judgment.
