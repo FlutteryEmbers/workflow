@@ -177,13 +177,14 @@ Workflow Lite separates concept shaping, planning, and review judgment.
 
 `shape` may name the next workflow task, the smallest conceptual wedge, and the approximate impact surface. It must not output ordered implementation steps, target files, or step-level verification.
 
-`plan` assumes the direction is selected or proceeds from a clearly marked recommended assumption. It must not reopen the core direction, ask user questions, or self-review. If the main uncertainty is still which direction to choose, return to `shape`.
+`plan` assumes the direction is selected or proceeds from a clearly marked recommended assumption. It must not reopen the core direction, ask ordinary user questions, or self-review. Its only interactive exception is a compatibility-specific intake after repo preflight proves that unresolved user-owned compatibility input materially changes the plan. If the main uncertainty is still which direction to choose, return to `shape`.
 
 Every plan output uses:
 
 - `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff`
 - `Input Gaps` only when input is insufficient
 - `Planning Continuation` only when input is insufficient
+- `Compatibility Intake` only when compatibility-specific trigger conditions pass and native user-input UI is unavailable
 - `Shape Summary` with `Motivation`
 - `Impact Surface`, `Plan At A Glance`, and `Plan` only when input is sufficient
 - `Verification` with minimum viable verification, feasibility, fallback verification, and residual risk only when input is sufficient
@@ -227,7 +228,7 @@ Discussion classifications are advisory signals. They help the user decide what 
 
 ## User Checkpoint
 
-`User Checkpoint` is a shape-first interactive checkpoint, not a task, lens, or persisted artifact. V1 uses it only inside `shape` to handle consequential user-owned choices before a recommendation is finalized.
+`User Checkpoint` is a shape-first interactive checkpoint, not a task, lens, or persisted artifact. It remains exclusive to `shape` and handles consequential user-owned choices before a recommendation is finalized. Plan's compatibility-specific intake is a separate input-completion mechanism and does not use `Human Decision State` or `User Checkpoint`.
 
 `shape` must treat human decision handling as discussion guidance, not tail metadata or authorization:
 
@@ -350,7 +351,52 @@ Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-han
 - `sufficient-for-draft`: source input is enough for a discussion or review draft, but not handoff use.
 - `sufficient-for-handoff`: source input is enough for a handoff-grade plan with scope, allowed changes, do-not-touch areas, minimum viable verification, fallback verification when needed, residual risk, and stop conditions.
 
-`Input Sufficiency` is not a build verdict or blocker verdict. `Input Gaps` belong only to insufficient input and name missing input categories without asking questions. `Planning Continuation` keeps insufficient-input discussion useful without creating a plan body. When invoked, `review` decides `Review Frame`, `Review Verdict`, `Blocking Gaps`, severity, `Can Use For Intended Next Use`, change necessity judgment, and recommended next task. Missing review is not by itself a `build` blocker.
+`Input Sufficiency` is not a build verdict or blocker verdict. `Input Gaps` belong only to insufficient input and name missing input categories rather than generic questions. `Planning Continuation` keeps insufficient-input discussion useful without creating a plan body. The only question exception is `Compatibility Intake`, after repo preflight establishes a real compatibility surface, material preserve/breaking cost difference, and unresolved user-owned consumer/data/transition input. While that intake is unresolved, mark input insufficient and omit the Plan and handoff body. `review` decides `Review Frame`, `Review Verdict`, `Blocking Gaps`, severity, `Can Use For Intended Next Use`, change necessity judgment, and recommended next task. Missing review is not by itself a `build` blocker.
+
+## Plan Compatibility Intake Core Rules
+
+Run bounded repo preflight before considering an intake. Trigger it only when
+compatibility policy is not locked, a real API/CLI/config/persisted-data/file-
+format surface exists, preserve versus breaking materially changes scope,
+verification, migration, or handoff, and repository evidence cannot determine
+external-consumer obligations, data disposability, or transition tolerance. Do
+not trigger it for explicit policy, no legacy surface, purely additive behavior,
+negligible preservation cost, or an answer already established by the repo.
+
+Present the discovered surfaces, repository-local consumers, data/config
+lifetime evidence, and preserve/breaking costs before asking. Ask two questions
+in one intake round by default: consumer scope and data/config lifecycle. Add a third cutover-style
+question only when preflight finds an external consumer, persisted data, or
+material transition cost. Every question has 2-3 mutually exclusive options;
+put the recommended option first and mark it `(Recommended)`. An explicit
+`ponytail` lens may favor demo-only consumers, rebuildable data, and atomic
+cutover when evidence is controlled and disposable, but never selects breaking
+automatically.
+
+When the third question is omitted, preflight has established that there is no
+material transition window; use atomic cutover for mapping rather than asking
+an unnecessary question. Compatibility Intake answers count as explicit user
+input for the selected compatibility policy.
+
+Map controlled + disposable + atomic to `Compatibility: breaking`; map
+migrate-then-cutover to breaking with migration and old-read/write stop points;
+map a temporary bridge to current `Compatibility: preserve` with a removal
+trigger and later breaking work; map unknown consumers, concurrent formats, or
+long-term retention to preserve. Write the result into the existing
+`Compatibility / Constraint Plan`; do not add a persisted artifact field.
+
+Use native choice UI when available, then continue with the complete Plan. When
+it is unavailable, output `Input Sufficiency: insufficient`, `Input Gaps:
+compatibility policy`, and a structured `Compatibility Intake`, then wait
+without `Impact Surface`, `Plan At A Glance`, `Plan`, `Verification`, execution
+handoff, or persist packet. This exception does not use `Human Decision State`
+and does not permit general clarification, discoverable-fact, target-selection,
+technical-design, or authorization questions.
+
+For `pplan`, complete the intake before creating or freezing the Plan Draft.
+If answers are unavailable, output only the pending intake and do not run Plan
+Review. After answers are available, continue strictly in `plan -> freeze ->
+review` order.
 
 Default plan verification is minimum viable verification. Prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites. Refactor or migration plans without an old baseline should name fallback verification and residual risk instead of becoming insufficient solely for that reason.
 
@@ -414,6 +460,7 @@ Every `plan` output, including compact chat output, must include the core planni
 Input Sufficiency
 Input Gaps
 Planning Continuation
+Compatibility Intake
 Shape Summary
 Impact Surface
 Plan At A Glance
@@ -423,13 +470,13 @@ Execution Handoff
 Next
 ```
 
-`Input Gaps` and `Planning Continuation` are conditional on insufficient input. `Impact Surface`, `Plan At A Glance`, `Plan`, and `Verification` are conditional on sufficient input. Insufficient input omits the executable or handoff plan body. `Execution Handoff` appears only when compact output recommends `build` or `external-agent`, and should say to use `Output: full` or a persisted plan for executable handoff.
+`Input Gaps` and `Planning Continuation` are conditional on insufficient input. `Compatibility Intake` is conditional on its compatibility-specific trigger and appears in chat only when native input UI is unavailable. `Impact Surface`, `Plan At A Glance`, `Plan`, and `Verification` are conditional on sufficient input. An unresolved compatibility intake keeps input insufficient and omits every plan/handoff body field. `Execution Handoff` appears only when compact output recommends `build` or `external-agent`, and should say to use `Output: full` or a persisted plan for executable handoff.
 
 Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Include `Motivation`; use `unknown` when motivation is unavailable and do not invent it. Compact `Impact Surface` includes only scope size, affected surfaces, risk, and reversal cost. Compact `Verification` includes minimum viable verification, feasibility, fallback verification, and residual risk. Full plan artifacts may expand impact with docs/sync and build/handoff readiness.
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Do not add a detailed chat output mode; use `Output: full` for detailed artifacts and handoffs.
 
-Plans should not use generic open-question sections. Use `Input Gaps` only for missing input categories when input is insufficient. Use `Follow-up Questions` only for non-blocking future considerations. Formal `Blocking Gaps`, severity, and plan usability verdicts belong to `review`.
+Plans should not use generic open-question sections. Use `Input Gaps` only for missing input categories when input is insufficient. Use `Compatibility Intake` only for its narrowly defined user-owned compatibility decision after preflight. Use `Follow-up Questions` only for non-blocking future considerations. Formal `Blocking Gaps`, severity, and plan usability verdicts belong to `review`.
 
 ## Task Boundary Router
 

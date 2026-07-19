@@ -7,8 +7,8 @@
 - In discuss mode, do not write files and do not output full `Persist Packet` unless requested.
 - Start non-trivial replies with `User Intent`, not a technical diagnosis.
 - Use short `Persist Candidate` for discussion results worth saving; it is candidate only and must not write files.
-- Use `vscode/askQuestions` only for `shape` `Human Decision State: checkpoint`.
-- Do not use the native question UI instead of repo preflight, `explore`, `review`, planning, or any write/execute authorization.
+- Use `vscode/askQuestions` only for either a `shape` `Human Decision State: checkpoint` or a triggered `plan` `Compatibility Intake`.
+- For `Compatibility Intake`, complete repo preflight first, ask the compatibility-only questions defined by `.workflow/tasks/plan.md`, then continue planning after the answers. Do not use the native question UI instead of repo preflight, `explore`, `review`, ordinary planning, or any write/execute authorization.
 - `persist` writes active `.session/inbox/**` and `.session/threads/**` artifacts or explicit `notes/**`; `.session/archive/**` is a sync target.
 - `sync` writes only stable-document targets: allowed project docs, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - `build` requires `Mode: execute` and an explicit executable `Plan`.

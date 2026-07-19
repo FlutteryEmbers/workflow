@@ -69,8 +69,10 @@ Request: ${input:request:describe the work}
 - If `Need For Shape Status: needs-direction` and state is `checkpoint`, use `vscode/askQuestions` when available as the Copilot-only renderer for `User Checkpoint`.
 - Use `User Checkpoint.Question` as the question, use 2-3 mutually exclusive `User Checkpoint.Options`, preserve label/explanation/risk, and put the recommended option first with `(Recommended)`.
 - If that checkpoint UI is unavailable, output structured `User Checkpoint` and wait. If state is `unresolved`, continue with provisional direction, assumptions, what would change it, and advisory next task.
-- `vscode/askQuestions` is only a checkpoint renderer for `shape`.
-- Do not use the native question UI for planning, review verdicts, task routing, preflight, write authorization, sync authorization, or build authorization.
+- `vscode/askQuestions` renders exactly two checkpoints: `shape` `User Checkpoint`, and `plan` `Compatibility Intake` after repo preflight satisfies every trigger in `.workflow/tasks/plan.md`.
+- For a triggered `Compatibility Intake`, ask consumer scope and data/config lifecycle in one UI round; add cutover style only for external consumers, persisted data, or material transition cost. Give each question 2-3 mutually exclusive options, with the recommended option first and marked `(Recommended)`. When the third question is omitted, use the preflight-established atomic cutover for mapping. `ponytail` may favor demo-only, rebuild, and atomic cutover for controlled/disposable evidence but must not auto-select breaking.
+- Continue the complete Plan after native answers. If native UI is unavailable, output `Input Sufficiency: insufficient`, `Input Gaps: compatibility policy`, and the structured intake, then wait without a plan or handoff body.
+- Do not use native questions for fact discovery, ordinary clarification, review verdicts, technical solution delegation, target selection, task routing, repo preflight, write authorization, sync authorization, or build authorization. Plan questions outside `Compatibility Intake` remain forbidden.
 - Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` for planning output. This classifies source input for intended use, not generated plan quality or authorization.
 - `plan compact` must summarize the chosen direction first, include `Motivation`, and when input is insufficient output `Planning Continuation` instead of an executable or handoff plan body. When input is sufficient, give compact `Impact Surface`, `Plan At A Glance`, plan body, and compact verification. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. `Output: full` is a minimal handoff packet for persist, explicit handoff candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
 - Default plan verification is minimum viable verification: prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites.
@@ -245,6 +247,8 @@ Planning Continuation:
 - Useful Planning Frame Now: <safe partial framing, or none; only when insufficient>
 - Cannot Produce Yet: <draft plan | handoff plan | executable plan; only when insufficient>
 - Advisory Next Task: <shape|explore|plan|none; only when insufficient>
+Compatibility Intake:
+- <only when triggered and native UI is unavailable; include evidence and 2-3 questions, omit all plan-body fields, and wait>
 Shape Summary:
 - Source: <chat | shape artifact | inbox brief | decision | project docs>
 - Motivation: <one sentence or unknown>
@@ -288,7 +292,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Input Sufficiency`, conditional `Input Gaps`, `Planning Continuation` when insufficient, `Shape Summary` with `Motivation`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, and `Compatibility / Constraint Plan` when relevant. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`.
+For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Input Sufficiency`, conditional `Input Gaps`, `Planning Continuation` when insufficient, conditional `Compatibility Intake`, `Shape Summary` with `Motivation`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, and `Compatibility / Constraint Plan` when relevant. Do not output a plan body while Compatibility Intake is unresolved. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`.
 
 For non-trivial `Task: review` output, follow `.workflow/tasks/review.md` instead of the generic compact/normal structure. Include `Review Frame`, `Review Verdict`, `Confidence`, `Readiness`, `Blocking Gaps`, `Non-blocking Gaps`, `Can Use For Intended Next Use`, `Recommended Action`, `Suggested Critique`, and `Recommended Next Task`.
 

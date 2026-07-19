@@ -23,10 +23,11 @@ Rules:
 - Load selected lenses only when explicitly named for the plan draft; review may use the same selected lens as an extra lens, but plan review itself is core review behavior.
 - Use `.workflow/tasks/plan.md` for the first phase.
 - Use `.workflow/tasks/review.md` for the second phase.
-- Do not ask questions.
+- Do not ask ordinary questions. The only exception is a triggered Plan `Compatibility Intake` after repo preflight.
 - Do not persist, build, sync, execute, or implement.
-- Freeze the plan draft before reviewing it; do not revise the plan during the review phase.
-- If the plan phase outputs `Input Sufficiency: insufficient`, still review the frozen insufficient result for the requested intended next use.
+- Complete any triggered `Compatibility Intake` before generating or freezing the Plan Draft. Ask consumer scope and data/config lifecycle in one intake round by default; add cutover style only when preflight found an external consumer, persisted data, or material transition cost. Each question has 2-3 mutually exclusive options with the recommended option first. When the third question is omitted, use the preflight-established atomic cutover for mapping. Use `vscode/askQuestions` when available; otherwise output the structured intake with `Input Sufficiency: insufficient` and `Input Gaps: compatibility policy`, then wait without a Plan Draft or Plan Review.
+- After compatibility answers are available, generate and freeze the plan draft before reviewing it; do not revise the plan during the review phase.
+- If the plan phase outputs `Input Sufficiency: insufficient` for a reason other than unresolved `Compatibility Intake`, still review the frozen insufficient result for the requested intended next use.
 - The plan draft must use default minimum viable verification unless `Lens: test` is selected or the request explicitly asks for higher assurance.
 - If intended next use is `build` or `external-agent`, review whether minimum viable verification, fallback verification, residual risk, and stop conditions are enough for that use; do not mechanically require old baseline, contract freeze, parity matrix, full regression, or e2e.
 - Review must output verdict and gaps, not a rewritten plan.
@@ -36,6 +37,12 @@ Request:
 ${input:request:describe the chosen direction and planning need}
 
 Return:
+Compatibility Intake Pending, only when triggered and native UI is unavailable:
+- Input Sufficiency: insufficient
+- Input Gaps: compatibility policy
+- Compatibility Intake: discovered evidence and 2-3 questions from `.workflow/tasks/plan.md`
+- No Plan Draft and no Plan Review until answered
+
 Plan Draft:
 - User Intent
 - Input Sufficiency

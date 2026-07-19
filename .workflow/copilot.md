@@ -127,7 +127,7 @@ Persist Candidate:
 - <artifact/thread/topic/target>
 ```
 
-For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Input Sufficiency`, conditional `Input Gaps`, `Planning Continuation` when insufficient, `Shape Summary`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, `Compatibility / Constraint Plan` when relevant, `Next`, and `Persist Candidate`. If compact plan recommends `build` or `external-agent`, include `Execution Handoff: use Output: full or persisted plan for executable handoff`. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`; review owns those.
+For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Input Sufficiency`, conditional `Input Gaps`, `Planning Continuation` when insufficient, conditional `Compatibility Intake`, `Shape Summary`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, `Compatibility / Constraint Plan` when relevant, `Next`, and `Persist Candidate`. If compact plan recommends `build` or `external-agent`, include `Execution Handoff: use Output: full or persisted plan for executable handoff`. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`; review owns those.
 
 ## Task Boundary Shortcut
 
@@ -167,7 +167,7 @@ Workflow Lite is human-in-the-loop first. In `Mode: discuss`, Copilot may be use
 - `distill` may output `Observed`, `Inferred`, `Unknown`, `Next Use`, `Persist Candidate: Artifact=distillation`, and review/sync suggestion.
 - `shape` starts with `Need For Shape`, follows with `Shape Continuation`, and may output `Provisional Recommendation`, `Best Guess`, `Candidate Options`, `What Would Change This`, and allowed lightweight adjacent output when `Boundary Advice` shows a safe fallback response.
 - `review` starts non-trivial output with `Review Frame` and includes `Review Verdict`, `Confidence`, `Readiness`, `Blocking Gaps`, `Non-blocking Gaps`, `Can Use For Intended Next Use`, `Recommended Action`, `Suggested Critique`, and `Recommended Next Task`; it may also output `Minimal Revision Sketch` and `Repair Direction`.
-- `plan` may output `Input Sufficiency`, `Input Gaps` and `Planning Continuation` when insufficient, minimum viable verification, fallback verification, residual risk, compatibility/constraint plan, and recommended next task.
+- `plan` may output `Input Sufficiency`, `Input Gaps` and `Planning Continuation` when insufficient, a triggered `Compatibility Intake`, minimum viable verification, fallback verification, residual risk, compatibility/constraint plan, and recommended next task.
 - `review` may output `Review Frame` fields, `Gap Analysis`, severity, blocking gaps, non-blocking gaps, and conditional `Change Assessment` when the user asks whether something should change or is worth changing.
 - Include `Confidence`, `Assumptions`, and `Human Decision State` when the output is uncertain or consequential.
 - In `shape`, `Need For Shape` is an advisory continuation classifier; it is not a review verdict or hard gate. Put it after current read and before `Shape Continuation`. Use `Human Decision State` after `Shape Continuation` when a user-owned choice matters. If state is `checkpoint`, use native user-input UI when available or output structured `User Checkpoint` and wait. If state is `unresolved`, continue with provisional direction, assumptions, what would change it, and advisory next task.
@@ -176,17 +176,24 @@ Do not treat discussion freedom as write permission. `persist`, `sync`, `build`,
 
 ## Copilot Native Question UI
 
-Use `vscode/askQuestions` only as the Copilot renderer for a `shape`
-`User Checkpoint`.
+Use `vscode/askQuestions` as the Copilot renderer for exactly two protocol
+checkpoints:
 
-- Use it only when `Need For Shape Status: needs-direction` and `Human Decision State: checkpoint`.
-- Ask at most one consequential choice per response.
-- Provide 2-3 mutually exclusive options.
-- Put the recommended option first and label it with `(Recommended)`.
-- Preserve each option's label, explanation, and risk.
-- Do not use it for fact discovery, ordinary clarification, review verdicts, planning, task routing, repo preflight, write authorization, sync authorization, or build authorization.
-- After a `shape` question, wait for the user choice before finalizing `Take`, `Provisional Recommendation`, `Impact Surface`, or `Persist Candidate`.
-- If that checkpoint UI is unavailable, output the structured `User Checkpoint` block and wait.
+- `shape` `User Checkpoint`, only when `Need For Shape Status: needs-direction` and `Human Decision State: checkpoint`. Ask one consequential choice with 2-3 mutually exclusive options; preserve label, explanation, and risk; put the recommended option first and mark it `(Recommended)`. Wait before finalizing `Take`, `Provisional Recommendation`, `Impact Surface`, or `Persist Candidate`.
+- `plan` `Compatibility Intake`, only after repo preflight satisfies every trigger in `.workflow/tasks/plan.md`. In one UI round, ask consumer scope and data/config lifecycle, plus cutover style only when external consumers, persisted data, or material transition cost were found. Each question has 2-3 mutually exclusive options with impact descriptions; put the recommendation first and mark it `(Recommended)`. When the third question is omitted, use the preflight-established atomic cutover for mapping. Continue with the complete Plan only after answers are available.
+
+Do not use native questions for fact discovery, ordinary clarification, review
+verdicts, technical solution delegation, target selection, task routing, repo
+preflight, or write/sync/build authorization. `Compatibility Intake` does not use
+`Human Decision State` and owns no direction, source-of-truth, or architecture
+choice. If native UI is unavailable, output the applicable structured checkpoint
+and wait. An unresolved Compatibility Intake must report `Input Sufficiency:
+insufficient` and `Input Gaps: compatibility policy`, and must not output a Plan
+body or handoff packet.
+
+For `/wf-pplan`, resolve any triggered Compatibility Intake before creating or
+freezing the Plan Draft. If it remains unanswered, do not freeze a draft or run
+Plan Review. After answers, continue in `plan -> freeze -> review` order.
 
 Discovery vs judgment rule:
 
@@ -208,7 +215,7 @@ Discovery vs judgment rule:
 - In multi-lens discuss, organize output in the user's lens order, then provide a converged recommendation and `Persist Candidate` when worth preserving.
 - In `Mode: persist`, prefer one primary lens and at most one supporting lens. If more lenses are needed, split into multiple persist steps.
 
-Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` to classify whether source input supports plan output. `sufficient-for-handoff` is not a review verdict or execution authorization. `shape` stays at concept level and uses `Need For Shape` as advisory continuation context. `plan` outputs input sufficiency, `Planning Continuation` when insufficient, plan content when sufficient, and minimum viable verification; `review` owns `Review Frame`, formal `Blocking Gaps`, severity, plan usability verdicts, `Can Use For Intended Next Use`, and change necessity judgment.
+Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` to classify whether source input supports plan output. `sufficient-for-handoff` is not a review verdict or execution authorization. `shape` stays at concept level and uses `Need For Shape` as advisory continuation context. `plan` outputs input sufficiency, `Planning Continuation` when insufficient, a structured `Compatibility Intake` when its narrow trigger passes and native UI is unavailable, plan content when sufficient, and minimum viable verification; `review` owns `Review Frame`, formal `Blocking Gaps`, severity, plan usability verdicts, `Can Use For Intended Next Use`, and change necessity judgment.
 
 For plan reviews, `Review Verdict: ready` means no blocking gaps for `Intended Next Use`. Do not block a plan for optional improvement only.
 
@@ -225,6 +232,8 @@ For plan reviews, `Review Verdict: ready` means no blocking gaps for `Intended N
 
 - Default to `Compatibility: preserve` and `Constraint Mode: respect`.
 - `shape` may suggest `consider breaking` or `consider override`, but must not activate it unless the user explicitly requested it.
+- `plan` runs compatibility preflight before asking. Trigger `Compatibility Intake` only when policy is unlocked, a real compatibility surface exists, preserve/breaking materially changes scope or verification, and repository evidence cannot determine consumer scope, data lifetime, or transition tolerance. Ask two questions by default and a third cutover question only for external consumers, persisted data, or material transition cost.
+- Map controlled + disposable + atomic to `breaking`; migrate-then-cutover to `breaking` with migration and old-read/write stop points; temporary bridge to current `preserve` with a removal trigger and later breaking work; unknown consumers, concurrent formats, or long-term retention to `preserve`. `ponytail` may influence the recommendation for controlled/disposable evidence but never selects breaking automatically.
 - `plan` must encode any explicit breaking or constraint exception into removed compatibility, migration/alias, do-not-preserve, cleanup, and stop conditions.
 - `build` may execute breaking changes or constraint exceptions only when the plan explicitly allows them.
 - Use `Constraint Mode: prototype_exception` only for temporary PoC scope; do not treat it as durable project docs content until confirmed.
