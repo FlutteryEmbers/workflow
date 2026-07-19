@@ -17,6 +17,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
 - Load lenses only when the user explicitly selects them.
+- Use `ponytail` only when explicitly selected for `shape`, `plan`, or `review`. It applies a demo-first PoC posture with controlled inputs, deliberately relaxed production validation, explicit deferred work, and upgrade triggers; it is not available to `build` and does not activate from PoC/demo wording alone.
 - Use `Input Sufficiency` rules when the user wants planning, implementation handoff, or strong-model-to-weak-model handoff.
 - Codex may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
@@ -51,6 +52,8 @@ For `shape`, adjacent allowance includes lightweight clarification, lightweight 
 Discussion adjacency is allowed; authority is not. Adjacent output may make the current task actionable or recommend a next task, but write, sync, execute, implementation, source-of-truth, and build authority still come only from `Mode`, `Task`, target rules, explicit prerequisites, and explicit executable plans.
 
 Use `boundary` for ownership, dependency direction, contract leakage, provider/package boundaries, provider-owned capability business, main-system business, and migration ownership. Use `boundary, consistency` together when that boundary judgment also depends on source-of-truth, docs/code drift, contract/implementation alignment, or artifact alignment.
+
+Use `ponytail` for an explicitly selected demo-first PoC posture. In `shape`, define the smallest credible demo path and controlled assumptions. In `plan`, encode relaxed validation, do-not-add constraints, minimum proof, deferred work, and upgrade triggers into the existing plan fields. In `review`, judge speculative fields, validation, dependencies, abstractions, and compatibility mechanisms against the declared Demo Contract. Do not apply it automatically or pass it to `build`.
 
 ## Discussion Advisory Principle
 

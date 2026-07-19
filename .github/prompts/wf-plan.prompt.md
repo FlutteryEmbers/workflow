@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite plan command for input-sufficiency-based repo-aware plans and handoffs.
-argument-hint: "Request=<planning request>; Lens=<none|architecture|boundary|test|language>; Output=<compact|full>"
+argument-hint: "Request=<planning request>; Lens=<none|architecture|boundary|test|language|ponytail>; Output=<compact|full>"
 ---
 
 # wf-plan
@@ -32,6 +32,7 @@ Rules:
 - For handoff use, include scope, allowed changes, do-not-touch, minimum viable verification, fallback verification, residual risk, and stop conditions.
 - For build use, `Recommended Next Task` may be `build`, but `Next` must say `build with explicit invocation`.
 - If compact output recommends `build` or `external-agent`, include `Execution Handoff: use Output: full or persisted plan for executable handoff`.
+- With explicit `Lens: ponytail`, encode the Demo Contract into existing scope, constraints, verification, stop conditions, and notes: demo path, controlled inputs, relaxed validation, do-not-add fields or abstractions, retained real-world safety, deferred work, upgrade triggers, and minimum proof. Do not infer breaking compatibility or a prototype exception from the lens.
 
 Request:
 ${input:request:describe the chosen direction and planning need}

@@ -132,6 +132,7 @@ Recommend the smallest path:
 - For an existing target where the user asks to find problems, critique, counterargue, identify pitfalls, or trace failure paths, recommend a review with explicit redteam critique posture.
 - Do not enable `redteam` automatically; output it only as a critique recommendation unless the user explicitly selected it.
 - Suggest `test` for verification planning.
+- Suggest `ponytail` for an explicitly selectable demo-first PoC posture when the user wants the smallest credible happy path, controlled inputs, relaxed production validation, YAGNI, or protection from over-engineering. Do not enable it automatically.
 - Suggest `debug` for defects or uncertain runtime behavior.
 - Suggest `consistency` when the user asks for a source-of-truth or maintained-alignment judgment across explicit session sources, project docs, code, tests, code-adjacent README files, workflow artifacts, prompts, templates, or archive summaries.
 - Suggest `boundary, consistency` when provider/contract/package boundary judgment also depends on source-of-truth, docs/code drift, contract/implementation alignment, or artifact alignment.

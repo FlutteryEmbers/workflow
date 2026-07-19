@@ -10,6 +10,7 @@ Default to `Lens: none`. Add a lens only when the user explicitly names it or ad
 - `boundary`: inspect ownership, dependency direction, contract leakage, provider/package boundaries, provider-local business, main-system business, and migration ownership.
 - `redteam`: review-owned critique posture for failure paths, counterexamples, hidden costs, and boundary breaks.
 - `test`: strengthen verification and acceptance evidence.
+- `ponytail`: keep a demo-first PoC to the smallest credible happy path under controlled inputs, with deliberately relaxed production validation and explicit upgrade triggers.
 - `architecture`: inspect boundaries, dependencies, interfaces, constraints, and structural tradeoffs.
 - `debug`: diagnose defects or uncertain runtime behavior.
 - `consistency`: triangulate code, project docs, session decisions, tests, README files, workflow artifacts, prompts, templates, and archive summaries for drift.

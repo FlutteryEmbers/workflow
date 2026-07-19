@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite review command for verdicts, gap analysis, audits, diff reviews, plan reviews, and docs/code drift judgment.
-argument-hint: "Request=<target to review>; Lens=<none|redteam|consistency|boundary|test|architecture|debug|language|domain|expert>"
+argument-hint: "Request=<target to review>; Lens=<none|redteam|consistency|boundary|test|architecture|debug|language|domain|expert|ponytail>"
 ---
 
 # wf-review
@@ -32,6 +32,7 @@ Rules:
 - For plan reviews, accept partial or unavailable verification only when fallback verification, residual risk, and stop conditions are explicit enough for the intended use; do not mechanically require contract freeze, old baseline, parity matrix, full regression, or e2e.
 - Do not rewrite a plan. Return gaps, `Repair Direction`, and recommended next task.
 - Treat `redteam` as an explicit critique posture: failure paths, counterarguments, hidden costs, and boundary breaks. Review still owns the verdict.
+- With explicit `Lens: ponytail`, judge whether fields, validation, dependencies, abstractions, and compatibility mechanisms have current evidence under the declared Demo Contract. Treat speculative complexity as a finding and give only the smallest repair direction; retain protection for real credentials, paid or production side effects, irreversible non-disposable data, and demo credibility.
 - You may include repair direction and minimal revision sketch, but do not create an implementation plan, write, sync, execute, or implement.
 
 Request:

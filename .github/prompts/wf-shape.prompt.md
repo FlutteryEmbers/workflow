@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite shape command for what-if, option-comparison, concept-level, and direction-setting discussion.
-argument-hint: "Request=<direction question>; Lens=<none|architecture|boundary|language|expert>"
+argument-hint: "Request=<direction question>; Lens=<none|architecture|boundary|language|expert|ponytail>"
 ---
 
 # wf-shape
@@ -37,6 +37,7 @@ Rules:
 - `Need For Shape` is not a review verdict. Do not judge whether code, docs, or plans are correct, solved, ready, or worth changing.
 - Keep output at concept level when concept structure may feed planning.
 - Include `Impact Surface` and `Recommended Next Task` when this shape may feed planning.
+- With explicit `Lens: ponytail`, define the smallest credible demo path, controlled inputs, required-now behavior, relaxed production validation, rejected larger scope, deferred work, and upgrade triggers. Keep the output concept-level and do not infer breaking compatibility or a prototype exception from the lens.
 - Do not use `vscode/askQuestions` for unsupported cases.
 - Unsupported cases include facts that can be found by preflight or explore, ordinary clarification, review verdicts, planning input gaps, write authorization, sync authorization, or build authorization.
 

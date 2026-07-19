@@ -1,6 +1,6 @@
 ---
 description: "Workflow Lite protected plan command: generate a plan draft, then review the frozen draft for intended next use."
-argument-hint: "Request=<planning request>; Intended Next Use=<discussion|persist|build|external-agent|sync>; Lens=<none|architecture|boundary|test|language>"
+argument-hint: "Request=<planning request>; Intended Next Use=<discussion|persist|build|external-agent|sync>; Lens=<none|architecture|boundary|test|language|ponytail>"
 ---
 
 # wf-pplan
@@ -30,6 +30,7 @@ Rules:
 - The plan draft must use default minimum viable verification unless `Lens: test` is selected or the request explicitly asks for higher assurance.
 - If intended next use is `build` or `external-agent`, review whether minimum viable verification, fallback verification, residual risk, and stop conditions are enough for that use; do not mechanically require old baseline, contract freeze, parity matrix, full regression, or e2e.
 - Review must output verdict and gaps, not a rewritten plan.
+- With explicit `Lens: ponytail`, apply the same Demo Contract to the frozen plan draft and its review. The plan encodes controlled inputs, relaxed validation, do-not-add constraints, deferred work, upgrade triggers, and minimum proof; the review judges speculative complexity without rewriting the draft.
 
 Request:
 ${input:request:describe the chosen direction and planning need}

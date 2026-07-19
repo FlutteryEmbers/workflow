@@ -13,6 +13,7 @@ user_selectable_lenses:
   - boundary
   - test
   - language
+  - ponytail
 done_check:
   - input_sufficiency_classified
   - sequence_is_coherent_when_plan_body_exists
@@ -118,6 +119,20 @@ Use `Plan` as work packages or sequencing by default. For `sufficient-for-handof
 Build handoff wording must use `explicit plan handoff`, not readiness labels. `build` requires explicit user invocation plus plan validation; review is recommended for material risk but is not a universal hard gate. `build` must not infer authorization from `Input Sufficiency`, adjacent discussion output, or any plan label. In `Next` or `Next Use`, write `build with explicit invocation`; keep `Recommended Next Task` as the task id `build`.
 
 `Depth: detailed` is persisted artifact metadata, not a chat output mode. Keep chat output modes to `compact`, `normal`, and `full`.
+
+When `Lens: ponytail` is explicitly selected, encode the Demo Contract into the
+existing plan rather than adding a new plan schema. Use scope, constraints,
+verification, stop conditions, and notes to name the demo path, controlled
+inputs, validation that may be relaxed, fields or abstractions that must not be
+added, real-world safety that remains required, deferred work, and observable
+triggers for later productionization. The minimum viable verification should
+prove the declared demo path, not manufacture production assurance. A handoff
+must be explicit enough that build or an external agent does not need to decide
+which validation, compatibility, or abstraction work belongs in the PoC.
+
+`ponytail` does not change `Input Sufficiency`, build authorization, or the
+compatibility / constraint policy. Do not infer `Compatibility: breaking` or
+`Constraint Mode: prototype_exception` from the selected lens.
 
 ## Default Verification Policy
 

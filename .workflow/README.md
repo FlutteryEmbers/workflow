@@ -291,6 +291,7 @@ Core selectable lenses:
 | `debug` | `explore` or `build` needs defect or uncertain runtime behavior diagnosis. |
 | `expert` | `shape` or `review` needs high-density expert reasoning, hidden assumptions, opposing views, or anti-generic output. |
 | `language` | Full English, translation, terminology consistency, or project glossary updates are needed. |
+| `ponytail` | `shape`, `plan`, or `review` needs a demo-first PoC posture: smallest credible happy path, controlled inputs, relaxed production validation, and explicit upgrade triggers. |
 | `test` | `plan` or `build` needs stronger verification, contract/baseline/parity coverage, or acceptance evidence beyond default minimum viable verification. |
 
 Review-owned lenses remain available to `review`:
@@ -314,15 +315,15 @@ Selectable lenses by task:
 
 | Task | Selectable Lenses |
 | :--- | :--- |
-| `shape` | `architecture`, `boundary`, `language`, `expert` |
-| `plan` | `architecture`, `boundary`, `test`, `language` |
+| `shape` | `architecture`, `boundary`, `language`, `expert`, `ponytail` |
+| `plan` | `architecture`, `boundary`, `test`, `language`, `ponytail` |
 | `explore` | `architecture`, `boundary`, `debug`, `language` |
 | `distill` | `language` |
 | `sync` | `consistency`, `architecture`, `language` |
 | `clarify` | `language` |
 | `persist` | `language` |
 | `build` | `test`, `debug` |
-| `review` | `redteam`, `consistency`, `boundary`, `debug`, `language`, `domain`, `test`, `architecture`, `expert` |
+| `review` | `redteam`, `consistency`, `boundary`, `debug`, `language`, `domain`, `test`, `architecture`, `expert`, `ponytail` |
 | `route` | none; recommend lenses for the next task only |
 
 Use `boundary, consistency` together when ownership/dependency-direction questions also require source-of-truth, docs/code drift, contract/implementation alignment, or artifact alignment judgment.

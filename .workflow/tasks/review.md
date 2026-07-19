@@ -18,6 +18,7 @@ user_selectable_lenses:
   - test
   - architecture
   - expert
+  - ponytail
 done_check:
   - findings_are_actionable
   - verdict_target_is_clear
@@ -227,7 +228,7 @@ Treat these as typical blocking gaps for plan verdicts: missing target or scope,
 
 Only use `.workflow/lenses/redteam.md` when the user explicitly selects `redteam` or asks for critique, counterarguments, failure paths, or a hostile read. Otherwise, you may output `Suggested Critique: explicit redteam critique` when the target is costly, ambiguous, about to enter execution, or depends on risky assumptions.
 
-Lens use must not change task responsibility. `redteam`, `consistency`, `boundary`, `debug`, `language`, `domain`, `test`, `architecture`, and `expert` may deepen the verdict; `boundary` may judge ownership, dependency direction, contract leakage, provider-local business, main-system business, and migration path back to package. `expert` may strengthen findings, evidence pressure, and revision specificity, but must not produce a full replacement design, implementation plan, or plan rewrite. `review` must not become evidence-only `explore`, full synthesis-oriented `shape`, or executable `plan`.
+Lens use must not change task responsibility. `redteam`, `consistency`, `boundary`, `debug`, `language`, `domain`, `test`, `architecture`, `expert`, and `ponytail` may deepen the verdict; `boundary` may judge ownership, dependency direction, contract leakage, provider-local business, main-system business, and migration path back to package. `expert` may strengthen findings, evidence pressure, and revision specificity. `ponytail` may judge whether fields, validation, dependencies, abstractions, and compatibility mechanisms have current evidence under a declared Demo Contract, but it must return only findings and the smallest repair direction. It must not produce a full replacement design, implementation plan, or plan rewrite. `review` must not become evidence-only `explore`, full synthesis-oriented `shape`, or executable `plan`.
 
 ## Discussion Freedom
 
