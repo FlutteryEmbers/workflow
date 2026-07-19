@@ -7,7 +7,6 @@ inputs:
 outputs:
   - chat_plan
   - persist_hint
-  - full_persist_packet
 user_selectable_lenses:
   - architecture
   - boundary
@@ -33,7 +32,7 @@ Role: {{CONTENT: /.workflow/roles/planner.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
-- If the user asks to persist, provides a target, requests a handoff, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
+- If the user asks to persist or provides a target, return a `Persist Candidate` and route the write to `persist`; do not construct an intermediate packet. A handoff-grade current Plan is controlled by `Input Sufficiency` and `Intended Next Use`.
 - `Mode: execute` is not valid for this task; use `build` with explicit user invocation and a plan validated by `review` or `build`.
 - For native Plan/Implement, use the external-agent path.
 
@@ -61,7 +60,7 @@ Role: {{CONTENT: /.workflow/roles/planner.md}}
 
 Adjacent allowance must stay planning-owned. If the primary need is direction choice, formal gap severity, verdict, stable projection, or implementation, route to `shape`, `review`, `sync`, or `build`/external-agent.
 
-## Expected Output
+## Result Requirements
 
 - `Input Sufficiency`: `insufficient | sufficient-for-draft | sufficient-for-handoff`.
 - `Input Gaps` only when sufficiency is `insufficient`.
@@ -69,8 +68,8 @@ Adjacent allowance must stay planning-owned. If the primary need is direction ch
 - `Compatibility Intake` only when its trigger conditions pass and user-owned compatibility input remains unresolved after preflight.
 - A draft or handoff plan body only when sufficiency is `sufficient-for-draft` or `sufficient-for-handoff`.
 - `Compatibility / Constraint Plan` when compatibility or constraint policy affects execution.
-- `Output: compact` default: user intent, input sufficiency, optional input gaps, shape summary, impact surface, plan at a glance, plan body when allowed, compact verification, next step, and optional `Persist Candidate`.
-- `Output: full` / `Full Persist Packet` only when the plan should be persisted now, used as a handoff, needs explicit handoff detail, or `Output: full` is requested.
+- One standard chat response with input sufficiency, optional input gaps, shape summary, impact surface, plan at a glance, plan body when allowed, verification, next step, and optional `Persist Candidate`.
+- A `sufficient-for-handoff` Plan includes the allowed changes, do-not-touch areas, verification, fallback, residual risk, and stop conditions needed for explicit handoff without another response mode.
 
 ## Task Boundary Check
 
@@ -109,9 +108,9 @@ Write the smallest useful plan for the user's current intent. Do not compare or 
 
 Use `Input Gaps` only when input is insufficient. List missing input categories, not questions. Valid gap categories include direction, motivation, scope, target, compatibility policy, constraint policy, allowed changes, do-not-touch areas, source of truth, repo evidence, verification, stop conditions, and intended next use. Do not include generic cautions, risk notes, or review concerns as input gaps. Questions belong only to a triggered `Compatibility Intake`; do not turn `Input Gaps` into a generic question list.
 
-Every plan, including compact chat output, must summarize the shaped or chosen direction before planning execution. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Include `Motivation` as one sentence explaining why the direction matters; use `unknown` when the motivation is not available, and do not invent it. Do not force a shape artifact just to plan.
+Every plan must summarize the shaped or chosen direction before planning execution. Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Include `Motivation` as one sentence explaining why the direction matters; use `unknown` when the motivation is not available, and do not invent it. Do not force a shape artifact just to plan.
 
-Every plan, including compact chat output, must include a short `Impact Surface` when a plan body is output. Compact impact surface is a planning reader aid, not a full audit; include only `Scope Size`, `Affected Surfaces`, `Risk`, and `Reversal Cost`.
+Every plan must include a short `Impact Surface` when a plan body is output. It is a planning reader aid, not a full audit; include `Scope Size`, `Affected Surfaces`, `Risk`, and `Reversal Cost`, expanding only when the intended next use requires it.
 
 Persisted plan artifacts include `Impact Surface -> Plan At A Glance` for scanability. `Plan At A Glance` is a surface-level summary of change, target, reason, and risk; it is not a step list, verification plan, full diff, or replacement for the plan body.
 
@@ -119,7 +118,7 @@ Use `Plan` as work packages or sequencing by default. For `sufficient-for-handof
 
 Build handoff wording must use `explicit plan handoff`, not readiness labels. `build` requires explicit user invocation plus plan validation; review is recommended for material risk but is not a universal hard gate. `build` must not infer authorization from `Input Sufficiency`, adjacent discussion output, or any plan label. In `Next` or `Next Use`, write `build with explicit invocation`; keep `Recommended Next Task` as the task id `build`.
 
-`Depth: detailed` is persisted artifact metadata, not a chat output mode. Keep chat output modes to `compact`, `normal`, and `full`.
+`Depth: detailed` is persisted artifact metadata, not a chat response mode.
 
 When `Lens: ponytail` is explicitly selected, encode the Demo Contract into the
 existing plan rather than adding a new plan schema. Use scope, constraints,
@@ -169,7 +168,7 @@ In `Mode: discuss`, `plan` may output insufficient, draft, or handoff plans.
 - Default verification is minimum viable verification. Use fallback and residual risk when stronger verification is not feasible.
 - Do not ask questions from `plan` except a triggered `Compatibility Intake` after repo preflight. The exception is compatibility-only and must not expand into general planning questions.
 - Do not output review verdicts, formal blocking gaps, severity, or review-style checklists from `plan`.
-- Use `Follow-up Questions` only in normal/full outputs for non-blocking future considerations, and never as a blocking form.
+- Use `Follow-up Questions` only for non-blocking future considerations, and never as a blocking form.
 
 ## Compatibility Intake
 
@@ -235,30 +234,36 @@ When native user-input UI is available, ask first and continue planning after
 the answers in the same interaction chain. When UI is unavailable, output:
 
 ```text
-Input Sufficiency: insufficient
-Input Gaps:
-- compatibility policy
-Planning Continuation:
-- Known Direction: <chosen direction>
-- Cannot Produce Yet: <draft plan | handoff plan | executable plan>
-- Advisory Next Task: plan
-Compatibility Intake:
-- Evidence Found: <surfaces, repo consumers, data lifetime, costs>
-- Questions:
-  - ID: <consumer-scope | data-config-lifetime | transition-window>
-    Prompt: <one compatibility-only question>
-    Recommended Option: <option id>
-    Options:
-      - ID: <stable option id>
-        Label: <short label; recommended option includes "(Recommended)">
-        Impact: <scope, migration, and verification effect>
-- Continue After Answers: rerun plan with the selected compatibility inputs
-Next: user-answer
+User Intent
+- Request: <planning request>
+
+Task State
+- Input Sufficiency: insufficient
+- Input Gaps:
+  - compatibility policy
+- Planning Continuation:
+  - Known Direction: <chosen direction>
+  - Cannot Produce Yet: <draft plan | handoff plan | executable plan>
+  - Advisory Next Task: plan
+- Compatibility Intake:
+  - Evidence Found: <surfaces, repo consumers, data lifetime, costs>
+  - Questions:
+    - ID: <consumer-scope | data-config-lifetime | transition-window>
+      Prompt: <one compatibility-only question>
+      Recommended Option: <option id>
+      Options:
+        - ID: <stable option id>
+          Label: <short label; recommended option includes "(Recommended)">
+          Impact: <scope, migration, and verification effect>
+  - Continue After Answers: rerun plan with the selected compatibility inputs
+
+Next
+- Next: user-answer
 ```
 
 While waiting, do not output `Impact Surface`, `Plan At A Glance`, `Plan`,
-`Verification`, `Execution Handoff`, `Persist Candidate`, or `Full Persist
-Packet`. The unresolved intake is not persisted artifact content. After answers
+`Verification`, `Execution Handoff`, or `Persist Candidate`. The unresolved
+intake is not persisted artifact content. After answers
 are available, omit the intake and write the resulting decision into the normal
 `Compatibility / Constraint Plan`.
 
@@ -291,129 +296,50 @@ Compatibility / Constraint Plan
 - Stop Conditions: <when breaking scope or exceptions exceed the explicit plan>
 ```
 
-## Compact Output By Default
+## Response Contract
 
-In `Mode: discuss`, default to:
-
-```text
-User Intent: <one line about what the user wants planned>
-Input Sufficiency: <insufficient|sufficient-for-draft|sufficient-for-handoff>
-Input Gaps:
-- <only when insufficient; missing input categories only>
-Planning Continuation:
-- Known Direction: <known chosen direction, or unknown; only when insufficient>
-- Useful Planning Frame Now: <safe partial framing, or none; only when insufficient>
-- Cannot Produce Yet: <draft plan | handoff plan | executable plan; only when insufficient>
-- Advisory Next Task: <shape|explore|plan|none; only when insufficient>
-Compatibility Intake: <only when triggered and native UI is unavailable; omit all plan-body fields and wait for answers>
-Shape Summary:
-- Source: <chat | shape artifact | inbox brief | decision | project docs>
-- Motivation: <one sentence or unknown>
-- Selected Direction: <one line>
-- Key Decisions: <1-3 bullets or none>
-- Assumptions: <0-2 bullets or none>
-Impact Surface:
-- Scope Size: <small | medium | large; omit when insufficient>
-- Affected Surfaces: <workflow core | task docs | templates | adapters | project docs | source code | tests | other; omit when insufficient>
-- Risk: <low | medium | high; omit when insufficient>
-- Reversal Cost: <low | medium | high; omit when insufficient>
-Plan At A Glance:
-- <1-3 summary changes; target, reason, and risk; omit when insufficient>
-Plan:
-- <3-6 work packages, phases, or sequencing steps; omit when insufficient>
-Verification:
-- Minimum Viable Verification: <targeted fixture/unit/static/smoke/manual check; omit when insufficient>
-- Verification Feasibility: <available|partial|unavailable|unknown; omit when insufficient>
-- Fallback Verification: <fallback or none; omit when insufficient>
-- Residual Risk: <remaining risk or none; omit when insufficient>
-Execution Handoff: <use Output: full or persisted plan for executable handoff; include only when Recommended Next Task is build or external-agent>
-Recommended Next Task: <shape|explore|review|plan|persist|sync|build|external-agent|none>
-Next: <shape | explore | user-answer | plan | review plan | build with explicit invocation | persist plan | sync | none>
-Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
-```
-
-Use `Persist Candidate: none` when the plan is not worth preserving.
-
-## Normal Refine Output
-
-Use `Output: normal` when the user asks to organize, refine, or prepare the plan for persist without writing files:
+Use one standard response. Keep the shared groups in order, preserve the
+task-specific field names, and omit conditional fields when their condition does
+not apply:
 
 ```text
-User Intent: <one line about what the user wants planned>
-Current Read: <optional one line about relevant plan/code/docs facts>
-Input Sufficiency:
-- <insufficient|sufficient-for-draft|sufficient-for-handoff>
-Input Gaps:
-- <only when insufficient; missing input categories only>
-Planning Continuation:
-- Known Direction: <known chosen direction, or unknown; only when insufficient>
-- Useful Planning Frame Now: <safe partial framing, or none; only when insufficient>
-- Cannot Produce Yet: <draft plan | handoff plan | executable plan; only when insufficient>
-- Advisory Next Task: <shape|explore|plan|none; only when insufficient>
-Compatibility Intake: <only when triggered and native UI is unavailable; omit all plan-body fields and wait for answers>
-Shape Summary:
-- Source: <chat | shape artifact | inbox brief | decision | project docs>
-- Motivation: <one sentence or unknown>
-- Selected Direction: <chosen direction>
-- Key Decisions: <confirmed decisions that affect the plan>
-- Assumptions: <recommended defaults and risk if wrong>
-Impact Surface:
-- Scope Size: <small | medium | large; omit when insufficient>
-- Affected Surfaces: <surfaces; omit when insufficient>
-- Risk: <low | medium | high; omit when insufficient>
-- Reversal Cost: <low | medium | high; omit when insufficient>
-Plan At A Glance:
-- <3-7 summary changes; target, reason, and risk; omit when insufficient>
-Plan:
-- <target outcome, work packages, sequence, constraints, minimum viable verification, fallback verification, and stop conditions; omit when insufficient>
-Verification:
-- Minimum Viable Verification: <targeted existing checks, static/smoke/manual checks, or none>
-- Verification Feasibility: <available|partial|unavailable|unknown>
-- Fallback Verification: <fallback checks when stronger verification is unavailable, or none>
-- Residual Risk: <remaining risk after minimum/fallback verification, or none>
-- Higher Assurance: <only when Lens: test or explicitly requested; otherwise none>
-Source Basis:
-- <shape summary, evidence/repo basis, assumptions, and open basis>
-Compatibility / Constraint Plan:
-- <when relevant>
-Follow-up Questions:
-- <none | non-blocking future consideration>
-Recommended Next Task:
-- <shape|explore|review|plan|persist|sync|build|external-agent|none>
-Next:
-- <shape | explore | user-answer | plan | review plan | build with explicit invocation | persist plan | sync | none>
-Persist Candidate:
-- Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
-```
-
-## Full Persist Packet
-
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a handoff. Do not output a packet while `Compatibility Intake` is unresolved. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load `.workflow/templates/plan.md` and shape the final artifact. A packet becomes build input only when explicitly supplied by the user as the `Plan` for `build` or persisted as a plan and then selected for build:
-
-```text
-Persist Packet:
-Artifact: plan
-Thread: <thread>
-Topic: <topic>
-Suggested Target: .session/threads/<thread>/plan_<topic>.md
-Source Summary: <source shape/decision, user request, repo context, or project docs basis>
-Key Fields:
-- Target Outcome: <what should be true after execution>
+User Intent
+- <one line about what the user wants planned>
+Task State
+- Current Read: <optional relevant plan, code, or docs facts>
 - Input Sufficiency: <insufficient|sufficient-for-draft|sufficient-for-handoff>
-- Input Gaps: <only when insufficient; missing input categories>
-- Planning Continuation: <known direction, safe partial framing, what cannot be produced yet, and advisory next task; only when insufficient>
-- Source Basis: <shape summary, evidence/repo basis, assumptions, and unknowns>
-- Impact Surface: <scope size, affected surfaces, risk, reversal cost, docs/sync impact, and plan at a glance>
-- Plan: <work packages, phases, or sequencing>
-- Scope: <allowed changes, do-not-touch areas, and explicit out-of-scope work>
-- Verification: <minimum viable verification, feasibility, fallback verification, residual risk, success criteria, checks, and acceptance evidence>
-- Stop Conditions: <when to stop instead of expanding scope>
-- Compatibility / Constraint Policy: <preserve/breaking and respect/override/exception summary>
-- Risk / Recovery: <risks, rollback/recovery, and handoff notes>
-Next Use: <persist | review | build with explicit invocation | external-agent | sync | none>
+- Input Gaps: <only when insufficient; missing input categories only>
+- Planning Continuation: <Known Direction, Useful Planning Frame Now, Cannot Produce Yet, Advisory Next Task; only when insufficient>
+- Compatibility Intake: <only when triggered and native UI is unavailable>
+Primary Result
+- Shape Summary: <Source, Motivation, Selected Direction, Key Decisions, Assumptions>
+- Plan At A Glance: <summary changes with target, reason, and risk; omit when insufficient>
+- Plan: <target outcome, work packages, sequence, and constraints; omit when insufficient>
+Supporting Information
+- Source Basis: <shape, evidence/repo basis, assumptions, and open basis>
+- Impact Surface: <Scope Size, Affected Surfaces, Risk, Reversal Cost; omit when insufficient>
+- Scope: <allowed changes, do-not-touch areas, and explicit exclusions; required for sufficient-for-handoff>
+- Verification: <Minimum Viable Verification, Feasibility, Fallback, Residual Risk, and conditional Higher Assurance>
+- Compatibility / Constraint Plan: <when relevant>
+- Stop Conditions: <required for sufficient-for-handoff>
+- Risk / Recovery: <when relevant to intended next use>
+- Follow-up Questions: <optional non-blocking future considerations>
+Next
+- Execution Handoff: <current sufficient-for-handoff Plan may be used as an explicit handoff; persist it for durable handoff>
+- Recommended Next Task: <shape|explore|review|plan|persist|sync|build|external-agent|none>
+- Next: <shape|explore|user-answer|plan|review plan|build with explicit invocation|persist plan|sync|none>
+Persistence
+- Persist Candidate: Artifact=plan; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/plan_<topic>.md
 ```
 
-If the plan is not worth preserving, output `Persist Candidate: none`.
+When input is insufficient, omit the plan body and all handoff-only support.
+When Compatibility Intake is unresolved, output the intake state and `Next:
+user-answer`; omit `Impact Surface`, `Plan At A Glance`, `Plan`,
+`Verification`, `Execution Handoff`, and `Persistence`. Omit
+`Persistence` whenever the plan is not worth preserving.
+
+A request for more detail expands these same fields. It does not select another
+response mode or load `.workflow/templates/plan.md`.
 
 ## User Input
 

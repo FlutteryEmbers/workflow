@@ -48,7 +48,7 @@ This lens improves analysis density. It is not a workflow stage, task replacemen
 
 - Remove boilerplate praise, generic caution, and broad claims that do not change the decision.
 - Prefer compact causal chains over explanatory padding.
-- Keep task-required fields and user-selected output mode intact.
+- Keep task-required fields, shared response groups, and user-requested detail intact.
 
 ## Boundaries
 

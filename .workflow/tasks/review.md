@@ -7,7 +7,6 @@ inputs:
 outputs:
   - chat_review
   - persist_hint
-  - full_persist_packet
 user_selectable_lenses:
   - redteam
   - consistency
@@ -37,7 +36,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize lens views in user-provided order, then give actionable findings.
 - Do not load templates and do not write files.
-- If the user asks to persist, provides a target, requests an audit artifact, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
+- If the user asks to persist, provides a target, or requests an audit artifact, return a `Persist Candidate` and route the write to `persist`; do not construct an intermediate packet.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -66,7 +65,7 @@ Role: {{CONTENT: /.workflow/roles/reviewer.md}}
 
 Review output must remain verdict-shaped. It may perform a bounded evidence check over named or directly relevant sources to support the verdict, but it does not output a full discovery inventory.
 
-## Output Shape
+## Result Shape
 
 `Output Shape: Review Verdict`
 
@@ -82,14 +81,13 @@ Review output is shaped around judgment:
 - `Recommended Action`
 - `Recommended Next Task`
 
-## Expected Output
+## Result Requirements
 
 - Start with user intent, current read when useful, and `Review Frame`; then give findings, `Review Verdict`, `Confidence`, `Readiness`, blocking gaps, non-blocking gaps, and recommended action.
 - `gap-analysis` output includes baseline, observed state, gap analysis, severity, why it matters, and recommended action.
 - Change-seeking review output includes `Change Assessment`; this is conditional and must not appear as a required dashboard field.
 - Plan reviews use the built-in plan rubric; this is core review behavior, not a lens.
-- `Output: compact` default: short verdict, key findings, and optional `Persist Candidate`.
-- `Full Persist Packet` only when the review should be persisted now, used as an audit handoff, or `Output: full` is requested.
+- One standard chat response with verdict, material findings, and optional `Persist Candidate`.
 
 ## Task Boundary Check
 
@@ -284,119 +282,45 @@ Check for scope drift, unrelated edits, missing edits, missing verification, cha
 
 Treat drive-by refactors and unplanned scope expansion as blocking unless the plan explicitly allowed them.
 
-## Compact Output By Default
+## Response Contract
 
-In `Mode: discuss`, default to:
-
-```text
-User Intent: <one line about what the user wants reviewed>
-Current Read: <optional one line about the target or evidence being reviewed>
-Boundary Advice:
-- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what review can still safely judge, or none>
-- Advisory Next Task: <task or sequence>
-Review Frame:
-- Review Question: <plain-language question this review answers>
-- Review Target Kind: plan | diff | code | docs | decision | claim | artifact
-- Intended Next Use: discussion | persist | build | external-agent | sync
-- Review Type: verdict-review | gap-analysis | diff-review
-- Review Route Reason: <why this is review rather than shape, plan, or explore>
-Change Assessment: <only for change-seeking review; omit otherwise>
-- Answer: yes | no | conditional | unknown
-- Why: <one sentence>
-- Preconditions: <only when Answer is yes or conditional>
-- Suggested Change: <only when Answer is yes or conditional>
-Review Verdict: <ready|needs changes|needs more evidence|blocked|docs blocked>
-Confidence: <high|medium|low>
-Readiness: <0-10>
-Take:
-- <3-6 findings or verdict bullets>
-Blocking Gaps:
-- <must-fix before intended next use, or none>
-Non-blocking Gaps:
-- <trackable gaps, or none>
-Repair Direction: <smallest repair direction or none>
-Can Use For Intended Next Use: yes | no | not-applicable
-Recommended Action: <none|persist|sync project-docs|sync session-archive|shape|plan|build|external-agent>
-Suggested Critique: <explicit redteam critique|none>
-Recommended Next Task: <shape|plan|build|external-agent|sync|persist|explore|none>
-Persist Candidate: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
-```
-
-Use `Persist Candidate: none` when the review is not worth preserving.
-
-## Normal Refine Output
-
-Use `Output: normal` when the user asks to organize, refine, or prepare the review for persist without writing files:
+Use one standard response. Keep the shared groups in order, preserve the
+task-specific field names, and omit optional groups that have no content:
 
 ```text
-User Intent: <one line about what the user wants reviewed>
-Current Read: <optional one line about the target or evidence being reviewed>
-Boundary Advice:
-- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what review can still safely judge, or none>
-- Advisory Next Task: <task or sequence>
-Review Frame:
-- Review Question: <plain-language question this review answers>
-- Review Target Kind: plan | diff | code | docs | decision | claim | artifact
-- Intended Next Use: discussion | persist | build | external-agent | sync
-- Review Type: verdict-review | gap-analysis | diff-review
-- Review Route Reason: <why this is review rather than shape, plan, or explore>
-Change Assessment: <only for change-seeking review; omit otherwise>
-- Answer: <yes | no | conditional | unknown; only for change-seeking review>
-- Why: <one sentence>
-- Preconditions: <only when yes or conditional>
-- Suggested Change: <smallest worthwhile change, not full design or plan>
-Review Verdict: <ready|needs changes|needs more evidence|blocked|docs blocked>
-Confidence: <high|medium|low>
-Readiness: <0-10>
-Findings:
-- <review findings with evidence and severity when relevant>
-Blocking Gaps:
-- <must-fix before intended next use, or none>
-Non-blocking Gaps:
-- <trackable gaps, or none>
-Repair Direction:
-- <minimal direction of change, not full redesign or plan rewrite>
-Discussion Notes To Preserve:
-- <review question clarification, evidence priority, accepted risk, verdict change reason, or user concern>
-Open Questions:
-- <ordinary review uncertainty>
-Can Use For Intended Next Use: <yes|no|not-applicable>
-Recommended Action: <none|persist|sync project-docs|sync session-archive|shape|plan|build|external-agent>
-Suggested Critique: <explicit redteam critique|none>
-Recommended Next Task:
-- <shape|plan|build|external-agent|sync|persist|explore|none>
-Persist Candidate:
-- Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
+User Intent
+- <one line about what the user wants reviewed>
+Task State
+- Current Read: <optional target or evidence summary>
+- Boundary Advice: <Boundary, Why, Useful Response Now, Advisory Next Task; omit when it adds no value>
+- Review Frame: <Review Question, Review Target Kind, Intended Next Use, Review Type, Review Route Reason>
+Primary Result
+- Change Assessment: <only for change-seeking review; Answer, Why, Preconditions, Suggested Change>
+- Review Verdict: <ready|needs changes|needs more evidence|blocked|docs blocked>
+Supporting Information
+- Take / Findings: <material findings with evidence and severity when relevant>
+- Confidence: <high|medium|low>
+- Readiness: <0-10>
+- Baseline / Observed State: <for gap analysis when relevant>
+- Gap Analysis: <gap, evidence, severity, why it matters, and smallest repair direction>
+- Blocking Gaps: <must-fix before intended next use, or none>
+- Non-blocking Gaps: <trackable gaps, or none>
+- Repair Direction: <smallest repair direction, not a redesign or rewritten plan>
+- Minimal Revision Sketch: <only when useful and within review authority>
+- Discussion Notes To Preserve: <optional user concern, evidence priority, accepted risk, or verdict-change reason>
+- Open Questions: <optional review uncertainty>
+- Can Use For Intended Next Use: <yes|no|not-applicable>
+- Recommended Action: <none|persist|sync project-docs|sync session-archive|shape|plan|build|external-agent>
+- Suggested Critique: <explicit redteam critique|none>
+Next
+- Recommended Next Task: <shape|plan|build|external-agent|sync|persist|explore|none>
+Persistence
+- Persist Candidate: Artifact=review; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/review_<topic>.md
 ```
 
-## Full Persist Packet
-
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs an audit/diff-review artifact. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load `.workflow/templates/review.md` and shape the final artifact.
-
-```text
-Persist Packet:
-Artifact: review
-Thread: <thread>
-Topic: <topic>
-Suggested Target: .session/threads/<thread>/review_<topic>.md
-Source Summary: <plan, diff, code, docs, session artifact, or claim reviewed>
-Key Fields:
-- Review Frame: <review question, target kind, intended next use, review type, and route reason>
-- Change Assessment: <only for change-seeking review; answer, why, preconditions, and suggested change>
-- Baseline: <expected state, documented promise, user goal, workflow scenario, or none>
-- Review Verdict: <ready | needs changes | needs more evidence | blocked | docs blocked>
-- Findings: <key findings with severity and evidence>
-- Gap Summary: <blocking and non-blocking gaps, or none>
-- Can Use For Intended Next Use: yes | no | not-applicable
-- Recommended Action: <repair direction, next task, or none>
-Next Use: <persist | shape | plan | build with explicit invocation | external-agent | sync | none>
-```
-
-If the review is not worth preserving, output `Persist Candidate: none`.
+Omit `Persistence` when the review is not worth preserving. A request for more
+detail expands these same fields and all material findings; it does not select
+another response mode or load an artifact template.
 
 ## User Input
 

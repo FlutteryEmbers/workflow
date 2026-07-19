@@ -8,7 +8,6 @@ argument-hint: "Sync Domain=<project-docs|session-archive>; Sync Object=<archite
 Use Workflow Lite sync semantics.
 
 Mode: persist
-Output: full
 Task: sync
 Lens: ${input:lens:none}
 Scope: ${input:scope:required when target is missing}
@@ -19,6 +18,7 @@ Target: ${input:target:optional docs target, src/**/README.md, or .session/archi
 Source Of Truth: ${input:source_of_truth:code|diff|session thread artifact|explicit user decision|existing docs}
 
 Rules:
+- Use one standard response grouped as `User Intent`, `Task State`, `Primary Result`, `Supporting Information`, `Next`, and optional `Persistence`; omit optional empty groups.
 - Write only stable-document targets for the selected domain: `docs/**`, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - Use `Sync Object` to select the stable object: `architecture`, `feature`, `reference`, `code-readme`, `archive-summary`, or `all`.
 - `Target` wins; `Target Directory` may guide creation/update; otherwise use an existing docs convention or output an Alignment Set.
@@ -29,19 +29,14 @@ Rules:
 - If `Sync Object`, source of truth, alignment criteria, and safe target selection are unclear, output `docs blocked` or `archive blocked`.
 - If source of truth is unclear, route to `wf-review` with `Lens: consistency`.
 - Use `.workflow/tasks/sync.md` and `.workflow/templates/_sync_metadata.md` as the stable metadata contract.
+- Load the matching project-doc, code-readme, or archive-summary template before writing; return only a short receipt or blocking response in chat.
 
 Request:
 ${input:request:describe the stable-document sync to perform}
 
 Return:
-- Sync Domain
-- Sync Object
-- Scope
-- Sync Object Gate
-- Archive Criteria, when relevant
-- Alignment Set
-- Target Directory
-- Target
-- Changes made or `docs blocked` / `archive blocked`
-- Blocked Items
-- Follow-up Review Needed
+- `User Intent`: stable-document projection request.
+- `Task State`: result, Sync Domain / Sync Object, target or Alignment Set.
+- `Primary Result`: short Projection Advice or Write Receipt.
+- `Supporting Information`: source of truth, scope, Sync Object Gate, archive/alignment criteria, Blocked Items, and Follow-up Review Needed when relevant.
+- `Next`: confirmation, review, plan, persist-mode sync, or none.

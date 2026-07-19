@@ -7,7 +7,6 @@ inputs:
 outputs:
   - chat_clarification
   - persist_hint
-  - full_persist_packet
 user_selectable_lenses:
   - language
 done_check:
@@ -27,7 +26,7 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 - Start with `User Intent` unless the request is trivial; it must restate what the user wants, not summarize technical facts.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Do not load templates and do not write files.
-- If the user asks to persist, provides a target, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
+- If the user asks to persist or provides a target, return a `Persist Candidate` and route the write to `persist`; do not construct an intermediate packet.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -56,12 +55,12 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 
 Adjacent allowance must stay secondary to the clarification. If the user primarily wants the hinted next task, include `Boundary Advice`; provide a useful clarification when one is still safe, and return boundary-only output only for write, sync, execution, or no-useful-clarification cases.
 
-## Expected Output
+## Result Requirements
 
 - Concise semantic unpack, clarified request, assumptions, scope boundaries, and open questions.
 - `Recommended Next Task` or `Next` when the clarification naturally exposes the next workflow step.
-- `Output: compact` default: short answer and optional `Persist Candidate`.
-- `Full Persist Packet` only when the clarification should be persisted now or `Output: full` is requested.
+- One standard chat response using the shared response groups below.
+- `Persist Candidate` only when the clarification is worth preserving.
 
 ## Task Boundary Check
 
@@ -108,93 +107,45 @@ Supported subflows:
 
 Example Required:
 
-- Always include exactly one short `Example` in compact output.
+- Always include exactly one short `Example` in the standard response.
 - Prefer examples from the current workflow, current user context, or the term being clarified.
 - If domain facts are uncertain, use a generic illustrative example and do not introduce new domain claims.
 - Use a contrast example when the user asks about the difference between concepts.
 - The example explains meaning; it does not prove correctness or act as a review verdict.
 
-## Compact Output By Default
+## Response Contract
 
-In `Mode: discuss`, default to:
-
-```text
-User Intent: <one line about what the user wants clarified>
-Boundary Advice:
-- Boundary: <fits|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what clarify can still safely provide, or none>
-- Advisory Next Task: <task or sequence>
-Term / Statement: <term, phrase, prior answer, request, or none>
-Plain Meaning: <plain-language explanation>
-In This Workflow: <what it means in this workflow, or not workflow-specific>
-Common Confusion: <likely confusion or none>
-Example: <one minimal example; use contrast when helpful>
-Recommended Next Task: <clarify|explore|distill|shape|review|plan|persist|sync|none>
-Next: <how to use this clarification or why that next task fits>
-Persist Candidate: Artifact=<brief|note>; Artifact State=inbox; Topic=<topic>; Suggested Target=.session/inbox/<artifact>_<topic>.md
-```
-
-Use `Persist Candidate: none` when the clarification is not worth preserving.
-
-## Normal Refine Output
-
-Use `Output: normal` when the user asks to organize, refine, or prepare for persist without writing files:
+Use one standard response. Keep the shared groups in order, preserve the
+task-specific field names, and omit optional groups that have no content:
 
 ```text
-User Intent: <one line about what the user wants clarified>
-Current Read: <optional one line about relevant known context>
-Boundary Advice:
-- Boundary: <fits|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what clarify can still safely provide, or none>
-- Advisory Next Task: <task or sequence>
-Term / Statement:
-- <term, phrase, prior answer, request, or none>
-Plain Meaning:
-- <plain-language explanation>
-In This Workflow:
-- <workflow-specific meaning, or not workflow-specific>
-Why It Matters:
-- <why this affects later discussion, persist, review, shape, plan, sync, or build>
-Common Confusion:
-- <confusion or contrast>
-Example:
-- <one minimal example>
-Related Concepts:
-- <related term or task boundary>
-Clarifying Question:
-- <none or one high-impact question>
-Recommended Next Task:
-- <clarify|explore|distill|shape|review|plan|persist|sync|none>
-Discussion Notes To Preserve:
-- <user correction, staged requirement, constraint, example, meaning boundary, or non-goal worth preserving>
-Open Questions:
-- <question>
-Persist Candidate:
-- Artifact=<brief|note>; Artifact State=inbox; Topic=<topic>; Suggested Target=.session/inbox/<artifact>_<topic>.md
+User Intent
+- <one line about what the user wants clarified>
+Task State
+- Current Read: <optional relevant known context>
+- Boundary Advice: <Boundary, Why, Useful Response Now, Advisory Next Task; omit when it adds no value>
+- Term / Statement: <term, phrase, prior answer, request, or none>
+Primary Result
+- Plain Meaning: <plain-language explanation>
+- In This Workflow: <workflow-specific meaning, or not workflow-specific>
+Supporting Information
+- Why It Matters: <why this affects later work; optional>
+- Common Confusion: <likely confusion or contrast>
+- Example: <exactly one short example; use contrast when helpful>
+- Related Concepts: <optional related term or task boundary>
+- Clarifying Question: <optional single high-impact question>
+- Discussion Notes To Preserve: <optional user correction, constraint, example, boundary, or non-goal>
+- Open Questions: <optional unresolved meaning or scope question>
+Next
+- Recommended Next Task: <clarify|explore|distill|shape|review|plan|persist|sync|none>
+- Next: <how to use this clarification or why the next task fits>
+Persistence
+- Persist Candidate: Artifact=<brief|note>; Artifact State=inbox; Topic=<topic>; Suggested Target=.session/inbox/<artifact>_<topic>.md
 ```
 
-## Full Persist Packet
-
-Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load the matching template and shape the final artifact.
-
-```text
-Persist Packet:
-Artifact: brief | note
-Thread: <thread or none>
-Topic: <topic>
-Suggested Target: .session/inbox/<artifact>_<topic>.md
-Source Summary: <term, statement, prior answer, goal, background, or staged requirement clarified>
-Key Fields:
-- Clarified Meaning: <plain meaning and workflow-specific meaning>
-- Scope Boundary: <in scope, out of scope, or not applicable>
-- Assumptions To Confirm: <assumption or none>
-- Non-Goals: <non-goals or excluded scope>
-Next Use: <explore | shape | plan | persist | sync | none>
-```
-
-If the clarification is not worth preserving, output `Persist Candidate: none`.
+Omit `Persistence` when the clarification is not worth preserving. A request for
+more detail expands these same fields; it does not select another response mode
+or load an artifact template.
 
 ## User Input
 

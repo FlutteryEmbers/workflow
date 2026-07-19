@@ -6,13 +6,11 @@ inputs:
   - source
   - summary_focus
   - summary_type
-  - depth
   - audience
   - next_use
 outputs:
   - chat_distillation
   - persist_hint
-  - full_persist_packet
 user_selectable_lenses:
   - language
 done_check:
@@ -32,7 +30,7 @@ Role: {{CONTENT: /.workflow/roles/summarizer.md}}
 - Start with `User Intent` unless the request is trivial; it must state what the user wants summarized or distilled.
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Do not load templates and do not write files.
-- If the user asks to persist, provides a target, or requests `Output: full`, return `Full Persist Packet` and route the write to `persist`.
+- If the user asks to persist or provides a target, return a `Persist Candidate` and route the write to `persist`; do not construct an intermediate packet.
 - `Mode: persist` is not valid for this task; use `persist` for `.session/**` or explicit `notes/**`.
 - `Mode: execute` is not valid for this task.
 
@@ -59,13 +57,12 @@ Role: {{CONTENT: /.workflow/roles/summarizer.md}}
 
 Adjacent allowance must stay secondary to the distillation. If the user primarily wants accuracy judgment, source-of-truth decision, or archive writing, route to `review` or `sync`.
 
-## Expected Output
+## Result Requirements
 
 - A user-directed summary with `Source`, `Summary Focus`, `Summary Type`, `Observed`, `Inferred`, `Unknown`, and `Next Use`.
 - `Recommended Next Task` when the summary naturally leads to `persist`, `review`, `shape`, `plan`, or `sync`.
-- `Output: compact` default: short summary and optional `Persist Candidate`.
-- `Output: normal`: structured summary for review, shape, plan, sync, or persist.
-- `Full Persist Packet` only when the distillation should be persisted now or `Output: full` is requested.
+- One standard chat response using the shared response groups below.
+- `Persist Candidate` only when the distillation is worth preserving.
 
 ## Task Boundary Check
 
@@ -116,92 +113,37 @@ Distill only the user-selected source and focus. Keep source boundaries explicit
 
 Do not decide whether the summary is correct or stable project truth. Recommend `review` when accuracy, readiness, source-of-truth, or conflict resolution matters. Recommend `persist` only to save the distillation as `Artifact: distillation`.
 
-## Compact Output By Default
+## Response Contract
 
-In `Mode: discuss`, default to:
-
-```text
-User Intent: <one line about what the user wants summarized>
-Boundary Advice:
-- Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what distill can still safely provide, or none>
-- Advisory Next Task: <task or sequence>
-Source: <source files, folder, thread, docs, or discussion>
-Summary Focus: <what dimension is being summarized>
-Summary Type: <structure-summary|folder-summary|content-summary|decision-summary|interface-summary|risk-summary|archive-summary-draft>
-Summary:
-- <3-6 bullets>
-Observed:
-- <source-backed facts>
-Inferred:
-- <interpretations, or none>
-Unknown:
-- <missing source, weak evidence, or none>
-Next Use: <persist | review | shape | plan | sync | none>
-Recommended Next Task: <persist|review|shape|plan|sync|none>
-Persist Candidate: Artifact=distillation; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
-```
-
-Use `Persist Candidate: none` when the summary is not worth preserving.
-
-## Normal Refine Output
-
-Use `Output: normal` when the user asks to organize, refine, or prepare the summary for persist or next-task use:
+Use one standard response. Keep the shared groups in order, preserve the
+task-specific field names, and omit optional groups that have no content:
 
 ```text
-User Intent: <one line>
-Boundary Advice:
-- Boundary: <fits|fits_with_preflight|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what distill can still safely provide, or none>
-- Advisory Next Task: <task or sequence>
-Source Boundaries:
-- <source paths, thread, docs, or discussion boundaries>
-Summary Focus:
-- <focus and audience>
-Summary Type:
-- <type>
-Structured Summary:
-- <summary grouped for the requested next use>
-Observed:
-- <source-backed facts>
-Inferred:
-- <interpretations with source basis>
-Unknown:
-- <missing evidence or unresolved ambiguity>
-Omitted / Out Of Scope:
-- <excluded source or dimensions>
-Next Use:
-- <persist | review | shape | plan | sync | none>
-Recommended Next Task:
-- <persist|review|shape|plan|sync|none>
-Persist Candidate:
-- Artifact=distillation; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+User Intent
+- <one line about what the user wants summarized>
+Task State
+- Boundary Advice: <Boundary, Why, Useful Response Now, Advisory Next Task; omit when it adds no value>
+- Source Boundaries: <source files, folder, thread, docs, or discussion>
+- Summary Focus: <focus and audience>
+- Summary Type: <structure-summary|folder-summary|content-summary|decision-summary|interface-summary|risk-summary|archive-summary-draft>
+Primary Result
+- Summary / Structured Summary: <summary grouped for the requested next use>
+- Observed: <source-backed facts>
+- Inferred: <interpretations with source basis, or none>
+- Unknown: <missing source, weak evidence, or unresolved ambiguity>
+Supporting Information
+- Omitted / Out Of Scope: <optional excluded sources or dimensions>
+Next
+- Next Use: <persist|review|shape|plan|sync|none>
+- Recommended Next Task: <persist|review|shape|plan|sync|none>
+Persistence
+- Persist Candidate: Artifact=distillation; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
-## Full Persist Packet
-
-Output the full packet only when the user asks to persist, provides `Target`, requests `Output: full`, or needs a durable distillation handoff. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load the matching template and shape the final artifact.
-
-```text
-Persist Packet:
-Artifact: distillation
-Thread: <thread or none>
-Topic: <topic>
-Suggested Target: .session/inbox/distillation_<topic>.md or .session/threads/<thread>/distillation_<topic>.md
-Source Summary: <source paths, thread artifacts, docs, discussion, or user-provided material>
-Key Fields:
-- Summary Focus: <requested focus, audience, and next use>
-- Summary Type: <structure-summary | folder-summary | content-summary | decision-summary | interface-summary | risk-summary | archive-summary-draft>
-- Key Points: <main summary points>
-- Observed / Inferred / Unknown: <short distinction for persist to expand>
-- Archive Summary Draft: <only when requested>
-Next Use: <persist | review | shape | plan | sync | none>
-```
-
-If the distillation is not worth preserving, output `Persist Candidate: none`.
+Omit `Persistence` when the distillation is not worth preserving. A request for
+more detail expands these same fields; it does not select another response mode
+or load an artifact template.
 
 ## User Input
 
-{{source, summary focus, summary type, depth, audience, next use, and distill request}}
+{{source, summary focus, summary type, audience, next use, and distill request}}

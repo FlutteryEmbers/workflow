@@ -12,12 +12,12 @@ Composite:
 2. Run `Task: review` semantics over that frozen draft with `Review Target Kind: plan`.
 
 Mode: discuss
-Output: compact
 Task: composite plan -> review
 Lens: ${input:lens:none}
 Intended Next Use: ${input:intended_next_use:discussion}
 
 Rules:
+- Use one standard response grouped as `User Intent`, `Task State`, `Primary Result`, `Supporting Information`, `Next`, and optional `Persistence`; omit optional empty groups.
 - Do not write files.
 - Do not load templates.
 - Load selected lenses only when explicitly named for the plan draft; review may use the same selected lens as an extra lens, but plan review itself is core review behavior.
@@ -37,42 +37,9 @@ Request:
 ${input:request:describe the chosen direction and planning need}
 
 Return:
-Compatibility Intake Pending, only when triggered and native UI is unavailable:
-- Input Sufficiency: insufficient
-- Input Gaps: compatibility policy
-- Compatibility Intake: discovered evidence and 2-3 questions from `.workflow/tasks/plan.md`
-- No Plan Draft and no Plan Review until answered
-
-Plan Draft:
-- User Intent
-- Input Sufficiency
-- Input Gaps, only when insufficient
-- Shape Summary
-- Impact Surface, omitted when insufficient
-- Plan At A Glance, omitted when insufficient
-- Plan, omitted when insufficient
-- Verification: Minimum Viable Verification, Verification Feasibility, Fallback Verification, Residual Risk; omitted when insufficient
-- Execution Handoff, only when recommending build or external-agent
-- Compatibility / Constraint Plan, when relevant
-- Recommended Next Task
-- Next
-
-Plan Review:
-- Review Frame:
-  - Review Question: Can this frozen plan draft be used for the intended next use?
-  - Review Target Kind: plan
-  - Intended Next Use: discussion | persist | build | external-agent | sync
-  - Review Type: verdict-review
-  - Review Route Reason: pplan reviews a frozen plan draft instead of revising it.
-- Review Verdict: ready | needs changes | needs more evidence | blocked
-- Confidence: high | medium | low
-- Readiness: 0-10
-- Blocking Gaps
-- Non-blocking Gaps
-- Can Use For Intended Next Use
-- Repair Direction
-- Recommended Action
-- Suggested Critique: explicit redteam critique | none
-- Recommended Next Task
-
-Persist Candidate: candidate only and do not write
+- `User Intent`: request and intended next use.
+- `Task State`: plan Input Sufficiency and Input Gaps when relevant. When a native-UI Compatibility Intake is unavailable, include the discovered evidence and 2-3 questions here, then wait with no Plan Draft or Plan Review.
+- `Primary Result`: frozen Plan Draft followed by Plan Review. The draft contains Shape Summary, Impact Surface, Plan At A Glance, Plan, and relevant compatibility decisions; the review contains Review Frame, Review Verdict, and Change Assessment without rewriting the draft.
+- `Supporting Information`: draft Verification and Execution Handoff when relevant; review Confidence, Readiness, Blocking Gaps, Non-blocking Gaps, intended-use assessment, Repair Direction, Recommended Action, Suggested Critique, and Recommended Next Task.
+- `Next`: explicit next action.
+- `Persistence`: Persist Candidate only when worth saving; candidate only and do not write.

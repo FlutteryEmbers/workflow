@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite distill command for user-directed summaries.
-argument-hint: "Source=<file, folder, thread, docs, discussion, or reference>; Summary Focus=<what to summarize>; Summary Type=<structure-summary|folder-summary|content-summary|decision-summary|interface-summary|risk-summary|archive-summary-draft>; Lens=<none|language>; Output=<compact|normal|full>; Request=<distill request>"
+argument-hint: "Source=<file, folder, thread, docs, discussion, or reference>; Summary Focus=<what to summarize>; Summary Type=<structure-summary|folder-summary|content-summary|decision-summary|interface-summary|risk-summary|archive-summary-draft>; Lens=<none|language>; Request=<distill request>"
 ---
 
 # wf-distill
@@ -8,7 +8,6 @@ argument-hint: "Source=<file, folder, thread, docs, discussion, or reference>; S
 Use Workflow Lite distill semantics.
 
 Mode: discuss
-Output: ${input:output:compact|normal|full}
 Task: distill
 Lens: ${input:lens:none}
 Source: ${input:source:source material to summarize}
@@ -16,6 +15,7 @@ Summary Focus: ${input:summary_focus:what dimension to summarize}
 Summary Type: ${input:summary_type:structure-summary|folder-summary|content-summary|decision-summary|interface-summary|risk-summary|archive-summary-draft}
 
 Rules:
+- Use one standard response grouped as `User Intent`, `Task State`, `Primary Result`, `Supporting Information`, `Next`, and optional `Persistence`; omit optional empty groups.
 - Do not write files.
 - Do not load templates.
 - Load `.workflow/lenses/language.md` only when the user explicitly selects `language`.
@@ -30,14 +30,9 @@ Request:
 ${input:request:describe the summary or distillation needed}
 
 Return:
-- User Intent
-- Source
-- Summary Focus
-- Summary Type
-- Summary
-- Observed
-- Inferred
-- Unknown
-- Next Use
-- Recommended Next Task
-- Persist Candidate, candidate only and do not write
+- `User Intent`: summary request.
+- `Task State`: Source Boundaries, Summary Focus, and Summary Type.
+- `Primary Result`: Summary, Observed, Inferred, and Unknown.
+- `Supporting Information`: Omitted / Out Of Scope when relevant.
+- `Next`: Next Use and Recommended Next Task.
+- `Persistence`: Persist Candidate only when worth saving; candidate only and do not write.

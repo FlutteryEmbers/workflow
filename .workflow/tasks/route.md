@@ -44,11 +44,11 @@ Role: {{CONTENT: /.workflow/roles/analyst.md}}
 
 Adjacent allowance must stay routing-owned. If the user needs actual analysis, verdict, planning, persistence, sync, or implementation, recommend that task and do not perform it inside `route`.
 
-## Expected Output
+## Result Requirements
 
 - Always chat-only.
-- `Output: compact` default: interpreted goal, recommended path, selected task/lens, and next prompt.
-- Full Add Context and handoff points only for composite work or `Output: full`.
+- One standard chat response with interpreted goal, recommended path, selected task/lens, and next prompt.
+- Add Context and handoff points only when composite work, boundary correction, or missing prerequisites make them useful.
 
 ## Task Boundary Check
 
@@ -117,7 +117,7 @@ Recommend the smallest path:
 - Direct build path: `build` when the user invokes execute with an explicit executable plan; missing review is a risk notice, not a build blocker.
 - Vague implementation intent without an explicit executable plan: `plan -> review`, then `build` or external-agent only after the plan is concrete enough.
 - Recommend `review` before build for breaking changes, constraint overrides, public API, data, security, source-of-truth, stable docs projection, multi-surface plans, high reversal cost, or ambiguous verification.
-- Discussion chains should end with `Persist Candidate` when the result is worth preserving. `persist` consumes the candidate, recent discussion, or full packet; the original discussion task does not write files.
+- Discussion chains should end with `Persist Candidate` when the result is worth preserving. `persist` consumes the candidate, recent discussion, or an explicit source; the original discussion task does not write files.
 - Do not recommend any lens as a skip or override mechanism. Lenses may strengthen analysis only; they do not change task responsibility, write permission, execute permission, or sync permission.
 
 ## Lens Suggestions
@@ -139,73 +139,33 @@ Recommend the smallest path:
 - Do not suggest `consistency` for discovery questions like whether evidence for a capability exists, where it is implemented, or how reliable the evidence is.
 - Suggest `language` for terminology or output language.
 - Recommend `distill` as a task when the user wants a summary, folder summary, source distillation, or archive-summary draft.
-- Use `Output: normal|full` or persist `Depth: detailed` when a compact decision or plan needs examples, pseudocode, or split parts; do not suggest a separate expand lens.
+- Ask the selected task to expand within its standard response, or use persist `Depth: detailed` for a durable artifact; do not suggest a separate expand lens.
 
-## Output Format
+## Response Contract
 
-For normal requests, keep the route compact:
-
-```text
-Interpreted goal: <one sentence>
-Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite, when useful>
-Boundary Advice:
-- Why: <routing reason or none>
-- Useful Response Now: <what route can safely provide, normally routing advice only>
-- Advisory Next Task: <task or sequence>
-Scope Interpretation:
-- Requested Task: <task named or implied by user>
-- Output Shape Used: <meaning|evidence|direction|verdict|plan|persist|sync|build>
-- Effective Scope: <what this task can answer now>
-- Out-of-Shape Material: <what belongs to another task, or none>
-- Recommended Next Task: <task or none>
-Recommended path: <task -> task>
-Lens: <none or explicit lenses>
-Next prompt: <copyable prompt>
-```
-
-Use the full format only for `Output: full`, composite routing, wrong-task correction, or missing prerequisites:
+Use one standard response. Keep the shared groups in order and omit optional
+groups that have no content. Simple routes stay short; composite, wrong-task,
+and missing-prerequisite routes add the support fields they need:
 
 ```text
-Interpreted goal: <one sentence>
-Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-Boundary Advice:
-- Why: <routing reason or none>
-- Useful Response Now: <what route can safely provide, normally routing advice only>
-- Advisory Next Task: <task or sequence>
-Scope Interpretation:
-- Requested Task: <task named or implied by user>
-- Output Shape Used: <meaning|evidence|direction|verdict|plan|persist|sync|build>
-- Effective Scope: <what this task can answer now>
-- Out-of-Shape Material: <what belongs to another task, or none>
-- Recommended Next Task: <task or none>
-Recommended path: <task -> task>
-Mode: <discuss|persist|execute>
-Write Path: <workflow-managed|external-agent>
-Lens: <none or explicit lenses>
-Target: <only when writing>
-Add Context:
-- .workflow/tasks/<task>.md
-- .workflow/lenses/<lens>.md only when selected
-- .workflow/templates/<template>.md only for `persist` or `sync` when persisting
-- relevant .session/inbox/**, relevant .session/threads/**, docs/**, or source files as needed
-Next prompt: <copyable prompt>
-```
-
-For composite requests:
-
-```text
-Recommended Segments:
-1. <segment name>
-   Mode:
-   Task:
-   Lens:
-   Target/Plan:
-   Context:
-   Request:
-   Expected Output:
-   Continue Condition:
-Advisory Handoff Points:
-- <user decision, audit, source-of-truth, Project Docs Rules, or diff review point>
+User Intent
+- Interpreted Goal: <one sentence>
+Task State
+- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite; when useful>
+- Boundary Advice: <Why, Useful Response Now, Advisory Next Task; when useful>
+- Scope Interpretation: <Requested Task, Output Shape Used, Effective Scope, Out-of-Shape Material, Recommended Next Task; when useful>
+Primary Result
+- Recommended Path: <task -> task>
+- Lens: <none or explicit lenses>
+Supporting Information
+- Mode: <discuss|persist|execute; when needed>
+- Write Path: <workflow-managed|external-agent; when needed>
+- Target: <only when writing>
+- Add Context: <task, selected lenses, write templates only for persist/sync, and relevant sources; when needed>
+- Recommended Segments: <composite segments with Continue Condition; only for composite requests>
+- Advisory Handoff Points: <decision, audit, source-of-truth, docs, or diff-review point; only when relevant>
+Next
+- Next Prompt: <copyable prompt>
 ```
 
 ## User Input

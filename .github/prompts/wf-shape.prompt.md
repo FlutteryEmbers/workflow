@@ -8,11 +8,11 @@ argument-hint: "Request=<direction question>; Lens=<none|architecture|boundary|l
 Use Workflow Lite shape semantics.
 
 Mode: discuss
-Output: compact
 Task: shape
 Lens: ${input:lens:none}
 
 Rules:
+- Use one standard response grouped as `User Intent`, `Task State`, `Primary Result`, `Supporting Information`, `Next`, and optional `Persistence`; omit optional empty groups.
 - Do not write files.
 - Do not load templates.
 - Load selected lenses only when explicitly named.
@@ -45,17 +45,9 @@ Request:
 ${input:request:describe the what-if, option, concept, or direction-setting question}
 
 Return:
-- User Intent
-- Current Read, optional
-- Need For Shape
-- Shape Continuation
-- Boundary Advice
-- Adjacent Allowance Used
-- Decision State
-- User Checkpoint, only when checkpoint and then wait for selection
-- Take
-- Risks/Unknowns
-- Provisional Recommendation
-- Impact Surface, when planning may follow
-- Recommended Next Task
-- Persist Candidate, candidate only and do not write
+- `User Intent`: shaping request.
+- `Task State`: Current Read, Need For Shape, Shape Continuation, Boundary Advice, Adjacent Allowance Used, Decision State, and User Checkpoint only when triggered; wait after the checkpoint.
+- `Primary Result`: Reframed Goal, Take / Refined Direction, Provisional Recommendation, Narrowest Useful Wedge, success criteria, and Rejected Larger Scope when relevant.
+- `Supporting Information`: risks, change conditions, Impact Surface, decisions, compatibility/constraint check, notes, and open questions.
+- `Next`: Recommended Next Task.
+- `Persistence`: Persist Candidate only when the response forms or updates a direction; omit while a checkpoint waits and do not write.

@@ -22,5 +22,5 @@ This is not normal review, built-in safety, or a rewrite task. `review` still ow
 ## Output Hints
 
 - Use the critique structure in chat when useful.
-- Persist durable critique results through `Persist Packet` and `persist` as a `review` artifact.
+- When durable critique is worth saving, output a `Persist Candidate` and use `persist` with the `review` template.
 - Do not load artifact templates by default in `Mode: discuss`; templates are for `persist` or `sync` persist steps.

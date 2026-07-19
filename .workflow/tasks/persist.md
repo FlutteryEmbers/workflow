@@ -1,7 +1,7 @@
 ---
 id: persist
 role: steward
-purpose: Persist high-fidelity structured session artifacts and untriaged knowledge captures from discussion, thread artifacts, Persist Packets, or user-provided sources.
+purpose: Persist high-fidelity structured session artifacts and untriaged knowledge captures from discussion, thread artifacts, Persist Candidates, or user-provided sources.
 inputs:
   - artifact
   - brief_type
@@ -36,7 +36,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 
 - Start with `User Intent` unless the request is trivial; it must state what the user wants persisted.
 - `Mode: persist` is required for writes.
-- `Mode: discuss` may propose a persist packet, target, artifact kind, artifact state, intent, depth, and template without writing.
+- `Mode: discuss` may propose a `Persist Candidate`, target, artifact kind, artifact state, intent, depth, and template without writing.
 - `Mode: execute` is not valid for this task.
 - Load templates only for the artifact being persisted.
 
@@ -52,6 +52,7 @@ Role: {{CONTENT: /.workflow/roles/steward.md}}
 - Do not write stable sync targets; use `sync` for `docs/**`, `src/**/README.md`, and `.session/archive/**`.
 - Do not modify source code, `.workflow/**`, `.github/**`, or other repository artifacts; use `build` or external-agent.
 - Do not persist full transcripts by default.
+- Do not write a shape or plan artifact while its `User Checkpoint` or `Compatibility Intake` is waiting for an answer.
 
 ## Boundary Layers
 
@@ -70,7 +71,7 @@ Adjacent discussion output from `clarify`, `explore`, `distill`, `shape`, `revie
 - `Depth`: `compact | standard | detailed`.
 - `Thread`: kebab-case small closable work item directory name.
 - `Topic`: short file-safe topic.
-- `Source`: `Persist Packet`, `Persist Candidate`, recent discussion, existing artifact, user input, file path, or selected context.
+- `Source`: `Persist Candidate`, recent discussion, existing artifact, user input, file path, or selected context.
 - `Target Directory`: optional allowed directory such as `.session/threads/workflow-thread-naming/`; when present, generate `{artifact}_{topic}.md` under it after target-boundary validation.
 - `Target`: optional explicit path. Explicit target wins over inferred path.
 - `Target: notes/**`: explicit only; used for disposable exploration notes.
@@ -103,15 +104,14 @@ Persisted artifacts must be more structured than chat without losing the reasoni
 - Default `Depth: standard` for `brief` and `note`.
 - Default `Depth: detailed` for `shape`, `plan`, `review`, and `distillation`.
 - Use a lower depth only when the user explicitly asks for a compact artifact.
+- Every depth keeps all required template sections; depth changes only the amount of content inside them.
 
 ## Source Handling
 
-- Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Packet`; explicit `Persist Candidate`; source artifacts from the inferred same work item; recent discussion that matches the target work item.
-- Prefer an explicit `Persist Packet` when present. Treat it as source handoff input, not as the final artifact schema.
-- If no `Persist Packet` exists, synthesize one from `Persist Candidate`, recent discussion, source artifacts, user corrections, and selected files.
-- `persist` is the artifact shaping and persist metadata owner: load the matching template for the selected `Artifact`, apply `.workflow/templates/_persist_metadata.md`, map packet fields into it, and fill missing template sections by inference, summary, or `unknown` / `none`.
+- Prefer explicit source boundaries in this order: explicit `Source` or file path; explicit `Artifact ID` reference such as `shape_<topic>`; explicit `Persist Candidate`; source artifacts from the inferred same work item; recent discussion and user corrections that match the target work item.
+- `persist` is the artifact shaping and persist metadata owner: load the matching template for the selected `Artifact`, apply `.workflow/templates/_persist_metadata.md`, map source content into it, and fill missing template sections by inference, summary, or `unknown` / `none`.
 - Metadata timestamps use `YYYY-MM-DD HH:mm` with the execution environment timezone. For new files, set `Created At` and `Updated At` to the current minute. For existing files, preserve `Created At`, refresh `Updated At`, and add `Created At` with the current minute when missing.
-- Discuss output budget does not reduce artifact fidelity. Even if the prior answer used `Output: compact`, generate the persisted artifact at the requested or default `Depth`.
+- Chat response length does not reduce artifact fidelity. Generate the persisted artifact at the requested or default `Depth`.
 - If source material conflicts, preserve the conflict and mark the source of truth as unresolved.
 - Do not use `persist` to decide product direction, approve plans, or resolve code/docs drift; route those decisions back to `shape`, `plan`, or `review`.
 - Do not promote inbox capture to source of truth. Persist can store the capture, but promotion to thread decision, project docs, code README, or build adapter requires later `review`, `plan`, or `sync`.
@@ -212,7 +212,7 @@ If the user explicitly provides a target path, respect it unless it violates wri
 
 ## Template Selection
 
-Load only the matching template for the artifact being written. Apply the persist metadata partial before the artifact body. Discussion task packet fields do not replace these templates.
+Load only the matching template for the artifact being written. Apply the persist metadata partial before the artifact body. Discussion responses and `Persist Candidate` fields do not replace these templates.
 
 - `brief`: `.workflow/templates/brief.md`
 - `note`: `.workflow/templates/note.md`
@@ -225,7 +225,35 @@ Metadata partial:
 
 - `.workflow/templates/_persist_metadata.md`
 
-## Output Rules
+## Response Contract
+
+When prerequisites pass, write one template-complete artifact and return only a
+short write receipt. When prerequisites fail, do not write a partial artifact;
+return the blocking state and next action using the shared groups:
+
+```text
+User Intent
+- <what the user wants persisted>
+Task State
+- Result: <written|blocked>
+- Artifact / Target: <artifact kind and resolved target>
+- Blocking Reason: <only when blocked>
+Primary Result
+- Write Receipt: <created or updated target; omit when blocked>
+Supporting Information
+- Template: <matching artifact template and metadata partial>
+- Source Basis: <explicit source, Artifact ID, Persist Candidate, source artifacts, or recent discussion>
+- Depth: <compact|standard|detailed>
+- Thread Inference Note: <when inference assumptions matter>
+Next
+- Next: <artifact use, missing prerequisite, or none>
+```
+
+The artifact itself is the complete result and must follow every required
+template section. Do not echo the artifact body unless the user explicitly asks
+for a preview.
+
+Additional output rules:
 
 - Write only the target `.session/inbox/**` or `.session/threads/**` artifact, or explicit `notes/**` exploration note.
 - Add metadata from `.workflow/templates/_persist_metadata.md` to the artifact.

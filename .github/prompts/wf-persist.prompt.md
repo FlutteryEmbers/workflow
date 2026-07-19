@@ -8,7 +8,6 @@ argument-hint: "Artifact=<kind>; Artifact State=<inbox|working|settled|supersede
 Use Workflow Lite persist semantics.
 
 Mode: persist
-Output: full
 Task: persist
 Lens: ${input:lens:none}
 Artifact: ${input:artifact:brief|note|shape|plan|review|distillation}
@@ -21,6 +20,7 @@ Intent: ${input:intent:summary|exploration|decision|audit|handoff|constraint|ref
 Depth: ${input:depth:compact|standard|detailed}
 
 Rules:
+- Use one standard response grouped as `User Intent`, `Task State`, `Primary Result`, `Supporting Information`, `Next`, and optional `Persistence`; omit optional empty groups.
 - Write only `.session/inbox/**`, `.session/threads/**`, or explicit `notes/**`.
 - Load `.workflow/lenses/language.md` only when the user explicitly selects `language`.
 - Use `Brief Type: external-goal` only for long, external, or reusable goal material stored as an inbox brief before shape.
@@ -30,15 +30,17 @@ Rules:
 - Include `Thread Inference Note` when target selection depends on assumptions or low-confidence fit.
 - Do not write `docs/**`, source code, `.workflow/**`, or `.github/**`.
 - Load `.workflow/tasks/persist.md`, the matching artifact template, and `.workflow/templates/_persist_metadata.md`.
+- Resolve source in this order: explicit source/path, Artifact ID, Persist Candidate, same-work-item artifacts, then matching recent discussion and user corrections.
+- Write every required template section at every Depth; use `unknown` or `none` when source content cannot be derived. Do not write a partial artifact when prerequisites are missing or an interactive checkpoint is unresolved.
 - Preserve decision-relevant reasoning, not full transcript.
 - If target belongs to another write boundary, route to `wf-sync`, external-agent, or manual workflow-lite fallback.
 
 Request:
-${input:request:describe source discussion, Persist Candidate, Persist Packet, existing artifact, or requested edit}
+${input:request:describe source discussion, Persist Candidate, existing artifact, or requested edit}
 
 Return:
-- Target
-- Thread Inference Note
-- Artifact metadata
-- Written artifact or blocking reason
-- Naming note, if explicit target differs from recommended naming
+- `User Intent`: persistence request.
+- `Task State`: result, target, and blocking reason when any.
+- `Primary Result`: short write receipt; omit when blocked.
+- `Supporting Information`: template, source basis, Depth, and Thread Inference Note when relevant.
+- `Next`: artifact use, missing prerequisite, or none.

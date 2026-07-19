@@ -7,7 +7,6 @@ inputs:
 outputs:
   - chat_shape
   - persist_hint
-  - full_persist_packet
 user_selectable_lenses:
   - architecture
   - boundary
@@ -33,7 +32,7 @@ Role: {{CONTENT: /.workflow/roles/shaper.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - In `Mode: discuss`, multiple explicit lenses are allowed; organize views in user-provided lens order, then converge.
 - Do not load templates and do not write files.
-- If the user asks to persist, provides a target, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
+- If the user asks to persist or provides a target, return a `Persist Candidate` and route the write to `persist`; do not construct an intermediate packet.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -63,15 +62,14 @@ Role: {{CONTENT: /.workflow/roles/shaper.md}}
 
 Adjacent allowance must stay secondary to the shape. If the adjacent work becomes the main deliverable, route to the specialized task.
 
-## Expected Output
+## Result Requirements
 
 - `Need For Shape` immediately after `User Intent` and `Current Read`, before `Human Decision State` or recommendation.
 - `Reframed Goal`, `Narrowest Useful Wedge`, `Success Criteria`, `Rejected Larger Scope`, tradeoffs, and recommended next step.
 - `Impact Surface` with scope size, affected surfaces, reversal cost, execution risk, confirmation point, and recommended next abstraction level.
 - `Locked Decisions`, `Assumed Decisions`, and `Open Decisions` when the shape may feed later planning.
 - `Compatibility / Constraint Check` with compatibility pressure, breaking option availability, constraint tension, suggested policy, and whether a human decision is needed.
-- `Output: compact` default: short recommendation, risks, and optional `Persist Candidate`.
-- `Full Persist Packet` only when the shape should be persisted now or `Output: full` is requested.
+- One standard chat response with recommendation, risks, supporting decisions, and optional `Persist Candidate`.
 - `Triage` only when task boundary, evidence readiness, or verdict/planning need is unclear.
 - `Boundary Advice`, `Adjacent Allowance Used`, and `Advisory Next Task` when the request uses `shape` as the small fallback.
 
@@ -279,125 +277,53 @@ Do not let `shape` become a plan. It may describe a conceptual structure and val
 
 When a shape is likely to drive execution, involves costly reversal, or depends on unverified assumptions, include `Suggested Critique: explicit redteam critique` as a recommendation rather than applying it automatically.
 
-## Compact Output By Default
+## Response Contract
 
-In `Mode: discuss`, default to:
-
-```text
-User Intent: <one line about what the user wants shaped>
-Current Read: <optional one line about relevant code/docs/discussion facts>
-Need For Shape:
-- Status: <needs-direction|already-settled|answerable-now|needs-evidence|needs-review>
-- Reason: <why this continuation type fits>
-- Advisory Next Task: <shape|explore|review|plan|persist|none>
-Shape Continuation:
-- Continuation Type: <new-direction|carry-forward|short-answer|provisional|review-handoff>
-- Current / Provisional Direction: <direction, short answer, or none>
-- Carry Forward: <boundaries, assumptions, or next-use notes>
-- What Would Change This: <evidence, review result, or user decision>
-- Advisory Next Task: <shape|explore|review|plan|persist|none>
-Boundary Advice:
-- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what shape can still safely provide, or none>
-- Advisory Next Task: <task or sequence>
-Adjacent Allowance Used: <none|clarification|compression|evidence-needs|risk-sketch|planning-sketch>
-Decision State:
-- Human Decision State: <none|assumed|checkpoint|unresolved>
-- Decision State Reason: <why this state applies>
-- Assumed Default: <recommended default or none>
-- Checkpoint Needed: <yes/no>
-User Checkpoint: <only when state is checkpoint; wait for selection before final recommendation>
-Unresolved Decision: <only when state is unresolved; evidence, decision, or review result needed>
-Take:
-- <3-6 bullets>
-Risks/Unknowns:
-- <0-3 bullets>
-Provisional Recommendation: <best guess or none>
-Impact Surface:
-- Scope Size: <small|medium|large>
-- Affected Surfaces: <workflow core|task docs|templates|adapters|project docs|source code|tests|other>
-- Reversal Cost: <low|medium|high>
-- Execution Risk: <low|medium|high>
-- User Confirmation Needed Before: <none|plan|review|build>
-- Recommended Next Task: <plan|review|persist|none>
-Recommended Next Task: <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
-Persist Candidate: <none unless this response forms or updates a direction; otherwise Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md>
-```
-
-Use `Persist Candidate: none` when the shape is not worth preserving.
-
-## Normal Refine Output
-
-Use `Output: normal` when the user asks to organize, refine, or prepare the discussion for persist without writing files:
+Use one standard response. Keep the shared groups in order, preserve the
+task-specific field names, and omit optional groups that have no content:
 
 ```text
-User Intent: <one line about what the user wants shaped>
-Current Read: <optional one line about relevant code/docs/discussion facts>
-Need For Shape:
-- Status: <needs-direction|already-settled|answerable-now|needs-evidence|needs-review>
-- Reason: <why this continuation type fits>
-- Advisory Next Task: <shape|explore|review|plan|persist|none>
-Shape Continuation:
-- Continuation Type: <new-direction|carry-forward|short-answer|provisional|review-handoff>
-- Current / Provisional Direction: <direction, short answer, or none>
-- Carry Forward: <boundaries, assumptions, or next-use notes>
-- What Would Change This: <evidence, review result, or user decision>
-- Advisory Next Task: <shape|explore|review|plan|persist|none>
-Boundary Advice:
-- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what shape can still safely provide, or none>
-- Advisory Next Task: <task or sequence>
-Adjacent Allowance Used: <none|clarification|compression|evidence-needs|risk-sketch|planning-sketch>
-Decision State:
-- Human Decision State: <none|assumed|checkpoint|unresolved>
-- Decision State Reason: <why this state applies>
-- Assumed Default: <recommended default or none>
-- Checkpoint Needed: <yes/no>
-User Checkpoint: <only when state is checkpoint; wait for selection before refined direction>
-Unresolved Decision: <only when state is unresolved; evidence, decision, or review result needed>
-Refined Direction:
-- <current recommendation, abstraction level, concept structure, boundaries, impact surface, and validation direction>
-What Would Change My Mind:
-- <evidence, constraint, user decision, or risk that would change the recommendation>
-Discussion Notes To Preserve:
-- <phase boundary, constraint, user correction, example, counterexample, accepted risk, or weak-model handoff detail>
-Open Questions:
-- <question that could change the shape>
-Recommended Next Task:
-- <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
-Persist Candidate:
-- <none unless this response forms or updates a direction; otherwise Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md>
+User Intent
+- <one line about what the user wants shaped>
+Task State
+- Current Read: <optional relevant code, docs, or discussion facts>
+- Need For Shape: <Status, Reason, Advisory Next Task>
+- Shape Continuation: <Continuation Type, Current / Provisional Direction, Carry Forward, What Would Change This, Advisory Next Task>
+- Boundary Advice: <Boundary, Why, Useful Response Now, Advisory Next Task; when useful>
+- Adjacent Allowance Used: <none|clarification|compression|evidence-needs|risk-sketch|planning-sketch>
+- Decision State: <Human Decision State, reason, assumed default, checkpoint need>
+- User Checkpoint: <only when state is checkpoint; wait before final recommendation>
+- Unresolved Decision: <only when state is unresolved>
+Primary Result
+- Reframed Goal: <goal at concept level>
+- Take / Refined Direction: <recommendation or short conceptual answer>
+- Provisional Recommendation: <best guess when evidence or a decision is unresolved>
+- Narrowest Useful Wedge: <smallest useful concept scope>
+- Success Criteria: <concept-level success>
+- Rejected Larger Scope: <larger scope intentionally excluded>
+Supporting Information
+- Risks / Unknowns: <material risks or unknowns>
+- What Would Change My Mind: <evidence, constraint, review result, or decision>
+- Impact Surface: <Scope Size, Affected Surfaces, Reversal Cost, Execution Risk, confirmation point, recommended next task>
+- Locked Decisions: <confirmed decisions when planning may follow>
+- Assumed Decisions: <recommended defaults and risk if wrong>
+- Open Decisions: <unresolved choices that block an explicit plan>
+- Compatibility / Constraint Check: <pressure, policy suggestion, tension, and decision need>
+- Discussion Notes To Preserve: <optional phase boundary, correction, example, counterexample, or accepted risk>
+- Open Questions: <optional question that could change the shape>
+Next
+- Recommended Next Task: <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
+Persistence
+- Persist Candidate: Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md
 ```
 
-## Full Persist Packet
+Omit `Persistence` when the response does not form or update a direction. Do
+not output it while a checkpoint waits for selection. A request for more detail
+expands these same fields; it does not select another response mode or load an
+artifact template.
 
-Output the full packet only when the response forms or updates a direction and the user asks to persist, provides `Target`, or requests `Output: full`. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load the matching template and shape the final artifact. Do not output a full persist packet for carry-forward, short-answer, evidence-needed, or review-handoff continuations unless they materially update the direction. Do not output a full persist packet while a `checkpoint` is waiting for selection.
-
-```text
-Persist Packet:
-Artifact: shape
-Artifact ID: shape_<topic>
-Thread: <thread>
-Topic: <topic>
-Suggested Target: .session/threads/<thread>/shape_<topic>.md
-Source Summary: <current chat goal, external-goal brief, session artifact, evidence, or user correction>
-Key Fields:
-- Need For Shape: <status, reason, and advisory next task>
-- Shape Continuation: <continuation type, carry-forward notes, and what would change it>
-- Recommendation: <current direction, core boundary, and narrowest useful wedge>
-- Decision State: <Human Decision State, reason, assumed default, and open decisions>
-- Impact Surface: <scope size, affected surfaces, reversal cost, execution risk, and confirmation need>
-- Concept Structure: <purpose, scope, constraints, validation, and notes>
-- Options / Rejections: <options considered and why the recommendation is preferred>
-- Compatibility / Constraint Notes: <preserve/breaking and respect/override/exception summary>
-Next Use: <persist | review | plan | sync | none>
-```
-
-`Artifact ID` is a lightweight reference anchor for later `persist` requests. It is not a file path and does not change artifact kind or directory rules.
-
-If the shape is not worth preserving, output `Persist Candidate: none`.
+`Artifact ID` remains a lightweight reference anchor for later `persist`
+requests; it is not a path and does not affect artifact kind or target rules.
 
 ## User Input
 

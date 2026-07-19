@@ -8,11 +8,11 @@ argument-hint: "Request=<target to review>; Lens=<none|redteam|consistency|bound
 Use Workflow Lite review semantics.
 
 Mode: discuss
-Output: compact
 Task: review
 Lens: ${input:lens:none}
 
 Rules:
+- Use one standard response grouped as `User Intent`, `Task State`, `Primary Result`, `Supporting Information`, `Next`, and optional `Persistence`; omit optional empty groups.
 - Do not write files.
 - Do not load templates.
 - Load selected lenses only when explicitly named.
@@ -39,21 +39,9 @@ Request:
 ${input:request:describe the plan, diff, docs/code drift, claim, or artifact to review}
 
 Return:
-- User Intent
-- Current Read, optional
-- Review Frame
-- Change Assessment, only for change-seeking review
-- Baseline, when relevant
-- Findings or Take
-- Gap Analysis, when Review Type is gap-analysis
-- Review Verdict: ready | needs changes | needs more evidence | blocked | docs blocked
-- Confidence
-- Readiness: 0-10
-- Blocking Gaps
-- Non-blocking Gaps
-- Can Use For Intended Next Use
-- Repair Direction
-- Recommended Action
-- Suggested Critique: explicit redteam critique | none
-- Recommended Next Task
-- Persist Candidate, candidate only and do not write
+- `User Intent`: review request.
+- `Task State`: Current Read, Boundary Advice, and Review Frame.
+- `Primary Result`: Change Assessment only for change-seeking review; Review Verdict.
+- `Supporting Information`: findings, Confidence, Readiness, baseline, Gap Analysis, Blocking and Non-blocking Gaps, intended-use assessment, Repair Direction, Recommended Action, and Suggested Critique when relevant.
+- `Next`: Recommended Next Task.
+- `Persistence`: Persist Candidate only when worth saving; candidate only and do not write.

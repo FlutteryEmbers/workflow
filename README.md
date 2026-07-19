@@ -11,7 +11,7 @@ docs/        # code-aligned project docs, when the host project uses it
 
 The workflow system belongs in `.workflow/`. Session artifacts belong in `.session/`. Code-aligned long-term project docs belong in `docs/**`. Code-adjacent reading notes may live in `src/**/README.md` when useful.
 
-Use `persist` for high-fidelity active session artifacts from `Persist Packet`, `sync` for stable documents such as code-aligned project docs, code-adjacent README, and session archive summaries, and `build` for explicit repository changes.
+Use `persist` for high-fidelity active session artifacts from explicit sources, `Persist Candidate`, or matching discussion context; use `sync` for stable documents such as code-aligned project docs, code-adjacent README, and session archive summaries; and use `build` for explicit repository changes.
 
 Exploration repos may use explicit `notes/**` targets for disposable exploration notes. Code-aligned project docs remain `docs/**`.
 

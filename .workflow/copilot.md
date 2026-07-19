@@ -32,7 +32,6 @@ Use `workflow-lite.prompt.md` as fallback/router for mixed requests, unclear tas
 
 ```text
 Mode: <discuss|persist|execute>
-Output: <compact|normal|full>
 Task: <route|clarify|explore|distill|shape|plan|persist|build|review|sync>
 Lens: <none|consistency|boundary|language|domain|redteam|test|architecture|debug|expert|ponytail>
 Artifact: <required for persist unless target is explicit>
@@ -61,24 +60,45 @@ Request:
 - `Mode: execute` applies an explicit workflow-managed plan through `Task: build`.
 - Native Codex/Copilot Plan -> Implement is the `external-agent` write path. It is not a Workflow Mode and does not use `Task: build`.
 
-## Conversation-to-Artifact Output Flow
+## Standard Response Contract
 
-Default to `Output: compact`.
+Copilot exposes no response-level selector. Every task uses one response with
+these visible groups in order:
 
-Protocol: `Output: compact | normal | full`.
+1. `User Intent`
+2. `Task State`
+3. `Primary Result`
+4. `Supporting Information`
+5. `Next`
+6. `Persistence`
 
-- `compact`: general discussion. Optimize the next turn, not archival completeness.
-- `normal`: refine. Prepare key structure and important context for later persist, without writing files.
-- `full`: artifact, handoff, audit, explicit executable plan candidate, diff review, or complex routing.
+Keep task-specific fields and conditions from `.workflow/tasks/**` inside those
+groups. Omit optional empty groups. A request for more detail expands the same
+response; it does not load templates or switch modes.
 
-For `Task: plan`, compact output must start from `Input Sufficiency`, then summarize `Shape Summary` with `Motivation`, compact `Impact Surface`, `Plan At A Glance`, and compact verification when a plan body is allowed. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. Treat `Output: full` plan output as a minimal handoff packet for persist, implementation handoff, explicit plan handoff, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+Discussion tasks produce `Persist Candidate` only when the result is worth
+saving. They never construct an intermediate artifact packet. `persist`
+consumes an explicit source/path, Artifact ID, Persist Candidate,
+same-work-item artifacts, or matching recent discussion and user corrections,
+then loads the corresponding template and persist metadata partial.
 
-Default plan verification is minimum viable verification: prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites.
+For `Task: plan`, Task State owns `Input Sufficiency`, conditional `Input
+Gaps`, `Planning Continuation`, and `Compatibility Intake`. Primary Result
+owns `Shape Summary`, `Plan At A Glance`, and `Plan`. Supporting
+Information owns impact, scope, verification, compatibility/constraints, risk,
+and stop conditions. A `sufficient-for-handoff` Plan is directly usable as an
+explicit handoff; persist it when a durable handoff is needed.
+
+Default plan verification remains minimum viable verification: prefer existing
+fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static
+assertions, or manual acceptance checks. Old baseline, contract freeze, parity
+matrix, full regression, and e2e belong to `Lens: test` or explicit
+higher-assurance requests.
 
 Recommended flow:
 
 ```text
-compact discussion -> normal refine -> full persist
+standard discussion -> optional persist candidate -> persist with template
 ```
 
 ## External Goal Intake
@@ -88,46 +108,9 @@ Use one of two paths:
 - Long or reusable external source: persist `Artifact: brief` with `Brief Type: external-goal`, then shape from that inbox brief and persist the shape.
 - Current conversational goal: shape directly in chat, then persist the shape if it is worth preserving.
 
-`shape` is the reasoned projection from chat or an inbox goal brief. The durable shaped result belongs in `.session/threads/{thread}/shape_{topic}.md`.
-
-In `Mode: discuss`, do not output a full `Persist Packet` by default. Use `Persist Candidate` instead:
-
-```text
-Persist Candidate: Artifact=<artifact>; Thread=<thread>; Topic=<topic>; Suggested Target=<path>
-```
-
-Full `Persist Packet` is allowed only when the user asks to persist, says `Output: full`, asks for a handoff/audit, or the current response is the source for a following `Task: persist`. It is handoff input, not the final artifact schema.
-
-Compact format:
-
-```text
-User Intent: <one line about what the user wants>
-Current Read: <optional one line about relevant code/docs/discussion facts>
-Take:
-- <3-5 bullets max>
-Risks/Unknowns:
-- <0-3 bullets max>
-Next:
-- <one suggested next move>
-Persist Candidate: <none or one line; candidate only, do not write>
-```
-
-Normal refine format:
-
-```text
-User Intent: <one line about what the user wants>
-Current Read: <optional one line about relevant code/docs/discussion facts>
-Refined Direction / Plan:
-- <key structure>
-Discussion Notes To Preserve:
-- <phase, constraints, examples, accepted risks, user corrections>
-Questions:
-- <questions>
-Persist Candidate:
-- <artifact/thread/topic/target>
-```
-
-For `Task: plan`, replace the generic compact/normal body with plan-specific structure: `Input Sufficiency`, conditional `Input Gaps`, `Planning Continuation` when insufficient, conditional `Compatibility Intake`, `Shape Summary`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, `Compatibility / Constraint Plan` when relevant, `Next`, and `Persist Candidate`. If compact plan recommends `build` or `external-agent`, include `Execution Handoff: use Output: full or persisted plan for executable handoff`. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`; review owns those.
+`shape` is the reasoned projection from chat or an inbox goal brief. The
+durable shaped result belongs in
+`.session/threads/{thread}/shape_{topic}.md`.
 
 ## Task Boundary Shortcut
 
@@ -247,7 +230,7 @@ Add:
 - #.workflow/tasks/persist.md
 - the matching artifact template from #.workflow/templates/ and #.workflow/templates/_persist_metadata.md
 - selected #.workflow/lenses/<lens>.md only when named
-- `Persist Candidate`, `Persist Packet`, source discussion, source artifact, or relevant context
+- `Persist Candidate`, explicit source, source discussion, source artifact, or relevant context
 
 Target rules:
 
@@ -264,7 +247,7 @@ Target rules:
 
 Content fidelity:
 
-- `persist` should consume `Persist Packet` when available, but it may also consume `Persist Candidate` plus recent discussion.
+- `persist` consumes explicit sources first, then Artifact ID, `Persist Candidate`, same-work-item artifacts, and matching recent discussion plus user corrections.
 - Use `persist shape_<topic>` to reference a shape by `Artifact ID`; this anchors source context and does not derive the thread directory.
 - Include `Thread Inference Note` when the inferred target depends on assumptions or low-confidence same-work-item fit.
 - Preserve decision-relevant reasoning, not full transcript.
@@ -416,6 +399,6 @@ The plan must state `Compatibility: preserve | breaking` and `Constraint Mode: r
 
 Build must establish `Execution Environment Contract` and command provenance before verification: CWD, repo root, OS/shell, package manager or runner, available scripts, command source, and retry budget. Do not blindly retry path, cwd, shell, quoting, or command variants; default retry budget is 2 for the same failure class.
 
-Build output should default to compact `Execution Trace`. Use full trace only for blocked, partial, failed verification, pitfall, reusable execution discovery, scope-expansion risk, or user-requested persistence. The trace is factual, not a review verdict.
+Build output uses a concise `Execution Trace` for ordinary successful execution and automatically adds expanded evidence for blocked, partial, failed verification, pitfall, reusable execution discovery, scope-expansion risk, or user-requested persistence. The trace is factual, not a review verdict.
 
 In chat, summarize decisions and next steps. Do not paste full artifact contents unless the user asks for a preview.

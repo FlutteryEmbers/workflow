@@ -1,6 +1,6 @@
 ---
 description: Workflow Lite fallback/router prompt for mixed requests and full protocol control.
-argument-hint: "Mode=<discuss|persist|execute>; Output=<compact|normal|full>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|distill|shape|plan|persist|build|review|sync>; Lens=<none|consistency|boundary|language|domain|redteam|test|architecture|debug|expert|ponytail>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference|capture>; Depth=<compact|standard|detailed>; Sync Domain=<project-docs|session-archive>; Thread=<thread-name>; Target=<required for sync stable documents; optional for persist>; Plan=<required for execute>; Request=<what you want>"
+argument-hint: "Mode=<discuss|persist|execute>; Write Path=<workflow-managed|external-agent>; Task=<route|clarify|explore|distill|shape|plan|persist|build|review|sync>; Lens=<none|consistency|boundary|language|domain|redteam|test|architecture|debug|expert|ponytail>; Intent=<summary|exploration|decision|audit|handoff|constraint|reference|capture>; Depth=<compact|standard|detailed; persist only>; Sync Domain=<project-docs|session-archive>; Thread=<thread-name>; Target=<required for sync stable documents; optional for persist>; Plan=<required for execute>; Request=<what you want>"
 ---
 
 # Workflow Lite Fallback / Router Prompt
@@ -25,7 +25,6 @@ For common daily Copilot work, prefer dedicated workflow prompt commands:
 
 ```text
 Mode: ${input:mode:discuss}
-Output: ${input:output:compact|normal|full}
 Write Path: ${input:write_path:workflow-managed|external-agent}
 Task: ${input:task:route|clarify|explore|distill|shape|plan|persist|build|review|sync}
 Lens: ${input:lens:none; comma-separated lenses allowed only when explicitly selected}
@@ -43,7 +42,7 @@ Request: ${input:request:describe the work}
 - Use exactly one task as the main workflow context.
 - Prefer dedicated workflow prompt commands for common single-task work; use this prompt as fallback/router for mixed, unclear, or full-protocol requests.
 - Default to `Mode: discuss`.
-- Default to `Output: compact`.
+- Use one standard response grouped as `User Intent`, `Task State`, `Primary Result`, `Supporting Information`, `Next`, and optional `Persistence`; omit optional empty groups.
 - Start with `User Intent` unless the request is trivial; this must describe what the user wants, not the technical diagnosis.
 - Run a lightweight Task Boundary Check before acting.
 - Classify boundary as `fits`, `fits_with_preflight`, `fallback_fit`, `composite`, `wrong_task`, or `missing_prerequisite` when the request is not straightforward.
@@ -63,7 +62,7 @@ Request: ${input:request:describe the work}
 - Discussion Advisory Principle applies only in `Mode: discuss`: AI may provide lightweight next-task hints, `Need For Shape`, `Shape Continuation`, `Boundary Advice`, `Provisional Recommendation`, `Candidate Options`, `Best Guess`, `Candidate Interpretations`, `Evidence Probes`, `Missing Evidence`, `Evidence Sufficiency`, `Downstream Use`, `Follow-up Targets`, `Minimal Revision Sketch`, `Repair Direction`, `Input Sufficiency`, `Input Gaps`, `Planning Continuation`, and `What Would Change This` as thinking material.
 - Discussion adjacency is allowed; authority is not. Adjacent output may recommend the next task, but write, sync, execute, implementation, source-of-truth, and build authority still require the proper `Mode`, `Task`, target rules, prerequisites, and explicit executable plan.
 - For uncertain or consequential discussion output, include `Confidence`, `Assumptions`, and `Human Decision State`.
-- Compact output may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
+- A standard response may include one best guess; do not hide useful provisional thinking behind only risks and blockers.
 - In `shape`, `Need For Shape` is an advisory continuation classifier. Put it after current read and before `Shape Continuation`.
 - In `shape`, `Human Decision State` is discussion guidance, not authorization. Put it after `Shape Continuation` and before finalized recommendation when a user-owned choice matters.
 - If `Need For Shape Status: needs-direction` and state is `checkpoint`, use `vscode/askQuestions` when available as the Copilot-only renderer for `User Checkpoint`.
@@ -74,7 +73,7 @@ Request: ${input:request:describe the work}
 - Continue the complete Plan after native answers. If native UI is unavailable, output `Input Sufficiency: insufficient`, `Input Gaps: compatibility policy`, and the structured intake, then wait without a plan or handoff body.
 - Do not use native questions for fact discovery, ordinary clarification, review verdicts, technical solution delegation, target selection, task routing, repo preflight, write authorization, sync authorization, or build authorization. Plan questions outside `Compatibility Intake` remain forbidden.
 - Use `Input Sufficiency: insufficient | sufficient-for-draft | sufficient-for-handoff` for planning output. This classifies source input for intended use, not generated plan quality or authorization.
-- `plan compact` must summarize the chosen direction first, include `Motivation`, and when input is insufficient output `Planning Continuation` instead of an executable or handoff plan body. When input is sufficient, give compact `Impact Surface`, `Plan At A Glance`, plan body, and compact verification. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing. `Output: full` is a minimal handoff packet for persist, explicit handoff candidates, implementation handoff, or external-agent handoff; persisted artifact structure comes from `.workflow/templates/plan.md`.
+- A Plan must summarize the chosen direction first and include `Motivation`. When input is insufficient, output `Planning Continuation` instead of a plan/handoff body. When sufficient, include `Impact Surface`, `Plan At A Glance`, Plan, and verification. A `sufficient-for-handoff` Plan may be used as an explicit handoff; persist it for durable handoff.
 - Default plan verification is minimum viable verification: prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites.
 - `review` owns `Review Verdict`, formal `Blocking Gaps`, severity, gap analysis, and change necessity judgment. Review output must start with `Review Frame` containing `Review Question`, `Review Target Kind`, `Intended Next Use`, `Review Type`, and `Review Route Reason`; plan review is a built-in review rubric, not a lens. Use `Review Type: gap-analysis` for missing capability, unmet baseline, feature gap, workflow gap, or docs/code alignment gap. Use `Change Assessment` only for change-seeking review requests.
 - `explore` is descriptive inquiry for shape and review. It can say how something works, what exists, where it appears, what source-backed differences were observed, and "no evidence found in checked scope"; `review` decides what that evidence means against a baseline. `explore` may run non-mutating probes only to establish evidence and must report `Probe`, `Command or Method`, `Observed Result`, `Reliability`, and `Side Effect Check`. Use `explore -> plan` only when direction or target is already selected and evidence only fills repo-aware planning context.
@@ -91,7 +90,7 @@ Request: ${input:request:describe the work}
 - Use `ponytail` only when explicitly selected for `shape`, `plan`, or `review`. It applies a demo-first PoC posture with controlled inputs, relaxed production validation, no speculative fields or abstractions, explicit deferred work, upgrade triggers, retained real-world safety, and minimum proof. Do not activate it from PoC/demo wording, persist it across requests, infer compatibility/constraint policy from it, or pass it to `build`.
 - Do not infer, auto-apply, or load all lenses.
 - In `Mode: discuss`, do not load templates and do not create or update files.
-- Discussion tasks should produce a short `Persist Candidate` when the result is worth preserving; this is only a candidate and must not write files. Output full `Persist Packet` only when `Output: full`, the user asks to persist, or a handoff/audit requires it.
+- Discussion tasks should produce a short `Persist Candidate` when the result is worth preserving; this is only a candidate and must not write files or load templates.
 - In `Mode: persist`, use `Task: persist` for active `.session/inbox/**` or `.session/threads/**` artifacts, and use `Task: sync` for stable-document targets: allowed project docs targets, explicit `src/**/README.md`, or `.session/archive/<thread>/summary.md`.
 - For `persist`, `.session/inbox/**` targets may be inferred from `Artifact State: inbox`; `.session/threads/{thread}/{artifact}_{topic}.md` targets may be inferred from explicit `Thread + Artifact + Topic` or automatic same-work-item fit.
 - Use `Intent: capture` for untriaged inbox knowledge captures such as reusable build execution discoveries. Inbox capture is not source of truth and is not an execution source; promote stable conclusions later through `review`, `plan`, or `sync`.
@@ -100,7 +99,7 @@ Request: ${input:request:describe the work}
 - For `persist`, explicit `notes/**` targets may be written as disposable exploration memory; never infer `notes/**`.
 - Use `persist shape_<topic>` to reference a shape by `Artifact ID`; this anchors source context and does not derive the thread directory. Infer thread targets by same-work-item fit and include `Thread Inference Note` when assumptions matter.
 - `notes/**` is not project docs and is not an execution source.
-- For `persist`, preserve decision-relevant reasoning, not full transcript. Discuss output budget does not reduce artifact depth.
+- For `persist`, preserve decision-relevant reasoning, not full transcript. Chat response length does not reduce artifact depth.
 - `persist` may apply explicit review edits, but must not choose a new direction, re-plan execution, or judge whether review feedback is correct.
 - `Task: sync` in `Mode: persist` may write only stable-document targets for its selected `Sync Domain: project-docs | session-archive`.
 - In `Mode: execute`, require `Task: build` and an explicit executable plan.
@@ -138,199 +137,64 @@ Request: ${input:request:describe the work}
 
 Add the selected task file from `.workflow/tasks/`.
 Add the matching template from `.workflow/templates/` only for `persist` or `sync` in `Mode: persist`, plus `_persist_metadata.md` for `persist` or `_sync_metadata.md` for `sync`.
-Discussion task `Full Persist Packet` output is handoff input, not a final artifact schema.
+Discussion tasks do not construct artifact handoff packets. `persist` loads the matching template and metadata partial directly from source context.
 For new `architecture | feature | reference` docs targets, add `project_doc.md`; for `code-readme`, add `code_readme.md`; for archive summaries, add `archive_summary.md`. For existing docs, preserve the target structure.
 Add selected lens files from `.workflow/lenses/` only when `Lens` is not `none`.
 Add relevant `.session/inbox/**`, `.session/threads/**`, `docs/**`, and source files.
 
-## Boundary Output
+## Standard Response Contract
 
-For `Output: compact`, prefer:
-
-```text
-User Intent: <one line about what the user wants>
-Current Read: <optional one line about relevant code/docs/discussion facts>
-Take:
-- <3-5 bullets max>
-Risks/Unknowns:
-- <0-3 bullets>
-Next:
-- <one suggested next move>
-Persist Candidate: <none or one line; candidate only, do not write>
-```
-
-For `Task: explore` with `Output: compact`, use this structure instead:
+Use the task contract as the field source and render the result with these
+visible groups in order:
 
 ```text
-User Intent: <one line about what the user wants to understand>
-Explore Frame:
-- Explore Question: <what the user wants to understand>
-- Inquiry Type: how-it-works | what-exists | difference-map | evidence-check | entrypoint-map
-- Source Scope: <checked files/docs/commands/materials>
-- Downstream Use: shape | review | plan | none
-- Stop Rule: <when enough descriptive evidence has been collected>
-Observed Answer:
-- How It Works: <only when relevant; observed behavior or mechanism>
-- What Exists: <only when relevant; source-backed inventory>
-- Differences Observed: <only when relevant; observed differences without judging which side is correct>
-- Entrypoints / Flow: <only when relevant; observed entrypoints or flow>
-- Not Found In Checked Scope: <evidence not found, with checked scope>
-- Not Checked: <scope not checked>
-Evidence Basis:
-- <source -> observed fact>
-Reliability / Not Checked:
-- <reliability notes, weak evidence, or unchecked scope notes>
-Evidence Probes:
-- <only when used; probe, command or method, observed result, reliability, side effect check>
-Evidence Sufficiency:
-- For Shape: <sufficient|partial|insufficient>
-- For Review: <sufficient|partial|insufficient>
-- For Plan: <sufficient|partial|insufficient|not-applicable>
-Downstream Use:
-- Shape-ready Evidence: <evidence or none>
-- Review-ready Evidence: <evidence or none>
-- Plan-ready Evidence: <only when direction/target is selected; otherwise not-applicable>
-Candidate Review Targets:
-- <reviewable question or none>
-Recommended Next Task: <shape|review|persist|distill|none; plan only when direction/target is already selected>
-Persist Candidate: none | Artifact=note; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
+User Intent
+Task State
+Primary Result
+Supporting Information
+Next
+Persistence
 ```
 
-For `Task: shape` with `Output: compact`, use this structure instead:
+Omit optional empty groups. Keep required state fields explicit. A request for
+more detail expands the same fields and does not load templates.
 
-```text
-User Intent: <one line about what the user wants shaped>
-Current Read: <optional one line about relevant code/docs/discussion facts>
-Need For Shape:
-- Status: needs-direction | already-settled | answerable-now | needs-evidence | needs-review
-- Reason: <why this continuation type fits>
-- Advisory Next Task: <shape|explore|review|plan|persist|none>
-Shape Continuation:
-- Continuation Type: <new-direction|carry-forward|short-answer|provisional|review-handoff>
-- Current / Provisional Direction: <direction, short answer, or none>
-- Carry Forward: <boundaries, assumptions, or next-use notes>
-- What Would Change This: <evidence, review result, or user decision>
-- Advisory Next Task: <shape|explore|review|plan|persist|none>
-Boundary Advice:
-- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what shape can still safely provide, or none>
-- Advisory Next Task: <task or sequence>
-Adjacent Allowance Used: <none|clarification|compression|evidence-needs|risk-sketch|planning-sketch>
-Decision State:
-- Human Decision State: <none|assumed|checkpoint|unresolved>
-- Decision State Reason: <why this state applies>
-- Assumed Default: <recommended default or none>
-- Checkpoint Needed: <yes/no>
-User Checkpoint: <only when Human Decision State is checkpoint; wait for selection before final recommendation>
-Unresolved Decision: <only when Human Decision State is unresolved; evidence, decision, or review result needed>
-Take:
-- <3-6 bullets>
-Risks/Unknowns:
-- <0-3 bullets>
-Provisional Recommendation: <best guess, carry-forward recommendation, or none>
-Impact Surface:
-- <when this response forms or updates a direction and planning may follow>
-Recommended Next Task: <clarify|explore|distill|review|plan|persist|sync|build|external-agent|none>
-Persist Candidate: <none unless this response forms or updates a direction; otherwise Artifact=shape; Artifact ID=shape_<topic>; Thread=<thread>; Topic=<topic>; Suggested Target=.session/threads/<thread>/shape_<topic>.md>
-```
+Task mappings:
 
-For `Task: plan` with `Output: compact`, use this structure instead:
+- `route`: boundary/scope -> recommended path -> context and handoff points.
+- `clarify`: boundary/term -> plain meaning -> example and related context.
+- `distill`: source/focus/type -> summary plus observed/inferred/unknown -> omissions.
+- `explore`: boundary/Explore Frame -> Observed Answer -> evidence and reliability.
+- `shape`: Need For Shape/continuation/decision -> direction -> risks, impact, and decisions.
+- `plan`: sufficiency/gaps/Compatibility Intake -> Shape Summary and Plan -> impact, scope, verification, compatibility, and stop conditions.
+- `review`: Review Frame -> verdict and optional Change Assessment -> findings, confidence, gaps, and repair direction.
+- `build`: result -> Execution Trace -> environment, verification, deviations, pitfalls, and discoveries.
+- `persist`/`sync`: write state -> short receipt -> template and source basis.
 
-```text
-User Intent: <one line about what the user wants planned>
-Input Sufficiency: <insufficient|sufficient-for-draft|sufficient-for-handoff>
-Input Gaps:
-- <only when insufficient; missing input categories only>
-Planning Continuation:
-- Known Direction: <known chosen direction, or unknown; only when insufficient>
-- Useful Planning Frame Now: <safe partial framing, or none; only when insufficient>
-- Cannot Produce Yet: <draft plan | handoff plan | executable plan; only when insufficient>
-- Advisory Next Task: <shape|explore|plan|none; only when insufficient>
-Compatibility Intake:
-- <only when triggered and native UI is unavailable; include evidence and 2-3 questions, omit all plan-body fields, and wait>
-Shape Summary:
-- Source: <chat | shape artifact | inbox brief | decision | project docs>
-- Motivation: <one sentence or unknown>
-- Selected Direction: <one line>
-- Key Decisions: <1-3 bullets or none>
-- Assumptions: <0-2 bullets or none>
-Impact Surface:
-- Scope Size: <small | medium | large; omit when insufficient>
-- Affected Surfaces: <surfaces; omit when insufficient>
-- Risk: <low | medium | high; omit when insufficient>
-- Reversal Cost: <low | medium | high; omit when insufficient>
-Plan At A Glance:
-- <1-3 summary changes; target, reason, and risk; omit when insufficient>
-Plan:
-- <3-6 work packages or phases; omit when insufficient>
-Verification:
-- Minimum Viable Verification: <targeted fixture/unit/static/smoke/manual check; omit when insufficient>
-- Verification Feasibility: <available|partial|unavailable|unknown; omit when insufficient>
-- Fallback Verification: <fallback or none; omit when insufficient>
-- Residual Risk: <remaining risk or none; omit when insufficient>
-Compatibility / Constraint Plan:
-- <when relevant>
-Execution Handoff: <use Output: full or persisted plan for executable handoff; include only when Recommended Next Task is build or external-agent>
-Recommended Next Task: <shape | explore | review | plan | persist | sync | build | external-agent | none>
-Next: <shape | explore | user-answer | plan | review plan | build with explicit invocation | persist plan | sync | none>
-Persist Candidate: <none or one line; candidate only, do not write>
-```
+For `plan`, unresolved Compatibility Intake keeps `Input Sufficiency:
+insufficient`, includes `Input Gaps: compatibility policy`, and omits the Plan,
+handoff support, and Persistence. A `sufficient-for-handoff` Plan includes
+allowed changes, do-not-touch areas, verification, fallback, residual risk, and
+stop conditions and may be used as the explicit handoff.
 
-For `Output: normal`, refine toward a future persist without writing files:
+For `build`, use concise trace fields after ordinary successful execution and
+automatically add expanded evidence for blocked/partial execution, failed
+verification, pitfalls, scope-expansion risk, reusable discoveries, or a request
+to persist the trace.
 
-```text
-User Intent: <one line about what the user wants>
-Current Read: <optional one line about relevant code/docs/discussion facts>
-Refined Direction / Plan:
-- <key structure>
-Discussion Notes To Preserve:
-- <phase, constraints, examples, accepted risks, user corrections>
-Questions:
-- <questions>
-Persist Candidate:
-- <artifact/thread/topic/target>
-```
+For `persist`, resolve source as explicit source/path -> Artifact ID -> Persist
+Candidate -> same-work-item artifacts -> matching recent discussion and user
+corrections. Load the matching artifact template and
+`_persist_metadata.md`; write every required section at every Depth. If
+prerequisites are missing or an interactive checkpoint is unresolved, write
+nothing and return a blocked response.
 
-For `Task: plan` with `Output: normal` or `Output: full`, follow `.workflow/tasks/plan.md`: include `Input Sufficiency`, conditional `Input Gaps`, `Planning Continuation` when insufficient, conditional `Compatibility Intake`, `Shape Summary` with `Motivation`, `Impact Surface`, `Plan At A Glance`, `Plan` when input is sufficient, `Verification` with minimum viable verification, feasibility, fallback, and residual risk, and `Compatibility / Constraint Plan` when relevant. Do not output a plan body while Compatibility Intake is unresolved. Do not output formal blocking gaps, severity, review verdicts, or review-style checklists from `plan`.
+For `sync`, load the matching stable-document template and
+`_sync_metadata.md`; return a short receipt or blocked response.
 
-For non-trivial `Task: review` output, follow `.workflow/tasks/review.md` instead of the generic compact/normal structure. Include `Review Frame`, `Review Verdict`, `Confidence`, `Readiness`, `Blocking Gaps`, `Non-blocking Gaps`, `Can Use For Intended Next Use`, `Recommended Action`, `Suggested Critique`, and `Recommended Next Task`.
-
-Use `Recommended Segments` only for `composite`, `wrong_task`, or `missing_prerequisite`.
-
-```text
-Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-Boundary Advice:
-- Why: <routing reason or none>
-- Useful Response Now: <what the selected task can still safely provide, or none>
-- Advisory Next Task: <task or sequence>
-Scope Interpretation:
-- Requested Task: <task named or implied by user>
-- Output Shape Used: <meaning|evidence|direction|verdict|plan|persist|sync|build>
-- Effective Scope: <what this task can answer now>
-- Out-of-Shape Material: <what belongs to another task, or none>
-- Recommended Next Task: <task or none>
-Reason: <one sentence>
-Recommended Path: <task -> task>
-Next Prompt: <copyable prompt>
-```
-
-For composite requests, provide:
-
-```text
-Recommended Segments:
-1. <segment name>
-   Mode:
-   Task:
-   Lens:
-   Target/Plan:
-   Context:
-   Request:
-   Expected Output:
-   Continue Condition:
-Advisory Handoff Points:
-- <where user decision, audit, or source-of-truth confirmation may be needed>
-```
+For composite requests, place segmented task prompts and their continue
+conditions under `Supporting Information`, then put the copyable first prompt
+under `Next`.
 
 ## External-Agent Review Formats
 

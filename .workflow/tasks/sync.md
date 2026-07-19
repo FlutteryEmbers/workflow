@@ -86,10 +86,31 @@ Rejected targets:
 
 Adjacent discussion output from any task does not grant sync authority. `sync` writes only in `Mode: persist`, only to allowed stable-document targets, and only after sync prerequisites and target boundaries pass validation.
 
-## Expected Output
+## Response Contract
 
-- `Mode: discuss`: sync domain, target or alignment/archive set, prerequisites, blockers, and next prompt.
-- `Mode: persist`: write only the selected stable document target(s), with blocked items when prerequisites are missing.
+- `Mode: discuss`: use the shared response groups for sync domain, target or alignment/archive set, prerequisites, blockers, and next prompt.
+- `Mode: persist`: write only the selected stable document target(s) with the matching sync template, then return a short write receipt; report blocked items without writing when prerequisites are missing.
+
+```text
+User Intent
+- <the stable-document projection the user wants>
+Task State
+- Result: <advisory|written|blocked>
+- Sync Domain / Sync Object: <selected domain and object>
+- Target / Alignment Set: <resolved target or candidates>
+Primary Result
+- Projection Advice or Write Receipt: <advice in discuss mode; created or updated target in persist mode>
+Supporting Information
+- Source / Source Of Truth: <confirmed source basis>
+- Prerequisites / Blocked Items: <missing or unsafe conditions>
+- Alignment or Archive Criteria: <criteria used for the projection>
+- Follow-up Review Needed: <when judgment is still required>
+Next
+- Next Prompt / Next: <confirmation, review, plan, persist-mode sync, or none>
+```
+
+The stable document itself follows the matching sync template and is not echoed
+unless the user explicitly asks for a preview.
 
 ## Task Boundary Check
 
@@ -250,7 +271,7 @@ For `project-docs`, if `Target` exists, update only that target. If `Target Dire
 
 For `session-archive`, default to one source thread and one archive summary target. If more than one thread must be archived, require an explicit plan that names the batch and stop conditions.
 
-## Output Rules
+## Projection Rules
 
 - Output `Sync Domain: project-docs | session-archive`.
 - Output `Sync Object: architecture | feature | reference | code-readme | archive-summary | all`.

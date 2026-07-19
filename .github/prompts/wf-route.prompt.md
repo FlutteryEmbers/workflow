@@ -8,11 +8,11 @@ argument-hint: "Request=<goal or mixed request>; Lens=<none; route recommends le
 Use Workflow Lite route semantics.
 
 Mode: discuss
-Output: compact
 Task: route
 Lens: none
 
 Rules:
+- Use one standard response grouped as `User Intent`, `Task State`, `Primary Result`, `Supporting Information`, `Next`, and optional `Persistence`; omit optional empty groups.
 - Chat only; do not write files.
 - Do not load templates.
 - Do not apply lenses automatically; recommend them only.
@@ -27,10 +27,8 @@ Request:
 ${input:request:describe the goal or mixed request}
 
 Return:
-- Interpreted goal
-- Boundary, when useful
-- Scope Interpretation, when using fallback_fit
-- Recommended path
-- Lens
-- Add Context
-- Next prompt
+- `User Intent`: Interpreted Goal.
+- `Task State`: Boundary when useful; Scope Interpretation for fallback fit.
+- `Primary Result`: Recommended Path and selected Lens.
+- `Supporting Information`: Mode, Write Path, Target, Add Context, segments, and handoff points when relevant.
+- `Next`: copyable Next Prompt.

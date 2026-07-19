@@ -9,10 +9,10 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - `.workflow/README.md` is the workflow source of truth.
 - Optional shortcut skill source: `skills/workflow-lite-shortcuts/`. Install it into `$CODEX_HOME/skills` or `~/.codex/skills` only when you want phrases like `wf shape`, `wf plan`, `wf pplan`, or `wf build` to map to the matching Workflow Lite context.
 - Default to `Mode: discuss`.
-- Default to `Output: compact` for general discussion; use `Output: normal` to refine before persist and `Output: full` for artifacts, handoffs, audits, or diff reviews.
-- For `Task: plan`, compact output must start from `Input Sufficiency`, then `Shape Summary` with `Motivation`, a compact `Impact Surface`, `Plan At A Glance`, and compact verification when a plan body is allowed. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing.
+- Use one standard response with visible groups in this order: `User Intent`, `Task State`, `Primary Result`, `Supporting Information`, `Next`, and optional `Persistence`. Preserve each task's field names and conditions; omit optional empty groups.
+- For `Task: plan`, Task State starts with `Input Sufficiency`; Primary Result contains `Shape Summary` with `Motivation`, `Plan At A Glance`, and `Plan` when allowed; Supporting Information contains impact, scope, verification, compatibility/constraints, risk, and stop conditions. Use `Shape Summary: Source=chat` when there is no persisted shape artifact; use `Motivation: unknown` rather than inventing.
 - Default plan verification is minimum viable verification: prefer existing fixture/unit/static/smoke/targeted checks, repo scripts, prompt/static assertions, or manual acceptance checks over ideal high-assurance test systems. Old baseline, contract freeze, parity matrix, full regression, and e2e belong to `Lens: test` or explicit higher-assurance requests, not default plan prerequisites.
-- Treat `Output: full` plan output as a minimal handoff packet for persist, implementation handoff, explicit plan handoff, or external-agent handoff. The persisted artifact structure comes from `.workflow/templates/plan.md`; `Depth: detailed` is persisted artifact metadata, not a chat output mode.
+- Treat `sufficient-for-handoff` as the completeness control for implementation or external-agent handoff. The current Plan may be used as an explicit handoff; persist it for durable handoff. `Depth: detailed` is persisted artifact metadata, not a chat response mode.
 - When unsure, start with `shape`. Use `explore` for evidence, `distill` for user-directed summaries, and `review` for verdict.
 - Do not load all tasks, lenses, templates, or `.workflow/**` by default.
 - Use one task as the main workflow context.
@@ -22,7 +22,7 @@ Use this file when you want Codex to follow Workflow Lite explicitly. Add only t
 - Codex may suggest an explicit redteam critique when the user asks for critique or an existing target has costly failure paths, but must not load or apply it automatically.
 - Embedded critique is lightweight core behavior in `shape`, `plan`, and `build`; it names risks and stop conditions without loading the redteam lens or issuing review verdicts.
 - Load templates only for `persist` or `sync` in `Mode: persist`; discussion tasks must not copy final artifact templates.
-- For `persist`, load only the matching template for the selected artifact and apply `.workflow/templates/_persist_metadata.md`; a discussion `Persist Packet` is handoff input, not the final artifact schema.
+- Discussion tasks output only `Persist Candidate` when worth saving. For `persist`, load only the matching template for the selected artifact, apply `.workflow/templates/_persist_metadata.md`, and write every required template section.
 - Treat `.session/**` as working memory, not project source of truth.
 - Treat `.session/threads/**` as session working memory grouped by small closable work item.
 - Use explicit `.session/threads/{thread}/plan_{topic}.md` files for workflow-managed build input.
@@ -153,14 +153,14 @@ Context:
 - .workflow/tasks/persist.md
 - .workflow/templates/<artifact template>.md and .workflow/templates/_persist_metadata.md
 - selected lenses only when named
-- Persist Packet or source context
+- Persist Candidate, explicit source, or source context
 Request:
 Persist the high-fidelity structured artifact only.
 ```
 
 `persist` may infer `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`. Thread directories are small closable work items. When `Thread` is absent, infer the target by same-work-item fit: reuse active threads for continuations/refinements/review responses, create or suggest a new thread for distinct bounded decisions or changes, and treat recency as supporting evidence only. Explicit `notes/**` targets are allowed only for disposable exploration notes and are never inferred. `.session/archive/**` targets route to `sync` with `Sync Domain: session-archive`. Targets outside active `.session/inbox/**`, `.session/threads/**`, and `notes/**` route to `sync`, `build`, or external-agent.
 
-Use `Persist Packet` when available. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, decision trail, rejected options, risks, examples, and next use when they affect later work.
+Resolve source in this order: explicit source/path, Artifact ID, Persist Candidate, same-work-item artifacts, then matching recent discussion and user corrections. Preserve decision-relevant reasoning, not full transcript. Keep context, key facts, decision trail, rejected options, risks, examples, and next use when they affect later work.
 
 Use `persist shape_<topic>` to reference a shape by `Artifact ID`. This anchors source context and does not derive the thread directory. Include `Thread Inference Note` when the inferred target depends on same-work-item assumptions, related old threads, or low-confidence fit.
 
@@ -190,7 +190,7 @@ If the plan is missing, unclear, or not executable enough, do not edit files.
 
 Build is a workflow-aware bounded executor. Before verification, establish `Execution Environment Contract` and command provenance: CWD, repo root, OS/shell, package manager or runner, available scripts, command source, and retry budget. Do not blindly retry path, cwd, shell, quoting, or command variants; default retry budget is 2 for the same failure class.
 
-After build, output compact `Execution Trace` by default. Use full trace only for blocked, partial, failed verification, pitfall, reusable execution discovery, scope-expansion risk, or user-requested persistence. `Execution Trace` is factual, not a review verdict, and `build` must not write `.session/**`; persist current-work-item audit output as `Artifact: note`, `Intent: audit`, or reusable execution discoveries as `Artifact: note`, `Artifact State: inbox`, `Intent: capture`.
+After build, use a concise `Execution Trace` for ordinary successful execution and automatically add expanded evidence for blocked, partial, failed verification, pitfall, reusable execution discovery, scope-expansion risk, or user-requested persistence. `Execution Trace` is factual, not a review verdict, and `build` must not write `.session/**`; persist current-work-item audit output as `Artifact: note`, `Intent: audit`, or reusable execution discoveries as `Artifact: note`, `Artifact State: inbox`, `Intent: capture`.
 
 ### External-Agent Native Plan / Implement
 

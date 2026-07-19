@@ -7,7 +7,6 @@ inputs:
 outputs:
   - chat_findings
   - persist_hint
-  - full_persist_packet
 user_selectable_lenses:
   - architecture
   - boundary
@@ -31,7 +30,7 @@ Role: {{CONTENT: /.workflow/roles/explorer.md}}
 - `Mode: discuss` is default and is the only valid mode for this task.
 - Evidence probes are allowed only as non-mutating observation inside `Mode: discuss`; they are not `Mode: execute`.
 - Do not load templates and do not write files.
-- If the user asks to persist, provides a target, or sets `Output: full`, return `Full Persist Packet` and route the write to `persist`.
+- If the user asks to persist or provides a target, return a `Persist Candidate` and route the write to `persist`; do not construct an intermediate packet.
 - `Mode: execute` is not valid for this task.
 
 ## When To Use
@@ -64,7 +63,7 @@ Role: {{CONTENT: /.workflow/roles/explorer.md}}
 
 Explore output must remain descriptive and evidence-backed. If the user asks for judgment, provide observed evidence plus `Candidate Review Targets`; if the user asks for direction, provide observed evidence plus likely `shape` inputs.
 
-## Output Shape
+## Result Shape
 
 `Output Shape: Observed System Map`
 
@@ -83,12 +82,11 @@ Explore output is shaped around descriptive inquiry:
 - `Candidate Review Targets`
 - `Recommended Next Task`
 
-## Expected Output
+## Result Requirements
 
 - Start with `User Intent`, then `Explore Frame`, then `Observed Answer`; list `Evidence Basis` after answering the user's descriptive question.
 - Include `Evidence Probes`, `Reliability / Not Checked`, `Evidence Sufficiency`, `Downstream Use`, `Candidate Review Targets`, `Follow-up Targets`, and `Recommended Next Task` when relevant.
-- `Output: compact` default: observed answer, evidence basis, reliability/not-checked notes, downstream use, and optional `Persist Candidate`.
-- `Full Persist Packet` only when findings should be persisted now or `Output: full` is requested.
+- One standard chat response with observed answer, evidence basis, reliability/not-checked notes, downstream use, and optional `Persist Candidate`.
 
 ## Task Boundary Check
 
@@ -223,138 +221,41 @@ Reliability / Not Checked:
 - Suggested Follow-up: <inspect runtime behavior | check tests | ask owner | compare versions | treat as hypothesis>
 ```
 
-## Compact Output By Default
+## Response Contract
 
-In `Mode: discuss`, default to:
-
-```text
-User Intent: <one line about what the user wants to understand>
-Boundary Advice:
-- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what explore can still safely provide, or none>
-- Advisory Next Task: <task or sequence>
-Explore Frame:
-- Explore Question: <what the user wants to understand>
-- Inquiry Type: how-it-works | what-exists | difference-map | evidence-check | entrypoint-map
-- Source Scope: <checked files/docs/commands/materials>
-- Downstream Use: shape | review | plan | none
-- Stop Rule: <when enough descriptive evidence has been collected>
-Observed Answer:
-- How It Works: <only when relevant; observed behavior or mechanism>
-- What Exists: <only when relevant; source-backed inventory>
-- Differences Observed: <only when relevant; observed differences without judging which side is correct>
-- Entrypoints / Flow: <only when relevant; observed entrypoints or flow>
-- Not Found In Checked Scope: <evidence not found, with checked scope>
-- Not Checked: <scope not checked>
-Evidence Basis:
-- <source -> observed fact>
-Reliability / Not Checked:
-- <0-3 reliability notes, weak evidence, or unchecked scope notes>
-Evidence Probes:
-- <optional; probe, command or method, observed result, reliability, side effect check>
-Evidence Sufficiency:
-- For Shape: <sufficient|partial|insufficient>
-- For Review: <sufficient|partial|insufficient>
-- For Plan: <sufficient|partial|insufficient|not-applicable>
-Downstream Use:
-- Shape-ready Evidence: <evidence or none>
-- Review-ready Evidence: <evidence or none>
-- Plan-ready Evidence: <only when direction/target is selected; otherwise not-applicable>
-- Missing For Shape: <missing evidence or none>
-- Missing For Review: <missing evidence or none>
-- Missing For Plan: <missing repo facts or not-applicable>
-Follow-up Targets:
-- <0-3 sources, probes, or candidate review targets>
-Candidate Review Targets:
-- <reviewable question or none>
-Recommended Next Task: <shape|review|persist|distill|none; plan only when direction/target is already selected>
-Persist Candidate: Artifact=note; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
-```
-
-Use `Persist Candidate: none` when the exploration is not worth preserving.
-
-## Normal Refine Output
-
-Use `Output: normal` when the user asks to organize, refine, or prepare evidence for persist without writing files:
+Use one standard response. Keep the shared groups in order, preserve the
+task-specific field names, and omit optional groups that have no content:
 
 ```text
-User Intent: <one line about what the user wants to understand>
-Boundary Advice:
-- Boundary: <fits|fits_with_preflight|fallback_fit|composite|wrong_task|missing_prerequisite>
-- Why: <routing reason or none>
-- Useful Response Now: <what explore can still safely provide, or none>
-- Advisory Next Task: <task or sequence>
-Explore Frame:
-- Explore Question: <what the user wants to understand>
-- Inquiry Type: how-it-works | what-exists | difference-map | evidence-check | entrypoint-map
-- Source Scope: <checked files/docs/commands/materials>
-- Downstream Use: shape | review | plan | none
-- Stop Rule: <when enough descriptive evidence has been collected>
-Observed Answer:
-- How It Works: <only when relevant>
-- What Exists: <only when relevant>
-- Differences Observed: <only when relevant>
-- Entrypoints / Flow: <only when relevant>
-- Not Found In Checked Scope: <evidence not found, with checked scope>
-- Not Checked: <scope not checked>
-Evidence Basis:
-- <source-backed fact, reliability status, and observed implication>
-Candidate Interpretations:
-- <plausible explanation, borrowable idea, or likely entrypoint to preserve>
-Evidence Probes:
-- <probe, command or method, observed result, reliability, side effect check, or none>
-Reliability / Not Checked:
-- <evidence not found, weak evidence, stale-looking evidence, or unchecked scope>
-Evidence Sufficiency:
-- For Shape: <sufficient|partial|insufficient>
-- For Review: <sufficient|partial|insufficient>
-- For Plan: <sufficient|partial|insufficient|not-applicable>
-Downstream Use:
-- Shape-ready Evidence: <evidence or none>
-- Review-ready Evidence: <evidence or none>
-- Plan-ready Evidence: <only when direction/target is selected; otherwise not-applicable>
-- Missing For Shape: <missing evidence or none>
-- Missing For Review: <missing evidence or none>
-- Missing For Plan: <missing repo facts or not-applicable>
-Follow-up Targets:
-- <source, probe, runtime observation, user question, or candidate review target>
-Discussion Notes To Preserve:
-- <source, reliability note, contradiction, example, or constraint worth preserving>
-Open Questions:
-- <missing source or evidence gap>
-Recommended Next Task:
-- <shape|review|persist|distill|none; plan only when direction/target is already selected>
-Persist Candidate:
-- Artifact=note; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
-```
-
-## Full Persist Packet
-
-Output the full packet only when the user asks to persist, provides `Target`, or requests `Output: full`. This packet is handoff input for `persist`; it is not the final persisted artifact schema. `persist` must load the matching template and shape the final artifact.
-
-```text
-Persist Packet:
-Artifact: note
-Thread: <thread or none>
-Topic: <topic>
-Suggested Target: .session/inbox/note_<topic>.md or .session/threads/<thread>/note_<topic>.md
-Source Summary: <code paths, docs, references, or materials explored>
-Key Fields:
-- Explore Frame: <question, inquiry type, checked scope, downstream use, and stop rule>
-- Observed Answer: <how it works, what exists, differences observed, entrypoints or flow, not found in checked scope, and not checked>
-- Evidence Basis: <main source-backed facts>
-- Candidate Interpretations: <plausible explanations or entrypoints; not final direction>
-- Evidence Probes: <temporary non-mutating probes and side-effect checks, or none>
-- Reliability / Not Checked: <evidence strength, observed differences, weak evidence, unknowns, and unchecked scope>
+User Intent
+- <one line about what the user wants to understand>
+Task State
+- Boundary Advice: <Boundary, Why, Useful Response Now, Advisory Next Task; omit when it adds no value>
+- Explore Frame: <Explore Question, Inquiry Type, Source Scope, Downstream Use, Stop Rule>
+Primary Result
+- Observed Answer: <How It Works, What Exists, Differences Observed, Entrypoints / Flow, Not Found In Checked Scope, Not Checked; include only relevant fields>
+Supporting Information
+- Evidence Basis: <source-backed facts and observed implications>
+- Candidate Interpretations: <optional plausible explanations or likely entrypoints>
+- Evidence Probes: <optional probe, method, result, reliability, and side-effect check>
+- Reliability / Not Checked: <weak, stale-looking, contradicted, or unchecked evidence>
+- Missing Evidence: <evidence not found or not checked>
 - Evidence Sufficiency: <For Shape, For Review, For Plan>
-- Downstream Use: <shape-ready evidence, review-ready evidence, exceptional plan-ready evidence, and missing evidence for each>
-- Follow-up Targets: <sources, probes, or candidate review targets>
-- Constraints Found: <constraint or boundary found>
-Next Use: <shape | review | plan | persist | none; plan only when direction/target is already selected>
+- Downstream Use: <shape-ready, review-ready, exceptional plan-ready evidence, and what remains missing>
+- Follow-up Targets: <optional sources, probes, or runtime observations>
+- Candidate Review Targets: <optional reviewable questions>
+- Constraints Found: <optional boundaries, behavior, or dependencies>
+- Discussion Notes To Preserve: <optional evidence, contradiction, example, or constraint>
+- Open Questions: <optional source or evidence gaps>
+Next
+- Recommended Next Task: <shape|review|persist|distill|none; plan only when direction or target is already selected>
+Persistence
+- Persist Candidate: Artifact=note; Thread=<thread or none>; Topic=<topic>; Suggested Target=<path>
 ```
 
-If the exploration is not worth preserving, output `Persist Candidate: none`.
+Omit `Persistence` when the exploration is not worth preserving. A request for
+more detail expands these same fields; it does not select another response mode
+or load an artifact template.
 
 ## User Input
 

@@ -105,7 +105,7 @@ conversational source
 | `distill` | `summarizer` | chat | Generate a user-directed summary or distillation of specified source material. |
 | `shape` | `shaper` | chat | Form a direction, concept, architecture, or session decision. |
 | `plan` | `planner` | chat | Turn a chosen direction into a repo-aware plan, explicit executable plan candidate, or external-agent handoff. |
-| `persist` | `steward` | active session artifacts | Persist high-fidelity structured inbox, thread, or capture artifacts from discussion, thread artifacts, Persist Packets, or user-provided sources. |
+| `persist` | `steward` | active session artifacts | Persist high-fidelity structured inbox, thread, or capture artifacts from discussion, thread artifacts, Persist Candidates, or user-provided sources. |
 | `build` | `builder` | repository changes | Apply an explicit workflow-managed plan with bounded execution and traceable verification. |
 | `review` | `reviewer` | chat | Review behavior, evidence, plans, diffs, decisions, or docs alignment. |
 | `sync` | `steward` | stable docs | Project confirmed outcomes into project docs, code-adjacent README files, or session archive summaries. |
@@ -280,7 +280,7 @@ For stable documents:
 
 Lenses are user-selected. Copilot may suggest a lens, but must not apply it unless the user explicitly names it or adds its file as context.
 
-Non-review tasks may not use a lens as a task replacement. No task may use a lens to bypass permissions. Lenses may strengthen analysis only; they do not change task responsibility, write permission, execute permission, or sync permission. Option comparison belongs in `shape`; abstraction level belongs in core `shape` / `plan` protocol; multi-turn target selection belongs in thread inference and `persist`; expanded detail belongs in `Output` and `Depth`.
+Non-review tasks may not use a lens as a task replacement. No task may use a lens to bypass permissions. Lenses may strengthen analysis only; they do not change task responsibility, write permission, execute permission, or sync permission. Option comparison belongs in `shape`; abstraction level belongs in core `shape` / `plan` protocol; multi-turn target selection belongs in thread inference and `persist`; chat detail expands inside the task's standard response, while artifact detail belongs in persist `Depth`.
 
 Core selectable lenses:
 
@@ -309,7 +309,7 @@ Folded into protocol:
 | `strategy` | `shape` option comparison and tradeoff synthesis. |
 | `conceptual` | Core `shape` concept boundary and `plan` readiness rules. |
 | `iteration` | Session/thread inference and `persist` target rules. |
-| `expand` | `Output: normal|full` and `Depth: detailed`. |
+| `expand` | Task-owned standard response expansion and persist `Depth: detailed`. |
 | `distill` | `Task: distill` user-directed summaries and distillation. |
 
 Selectable lenses by task:
@@ -407,31 +407,54 @@ Closed loop paths:
 - `plan sufficient-for-handoff -> review, build with explicit invocation, or external-agent`
 - `plan + Review Verdict: ready -> build/external-agent`
 
-## Conversation-to-Artifact Output Flow
+## Standard Response Contract
 
-Default to `Output: compact`.
+Workflow Lite has one chat response format and no public response-level enum.
+Requests for more detail expand the same task response; they do not select
+another mode or load artifact templates.
 
-Protocol: `Output: compact | normal | full`.
+Every task uses these visible groups in order:
 
-- `compact`: general discussion. Optimize the next turn, not archival completeness.
-- `normal`: refine. Prepare key structure and important context for later persist, without writing files.
-- `full`: artifact, handoff, audit, diff review, explicit executable plan candidate, or complex routing.
+1. `User Intent`
+2. `Task State`
+3. `Primary Result`
+4. `Supporting Information`
+5. `Next`
+6. `Persistence`
 
-Daily path:
+Keep each task's existing field names, enum values, conditions, and authority
+inside those groups. Omit optional groups that have no content. Required state
+fields remain explicit even when their value is `none` or `unknown`.
 
-```text
-compact discussion -> normal refine -> full persist
-```
+Task-specific cores remain distinct:
 
-Discussion tasks should not output full `Persist Packet` by default. Use `Persist Candidate` unless the user asks to persist, asks for `Output: full`, or needs a handoff/audit.
+- `route`: boundary and scope -> recommended path -> context and handoff points.
+- `clarify`: boundary and term -> plain meaning -> example and related context.
+- `distill`: source/focus/type -> summary and observed/inferred/unknown -> omissions.
+- `explore`: boundary and Explore Frame -> Observed Answer -> evidence and reliability.
+- `shape`: Need For Shape, continuation, boundary, and decision state -> direction -> risks, impact, and decisions.
+- `plan`: input state and optional Compatibility Intake -> shape summary and plan -> impact, scope, verification, and compatibility.
+- `review`: Review Frame -> verdict and optional Change Assessment -> findings, confidence, gaps, and repair direction.
+- `build`: execution state -> Execution Trace -> environment, verification, deviations, pitfalls, and discoveries.
+- `persist` and `sync`: write state -> short receipt -> template and source basis.
 
-## Chat Schema vs Persist Template
+## Chat Response vs Persist Template
 
-Task files own chat output schema. They may define compact and normal discussion structure, plus a minimal `Persist Packet` for handoff to `persist`.
+Discussion tasks never load templates, write files, or construct an intermediate
+artifact handoff packet. When their result is worth saving, they output only a
+`Persist Candidate`.
 
-Persisted artifact schema belongs only to `.workflow/templates/**`. Discussion tasks must not copy final artifact templates into their `Full Persist Packet` sections. A `Full Persist Packet` is handoff input, not the final artifact.
+`persist` is the artifact shaping owner. It consumes an explicit source or
+path, Artifact ID, Persist Candidate, same-work-item source artifacts, or
+matching recent discussion and user corrections. It then loads the matching
+artifact template plus `.workflow/templates/_persist_metadata.md` and writes a
+template-complete artifact. Required template sections remain present at every
+Depth; missing source content is represented as `unknown` or `none` rather
+than by dropping schema.
 
-`persist` is the artifact shaping owner. It consumes `Persist Candidate`, minimal `Persist Packet`, recent discussion, existing artifacts, or source files, then loads the matching template and fills the final artifact. Missing packet fields do not remove template sections; `persist` should infer, summarize, or mark fields as `unknown` / `none`.
+`sync` remains a separate template-backed stable-document projection task. It
+uses project-doc, code-readme, archive-summary, and sync metadata templates
+without participating in a chat response level.
 
 ## Unified Metadata Partials
 
@@ -439,44 +462,66 @@ Template bodies reference shared metadata partials instead of defining metadata 
 
 - `.workflow/templates/_persist_metadata.md` is used for active session artifacts written by `persist`.
 - `.workflow/templates/_sync_metadata.md` is used for stable documents written by `sync`.
-- Discussion tasks and `Persist Packet` do not generate final metadata; the write task owns metadata completion.
+- Chat responses and Persist Candidates do not generate final metadata; the write task owns metadata completion.
 - Timestamps use `YYYY-MM-DD HH:mm` and include `Timezone`.
 - `persist` sets `Created At` and `Updated At` for new files, preserves `Created At` on updates, and refreshes `Updated At`.
 - `sync` refreshes `Updated At` for stable document writes.
 
-`distill` is the summary task. It summarizes only the user-selected source and focus, separates `Observed`, `Inferred`, and `Unknown`, and does not write files. Save its result through `persist Artifact=distillation`. Use `review` to judge summary accuracy or source-of-truth status.
+`distill` is the summary task. It summarizes only the user-selected source and
+focus, separates `Observed`, `Inferred`, and `Unknown`, and does not write
+files. Save its result through `persist Artifact=distillation`. Use `review`
+to judge summary accuracy or source-of-truth status.
 
-Compact output starts with `User Intent`, may include `Current Read`, and uses short `Take`, limited risks, one `Next`, and at most one-line `Persist Candidate`. Normal refine output should include `Discussion Notes To Preserve` for phase boundaries, constraints, examples, accepted risks, and user corrections.
-
-`shape` and `plan` may both be compact in chat, but they have different responsibilities:
-
-- `shape compact`: first classify `Need For Shape`, then output `Shape Continuation`; form or update a direction only when useful.
-- `plan compact`: classify `Input Sufficiency`, summarize the shaped/chosen direction, then output `Planning Continuation` when insufficient or compact `Impact Surface`, plan sketch, and compact verification when input is sufficient.
-- `plan full`: minimal handoff packet for persist, explicit plan handoff, or external-agent use. The persisted artifact structure comes from `.workflow/templates/plan.md` and uses `Source Basis`, `Impact Surface -> Plan At A Glance`, `Scope`, `Verification`, `Stop Conditions`, and `Review / Next Use`.
-
-Every `plan` output, including compact chat output, must include the core planning fields and use conditional fields only when their condition applies:
+Every `plan` response includes the core planning fields and uses conditional
+fields only when their condition applies:
 
 ```text
-Input Sufficiency
-Input Gaps
-Planning Continuation
-Compatibility Intake
-Shape Summary
-Impact Surface
-Plan At A Glance
-Plan
-Verification
-Execution Handoff
+User Intent
+Task State
+- Input Sufficiency
+- Input Gaps
+- Planning Continuation
+- Compatibility Intake
+Primary Result
+- Shape Summary
+- Plan At A Glance
+- Plan
+Supporting Information
+- Source Basis
+- Impact Surface
+- Scope
+- Verification
+- Compatibility / Constraint Plan
+- Stop Conditions
 Next
+- Execution Handoff
+- Recommended Next Task
+- Next
+Persistence
+- Persist Candidate
 ```
 
-`Input Gaps` and `Planning Continuation` are conditional on insufficient input. `Compatibility Intake` is conditional on its compatibility-specific trigger and appears in chat only when native input UI is unavailable. `Impact Surface`, `Plan At A Glance`, `Plan`, and `Verification` are conditional on sufficient input. An unresolved compatibility intake keeps input insufficient and omits every plan/handoff body field. `Execution Handoff` appears only when compact output recommends `build` or `external-agent`, and should say to use `Output: full` or a persisted plan for executable handoff.
+`Input Gaps` and `Planning Continuation` are conditional on insufficient
+input. `Compatibility Intake` is conditional on its compatibility trigger and
+appears in chat only when native input UI is unavailable. `Impact Surface`,
+`Plan At A Glance`, `Plan`, and `Verification` are conditional on
+sufficient input. An unresolved Compatibility Intake keeps input insufficient
+and omits every plan/handoff body field and Persistence.
 
-Use `Shape Summary: Source=chat` when there is no persisted shape artifact. Include `Motivation`; use `unknown` when motivation is unavailable and do not invent it. Compact `Impact Surface` includes only scope size, affected surfaces, risk, and reversal cost. Compact `Verification` includes minimum viable verification, feasibility, fallback verification, and residual risk. Full plan artifacts may expand impact with docs/sync and build/handoff readiness.
+A `sufficient-for-handoff` Plan includes allowed changes, do-not-touch areas,
+verification, fallback verification, residual risk, and stop conditions. The
+current Plan may be used as an explicit handoff; persist it when a durable
+handoff is needed.
 
-`Depth: detailed` is persisted artifact metadata, not a chat output mode. Do not add a detailed chat output mode; use `Output: full` for detailed artifacts and handoffs.
+`Depth: compact | standard | detailed` belongs only to persisted artifact
+metadata. It controls content density inside template fields and never changes
+chat structure, permissions, target inference, or required template sections.
 
-Plans should not use generic open-question sections. Use `Input Gaps` only for missing input categories when input is insufficient. Use `Compatibility Intake` only for its narrowly defined user-owned compatibility decision after preflight. Use `Follow-up Questions` only for non-blocking future considerations. Formal `Blocking Gaps`, severity, and plan usability verdicts belong to `review`.
+Plans should not use generic open-question sections. Use `Input Gaps` only for
+missing input categories, `Compatibility Intake` only for its narrow
+compatibility decision, and `Follow-up Questions` only for non-blocking future
+considerations. Formal blocking gaps, severity, and plan usability verdicts
+belong to `review`.
 
 ## Task Boundary Router
 
@@ -495,32 +540,40 @@ Boundary classes are handled explicitly: `fits` performs the selected task, `fit
 
 ## Persist-Centered Session Writes
 
-Discussion tasks do not write files. They should end with short `Persist Candidate` when the current output is worth preserving. Full `Persist Packet` is only for `Output: full`, explicit persist requests, or handoff/audit responses, and it is a handoff packet rather than a final artifact template.
+Discussion tasks do not write files. They end with a short `Persist Candidate`
+only when the current result is worth preserving.
 
-- `persist` writes `.session/inbox/**` and `.session/threads/**`.
-- `.session/inbox/**` may hold untriaged knowledge captures such as reusable build execution discoveries.
-- `persist` may also write explicit `notes/**` disposable exploration notes.
-- `persist` consumes `Persist Candidate`, minimal `Persist Packet`, recent discussion, existing artifacts, or source files, then loads the matching template.
-- `persist` can infer targets for `.session/inbox/**` and `.session/threads/{thread}/{artifact}_{topic}.md`.
-- `Artifact State`, `Thread`, `Target Directory`, and same-work-item fit guide where related artifacts are grouped; none of them authorize writes outside active `.session/inbox/**`, active `.session/threads/**`, or explicit `notes/**`.
-- Explicit active `.session/inbox/**` and `.session/threads/**` targets are respected even when the file name does not follow the recommended prefix.
-- `notes/**` must be explicit and is never inferred.
-- Targets outside active `.session/inbox/**`, `.session/threads/**`, and `notes/**` are routed instead of rejected: `docs/**`, `src/**/README.md`, and `.session/archive/<thread>/summary.md` go to `sync`; code, `.workflow/**`, and `.github/**` go to `build` or external-agent.
+`persist` consumes sources in this order:
 
-Persisted artifacts preserve decision-relevant reasoning, not full transcript. They should be more structured than chat without dropping useful context, evidence, tradeoffs, rejected options, examples, risks, open questions, or next use. The persisted artifact must follow the matching template, even when the source packet is compact.
+1. explicit `Source` or file path;
+2. explicit Artifact ID;
+3. explicit Persist Candidate;
+4. source artifacts from the inferred same work item;
+5. recent matching discussion and user corrections.
 
-`persist` may apply explicit revisions, but it must not make new design, planning, or review judgments. If review feedback requires choosing a new direction, reordering a plan, or deciding whether a finding is correct, return to `shape`, `plan`, or `review` before persisting.
+It then loads exactly one matching template and the persist metadata partial,
+fills every required section, and writes only the allowed target. If
+prerequisites are missing, or a Shape User Checkpoint or Plan Compatibility
+Intake is waiting for an answer, persist writes nothing and returns a blocked
+response.
 
-`shape` emits `Artifact ID: shape_<topic>` when it is worth persisting. Use `persist shape_<topic>` to anchor the source shape, not to derive the thread directory. In multi-topic discussions, `persist` should infer the target by same-work-item fit and include related threads as source context when they are not the target.
+Persisted artifacts preserve decision-relevant reasoning rather than full
+transcript. They should be more structured than chat without dropping useful
+context, evidence, tradeoffs, rejected options, examples, risks, open questions,
+or next use.
 
-`persist` uses:
+Persist inputs:
 
+- `Artifact`: `brief | note | shape | plan | review | distillation`.
+- `Brief Type`: optional; use `external-goal` for long reusable goal material.
+- `Artifact State`: `inbox | working | settled | superseded`.
 - `Intent`: `summary | exploration | decision | audit | handoff | constraint | reference | capture`.
 - `Depth`: `compact | standard | detailed`.
+- `Thread`, `Topic`, `Source`, `Target Directory`, and `Target` as applicable.
 
-Default depth is `standard` for `brief` and `note`, and `detailed` for `shape`, `plan`, `review`, and `distillation`.
-
-Retired artifact kinds are not compatibility aliases. Candidate directions, tradeoffs, and non-implementation decisions persist as `Artifact: shape`; implementation decisions persist as `Artifact: plan`; review, critique, and consistency findings persist as `Artifact: review`; expanded discussion persists as `note`, `shape`, `plan`, or `distillation` depending on its purpose.
+Default Depth is `standard` for `brief` and `note`, and `detailed` for
+`shape`, `plan`, `review`, and `distillation`. Lower Depth shortens field
+content but never removes required template sections.
 
 ## Exploration Notes
 

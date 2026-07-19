@@ -8,11 +8,11 @@ argument-hint: "Request=<code, docs, behavior, entrypoint, dependency, or refere
 Use Workflow Lite explore semantics.
 
 Mode: discuss
-Output: compact
 Task: explore
 Lens: ${input:lens:none}
 
 Rules:
+- Use one standard response grouped as `User Intent`, `Task State`, `Primary Result`, `Supporting Information`, `Next`, and optional `Persistence`; omit optional empty groups.
 - Do not write files.
 - Do not load templates.
 - Load selected lenses only when explicitly named.
@@ -35,16 +35,9 @@ Request:
 ${input:request:describe the code, docs, behavior, entrypoint, dependency, or reference to explore}
 
 Return:
-- User Intent
-- Explore Frame
-- Observed Answer
-- Evidence Basis
-- Reliability / Not Checked
-- Evidence Probes, when used
-- Evidence Sufficiency
-- Downstream Use
-- Candidate Interpretations, optional
-- Follow-up Targets
-- Candidate Review Targets, optional
-- Recommended Next Task
-- Persist Candidate, candidate only and do not write
+- `User Intent`: inquiry request.
+- `Task State`: Boundary Advice and Explore Frame.
+- `Primary Result`: Observed Answer.
+- `Supporting Information`: Evidence Basis, reliability, probes, sufficiency, downstream use, candidate interpretations, follow-up targets, and candidate review targets when relevant.
+- `Next`: Recommended Next Task.
+- `Persistence`: Persist Candidate only when worth saving; candidate only and do not write.

@@ -56,11 +56,11 @@ Role: {{CONTENT: /.workflow/roles/builder.md}}
 
 Adjacent discussion output from `clarify`, `explore`, `distill`, `shape`, `review`, or `plan` does not grant build authority. `build` may modify repository artifacts only in `Mode: execute`, only with an explicit executable `Plan`, and only inside that plan's scope.
 
-## Expected Output
+## Response Contract
 
-- `Mode: discuss`: missing prerequisite or executability guidance only.
-- `Mode: execute` with `Output: compact`: minimal diff inside the plan scope plus compact `Execution Trace`.
-- `Mode: execute` with `Output: full`, blocked, partial, failed verification, pitfall found, scope-expansion risk, reusable execution discovery, or user-requested trace persistence: full `Execution Trace`.
+- `Mode: discuss`: use the shared response groups for missing prerequisites or executability guidance only.
+- `Mode: execute`: apply the minimal diff inside plan scope and return one state-driven `Execution Trace`.
+- A completed execution without exceptional conditions uses the concise trace fields. Blocked or partial execution, failed verification, pitfalls, scope-expansion risk, reusable discoveries, or a request to persist the trace automatically adds the expanded evidence fields.
 
 ## Task Boundary Check
 
@@ -167,75 +167,57 @@ Ordinary successful execution does not need persistence. Suggest persistence onl
 
 ## Execution Trace
 
-Default compact output:
+Use the shared response groups in both discuss and execute modes. In execute
+mode, keep the task-specific trace fields inside those groups:
 
 ```text
-Execution Trace:
-- Result: completed | partial | blocked
-- Review Status: reviewed | not reviewed | unknown
-- Risk Notice: none | review recommended | review strongly recommended
-- Changed: <count and short description>
-- Verification: passed | failed | not run | blocked
-- Environment: CWD=<path>; Command Source=<plan | script | Makefile | docs | CI | repo fact | none>; Retry Budget=<used>/<limit>
-- Pitfalls: none | <count> found, likely <plan gap | repo reality | missing context | test failure | model mistake | unclear>
-- Reusable Execution Discovery: none | <short discovery>
-- Follow-up: none | persist thread audit note | persist inbox capture | review | plan revision | sync
+User Intent
+- <the explicit plan and requested execution outcome>
+Task State
+- Boundary Advice: <only for discuss, blocked, wrong-task, or missing-prerequisite responses>
+- Result: <completed|partial|blocked>
+- Review Status: <reviewed|not reviewed|unknown>
+- Risk Notice: <none|review recommended|review strongly recommended>
+Primary Result
+- Execution Trace:
+  - Plan Used: <plan path or inline plan>
+  - Changed: <count and short description>
+  - Verification: <passed|failed|not run|blocked>
+Supporting Information
+- Environment: <CWD, command source, retry budget>
+- Pitfalls: <none or count and likely source>
+- Reusable Execution Discovery: <none or short discovery>
+- Execution Environment Contract: <expanded only when exceptional conditions require it>
+- Changed Files: <expanded path and reason list when needed>
+- Completed Steps: <expanded step and evidence list when needed>
+- Skipped Steps: <expanded step and reason list when needed>
+- Verification Trace: <expanded command, CWD, provenance, result, and deviation per plan step when needed>
+- Deviations From Plan: <expanded when non-empty>
+- Pitfalls Encountered: <expanded observation, evidence, source, impact, and follow-up when needed>
+- Reusable Execution Discoveries: <expanded fact, future use, and promotion candidate when needed>
+Next
+- Docs Follow-up: <only when the change clearly affects durable docs concerns>
+- Follow-up: <none|persist thread audit note|persist inbox capture|review|plan revision|sync>
+Persistence
+- Suggested Persist Candidate: <audit note or inbox capture; only when its trigger applies>
 ```
 
-Use full output only when `Output: full`, the build is blocked or partial, verification failed, a pitfall was found, scope expansion risk appeared, or the user asks to persist the trace:
+Use the concise fields for ordinary successful execution. Add the expanded
+supporting fields only when execution is blocked or partial, verification fails,
+a pitfall or scope-expansion risk appears, a reusable discovery is found, or the
+user asks to persist the trace.
 
-```text
-Execution Trace:
-- Plan Used: <plan path or inline plan>
-- Result: completed | partial | blocked
-- Review Status: reviewed | not reviewed | unknown
-- Risk Notice: none | review recommended | review strongly recommended
-- Execution Environment Contract:
-  - CWD: <path>
-  - Repo Root: <path>
-  - OS / Shell: <os and shell or unknown>
-  - Package Manager / Runner: <tool or none>
-  - Available Scripts: <relevant scripts or none>
-  - Retry Budget: <used>/<limit>
-- Changed Files:
-  - <path and reason>
-- Completed Steps:
-  - <step and evidence>
-- Skipped Steps:
-  - <step and reason>
-- Verification Trace:
-  - Plan Step: <step>
-    Verification Command: <command or none>
-    CWD: <path>
-    Command Source: <plan | script | Makefile | docs | CI | repo fact | none>
-    Result: <passed | failed | blocked | not run>
-    Deviation: <none | deviation from plan>
-- Deviations From Plan:
-  - <deviation or none>
-- Pitfalls Encountered:
-  - Pitfall: <what happened>
-    Observed During: <step or file>
-    Evidence: <file, command, error, or observation>
-    Likely Source: plan gap | repo reality | missing context | test failure | model mistake | unclear
-    Impact: <effect on execution>
-    Follow-up Suggested: persist thread audit note | persist inbox capture | review | plan revision | stable-document sync | none
-- Reusable Execution Discoveries:
-  - Discovery: <fact or caution worth remembering>
-    Future Use: <how future build/review/plan/sync should use it>
-    Promotion Candidate: thread note | inbox capture | project docs | code README | build adapter | none
-- Suggested Persist Candidate:
-  - <none | Artifact=note; Artifact State=working; Intent=audit; Thread=<thread>; Topic=<topic>_execution_trace>
-  - <none | Artifact=note; Artifact State=inbox; Intent=capture; Topic=<topic>_execution_discovery>
-```
-
-Output `Suggested Persist Candidate` only when there are pitfalls, blocked or partial execution, failed verification, reusable execution discovery, or the user asks to save the execution trace. `build` must not write `.session/**`; use `persist` to store current-work-item audit output as `Artifact: note`, `Intent: audit`, and reusable untriaged discoveries as `Artifact: note`, `Artifact State: inbox`, `Intent: capture`.
+`Suggested Persist Candidate` is allowed only under those same conditions.
+`build` never writes `.session/**`; persist current-work-item audit output as
+`Artifact: note`, `Intent: audit`, and reusable untriaged discoveries as
+`Artifact: note`, `Artifact State: inbox`, `Intent: capture`.
 
 ## Lens Suggestions
 
 - Suggest `test` when behavior changes need explicit verification. Do not apply it unless selected by the user.
 - Suggest `debug` when implementation depends on diagnosing a failure. Do not apply it unless selected by the user.
 
-## Output Rules
+## Repository Boundary Rules
 
 - Repository changes live in the project codebase.
 - Workflow system changes live in `.workflow/**` and require an explicit plan.
